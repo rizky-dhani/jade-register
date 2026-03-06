@@ -17,9 +17,6 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('phone');
             $table->string('affiliation')->nullable();
-            $table->string('profession');
-            $table->date('preferred_visit_date');
-            $table->string('marketing_source')->nullable();
             $table->timestamps();
         });
     }
