@@ -21,7 +21,11 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Gate::before(function ($user, $ability) {
-            return $user->hasRole('super-admin') ? true : null;
+            return $user->hasRole('Super Admin') ? true : null;
+        });
+
+        Gate::define('view-payment-proof', function ($user, $registration) {
+            return $user->hasPermissionTo('view_payment_proofs');
         });
     }
 }

@@ -13,12 +13,12 @@ class Country extends Model
     protected $fillable = [
         'name',
         'code',
-        'is_local',
+        'is_indonesia',
         'phone_code',
     ];
 
     protected $casts = [
-        'is_local' => 'boolean',
+        'is_indonesia' => 'boolean',
     ];
 
     public function seminarRegistrations(): HasMany
@@ -26,14 +26,14 @@ class Country extends Model
         return $this->hasMany(SeminarRegistration::class);
     }
 
-    public function scopeLocal($query)
+    public function scopeIndonesia($query)
     {
-        return $query->where('is_local', true);
+        return $query->where('is_indonesia', true);
     }
 
     public function scopeInternational($query)
     {
-        return $query->where('is_local', false);
+        return $query->where('is_indonesia', false);
     }
 
     public function getDisplayNameAttribute(): string

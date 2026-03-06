@@ -30,14 +30,6 @@
                 <span class="detail-label">Registration ID:</span>
                 <span>VIS-{{ $visitor->id }}</span>
             </div>
-            <div class="detail-row">
-                <span class="detail-label">Preferred Visit Date:</span>
-                <span>{{ $visitor->formatted_visit_date }}</span>
-            </div>
-            <div class="detail-row">
-                <span class="detail-label">Profession:</span>
-                <span>{{ $visitor->profession }}</span>
-            </div>
         </div>
         
         <h3>Event Details</h3>
