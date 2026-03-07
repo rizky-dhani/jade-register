@@ -8,8 +8,10 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class SeminarParticipantCount extends StatsOverviewWidget
 {
+    protected ?string $heading = 'Seminar Participants';
+    protected static ?int $sort = 2;
     protected function getStats(): array
-    {
+    {    
         $pending = SeminarRegistration::whereNull('payment_proof_path')->count();
         $needToBeChecked = SeminarRegistration::whereNotNull('payment_proof_path')
             ->where('payment_status', 'pending')
