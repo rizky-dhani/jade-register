@@ -21,6 +21,8 @@ class PosterSubmissionResource extends Resource
 
     protected static \UnitEnum|string|null $navigationGroup = 'Competitions';
 
+    protected static ?int $navigationGroupSort = 1;
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     protected static ?string $navigationLabel = 'Poster Submissions';

@@ -2,6 +2,8 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Widgets\SeminarParticipantCount;
+use App\Filament\Widgets\VisitorCount;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -37,8 +39,8 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
-                VisitorCountWidget::class,
-                SeminarParticipantCountWidget::class,
+                VisitorCount::class,
+                SeminarParticipantCount::class,
             ])
             ->middleware([
                 EncryptCookies::class,

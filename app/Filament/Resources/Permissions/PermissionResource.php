@@ -18,7 +18,7 @@ class PermissionResource extends Resource
 {
     protected static ?string $model = Permission::class;
 
-    protected static \UnitEnum|string|null $navigationGroup = 'Users & Permissions';
+    protected static \UnitEnum|string|null $navigationGroup = 'Settings';
 
     public static function canAccess(): bool
     {
