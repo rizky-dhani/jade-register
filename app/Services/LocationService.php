@@ -2,8 +2,6 @@
 
 namespace App\Services;
 
-use App\Models\Setting;
-
 class LocationService
 {
     public function isUserOnSite(float $userLat, float $userLng): bool
@@ -41,11 +39,14 @@ class LocationService
 
     public function getVenueCoordinates(): array
     {
-        return Setting::getVenueCoordinates();
+        return [
+            'lat' => (float) config('settings.venue_latitude', -6.2147245),
+            'lng' => (float) config('settings.venue_longitude', 106.8073332),
+        ];
     }
 
     public function getDetectionRadius(): int
     {
-        return Setting::getVenueRadius();
+        return (int) config('settings.venue_detection_radius', 500);
     }
 }
