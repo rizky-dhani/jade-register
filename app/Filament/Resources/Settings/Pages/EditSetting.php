@@ -10,7 +10,7 @@ class EditSetting extends EditRecord
 {
     protected static string $resource = SettingResource::class;
 
-    protected function getRecord(): Setting
+    public function getRecord(): Setting
     {
         $setting = Setting::first();
 
