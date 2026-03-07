@@ -3,7 +3,7 @@
 namespace App\Filament\Resources\SeminarRegistrations\Tables;
 
 use App\Models\SeminarRegistration;
-use Filament\Tables\Actions\Action;
+use Filament\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 

@@ -20,8 +20,6 @@ class PosterEvaluationResource extends Resource
 
     protected static \UnitEnum|string|null $navigationGroup = 'Competitions';
 
-    protected static ?int $navigationGroupSort = 1;
-
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedClipboardDocumentList;
 
     protected static ?string $navigationLabel = 'Poster Evaluations';

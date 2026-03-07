@@ -9,12 +9,12 @@ class PosterEvaluationPolicy
 {
     public function viewAny(User $user): bool
     {
-        return $user->can('view poster submissions');
+        return $user->can('manage poster submissions');
     }
 
     public function view(User $user, PosterEvaluation $posterEvaluation): bool
     {
-        return $user->can('view poster submissions')
+        return $user->can('manage poster submissions')
             || $user->getKey() === $posterEvaluation->judge_id;
     }
 

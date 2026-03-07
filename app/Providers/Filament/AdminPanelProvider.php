@@ -42,6 +42,11 @@ class AdminPanelProvider extends PanelProvider
                 VisitorCount::class,
                 SeminarParticipantCount::class,
             ])
+            ->navigationGroups([
+                'Competitions',
+                'Registrations',
+                'Settings',
+            ])
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

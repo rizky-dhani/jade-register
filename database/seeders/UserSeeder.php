@@ -27,7 +27,7 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('Jade2026!'),
             ]
         );
-        $participant->assignRole('poster-participant');
+        $participant->assignRole('Participant');
 
         SeminarRegistration::firstOrCreate(
             ['email' => 'participant@jade2026.test'],

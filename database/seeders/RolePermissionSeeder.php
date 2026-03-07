@@ -63,7 +63,7 @@ class RolePermissionSeeder extends Seeder
         $adminPermissions = Permission::pluck('name')->toArray();
         $adminRole->givePermissionTo($adminPermissions);
 
-        $staffRole = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
+        $staffRole = Role::firstOrCreate(['name' => 'Admin', 'guard_name' => 'web']);
         $staffRole->givePermissionTo([
             'view visitors',
             'create visitors',
@@ -82,13 +82,13 @@ class RolePermissionSeeder extends Seeder
             'export poster submissions',
         ]);
 
-        $judgeRole = Role::firstOrCreate(['name' => 'poster-judge', 'guard_name' => 'web']);
+        $judgeRole = Role::firstOrCreate(['name' => 'Judge', 'guard_name' => 'web']);
         $judgeRole->givePermissionTo([
             'view poster submissions',
             'evaluate poster submissions',
         ]);
 
-        $participantRole = Role::firstOrCreate(['name' => 'poster-participant', 'guard_name' => 'web']);
+        $participantRole = Role::firstOrCreate(['name' => 'Participant', 'guard_name' => 'web']);
         $participantRole->givePermissionTo([
             'view poster submissions',
             'create poster submissions',

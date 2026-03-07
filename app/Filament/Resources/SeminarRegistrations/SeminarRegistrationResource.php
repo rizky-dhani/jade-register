@@ -20,8 +20,6 @@ class SeminarRegistrationResource extends Resource
 
     protected static \UnitEnum|string|null $navigationGroup = 'Registrations';
 
-    protected static ?int $navigationGroupSort = 2;
-
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedClipboardDocumentCheck;
 
     protected static ?string $navigationLabel = 'Seminar Registrations';
