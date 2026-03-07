@@ -36,7 +36,6 @@ class UserSeeder extends Seeder
                 'name' => 'Dr. Test Participant',
                 'name_license' => 'Test Participant',
                 'nik' => '1234567890123456',
-                'npa' => '123456',
                 'pdgi_branch' => 'PDGI Jakarta Pusat',
                 'phone' => '+6281234567890',
                 'country_id' => 1,
