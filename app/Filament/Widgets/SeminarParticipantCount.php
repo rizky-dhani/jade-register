@@ -2,6 +2,7 @@
 
 namespace App\Filament\Widgets;
 
+use App\Filament\Resources\SeminarRegistrations\SeminarRegistrationResource;
 use App\Models\SeminarRegistration;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
@@ -22,11 +23,14 @@ class SeminarParticipantCount extends StatsOverviewWidget
         $total = SeminarRegistration::count();
 
         return [
-            Stat::make('Pending (No Proof)', (string) $pending),
+            Stat::make('Pending (No Proof)', (string) $pending)
+                ->url(SeminarRegistrationResource::getUrl('index', ['tableFilters' => ['has_payment_proof' => ['value' => false]]])),
             Stat::make('Need to be Checked', (string) $needToBeChecked)
-                ->color('warning'),
+                ->color('warning')
+                ->url(SeminarRegistrationResource::getUrl('index', ['tableFilters' => ['has_payment_proof' => ['value' => true], 'payment_status' => ['value' => 'pending']]])),
             Stat::make('Verified', (string) $verified)
-                ->color('success'),
+                ->color('success')
+                ->url(SeminarRegistrationResource::getUrl('index', ['tableFilters' => ['payment_status' => ['value' => 'verified']]])),
             Stat::make('Total', (string) $total),
         ];
     }

@@ -5,6 +5,7 @@ namespace App\Filament\Resources\SeminarRegistrations\Tables;
 use App\Models\SeminarRegistration;
 use Filament\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
 class SeminarRegistrationsTable
@@ -41,6 +42,11 @@ class SeminarRegistrationsTable
                         'pending' => 'Pending',
                         'verified' => 'Verified',
                     ]),
+                TernaryFilter::make('has_payment_proof')
+                    ->label('Has Payment Proof')
+                    ->trueLabel('Yes')
+                    ->falseLabel('No')
+                    ->nullable(),
             ])
             ->recordActions([
                 Action::make('viewPaymentProof')
