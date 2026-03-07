@@ -1,0 +1,11 @@
+
+RewriteEngine on
+
+RewriteOptions inherit
+RewriteCond %{HTTPS} off
+RewriteCond %{HTTP:X-Forwarded-SSL} !on
+RewriteCond %{HTTP_HOST} ^portal\.jakartadentalexhibitions\.id$ [OR]
+RewriteCond %{HTTP_HOST} ^www\.portal\.jakartadentalexhibitions\.id$
+RewriteRule ^/?$ "https\:\/\/portal\.jakartadentalexhibitions\.id\/" [R=301,L]
+RewriteCond %{REQUEST_URI} !^/itd/public/
+RewriteRule ^(.*)$ /itd/public/$1 [L,QSA]

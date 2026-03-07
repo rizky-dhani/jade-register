@@ -3,17 +3,26 @@
 namespace App\Filament\Resources\Settings\Pages;
 
 use App\Filament\Resources\Settings\SettingResource;
-use Filament\Actions\DeleteAction;
+use App\Models\Setting;
 use Filament\Resources\Pages\EditRecord;
 
 class EditSetting extends EditRecord
 {
     protected static string $resource = SettingResource::class;
 
-    protected function getHeaderActions(): array
+    protected function getRecord(): Setting
     {
-        return [
-            DeleteAction::make(),
-        ];
+        return Setting::first() ?? new Setting;
+    }
+
+    protected function mutateFormDataBeforeFill(array $data): array
+    {
+        $setting = $this->getRecord();
+
+        if (! $setting->exists) {
+            $setting->save();
+        }
+
+        return $data;
     }
 }

@@ -24,9 +24,9 @@ class SettingForm
                         TextInput::make('bank_account_number')
                             ->label('Account Number')
                             ->maxLength(50),
-                        Textarea::make('payment_instructions')
-                            ->label('Payment Instructions')
-                            ->rows(3),
+                        TextInput::make('bank_swift_code')
+                            ->label('Swift Code')
+                            ->maxLength(20),
                     ]),
                 Section::make('Venue Settings')
                     ->schema([
@@ -42,7 +42,7 @@ class SettingForm
                         TextInput::make('venue_longitude')
                             ->label('Venue Longitude')
                             ->numeric(),
-                        TextInput::make('detection_radius')
+                        TextInput::make('venue_detection_radius')
                             ->label('Detection Radius (meters)')
                             ->numeric()
                             ->default(500),

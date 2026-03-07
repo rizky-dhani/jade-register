@@ -2,8 +2,7 @@
 
 namespace App\Filament\Resources\Settings\Tables;
 
-use Filament\Actions\EditAction;
-use Filament\Tables\Columns\TextColumn;
+use App\Models\Setting;
 use Filament\Tables\Table;
 
 class SettingsTable
@@ -11,22 +10,9 @@ class SettingsTable
     public static function configure(Table $table): Table
     {
         return $table
-            ->columns([
-                TextColumn::make('key')
-                    ->label('Setting Key')
-                    ->searchable(),
-                TextColumn::make('value')
-                    ->label('Value')
-                    ->limit(50),
-            ])
-            ->filters([
-                //
-            ])
-            ->recordActions([
-                EditAction::make(),
-            ])
-            ->toolbarActions([
-                //
-            ]);
+            ->columns([])
+            ->filters([])
+            ->actions([])
+            ->query(fn () => Setting::query()->whereNull('id'));
     }
 }
