@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder
             SettingSeeder::class,
             UserSeeder::class,
             PosterCategoryAndTopicSeeder::class,
+            PosterSubmissionSeeder::class,
         ]);
     }
 }
