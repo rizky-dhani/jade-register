@@ -11,6 +11,12 @@ class ListSettings extends ListRecords
 
     public function mount(): void
     {
-        $this->redirect(SettingResource::getUrl('edit'));
+        $setting = \App\Models\Setting::first();
+
+        if (! $setting) {
+            $setting = \App\Models\Setting::create([]);
+        }
+
+        $this->redirect(SettingResource::getUrl('edit', ['record' => $setting->id]));
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Settings;
 
 use App\Filament\Resources\Settings\Pages\EditSetting;
+use App\Filament\Resources\Settings\Pages\ListSettings;
 use App\Filament\Resources\Settings\Schemas\SettingForm;
 use App\Models\Setting;
 use BackedEnum;
@@ -30,17 +31,8 @@ class SettingResource extends Resource
     public static function getPages(): array
     {
         return [
-            'edit' => EditSetting::route('/'),
+            'index' => ListSettings::route('/'),
+            'edit' => EditSetting::route('/edit/{record}'),
         ];
-    }
-
-    public static function getRecord(?int $key = null): Setting
-    {
-        return Setting::first() ?? new Setting;
-    }
-
-    public static function canViewAny(): bool
-    {
-        return false;
     }
 }

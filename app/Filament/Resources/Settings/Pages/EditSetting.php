@@ -12,17 +12,12 @@ class EditSetting extends EditRecord
 
     protected function getRecord(): Setting
     {
-        return Setting::first() ?? new Setting;
-    }
+        $setting = Setting::first();
 
-    protected function mutateFormDataBeforeFill(array $data): array
-    {
-        $setting = $this->getRecord();
-
-        if (! $setting->exists) {
-            $setting->save();
+        if (! $setting) {
+            $setting = Setting::create([]);
         }
 
-        return $data;
+        return $setting;
     }
 }
