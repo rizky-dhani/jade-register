@@ -18,6 +18,8 @@ class CountryResource extends Resource
 {
     protected static ?string $model = Country::class;
 
+    protected static ?string $navigationGroup = 'Settings';
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedGlobeAlt;
 
     protected static ?string $navigationLabel = 'Countries';

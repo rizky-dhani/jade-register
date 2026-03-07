@@ -18,6 +18,8 @@ class SeminarRegistrationResource extends Resource
 {
     protected static ?string $model = SeminarRegistration::class;
 
+    protected static ?string $navigationGroup = 'Registrations';
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedClipboardDocumentCheck;
 
     protected static ?string $navigationLabel = 'Seminar Registrations';
