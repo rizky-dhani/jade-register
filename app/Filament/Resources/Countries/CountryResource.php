@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\Countries;
 
-use App\Filament\Navigation\NavigationGroup;
 use App\Filament\Resources\Countries\Pages\CreateCountry;
 use App\Filament\Resources\Countries\Pages\EditCountry;
 use App\Filament\Resources\Countries\Pages\ListCountries;
@@ -19,7 +18,7 @@ class CountryResource extends Resource
 {
     protected static ?string $model = Country::class;
 
-    protected static \UnitEnum|string|null $navigationGroup = NavigationGroup::SETTINGS;
+    protected static \UnitEnum|string|null $navigationGroup = 'Settings';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedGlobeAlt;
 

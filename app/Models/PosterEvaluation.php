@@ -58,6 +58,16 @@ class PosterEvaluation extends Model
                 + ($evaluation->creativity_score ?? 0)
                 + ($evaluation->visual_score ?? 0)
                 + ($evaluation->presentation_score ?? 0);
+
+            $evaluation->evaluated_at ??= now();
+        });
+
+        static::saved(function (self $evaluation) {
+            $evaluation->submission?->syncTotalScoreFromEvaluations();
+        });
+
+        static::deleted(function (self $evaluation) {
+            $evaluation->submission?->syncTotalScoreFromEvaluations();
         });
     }
 }

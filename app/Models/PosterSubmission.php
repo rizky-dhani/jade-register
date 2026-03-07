@@ -52,6 +52,8 @@ class PosterSubmission extends Model
 
     public const STATUS_REJECTED = 'rejected';
 
+    public const MIN_EVALUATIONS_FOR_ACCEPTED = 2;
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -80,5 +82,41 @@ class PosterSubmission extends Model
     public function canSubmit(): bool
     {
         return $this->seminarRegistration?->payment_status === 'verified';
+    }
+
+    public function getAverageScoreAttribute(): ?int
+    {
+        $evaluations = $this->evaluations;
+
+        if ($evaluations->isEmpty()) {
+            return null;
+        }
+
+        return (int) round($evaluations->avg('total_score'));
+    }
+
+    public function syncTotalScoreFromEvaluations(): void
+    {
+        $this->total_score = $this->average_score;
+        $this->autoUpdateStatus();
+        $this->saveQuietly();
+    }
+
+    protected function autoUpdateStatus(): void
+    {
+        $evaluationCount = $this->evaluations()->count();
+
+        if ($evaluationCount > 0 && $this->status === self::STATUS_SUBMITTED) {
+            $this->status = self::STATUS_UNDER_REVIEW;
+        }
+
+        if ($evaluationCount >= self::MIN_EVALUATIONS_FOR_ACCEPTED
+            && $this->status === self::STATUS_UNDER_REVIEW) {
+            $this->status = self::STATUS_ACCEPTED;
+        }
+
+        if ($evaluationCount === 0 && $this->status === self::STATUS_UNDER_REVIEW) {
+            $this->status = self::STATUS_SUBMITTED;
+        }
     }
 }

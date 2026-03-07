@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\SeminarRegistrations;
 
-use App\Filament\Navigation\NavigationGroup;
 use App\Filament\Resources\SeminarRegistrations\Pages\CreateSeminarRegistration;
 use App\Filament\Resources\SeminarRegistrations\Pages\EditSeminarRegistration;
 use App\Filament\Resources\SeminarRegistrations\Pages\ListSeminarRegistrations;
@@ -19,7 +18,7 @@ class SeminarRegistrationResource extends Resource
 {
     protected static ?string $model = SeminarRegistration::class;
 
-    protected static \UnitEnum|string|null $navigationGroup = NavigationGroup::REGISTRATIONS;
+    protected static \UnitEnum|string|null $navigationGroup = 'Registrations';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedClipboardDocumentCheck;
 

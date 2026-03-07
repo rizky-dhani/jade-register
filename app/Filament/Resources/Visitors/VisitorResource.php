@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\Visitors;
 
-use App\Filament\Navigation\NavigationGroup;
 use App\Filament\Resources\Visitors\Pages\ListVisitors;
 use App\Filament\Resources\Visitors\Schemas\VisitorForm;
 use App\Filament\Resources\Visitors\Tables\VisitorsTable;
@@ -17,7 +16,7 @@ class VisitorResource extends Resource
 {
     protected static ?string $model = Visitor::class;
 
-    protected static \UnitEnum|string|null $navigationGroup = NavigationGroup::REGISTRATIONS;
+    protected static \UnitEnum|string|null $navigationGroup = 'Registrations';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUsers;
 
