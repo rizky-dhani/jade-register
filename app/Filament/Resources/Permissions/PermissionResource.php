@@ -20,6 +20,11 @@ class PermissionResource extends Resource
 
     protected static \UnitEnum|string|null $navigationGroup = 'Users & Permissions';
 
+    public static function canAccess(): bool
+    {
+        return auth()->user()?->hasRole('Super Admin') ?? false;
+    }
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedKey;
 
     public static function form(Schema $schema): Schema
