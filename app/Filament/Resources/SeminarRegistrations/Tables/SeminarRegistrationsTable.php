@@ -6,6 +6,7 @@ use App\Models\SeminarRegistration;
 use Filament\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 
 class SeminarRegistrationsTable

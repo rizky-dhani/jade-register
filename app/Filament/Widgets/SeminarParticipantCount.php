@@ -24,10 +24,10 @@ class SeminarParticipantCount extends StatsOverviewWidget
 
         return [
             Stat::make('Pending (No Proof)', (string) $pending)
-                ->url(SeminarRegistrationResource::getUrl('index', ['tableFilters' => ['has_payment_proof' => ['value' => false]]])),
+                ->url(SeminarRegistrationResource::getUrl('index', ['tableFilters' => ['has_payment_proof' => ['value' => 0]]])),
             Stat::make('Need to be Checked', (string) $needToBeChecked)
                 ->color('warning')
-                ->url(SeminarRegistrationResource::getUrl('index', ['tableFilters' => ['has_payment_proof' => ['value' => true], 'payment_status' => ['value' => 'pending']]])),
+                ->url(SeminarRegistrationResource::getUrl('index', ['tableFilters' => ['has_payment_proof' => ['value' => 1], 'payment_status' => ['value' => 'pending']]])),
             Stat::make('Verified', (string) $verified)
                 ->color('success')
                 ->url(SeminarRegistrationResource::getUrl('index', ['tableFilters' => ['payment_status' => ['value' => 'verified']]])),
