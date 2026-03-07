@@ -4,6 +4,8 @@ namespace App\Livewire;
 
 use App\Models\Country;
 use App\Models\SeminarRegistration as SeminarRegistrationModel;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -33,6 +35,12 @@ class SeminarRegistration extends Component
 
     public $payment_proof = null;
 
+    public bool $wants_poster_competition = false;
+
+    public string $password = '';
+
+    public string $password_confirmation = '';
+
     public bool $isSuccess = false;
 
     public ?SeminarRegistrationModel $registration = null;
@@ -48,6 +56,12 @@ class SeminarRegistration extends Component
         'country_id' => 'required|integer|min:1|exists:countries,id',
         'pricing_tier' => 'required|string',
         'payment_proof' => 'required|file|mimes:jpeg,png,pdf|max:5120',
+        'password' => 'required_if:wants_poster_competition,true|confirmed|min:8',
+    ];
+
+    protected $messages = [
+        'password.required_if' => 'Password is required if you want to participate in the poster competition.',
+        'password.confirmed' => 'Password confirmation does not match.',
     ];
 
     public function render()
@@ -107,6 +121,17 @@ class SeminarRegistration extends Component
 
         $path = $this->payment_proof->store('payment-proofs', 'public');
 
+        $userId = null;
+        if ($this->wants_poster_competition) {
+            $user = User::create([
+                'name' => $this->name,
+                'email' => $this->email,
+                'password' => Hash::make($this->password),
+            ]);
+            $user->assignRole('poster-participant');
+            $userId = $user->getKey();
+        }
+
         $registration = SeminarRegistrationModel::create([
             'registration_code' => SeminarRegistrationModel::generateRegistrationCode(),
             'email' => $this->email,
@@ -123,6 +148,8 @@ class SeminarRegistration extends Component
             'currency' => $pricing['currency'],
             'payment_proof_path' => $path,
             'payment_status' => 'pending',
+            'wants_poster_competition' => $this->wants_poster_competition,
+            'user_id' => $userId,
         ]);
 
         $this->registration = $registration;

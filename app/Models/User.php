@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
@@ -44,5 +45,20 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function posterSubmissions(): HasMany
+    {
+        return $this->hasMany(PosterSubmission::class);
+    }
+
+    public function posterEvaluations(): HasMany
+    {
+        return $this->hasMany(PosterEvaluation::class, 'judge_id');
+    }
+
+    public function seminarRegistrations(): HasMany
+    {
+        return $this->hasMany(SeminarRegistration::class);
     }
 }

@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder
             CountrySeeder::class,
             SettingSeeder::class,
             SuperAdminSeeder::class,
+            PosterCategoryAndTopicSeeder::class,
         ]);
 
         User::factory()->create([

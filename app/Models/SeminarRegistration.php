@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class SeminarRegistration extends Model
 {
@@ -28,11 +29,14 @@ class SeminarRegistration extends Model
         'rejection_reason',
         'verified_by',
         'verified_at',
+        'wants_poster_competition',
+        'user_id',
     ];
 
     protected $casts = [
         'verified_at' => 'datetime',
         'amount' => 'integer',
+        'wants_poster_competition' => 'boolean',
     ];
 
     public static function generateRegistrationCode(): string
@@ -42,5 +46,22 @@ class SeminarRegistration extends Model
         $random = strtoupper(bin2hex(random_bytes(4)));
 
         return "{$prefix}-{$year}-{$random}";
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function posterSubmissions(): HasMany
+    {
+        return $this->hasMany(PosterSubmission::class);
+    }
+
+    public function canSubmitPoster(): bool
+    {
+        return $this->payment_status === 'verified'
+            && $this->wants_poster_competition
+            && $this->user_id !== null;
     }
 }

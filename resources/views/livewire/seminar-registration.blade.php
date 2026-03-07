@@ -127,6 +127,45 @@
                 </div>
             </div>
 
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">Scientific Poster Competition (Optional)</h2>
+                
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                    <p class="text-sm text-blue-700">
+                        Join our Scientific Poster Competition! Present your dental research or case report and compete with peers. 
+                        Winners will be announced during JADE 2026. 
+                        <a href="#" class="underline font-medium">Learn more about the competition</a>
+                    </p>
+                </div>
+                
+                <div class="flex items-start mb-4">
+                    <input type="checkbox" wire:model="wants_poster_competition" id="wants_poster_competition" class="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-0.5">
+                    <label for="wants_poster_competition" class="ml-2 text-sm text-gray-700">
+                        I want to participate in the Scientific Poster Competition
+                    </label>
+                </div>
+                
+                @if($wants_poster_competition)
+                    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                        <p class="text-sm text-yellow-700 mb-4">
+                            To submit your poster, you need to create an account. Please set your password below.
+                        </p>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Password *</label>
+                            <input type="password" wire:model="password" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            @error('password') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+                        </div>
+                        
+                        <div class="mt-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Confirm Password *</label>
+                            <input type="password" wire:model="password_confirmation" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            @error('password_confirmation') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+                        </div>
+                    </div>
+                @endif
+            </div>
+
             <button type="submit" class="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
                 Submit Registration
             </button>

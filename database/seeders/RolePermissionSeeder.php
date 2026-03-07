@@ -12,8 +12,18 @@ class RolePermissionSeeder extends Seeder
     {
         $permissions = [
             'view visitors',
+            'create visitors',
+            'update visitors',
+            'delete visitors',
+            'restore visitors',
+            'force delete visitors',
             'export visitors',
             'view seminar registrations',
+            'create seminar registrations',
+            'update seminar registrations',
+            'delete seminar registrations',
+            'restore seminar registrations',
+            'force delete seminar registrations',
             'verify payments',
             'reject payments',
             'export seminar registrations',
@@ -21,6 +31,15 @@ class RolePermissionSeeder extends Seeder
             'manage settings',
             'manage professions',
             'manage marketing sources',
+            'view poster submissions',
+            'create poster submissions',
+            'update poster submissions',
+            'delete poster submissions',
+            'restore poster submissions',
+            'force delete poster submissions',
+            'evaluate poster submissions',
+            'manage poster submissions',
+            'export poster submissions',
         ];
 
         foreach ($permissions as $permission) {
@@ -35,11 +54,33 @@ class RolePermissionSeeder extends Seeder
         $staffRole = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
         $staffRole->givePermissionTo([
             'view visitors',
+            'create visitors',
+            'update visitors',
+            'delete visitors',
             'export visitors',
             'view seminar registrations',
+            'create seminar registrations',
+            'update seminar registrations',
             'verify payments',
             'reject payments',
             'export seminar registrations',
+            'view poster submissions',
+            'update poster submissions',
+            'evaluate poster submissions',
+            'export poster submissions',
+        ]);
+
+        $judgeRole = Role::firstOrCreate(['name' => 'poster-judge', 'guard_name' => 'web']);
+        $judgeRole->givePermissionTo([
+            'view poster submissions',
+            'evaluate poster submissions',
+        ]);
+
+        $participantRole = Role::firstOrCreate(['name' => 'poster-participant', 'guard_name' => 'web']);
+        $participantRole->givePermissionTo([
+            'view poster submissions',
+            'create poster submissions',
+            'update poster submissions',
         ]);
     }
 }
