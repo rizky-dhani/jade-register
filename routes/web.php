@@ -4,7 +4,7 @@ use App\Http\Controllers\PaymentProofController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->to(filament()->getLoginUrl());
 });
 
 Route::livewire('/register/visitor', \App\Livewire\VisitorRegistration::class)->name('register.visitor');

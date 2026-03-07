@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\SeminarRegistrations\Tables;
 
+use App\Models\SeminarRegistration;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -36,7 +38,23 @@ class SeminarRegistrationsTable
                 //
             ])
             ->recordActions([
-                //
+                Action::make('viewPaymentProof')
+                    ->label('View Payment Proof')
+                    ->icon('heroicon-o-photo')
+                    ->visible(fn (SeminarRegistration $record): bool => $record->payment_proof_path !== null)
+                    ->url(fn (SeminarRegistration $record): string => route('payment-proofs.preview', $record)),
+                Action::make('verifyPayment')
+                    ->label('Verify Payment')
+                    ->icon('heroicon-o-check-circle')
+                    ->visible(fn (SeminarRegistration $record): bool => $record->payment_status === 'pending')
+                    ->requiresConfirmation()
+                    ->action(function (SeminarRegistration $record): void {
+                        $record->update([
+                            'payment_status' => 'verified',
+                            'verified_by' => auth()->id(),
+                            'verified_at' => now(),
+                        ]);
+                    }),
             ])
             ->toolbarActions([
                 //
