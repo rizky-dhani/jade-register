@@ -35,7 +35,12 @@ class SeminarRegistrationsTable
                     ->searchable(),
             ])
             ->filters([
-                //
+                SelectFilter::make('payment_status')
+                    ->label('Payment Status')
+                    ->options([
+                        'pending' => 'Pending',
+                        'verified' => 'Verified',
+                    ]),
             ])
             ->recordActions([
                 Action::make('viewPaymentProof')

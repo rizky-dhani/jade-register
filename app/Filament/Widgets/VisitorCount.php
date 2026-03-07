@@ -9,6 +9,7 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 class VisitorCount extends StatsOverviewWidget
 {
     protected ?string $heading = 'Visitors';
+
     protected static ?int $sort = 1;
 
     protected function getStats(): array
