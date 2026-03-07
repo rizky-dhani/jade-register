@@ -24,11 +24,6 @@ class VisitorForm
                     ->maxLength(20),
                 TextInput::make('affiliation')
                     ->maxLength(255),
-                TextInput::make('profession')
-                    ->required(),
-                DatePicker::make('preferred_visit_date')
-                    ->required(),
-                TextInput::make('marketing_source'),
             ]);
     }
 }

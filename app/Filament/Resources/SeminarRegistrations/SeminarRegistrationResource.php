@@ -19,7 +19,7 @@ class SeminarRegistrationResource extends Resource
 {
     protected static ?string $model = SeminarRegistration::class;
 
-    protected static UnitEnum|string|null $navigationGroup = NavigationGroup::REGISTRATIONS;
+    protected static \UnitEnum|string|null $navigationGroup = NavigationGroup::REGISTRATIONS;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedClipboardDocumentCheck;
 

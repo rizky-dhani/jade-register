@@ -7,7 +7,6 @@ use App\Filament\Resources\Visitors\Pages\ListVisitors;
 use App\Filament\Resources\Visitors\Schemas\VisitorForm;
 use App\Filament\Resources\Visitors\Tables\VisitorsTable;
 use App\Models\Visitor;
-use App\Models\Visitor;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -18,7 +17,7 @@ class VisitorResource extends Resource
 {
     protected static ?string $model = Visitor::class;
 
-    protected static UnitEnum|string|null $navigationGroup = NavigationGroup::REGISTRATIONS;
+    protected static \UnitEnum|string|null $navigationGroup = NavigationGroup::REGISTRATIONS;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUsers;
 

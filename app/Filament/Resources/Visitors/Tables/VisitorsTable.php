@@ -19,16 +19,11 @@ class VisitorsTable
                     ->sortable(),
                 TextColumn::make('phone')
                     ->searchable(),
-                TextColumn::make('profession')
-                    ->searchable(),
-                TextColumn::make('preferred_visit_date')
-                    ->date('d F Y')
-                    ->sortable(),
-                TextColumn::make('marketing_source')
+                TextColumn::make('affiliation')
                     ->searchable(),
                 TextColumn::make('created_at')
                     ->sortable()
-                    ->date('d F Y'),
+                    ->date('d F Y H:i:s'),
             ])
             ->filters([
                 //

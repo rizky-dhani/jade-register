@@ -19,7 +19,7 @@ class RoleResource extends Resource
 {
     protected static ?string $model = Role::class;
 
-    protected static UnitEnum|string|null $navigationGroup = NavigationGroup::USERS_PERMISSIONS;
+    protected static \UnitEnum|string|null $navigationGroup = NavigationGroup::USERS_PERMISSIONS;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUserGroup;
 
