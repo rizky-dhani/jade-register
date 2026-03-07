@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Settings\Tables;
 
+use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -22,7 +23,7 @@ class SettingsTable
                 //
             ])
             ->recordActions([
-                //
+                EditAction::make(),
             ])
             ->toolbarActions([
                 //
