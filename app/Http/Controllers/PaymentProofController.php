@@ -14,11 +14,11 @@ class PaymentProofController extends Controller
             abort(403, 'Unauthorized to view this payment proof.');
         }
 
-        if (! $registration->payment_proof) {
+        if (! $registration->payment_proof_path) {
             abort(404, 'Payment proof not found.');
         }
 
-        $path = $registration->payment_proof;
+        $path = $registration->payment_proof_path;
 
         if (! Storage::disk('payment-proofs')->exists($path)) {
             abort(404, 'Payment proof file not found.');
@@ -38,11 +38,11 @@ class PaymentProofController extends Controller
             abort(403, 'Unauthorized to view this payment proof.');
         }
 
-        if (! $registration->payment_proof) {
+        if (! $registration->payment_proof_path) {
             abort(404, 'Payment proof not found.');
         }
 
-        $path = $registration->payment_proof;
+        $path = $registration->payment_proof_path;
 
         if (! Storage::disk('payment-proofs')->exists($path)) {
             abort(404, 'Payment proof file not found.');
