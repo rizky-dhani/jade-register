@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Roles;
 
+use App\Filament\Navigation\NavigationGroup;
 use App\Filament\Resources\Roles\Pages\CreateRole;
 use App\Filament\Resources\Roles\Pages\EditRole;
 use App\Filament\Resources\Roles\Pages\ListRoles;
@@ -18,7 +19,7 @@ class RoleResource extends Resource
 {
     protected static ?string $model = Role::class;
 
-    protected static ?string $navigationGroup = 'Users & Permissions';
+    protected static UnitEnum|string|null $navigationGroup = NavigationGroup::USERS_PERMISSIONS;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUserGroup;
 

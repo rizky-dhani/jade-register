@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Permissions;
 
+use App\Filament\Navigation\NavigationGroup;
 use App\Filament\Resources\Permissions\Pages\CreatePermission;
 use App\Filament\Resources\Permissions\Pages\EditPermission;
 use App\Filament\Resources\Permissions\Pages\ListPermissions;
@@ -18,7 +19,7 @@ class PermissionResource extends Resource
 {
     protected static ?string $model = Permission::class;
 
-    protected static ?string $navigationGroup = 'Users & Permissions';
+    protected static UnitEnum|string|null $navigationGroup = NavigationGroup::USERS_PERMISSIONS;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedKey;
 

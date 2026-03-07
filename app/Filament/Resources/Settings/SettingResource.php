@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Settings;
 
+use App\Filament\Navigation\NavigationGroup;
 use App\Filament\Resources\Settings\Pages\EditSetting;
 use App\Filament\Resources\Settings\Pages\ListSettings;
 use App\Filament\Resources\Settings\Schemas\SettingForm;
@@ -17,7 +18,7 @@ class SettingResource extends Resource
 {
     protected static ?string $model = Setting::class;
 
-    protected static ?string $navigationGroup = 'Settings';
+    protected static UnitEnum|string|null $navigationGroup = NavigationGroup::SETTINGS;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCog6Tooth;
 
