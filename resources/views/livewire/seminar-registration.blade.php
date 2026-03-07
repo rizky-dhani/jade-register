@@ -134,6 +134,20 @@
             </div>
 
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">Contact Person</h2>
+                
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <p class="text-sm text-blue-700 mb-3">For any questions, please contact:</p>
+                    <div class="space-y-2">
+                        <p class="text-sm text-blue-700"><strong>Drg Eka:</strong> 085147013396</p>
+                        <p class="text-sm text-blue-700"><strong>Drg Helani:</strong> 08118766161</p>
+                        <p class="text-sm text-blue-700"><strong>Drg Fitri:</strong> 081255710448</p>
+                        <p class="text-sm text-blue-700"><strong>Drg Annisa:</strong> 08195090409</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <h2 class="text-xl font-semibold text-gray-800 mb-4">Payment Information</h2>
                 
                 <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
