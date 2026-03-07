@@ -139,13 +139,13 @@
                 <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
                     <h3 class="font-semibold text-yellow-800 mb-2">Bank Transfer Details</h3>
                     @if($isIndonesia)
-                    <p class="text-sm text-yellow-700"><strong>Bank:</strong> Bank Central Asia (BCA)</p>
-                    <p class="text-sm text-yellow-700"><strong>Account Name:</strong> PT Jakarta Dental Exhibition</p>
-                    <p class="text-sm text-yellow-700"><strong>Account Number:</strong> 1234567890</p>
+                    <p class="text-sm text-yellow-700"><strong>Bank:</strong> {{ config('settings.bank_name') }}</p>
+                    <p class="text-sm text-yellow-700"><strong>Account Name:</strong> {{ config('settings.bank_account_name') }}</p>
+                    <p class="text-sm text-yellow-700"><strong>Account Number:</strong> {{ config('settings.bank_account_number') }}</p>
                     @else
-                    <p class="text-sm text-yellow-700"><strong>Bank:</strong> Bank Central Asia (BCA)</p>
-                    <p class="text-sm text-yellow-700"><strong>Account Name:</strong> PT Jakarta Dental Exhibition</p>
-                    <p class="text-sm text-yellow-700"><strong>Swift Code:</strong> CENAIDJA</p>
+                    <p class="text-sm text-yellow-700"><strong>Bank:</strong> {{ config('settings.bank_name') }}</p>
+                    <p class="text-sm text-yellow-700"><strong>Account Name:</strong> {{ config('settings.bank_account_name') }}</p>
+                    <p class="text-sm text-yellow-700"><strong>Swift Code:</strong> {{ config('settings.bank_swift_code') }}</p>
                     @endif
                     <p class="text-sm text-yellow-700 mt-2">Please transfer the exact amount and upload your payment proof.</p>
                 </div>
