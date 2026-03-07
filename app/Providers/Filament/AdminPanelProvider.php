@@ -8,6 +8,7 @@ use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\NavigationItem;
 use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
@@ -41,6 +42,10 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 VisitorCount::class,
                 SeminarParticipantCount::class,
+            ])
+            ->navigationItems([
+                NavigationItem::make('Poster Registration')
+                    ->url(fn () => route('poster.submit')),
             ])
             ->navigationGroups([
                 'Competitions',
