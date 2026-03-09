@@ -22,7 +22,7 @@
             <p class="text-green-700 mb-4">{{ __('seminar.success_thank_you') }}{{ $registration->name }}!</p>
             <p class="text-gray-600">{{ __('seminar.registration_code') }}<strong>{{ $registration->registration_code }}</strong></p>
             <p class="text-gray-600">{{ __('seminar.confirmation_email_sent') }}{{ $registration->email }}</p>
-            <div class="mt-6 pt-6 border-t border-green-200 text-left">
+            <div class="mt-6 pt-6 border-t border-green-200 text-center text-left">
                 <p class="text-green-800 font-medium mb-3">{{ __('seminar.success_message_1') }}</p>
                 <p class="text-green-700 mb-3">{{ __('seminar.success_message_2') }}</p>
                 <p class="text-green-700">{{ __('seminar.success_message_3') }}<a href="https://chat.whatsapp.com/KtELLi4Q22VHqJWFavOwhQ?mode=hq1tcla" target="_blank" class="underline font-semibold hover:text-green-900">https://chat.whatsapp.com/KtELLi4Q22VHqJWFavOwhQ</a></p>
@@ -74,19 +74,19 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('seminar.name_str') }} *</label>
-                        <input type="text" wire:model="name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <input type="text" wire:model="name" wire:key="name-str" autocomplete="off" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                         @error('name') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
                     </div>
                     
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('seminar.name_plataran') }} *</label>
-                        <input type="text" wire:model="name_license" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <input type="text" wire:model="name_license" wire:key="name-plataran" autocomplete="new-name-plataran" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                         @error('name_license') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
                     </div>
                     
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('seminar.email_plataran') }} *</label>
-                        <input type="email" wire:model="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <input type="email" wire:model="email" wire:key="email-plataran" autocomplete="new-email-plataran" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                         @error('email') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
                     </div>
                     
@@ -137,25 +137,25 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('seminar.name') }} *</label>
-                        <input type="text" wire:model="name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <input type="text" wire:model="name" wire:key="name-intl" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                         @error('name') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
                     </div>
                     
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('seminar.email') }} *</label>
-                        <input type="email" wire:model="email" autocomplete="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <input type="email" wire:model="email" wire:key="email-intl" autocomplete="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                         @error('email') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
                     </div>
                     
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('seminar.whatsapp_number') }} *</label>
-                        <input type="text" wire:model="phone" autocomplete="tel" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="+1234567890">
+                        <input type="text" wire:model="phone" wire:key="whatsapp-intl" autocomplete="tel" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="+1234567890">
                         @error('phone') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
                     </div>
                     
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('seminar.status') }} *</label>
-                        <select wire:model="status" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <select wire:model="status" wire:key="status-intl" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                             <option value="">{{ __('seminar.select_status') }}</option>
                             <option value="Dentist">{{ __('seminar.dentist') }}</option>
                             <option value="Student">{{ __('seminar.student') }}</option>
