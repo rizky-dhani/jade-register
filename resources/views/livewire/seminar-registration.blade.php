@@ -112,7 +112,7 @@
                         <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('seminar.competency') }} *</label>
                         <select wire:model="kompetensi" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                             <option value="">{{ __('seminar.select_competency') }}</option>
-                            <option value="GP">{{ __('seminar.competency_gp') }}</option>
+                            <option value="Dokter Gigi Umum">{{ __('seminar.competency_gp') }}</option>
                             <option value="Sp.KG">{{ __('seminar.competency_sp_kg') }}</option>
                             <option value="Sp.KGA">{{ __('seminar.competency_sp_kga') }}</option>
                             <option value="Sp.Pros">{{ __('seminar.competency_sp_pros') }}</option>

@@ -46,7 +46,7 @@ return [
     'select_country_first' => 'Silakan pilih negara terlebih dahulu untuk melihat tingkatan harga yang tersedia.',
 
     // Competency options
-    'competency_gp' => 'GP',
+    'competency_gp' => 'Dokter Gigi Umum',
     'competency_sp_kg' => 'Sp.KG',
     'competency_sp_kga' => 'Sp.KGA',
     'competency_sp_pros' => 'Sp.Pros',

@@ -46,7 +46,7 @@ return [
     'select_country_first' => 'Please select a country first to see available pricing tiers.',
 
     // Competency options
-    'competency_gp' => 'GP',
+    'competency_gp' => 'General Dentist',
     'competency_sp_kg' => 'Sp.KG',
     'competency_sp_kga' => 'Sp.KGA',
     'competency_sp_pros' => 'Sp.Pros',
