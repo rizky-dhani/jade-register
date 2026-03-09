@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class SeminarRegistration extends Model
@@ -18,6 +19,7 @@ class SeminarRegistration extends Model
         'nik',
         'npa',
         'pdgi_branch',
+        'kompetensi',
         'phone',
         'country_id',
         'registration_type',
@@ -31,6 +33,7 @@ class SeminarRegistration extends Model
         'verified_at',
         'wants_poster_competition',
         'user_id',
+        'status',
     ];
 
     protected $casts = [
@@ -53,6 +56,11 @@ class SeminarRegistration extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function country(): BelongsTo
+    {
+        return $this->belongsTo(Country::class);
+    }
+
     public function posterSubmissions(): HasMany
     {
         return $this->hasMany(PosterSubmission::class);
@@ -63,5 +71,24 @@ class SeminarRegistration extends Model
         return $this->payment_status === 'verified'
             && $this->wants_poster_competition
             && $this->user_id !== null;
+    }
+
+    public function getPricingTierLabelAttribute(): string
+    {
+        return $this->pricing_tier ?? 'N/A';
+    }
+
+    public function getFormattedAmountAttribute(): string
+    {
+        if ($this->currency === 'USD') {
+            return '$'.number_format($this->amount, 2);
+        }
+
+        return 'Rp '.number_format($this->amount, 0, ',', '.');
+    }
+
+    public function getRegistrationTypeLabelAttribute(): string
+    {
+        return ucfirst($this->registration_type ?? 'Online');
     }
 }

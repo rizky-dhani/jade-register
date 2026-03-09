@@ -5,7 +5,10 @@ namespace App\Livewire;
 use App\Models\Country;
 use App\Models\SeminarRegistration as SeminarRegistrationModel;
 use App\Models\User;
+use App\Services\RegistrationService;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Hash;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -29,6 +32,10 @@ class SeminarRegistration extends Component
 
     public string $pdgi_branch = '';
 
+    public string $kompetensi = '';
+
+    public string $status = '';
+
     public ?int $country_id = null;
 
     public ?string $pricing_tier = null;
@@ -45,6 +52,11 @@ class SeminarRegistration extends Component
 
     public ?SeminarRegistrationModel $registration = null;
 
+    #[Url(as: 'lang', keep: true)]
+    public string $locale = 'en';
+
+    protected $queryString = ['locale'];
+
     protected function rules(): array
     {
         if (! $this->is_local) {
@@ -52,6 +64,7 @@ class SeminarRegistration extends Component
                 'name' => 'required|string|max:255',
                 'email' => 'required|email|unique:seminar_registrations,email',
                 'phone' => 'required|string|max:20',
+                'status' => 'required|string|in:Dentist,Student',
                 'country_id' => 'required|integer|min:1|exists:countries,id',
                 'pricing_tier' => 'required|string',
                 'payment_proof' => 'required|file|mimes:jpeg,png,pdf|max:5120',
@@ -64,6 +77,7 @@ class SeminarRegistration extends Component
             'name_license' => 'required|string|max:255',
             'nik' => 'required|string|max:20',
             'pdgi_branch' => 'required|string|max:255',
+            'kompetensi' => 'required|string|max:255',
             'phone' => 'required|string|max:20',
             'country_id' => 'required|integer|min:1|exists:countries,id',
             'pricing_tier' => 'required|string',
@@ -76,6 +90,27 @@ class SeminarRegistration extends Component
         'password.required_if' => 'Password is required if you want to participate in the poster competition.',
         'password.confirmed' => 'Password confirmation does not match.',
     ];
+
+    public function mount(): void
+    {
+        $this->locale = in_array($this->locale, ['en', 'id']) ? $this->locale : 'en';
+        App::setLocale($this->locale);
+    }
+
+    public function setLocale(string $locale): void
+    {
+        if (in_array($locale, ['en', 'id'])) {
+            $this->locale = $locale;
+            App::setLocale($locale);
+            $this->dispatch('locale-changed', locale: $locale);
+        }
+    }
+
+    public function updatedLocale(): void
+    {
+        $this->locale = in_array($this->locale, ['en', 'id']) ? $this->locale : 'en';
+        App::setLocale($this->locale);
+    }
 
     public function updatedIsLocal(): void
     {
@@ -190,9 +225,15 @@ class SeminarRegistration extends Component
             $registrationData['name_license'] = $this->name_license;
             $registrationData['nik'] = $this->nik;
             $registrationData['pdgi_branch'] = $this->pdgi_branch;
+            $registrationData['kompetensi'] = $this->kompetensi;
+        } else {
+            $registrationData['status'] = $this->status;
         }
 
         $registration = SeminarRegistrationModel::create($registrationData);
+
+        $registrationService = app(RegistrationService::class);
+        $registrationService->sendSeminarSubmissionConfirmation($registration);
 
         $this->registration = $registration;
         $this->isSuccess = true;

@@ -48,6 +48,10 @@
                 <span class="detail-label">Country:</span>
                 <span>{{ $registration->country->name }}</span>
             </div>
+            <div class="detail-row">
+                <span class="detail-label">Submitted At:</span>
+                <span>{{ $registration->created_at->format('d M Y, H:i') }}</span>
+            </div>
         </div>
         
         <div class="payment-info">
