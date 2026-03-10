@@ -11,8 +11,10 @@ Route::livewire('/register/visitor', \App\Livewire\VisitorRegistration::class)->
 Route::livewire('/register/seminar', \App\Livewire\SeminarRegistration::class)->name('register.seminar');
 Route::livewire('/poster/submit', \App\Livewire\PosterSubmission::class)->name('poster.submit');
 
-Route::get('/payment-proofs/{registration}/download', [PaymentProofController::class, 'show'])
-    ->name('payment-proofs.download');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/payment-proofs/{registration}/download', [PaymentProofController::class, 'show'])
+        ->name('payment-proofs.download');
 
-Route::get('/payment-proofs/{registration}/preview', [PaymentProofController::class, 'preview'])
-    ->name('payment-proofs.preview');
+    Route::get('/payment-proofs/{registration}/preview', [PaymentProofController::class, 'preview'])
+        ->name('payment-proofs.preview');
+});
