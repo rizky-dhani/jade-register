@@ -228,7 +228,7 @@ class SeminarRegistration extends Component
             return;
         }
 
-        $path = $this->payment_proof->store('payment-proofs', 'public');
+        $path = $this->payment_proof->store('', 'payment-proofs');
 
         $userId = null;
         if ($this->wants_poster_competition && $this->is_local) {
