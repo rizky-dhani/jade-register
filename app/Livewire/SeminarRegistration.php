@@ -180,23 +180,21 @@ class SeminarRegistration extends Component
             return [];
         }
 
-        if ($country->is_indonesia) {
-            $this->is_local = true;
+        $isLocal = $country->is_indonesia;
+        $this->is_local = $isLocal;
 
+        $packages = \App\Models\SeminarPackage::active()
+            ->where('is_local', $isLocal)
+            ->orderBy('sort_order')
+            ->get();
+
+        return $packages->map(function ($package) {
             return [
-                ['value' => 'local_early_bird_snack', 'label' => 'Early Bird - Snack Only', 'price' => 'Rp 600.000'],
-                ['value' => 'local_early_bird_lunch', 'label' => 'Early Bird - Snack + Lunch', 'price' => 'Rp 900.000'],
-                ['value' => 'local_regular_snack', 'label' => 'Regular - Snack Only', 'price' => 'Rp 900.000'],
-                ['value' => 'local_regular_lunch', 'label' => 'Regular - Snack + Lunch', 'price' => 'Rp 1.200.000'],
+                'value' => $package->code,
+                'label' => $package->label,
+                'price' => $package->formatted_price,
             ];
-        }
-
-        $this->is_local = false;
-
-        return [
-            ['value' => 'intl_early_bird', 'label' => 'Early Bird', 'price' => 'USD 150'],
-            ['value' => 'intl_regular', 'label' => 'Regular', 'price' => 'USD 200'],
-        ];
+        })->toArray();
     }
 
     public function submit()
@@ -217,15 +215,13 @@ class SeminarRegistration extends Component
             }
         }
 
-        $pricing = match ($this->pricing_tier) {
-            'local_early_bird_snack' => ['amount' => 600000, 'currency' => 'IDR', 'tier' => 'Local Early Bird - Snack Only'],
-            'local_early_bird_lunch' => ['amount' => 900000, 'currency' => 'IDR', 'tier' => 'Local Early Bird - Snack + Lunch'],
-            'local_regular_snack' => ['amount' => 900000, 'currency' => 'IDR', 'tier' => 'Local Regular - Snack Only'],
-            'local_regular_lunch' => ['amount' => 1200000, 'currency' => 'IDR', 'tier' => 'Local Regular - Snack + Lunch'],
-            'intl_early_bird' => ['amount' => 150, 'currency' => 'USD', 'tier' => 'International Early Bird'],
-            'intl_regular' => ['amount' => 200, 'currency' => 'USD', 'tier' => 'International Regular'],
-            default => ['amount' => 0, 'currency' => 'IDR', 'tier' => 'Unknown'],
-        };
+        $package = \App\Models\SeminarPackage::where('code', $this->pricing_tier)->first();
+
+        if (! $package) {
+            $this->addError('pricing_tier', 'Invalid pricing tier selected.');
+
+            return;
+        }
 
         $path = $this->payment_proof->store('payment-proofs', 'public');
 
@@ -247,9 +243,9 @@ class SeminarRegistration extends Component
             'phone' => $this->phone,
             'country_id' => $this->country_id,
             'registration_type' => 'online',
-            'pricing_tier' => $pricing['tier'],
-            'amount' => $pricing['amount'] + $this->handsOnTotalPrice,
-            'currency' => $pricing['currency'],
+            'pricing_tier' => $package->name,
+            'amount' => $package->amount + $this->handsOnTotalPrice,
+            'currency' => $package->currency,
             'payment_proof_path' => $path,
             'payment_status' => 'pending',
             'wants_poster_competition' => $this->is_local ? $this->wants_poster_competition : false,
@@ -379,15 +375,8 @@ class SeminarRegistration extends Component
 
     public function getTotalAmount(): int
     {
-        $seminarAmount = match ($this->pricing_tier) {
-            'local_early_bird_snack' => 600000,
-            'local_early_bird_lunch' => 900000,
-            'local_regular_snack' => 900000,
-            'local_regular_lunch' => 1200000,
-            'intl_early_bird' => 150,
-            'intl_regular' => 200,
-            default => 0,
-        };
+        $package = \App\Models\SeminarPackage::where('code', $this->pricing_tier)->first();
+        $seminarAmount = $package ? $package->amount : 0;
 
         return $seminarAmount + $this->handsOnTotalPrice;
     }

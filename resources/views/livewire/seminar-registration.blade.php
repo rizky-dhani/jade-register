@@ -368,23 +368,17 @@
                 </div>
                 
                 {{-- Total Amount Display --}}
-                @if($wants_hands_on && $handsOnTotalPrice > 0)
+                @if($wants_hands_on && $handsOnTotalPrice > 0 && $pricing_tier)
                 <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
                     <div class="flex justify-between items-center mb-2">
                         <span class="text-gray-700">{{ __('seminar.seminar_fee') }}</span>
                         <span class="font-medium">
                             @php
-                                $seminarAmount = match($pricing_tier) {
-                                    'local_early_bird_snack' => 600000,
-                                    'local_early_bird_lunch' => 900000,
-                                    'local_regular_snack' => 900000,
-                                    'local_regular_lunch' => 1200000,
-                                    'intl_early_bird' => 150,
-                                    'intl_regular' => 200,
-                                    default => 0,
-                                };
+                                $package = \App\Models\SeminarPackage::where('code', $pricing_tier)->first();
+                                $seminarAmount = $package ? $package->amount : 0;
+                                $isIdr = $package && $package->currency === 'IDR';
                             @endphp
-                            {{ $isIndonesia ? 'Rp ' . number_format($seminarAmount, 0, ',', '.') : '$' . $seminarAmount }}
+                            {{ $isIdr ? 'Rp ' . number_format($seminarAmount, 0, ',', '.') : '$' . $seminarAmount }}
                         </span>
                     </div>
                     <div class="flex justify-between items-center mb-2">
@@ -395,7 +389,7 @@
                         <div class="flex justify-between items-center">
                             <span class="font-semibold text-gray-800">{{ __('seminar.total_amount') }}</span>
                             <span class="font-bold text-lg text-gray-800">
-                                @if($isIndonesia)
+                                @if($isIdr)
                                     Rp {{ number_format($seminarAmount + $handsOnTotalPrice, 0, ',', '.') }}
                                 @else
                                     ${{ $seminarAmount }} + Rp {{ number_format($handsOnTotalPrice, 0, ',', '.') }}
