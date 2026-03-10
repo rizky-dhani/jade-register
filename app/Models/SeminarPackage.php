@@ -14,7 +14,7 @@ class SeminarPackage extends Model
         'name',
         'code',
         'description',
-        'is_local',
+        'applies_to',
         'amount',
         'currency',
         'includes_lunch',
@@ -24,7 +24,6 @@ class SeminarPackage extends Model
     ];
 
     protected $casts = [
-        'is_local' => 'boolean',
         'amount' => 'integer',
         'includes_lunch' => 'boolean',
         'is_early_bird' => 'boolean',
@@ -64,6 +63,16 @@ class SeminarPackage extends Model
         return implode(' - ', $parts);
     }
 
+    public function getTypeLabelAttribute(): string
+    {
+        return match ($this->applies_to) {
+            'local' => 'Local Only',
+            'international' => 'International Only',
+            'all' => 'All Participants',
+            default => $this->applies_to,
+        };
+    }
+
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
@@ -71,11 +80,34 @@ class SeminarPackage extends Model
 
     public function scopeForLocal($query)
     {
-        return $query->where('is_local', true);
+        return $query->where(function ($q) {
+            $q->where('applies_to', 'local')
+                ->orWhere('applies_to', 'all');
+        });
     }
 
     public function scopeForInternational($query)
     {
-        return $query->where('is_local', false);
+        return $query->where(function ($q) {
+            $q->where('applies_to', 'international')
+                ->orWhere('applies_to', 'all');
+        });
+    }
+
+    public function appliesTo(bool $isIndonesia): bool
+    {
+        if ($this->applies_to === 'all') {
+            return true;
+        }
+
+        if ($isIndonesia && $this->applies_to === 'local') {
+            return true;
+        }
+
+        if (! $isIndonesia && $this->applies_to === 'international') {
+            return true;
+        }
+
+        return false;
     }
 }

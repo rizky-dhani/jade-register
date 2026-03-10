@@ -184,7 +184,10 @@ class SeminarRegistration extends Component
         $this->is_local = $isLocal;
 
         $packages = \App\Models\SeminarPackage::active()
-            ->where('is_local', $isLocal)
+            ->where(function ($query) use ($isLocal) {
+                $query->where('applies_to', $isLocal ? 'local' : 'international')
+                    ->orWhere('applies_to', 'all');
+            })
             ->orderBy('sort_order')
             ->get();
 

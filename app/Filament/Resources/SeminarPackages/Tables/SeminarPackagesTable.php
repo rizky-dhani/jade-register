@@ -40,11 +40,21 @@ class SeminarPackagesTable
                     ->boolean()
                     ->label('Early Bird'),
 
-                TextColumn::make('type')
-                    ->label('Type')
-                    ->state(fn ($record) => $record->is_local ? 'Local' : 'International')
+                TextColumn::make('applies_to')
+                    ->label('Applies To')
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'local' => 'Local',
+                        'international' => 'International',
+                        'all' => 'All',
+                        default => $state,
+                    })
                     ->badge()
-                    ->color(fn ($record) => $record->is_local ? 'success' : 'info'),
+                    ->color(fn (string $state): string => match ($state) {
+                        'local' => 'success',
+                        'international' => 'info',
+                        'all' => 'warning',
+                        default => 'gray',
+                    }),
 
                 IconColumn::make('is_active')
                     ->boolean()
@@ -62,11 +72,12 @@ class SeminarPackagesTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                SelectFilter::make('is_local')
-                    ->label('Package Type')
+                SelectFilter::make('applies_to')
+                    ->label('Applies To')
                     ->options([
-                        '1' => 'Local (Indonesia)',
-                        '0' => 'International',
+                        'local' => 'Local (Indonesia)',
+                        'international' => 'International',
+                        'all' => 'All Participants',
                     ]),
 
                 Filter::make('is_active')

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('code')->unique();
             $table->text('description')->nullable();
-            $table->boolean('is_local')->default(true);
+            $table->string('applies_to')->default('local'); // 'local', 'international', 'all'
             $table->integer('amount');
             $table->string('currency')->default('IDR');
             $table->boolean('includes_lunch')->default(false);

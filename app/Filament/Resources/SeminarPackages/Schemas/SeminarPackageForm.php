@@ -36,11 +36,17 @@ class SeminarPackageForm
 
                 Section::make('Pricing & Type')
                     ->schema([
-                        Toggle::make('is_local')
-                            ->label('Local Package (Indonesia)')
-                            ->default(true)
+                        Select::make('applies_to')
+                            ->label('Applies To')
+                            ->options([
+                                'local' => 'Local (Indonesia)',
+                                'international' => 'International',
+                                'all' => 'All Participants',
+                            ])
+                            ->default('local')
+                            ->required()
                             ->live()
-                            ->helperText('Toggle off for international packages'),
+                            ->helperText('Select which participant type this package applies to'),
 
                         TextInput::make('amount')
                             ->required()
@@ -52,7 +58,7 @@ class SeminarPackageForm
 
                         TextInput::make('currency')
                             ->required()
-                            ->default(fn ($get) => $get('is_local') ? 'IDR' : 'USD')
+                            ->default(fn ($get) => $get('applies_to') === 'local' ? 'IDR' : 'USD')
                             ->maxLength(3)
                             ->label('Currency')
                             ->placeholder('IDR or USD'),
