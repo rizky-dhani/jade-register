@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Models\SeminarPackage;
+use App\Models\Seminar;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class SeminarPackageSeeder extends Seeder
+class SeminarSeeder extends Seeder
 {
     use WithoutModelEvents;
 
@@ -108,7 +108,7 @@ class SeminarPackageSeeder extends Seeder
         ];
 
         foreach ($packages as $package) {
-            SeminarPackage::updateOrCreate(
+            Seminar::updateOrCreate(
                 ['code' => $package['code']],
                 $package
             );

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\SeminarPackages\Tables;
+namespace App\Filament\Resources\Seminars\Tables;
 
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -12,7 +12,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
-class SeminarPackagesTable
+class SeminarsTable
 {
     public static function configure(Table $table): Table
     {

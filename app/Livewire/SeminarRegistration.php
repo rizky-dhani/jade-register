@@ -3,7 +3,6 @@
 namespace App\Livewire;
 
 use App\Models\Country;
-use App\Models\HandsOnEvent;
 use App\Models\SeminarRegistration as SeminarRegistrationModel;
 use App\Models\User;
 use App\Services\RegistrationService;
@@ -209,7 +208,7 @@ class SeminarRegistration extends Component
         if ($this->wants_hands_on && ! empty($this->selectedHandsOn)) {
             foreach ($this->selectedHandsOn as $date => $eventId) {
                 if ($eventId) {
-                    $event = HandsOnEvent::find($eventId);
+                    $event = HandsOn::find($eventId);
                     if ($event && $event->getAvailableSeats() <= 0) {
                         $this->addError('selectedHandsOn.'.$date, 'This session is now full. Please select another.');
 
@@ -219,7 +218,7 @@ class SeminarRegistration extends Component
             }
         }
 
-        $package = \App\Models\SeminarPackage::where('code', $this->pricing_tier)->first();
+        $package = \App\Models\Seminar::where('code', $this->pricing_tier)->first();
 
         if (! $package) {
             $this->addError('pricing_tier', 'Invalid pricing tier selected.');
@@ -318,7 +317,7 @@ class SeminarRegistration extends Component
 
     public function loadAvailableHandsOn(): void
     {
-        $events = HandsOnEvent::where('is_active', true)
+        $events = HandsOn::where('is_active', true)
             ->whereIn('event_date', ['2026-11-13', '2026-11-14', '2026-11-15'])
             ->orderBy('event_date')
             ->orderBy('name')
@@ -379,7 +378,7 @@ class SeminarRegistration extends Component
 
     public function getTotalAmount(): int
     {
-        $package = \App\Models\SeminarPackage::where('code', $this->pricing_tier)->first();
+        $package = \App\Models\Seminar::where('code', $this->pricing_tier)->first();
         $seminarAmount = $package ? $package->amount : 0;
 
         return $seminarAmount + $this->handsOnTotalPrice;

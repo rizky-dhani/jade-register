@@ -76,9 +76,9 @@ class SeminarRegistration extends Model
         return $this->hasMany(HandsOnRegistration::class);
     }
 
-    public function handsOnEvents(): BelongsToMany
+    public function handsOns(): BelongsToMany
     {
-        return $this->belongsToMany(HandsOnEvent::class, 'hands_on_registrations')
+        return $this->belongsToMany(HandsOn::class, 'hands_on_registrations')
             ->withPivot(['registration_type', 'payment_status', 'payment_proof_path', 'verified_at'])
             ->withTimestamps();
     }
@@ -92,9 +92,9 @@ class SeminarRegistration extends Model
     {
         return $this->handsOnRegistrations()
             ->whereIn('payment_status', ['pending', 'verified'])
-            ->with('handsOnEvent')
+            ->with('handsOn')
             ->get()
-            ->sum(fn ($reg) => $reg->handsOnEvent->price);
+            ->sum(fn ($reg) => $reg->handsOn->price);
     }
 
     public function canSubmitPoster(): bool

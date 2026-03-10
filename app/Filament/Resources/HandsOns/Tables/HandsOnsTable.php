@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\HandsOnEvents\Tables;
+namespace App\Filament\Resources\HandsOns\Tables;
 
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -12,7 +12,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
-class HandsOnEventsTable
+class HandsOnsTable
 {
     public static function configure(Table $table): Table
     {

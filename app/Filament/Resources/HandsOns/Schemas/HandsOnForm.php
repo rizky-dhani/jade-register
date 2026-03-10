@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\HandsOnEvents\Schemas;
+namespace App\Filament\Resources\HandsOns\Schemas;
 
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Textarea;
@@ -8,7 +8,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
 
-class HandsOnEventForm
+class HandsOnForm
 {
     public static function configure(Schema $schema): Schema
     {

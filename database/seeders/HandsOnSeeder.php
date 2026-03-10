@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Models\HandsOnEvent;
+use App\Models\HandsOn;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class HandsOnEventSeeder extends Seeder
+class HandsOnSeeder extends Seeder
 {
     use WithoutModelEvents;
 
@@ -105,7 +105,7 @@ class HandsOnEventSeeder extends Seeder
         ];
 
         foreach ($events as $event) {
-            HandsOnEvent::create($event);
+            HandsOn::create($event);
         }
     }
 }

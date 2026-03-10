@@ -28,9 +28,9 @@ class HandsOnRegistration extends Model
         return $this->belongsTo(SeminarRegistration::class);
     }
 
-    public function handsOnEvent(): BelongsTo
+    public function handsOn(): BelongsTo
     {
-        return $this->belongsTo(HandsOnEvent::class);
+        return $this->belongsTo(HandsOn::class);
     }
 
     public function isPending(): bool
