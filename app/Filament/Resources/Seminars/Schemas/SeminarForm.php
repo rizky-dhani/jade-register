@@ -27,7 +27,16 @@ class SeminarForm
                             ->maxLength(255)
                             ->unique(ignoreRecord: true)
                             ->placeholder('e.g., local_early_bird_lunch')
-                            ->helperText('Unique identifier used in the system. Use lowercase with underscores.'),
+                            ->helperText('Unique identifier used in the system. Use lowercase with underscores.')
+                            ->live()
+                            ->default(function (\Filament\Schemas\Components\Utilities\Get $get): string {
+                                $name = $get('name');
+                                if (empty($name)) {
+                                    return '';
+                                }
+
+                                return \Illuminate\Support\Str::slug($name, '_');
+                            }),
 
                         Textarea::make('description')
                             ->rows(3)
@@ -57,12 +66,14 @@ class SeminarForm
                             ->label('Price Amount')
                             ->placeholder('e.g., 900000'),
 
-                        TextInput::make('currency')
+                        Select::make('currency')
                             ->required()
-                            ->default(fn ($get) => $get('applies_to') === 'local' ? 'IDR' : 'USD')
-                            ->maxLength(3)
-                            ->label('Currency')
-                            ->placeholder('IDR or USD'),
+                            ->default(fn (\Filament\Schemas\Components\Utilities\Get $get): string => $get('applies_to') === 'local' ? 'IDR' : 'USD')
+                            ->options([
+                                'IDR' => 'IDR - Indonesian Rupiah',
+                                'USD' => 'USD - US Dollar',
+                            ])
+                            ->label('Currency'),
                     ]),
 
                 Section::make('Package Features')
