@@ -18,6 +18,8 @@ class VisitorResource extends Resource
 
     protected static \UnitEnum|string|null $navigationGroup = 'Registrations';
 
+    protected static ?int $navigationGroupSort = 1;
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUsers;
 
     protected static ?string $navigationLabel = 'Visitors';
