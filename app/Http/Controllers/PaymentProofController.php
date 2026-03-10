@@ -18,28 +18,16 @@ class PaymentProofController extends Controller
             abort(404, 'Payment proof not found.');
         }
 
-        $path = $registration->payment_proof_path;
+        $path = 'payment-proofs/'.$registration->payment_proof_path;
 
-        // Try new disk location first, then fall back to public disk
-        if (! Storage::disk('payment-proofs')->exists($path)) {
-            $publicPath = 'payment-proofs/'.$path;
-            if (! Storage::disk('public')->exists($publicPath)) {
-                abort(404, 'Payment proof file not found.');
-            }
-
-            // Serve from public disk (legacy location)
-            $mimeType = Storage::disk('public')->mimeType($publicPath);
-            $filename = 'payment-proof-'.$registration->registration_code.'.'.pathinfo($path, PATHINFO_EXTENSION);
-
-            return Storage::disk('public')->download($publicPath, $filename, [
-                'Content-Type' => $mimeType,
-            ]);
+        if (! Storage::disk('public')->exists($path)) {
+            abort(404, 'Payment proof file not found.');
         }
 
-        $mimeType = Storage::disk('payment-proofs')->mimeType($path);
+        $mimeType = Storage::disk('public')->mimeType($path);
         $filename = 'payment-proof-'.$registration->registration_code.'.'.pathinfo($path, PATHINFO_EXTENSION);
 
-        return Storage::disk('payment-proofs')->download($path, $filename, [
+        return Storage::disk('public')->download($path, $filename, [
             'Content-Type' => $mimeType,
         ]);
     }
@@ -54,28 +42,16 @@ class PaymentProofController extends Controller
             abort(404, 'Payment proof not found.');
         }
 
-        $path = $registration->payment_proof_path;
+        $path = 'payment-proofs/'.$registration->payment_proof_path;
 
-        // Try new disk location first, then fall back to public disk
-        if (! Storage::disk('payment-proofs')->exists($path)) {
-            $publicPath = 'payment-proofs/'.$path;
-            if (! Storage::disk('public')->exists($publicPath)) {
-                abort(404, 'Payment proof file not found.');
-            }
-
-            // Serve from public disk (legacy location)
-            $mimeType = Storage::disk('public')->mimeType($publicPath);
-
-            return response()->file(
-                Storage::disk('public')->path($publicPath),
-                ['Content-Type' => $mimeType]
-            );
+        if (! Storage::disk('public')->exists($path)) {
+            abort(404, 'Payment proof file not found.');
         }
 
-        $mimeType = Storage::disk('payment-proofs')->mimeType($path);
+        $mimeType = Storage::disk('public')->mimeType($path);
 
         return response()->file(
-            Storage::disk('payment-proofs')->path($path),
+            Storage::disk('public')->path($path),
             ['Content-Type' => $mimeType]
         );
     }
