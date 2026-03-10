@@ -3,6 +3,8 @@
 namespace App\Livewire;
 
 use App\Models\Country;
+use App\Models\HandsOn;
+use App\Models\HandsOnRegistration;
 use App\Models\SeminarRegistration as SeminarRegistrationModel;
 use App\Models\User;
 use App\Services\RegistrationService;

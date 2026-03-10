@@ -4,6 +4,8 @@ namespace App\Filament\Resources\SeminarRegistrations\Tables;
 
 use App\Models\SeminarRegistration;
 use Filament\Actions\Action;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
@@ -69,7 +71,9 @@ class SeminarRegistrationsTable
                     }),
             ])
             ->toolbarActions([
-                //
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
+                ]),
             ]);
     }
 }
