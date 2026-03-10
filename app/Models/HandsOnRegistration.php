@@ -12,7 +12,7 @@ class HandsOnRegistration extends Model
 
     protected $fillable = [
         'seminar_registration_id',
-        'hands_on_event_id',
+        'hands_on_id',
         'registration_type',
         'payment_status',
         'payment_proof_path',

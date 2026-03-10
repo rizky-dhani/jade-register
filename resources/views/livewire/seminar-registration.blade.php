@@ -374,7 +374,7 @@
                         <span class="text-gray-700">{{ __('seminar.seminar_fee') }}</span>
                         <span class="font-medium">
                             @php
-                                $package = \App\Models\SeminarPackage::where('code', $pricing_tier)->first();
+                                $package = \App\Models\Seminar::where('code', $pricing_tier)->first();
                                 $seminarAmount = $package ? $package->amount : 0;
                                 $isIdr = $package && $package->currency === 'IDR';
                             @endphp

@@ -20,7 +20,7 @@ class HandsOnRegistrationForm
                     ->preload()
                     ->required(),
 
-                Select::make('hands_on_event_id')
+                Select::make('hands_on_id')
                     ->label('Hands On Event')
                     ->relationship('handsOn', 'name')
                     ->searchable()

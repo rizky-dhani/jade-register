@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('hands_on_events', function (Blueprint $table) {
+        Schema::create('hands_ons', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->text('description')->nullable();
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('hands_on_events');
+        Schema::dropIfExists('hands_ons');
     }
 };

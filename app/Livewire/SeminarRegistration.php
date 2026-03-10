@@ -102,7 +102,7 @@ class SeminarRegistration extends Component
             'payment_proof' => 'required|file|mimes:jpeg,png,pdf|max:5120',
             'password' => 'required_if:wants_poster_competition,true|confirmed|min:8',
             'selectedHandsOn' => 'array',
-            'selectedHandsOn.*' => 'nullable|integer|exists:hands_on_events,id',
+            'selectedHandsOn.*' => 'nullable|integer|exists:hands_ons,id',
         ];
     }
 
@@ -183,7 +183,7 @@ class SeminarRegistration extends Component
         $isLocal = $country->is_indonesia;
         $this->is_local = $isLocal;
 
-        $packages = \App\Models\SeminarPackage::active()
+        $packages = \App\Models\Seminar::active()
             ->where(function ($query) use ($isLocal) {
                 $query->where('applies_to', $isLocal ? 'local' : 'international')
                     ->orWhere('applies_to', 'all');
@@ -274,7 +274,7 @@ class SeminarRegistration extends Component
                 if ($eventId) {
                     HandsOnRegistration::create([
                         'seminar_registration_id' => $registration->id,
-                        'hands_on_event_id' => $eventId,
+                        'hands_on_id' => $eventId,
                         'registration_type' => 'combined',
                         'payment_status' => 'pending',
                         'payment_proof_path' => $path,
