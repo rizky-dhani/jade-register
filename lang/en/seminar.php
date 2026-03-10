@@ -74,6 +74,10 @@ return [
     'accepted_formats' => 'Accepted formats: JPG, PNG, PDF. Max size: 5MB',
     'disclaimer_1' => 'We only accept transfers from bank accounts that display the sender name in the transaction history to facilitate transfer proof verification.',
     'disclaimer_2' => 'Funds that have entered the above account cannot be returned for any reason.',
+    'payment_status' => 'Payment Status',
+    'payment_status_pending' => 'Pending',
+    'payment_status_verified' => 'Verified',
+    'payment_status_rejected' => 'Rejected',
 
     // Poster competition
     'poster_description' => 'Join our Scientific Poster Competition! Present your dental research or case report and compete with peers. Winners will be announced during JADE 2026.',

@@ -74,6 +74,10 @@ return [
     'accepted_formats' => 'Format yang diterima: JPG, PNG, PDF. Ukuran maksimal: 5MB',
     'disclaimer_1' => 'Kami hanya menerima transfer dari rekening bank, yang menampilkan nama pengirim pada mutasi untuk mempermudah verifikasi bukti transfer.',
     'disclaimer_2' => 'Dana yang sudah masuk ke rekening diatas tidak bisa dikembalikan dengan alasan apapun.',
+    'payment_status' => 'Status Pembayaran',
+    'payment_status_pending' => 'Menunggu',
+    'payment_status_verified' => 'Terverifikasi',
+    'payment_status_rejected' => 'Ditolak',
 
     // Poster competition
     'poster_description' => 'Bergabunglah dengan Kompetisi Poster Ilmiah kami! Presentasikan penelitian atau laporan kasus kedokteran gigi Anda dan bersaing dengan rekan-rekan. Pemenang akan diumumkan selama JADE 2026.',
