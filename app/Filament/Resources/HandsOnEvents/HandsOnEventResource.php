@@ -18,7 +18,13 @@ class HandsOnEventResource extends Resource
 {
     protected static ?string $model = HandsOnEvent::class;
 
+    protected static \UnitEnum|string|null $navigationGroup = 'Settings';
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+
+    protected static ?string $navigationLabel = 'Hands On Events';
+
+    protected static ?int $navigationSort = 20;
 
     public static function form(Schema $schema): Schema
     {

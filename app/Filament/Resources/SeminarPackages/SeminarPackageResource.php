@@ -18,7 +18,13 @@ class SeminarPackageResource extends Resource
 {
     protected static ?string $model = SeminarPackage::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static \UnitEnum|string|null $navigationGroup = 'Settings';
+
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTicket;
+
+    protected static ?string $navigationLabel = 'Seminar Packages';
+
+    protected static ?int $navigationSort = 21;
 
     public static function form(Schema $schema): Schema
     {
