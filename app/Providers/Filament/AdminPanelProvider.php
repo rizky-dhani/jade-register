@@ -49,9 +49,9 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->navigationGroups([
                 'Registrations',
+                'Competitions',
                 'Events',
                 'Settings',
-                'Competitions',
             ])
             ->middleware([
                 EncryptCookies::class,
