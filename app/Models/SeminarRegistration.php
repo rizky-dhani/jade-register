@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class SeminarRegistration extends Model
@@ -34,12 +35,16 @@ class SeminarRegistration extends Model
         'wants_poster_competition',
         'user_id',
         'status',
+        'wants_hands_on',
+        'hands_on_total_amount',
     ];
 
     protected $casts = [
         'verified_at' => 'datetime',
         'amount' => 'integer',
         'wants_poster_competition' => 'boolean',
+        'wants_hands_on' => 'boolean',
+        'hands_on_total_amount' => 'integer',
     ];
 
     public static function generateRegistrationCode(): string
@@ -64,6 +69,32 @@ class SeminarRegistration extends Model
     public function posterSubmissions(): HasMany
     {
         return $this->hasMany(PosterSubmission::class);
+    }
+
+    public function handsOnRegistrations(): HasMany
+    {
+        return $this->hasMany(HandsOnRegistration::class);
+    }
+
+    public function handsOnEvents(): BelongsToMany
+    {
+        return $this->belongsToMany(HandsOnEvent::class, 'hands_on_registrations')
+            ->withPivot(['registration_type', 'payment_status', 'payment_proof_path', 'verified_at'])
+            ->withTimestamps();
+    }
+
+    public function canRegisterHandsOn(): bool
+    {
+        return $this->payment_status === 'verified';
+    }
+
+    public function getTotalHandsOnAmount(): int
+    {
+        return $this->handsOnRegistrations()
+            ->whereIn('payment_status', ['pending', 'verified'])
+            ->with('handsOnEvent')
+            ->get()
+            ->sum(fn ($reg) => $reg->handsOnEvent->price);
     }
 
     public function canSubmitPoster(): bool

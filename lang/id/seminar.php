@@ -85,4 +85,32 @@ return [
 
     // Submit button
     'submit_registration' => 'Kirim Pendaftaran',
+
+    // Already registered check
+    'already_registered' => 'Apakah Anda sudah terdaftar untuk seminar?',
+    'already_registered_help' => 'Jika Anda sudah terdaftar, Anda dapat menambahkan sesi Hands On tanpa mendaftar ulang.',
+    'yes' => 'Ya',
+    'no' => 'Tidak',
+    'verify_registration' => 'Verifikasi Pendaftaran Anda',
+    'enter_email' => 'Masukkan email pendaftaran Anda',
+    'check' => 'Periksa',
+    'checking' => 'Memeriksa',
+    'registration_not_found' => 'Tidak ditemukan pendaftaran dengan email ini. Silakan daftar terlebih dahulu.',
+    'registration_found' => 'Pendaftaran Ditemukan!',
+    'complete_payment_first' => 'Silakan lengkapi pembayaran seminar Anda sebelum menambahkan sesi Hands On.',
+    'register_here' => 'Daftar di sini',
+
+    // Hands On
+    'hands_on_sessions' => 'Sesi Hands On',
+    'want_to_join_hands_on' => 'Saya ingin mengikuti sesi Hands On',
+    'hands_on_description' => 'Sesi Hands On akan diadakan pada 13-15 November 2026. Anda dapat memilih satu sesi per hari.',
+    'select_hands_on' => 'Pilih Sesi Hands On',
+    'hands_on_separate_payment' => 'Anda dapat memilih sesi Hands On di bawah ini. Pembayaran terpisah akan diperlukan.',
+    'hands_on_total' => 'Total Hands On',
+    'search_country' => 'Cari negara...',
+
+    // Payment
+    'seminar_fee' => 'Biaya Seminar',
+    'hands_on_fee' => 'Biaya Hands On',
+    'total_amount' => 'Jumlah Total',
 ];

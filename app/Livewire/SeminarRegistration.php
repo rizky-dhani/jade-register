@@ -57,6 +57,24 @@ class SeminarRegistration extends Component
 
     protected $queryString = ['locale'];
 
+    // Already registered check properties
+    public ?string $is_already_registered = null;
+
+    public string $verification_email = '';
+
+    public ?SeminarRegistrationModel $existingRegistration = null;
+
+    public bool $showVerificationError = false;
+
+    // Hands On properties
+    public bool $wants_hands_on = false;
+
+    public array $selectedHandsOn = [];
+
+    public array $availableHandsOn = [];
+
+    public int $handsOnTotalPrice = 0;
+
     protected function rules(): array
     {
         if (! $this->is_local) {
@@ -83,6 +101,8 @@ class SeminarRegistration extends Component
             'pricing_tier' => 'required|string',
             'payment_proof' => 'required|file|mimes:jpeg,png,pdf|max:5120',
             'password' => 'required_if:wants_poster_competition,true|confirmed|min:8',
+            'selectedHandsOn' => 'array',
+            'selectedHandsOn.*' => 'nullable|integer|exists:hands_on_events,id',
         ];
     }
 
@@ -125,6 +145,7 @@ class SeminarRegistration extends Component
             'countries' => $countries,
             'availableTiers' => $this->getAvailableTiers(),
             'isIndonesia' => $this->isIndonesia(),
+            'availableHandsOn' => $this->availableHandsOn,
         ]);
     }
 
@@ -182,6 +203,20 @@ class SeminarRegistration extends Component
     {
         $this->validate();
 
+        // Validate Hands On selections have available seats
+        if ($this->wants_hands_on && ! empty($this->selectedHandsOn)) {
+            foreach ($this->selectedHandsOn as $date => $eventId) {
+                if ($eventId) {
+                    $event = HandsOnEvent::find($eventId);
+                    if ($event && $event->getAvailableSeats() <= 0) {
+                        $this->addError('selectedHandsOn.'.$date, 'This session is now full. Please select another.');
+
+                        return;
+                    }
+                }
+            }
+        }
+
         $pricing = match ($this->pricing_tier) {
             'local_early_bird_snack' => ['amount' => 600000, 'currency' => 'IDR', 'tier' => 'Local Early Bird - Snack Only'],
             'local_early_bird_lunch' => ['amount' => 900000, 'currency' => 'IDR', 'tier' => 'Local Early Bird - Snack + Lunch'],
@@ -213,11 +248,13 @@ class SeminarRegistration extends Component
             'country_id' => $this->country_id,
             'registration_type' => 'online',
             'pricing_tier' => $pricing['tier'],
-            'amount' => $pricing['amount'],
+            'amount' => $pricing['amount'] + $this->handsOnTotalPrice,
             'currency' => $pricing['currency'],
             'payment_proof_path' => $path,
             'payment_status' => 'pending',
             'wants_poster_competition' => $this->is_local ? $this->wants_poster_competition : false,
+            'wants_hands_on' => $this->wants_hands_on,
+            'hands_on_total_amount' => $this->handsOnTotalPrice,
             'user_id' => $userId,
         ];
 
@@ -232,10 +269,126 @@ class SeminarRegistration extends Component
 
         $registration = SeminarRegistrationModel::create($registrationData);
 
+        // Create Hands On registrations
+        if ($this->wants_hands_on && ! empty($this->selectedHandsOn)) {
+            foreach ($this->selectedHandsOn as $date => $eventId) {
+                if ($eventId) {
+                    HandsOnRegistration::create([
+                        'seminar_registration_id' => $registration->id,
+                        'hands_on_event_id' => $eventId,
+                        'registration_type' => 'combined',
+                        'payment_status' => 'pending',
+                        'payment_proof_path' => $path,
+                    ]);
+                }
+            }
+        }
+
         $registrationService = app(RegistrationService::class);
         $registrationService->sendSeminarSubmissionConfirmation($registration);
 
         $this->registration = $registration;
         $this->isSuccess = true;
+    }
+
+    public function checkExistingRegistration(): void
+    {
+        $this->validate([
+            'verification_email' => 'required|email',
+        ]);
+
+        $this->showVerificationError = false;
+        $this->existingRegistration = null;
+
+        $registration = SeminarRegistrationModel::whereRaw('LOWER(email) = ?', [strtolower($this->verification_email)])
+            ->first();
+
+        if (! $registration) {
+            $this->showVerificationError = true;
+
+            return;
+        }
+
+        $this->existingRegistration = $registration;
+
+        if ($registration->payment_status === 'verified') {
+            $this->loadAvailableHandsOn();
+        }
+    }
+
+    public function loadAvailableHandsOn(): void
+    {
+        $events = HandsOnEvent::where('is_active', true)
+            ->whereIn('event_date', ['2026-11-13', '2026-11-14', '2026-11-15'])
+            ->orderBy('event_date')
+            ->orderBy('name')
+            ->get();
+
+        $this->availableHandsOn = [];
+
+        foreach ($events as $event) {
+            $date = $event->event_date->format('Y-m-d');
+            if (! isset($this->availableHandsOn[$date])) {
+                $this->availableHandsOn[$date] = [];
+            }
+
+            $registeredCount = $event->handsOnRegistrations()
+                ->whereIn('payment_status', ['pending', 'verified'])
+                ->count();
+
+            $availableSeats = max(0, $event->max_seats - $registeredCount);
+
+            $this->availableHandsOn[$date][] = [
+                'id' => $event->id,
+                'name' => $event->name,
+                'description' => $event->description,
+                'price' => $event->price,
+                'max_seats' => $event->max_seats,
+                'registered_count' => $registeredCount,
+                'available_seats' => $availableSeats,
+                'is_full' => $availableSeats <= 0,
+            ];
+        }
+    }
+
+    public function updatedWantsHandsOn(): void
+    {
+        if ($this->wants_hands_on) {
+            $this->loadAvailableHandsOn();
+        } else {
+            $this->selectedHandsOn = [];
+            $this->handsOnTotalPrice = 0;
+        }
+    }
+
+    public function updatedSelectedHandsOn(): void
+    {
+        $this->handsOnTotalPrice = 0;
+
+        foreach ($this->selectedHandsOn as $date => $eventId) {
+            if ($eventId) {
+                foreach ($this->availableHandsOn[$date] ?? [] as $event) {
+                    if ($event['id'] == $eventId) {
+                        $this->handsOnTotalPrice += $event['price'];
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    public function getTotalAmount(): int
+    {
+        $seminarAmount = match ($this->pricing_tier) {
+            'local_early_bird_snack' => 600000,
+            'local_early_bird_lunch' => 900000,
+            'local_regular_snack' => 900000,
+            'local_regular_lunch' => 1200000,
+            'intl_early_bird' => 150,
+            'intl_regular' => 200,
+            default => 0,
+        };
+
+        return $seminarAmount + $this->handsOnTotalPrice;
     }
 }

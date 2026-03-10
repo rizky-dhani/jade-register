@@ -85,4 +85,32 @@ return [
 
     // Submit button
     'submit_registration' => 'Submit Registration',
+
+    // Already registered check
+    'already_registered' => 'Are you already registered for the seminar?',
+    'already_registered_help' => 'If you have already registered, you can add Hands On sessions without re-registering.',
+    'yes' => 'Yes',
+    'no' => 'No',
+    'verify_registration' => 'Verify Your Registration',
+    'enter_email' => 'Enter your registration email',
+    'check' => 'Check',
+    'checking' => 'Checking',
+    'registration_not_found' => 'No registration found with this email. Please register first.',
+    'registration_found' => 'Registration Found!',
+    'complete_payment_first' => 'Please complete your seminar payment before adding Hands On sessions.',
+    'register_here' => 'Register here',
+
+    // Hands On
+    'hands_on_sessions' => 'Hands On Sessions',
+    'want_to_join_hands_on' => 'I want to join Hands On sessions',
+    'hands_on_description' => 'Hands On sessions will be held during November 13-15, 2026. You can select one session per day.',
+    'select_hands_on' => 'Select Hands On Sessions',
+    'hands_on_separate_payment' => 'You can select Hands On sessions below. A separate payment will be required.',
+    'hands_on_total' => 'Hands On Total',
+    'search_country' => 'Search country...',
+
+    // Payment
+    'seminar_fee' => 'Seminar Fee',
+    'hands_on_fee' => 'Hands On Fee',
+    'total_amount' => 'Total Amount',
 ];

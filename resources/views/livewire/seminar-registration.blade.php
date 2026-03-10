@@ -1,4 +1,4 @@
-<div class="max-w-2xl mx-auto p-6" x-data="{ locale: @entangle('locale') }" x-init="
+<div class="max-w-2xl mx-auto p-6" x-data="{ locale: @entangle('locale'), countryOpen: false, countrySearch: '' }" x-init="
     const savedLocale = localStorage.getItem('jade_locale');
     if (savedLocale && ['en', 'id'].includes(savedLocale)) {
         locale = savedLocale;
@@ -50,18 +50,129 @@
                 </div>
             </div>
 
+            {{-- Already Registered Check --}}
+            @if($is_already_registered === null)
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">{{ __('seminar.already_registered') }}</h2>
+                <p class="text-gray-600 mb-4">{{ __('seminar.already_registered_help') }}</p>
+                
+                <div class="flex gap-4">
+                    <button type="button" wire:click="$set('is_already_registered', 'yes')" 
+                        class="px-6 py-3 border-2 rounded-lg font-medium transition-colors
+                        {{ $is_already_registered === 'yes' ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-gray-300 hover:border-gray-400' }}">
+                        {{ __('seminar.yes') }}
+                    </button>
+                    <button type="button" wire:click="$set('is_already_registered', 'no')"
+                        class="px-6 py-3 border-2 rounded-lg font-medium transition-colors
+                        {{ $is_already_registered === 'no' ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-gray-300 hover:border-gray-400' }}">
+                        {{ __('seminar.no') }}
+                    </button>
+                </div>
+            </div>
+            @endif
+
+            {{-- Email Verification for Existing Registration --}}
+            @if($is_already_registered === 'yes' && !$existingRegistration)
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">{{ __('seminar.verify_registration') }}</h2>
+                <div class="flex gap-2">
+                    <input type="email" wire:model="verification_email" 
+                        placeholder="{{ __('seminar.enter_email') }}"
+                        class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <button type="button" wire:click="checkExistingRegistration" 
+                        wire:loading.attr="disabled"
+                        class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50">
+                        <span wire:loading.remove wire:target="checkExistingRegistration">
+                            {{ __('seminar.check') }}
+                        </span>
+                        <span wire:loading wire:target="checkExistingRegistration">
+                            {{ __('seminar.checking') }}...
+                        </span>
+                    </button>
+                </div>
+                @if($showVerificationError)
+                    <p class="text-red-500 text-sm mt-2">{{ __('seminar.registration_not_found') }}</p>
+                    <p class="text-sm mt-1">
+                        <a href="#" wire:click="$set('is_already_registered', 'no')" class="text-blue-600 underline">
+                            {{ __('seminar.register_here') }}
+                        </a>
+                    </p>
+                @endif
+            </div>
+            @endif
+
+            {{-- Existing Registration Found - Show Details and Hands On Selection --}}
+            @if($existingRegistration)
+            <div class="bg-green-50 border border-green-200 rounded-lg p-6">
+                <h2 class="text-xl font-semibold text-green-800 mb-4">{{ __('seminar.registration_found') }}</h2>
+                
+                {{-- Registration Details --}}
+                <div class="space-y-2 mb-6 bg-white rounded-lg p-4 border border-green-200">
+                    <p><strong>{{ __('seminar.name') }}:</strong> {{ $existingRegistration->name }}</p>
+                    <p><strong>{{ __('seminar.email') }}:</strong> {{ $existingRegistration->email }}</p>
+                    <p><strong>{{ __('seminar.registration_code') }}:</strong> {{ $existingRegistration->registration_code }}</p>
+                    <p><strong>{{ __('seminar.pricing_tier') }}:</strong> {{ $existingRegistration->pricing_tier }}</p>
+                    <p><strong>{{ __('seminar.payment_status') }}:</strong> 
+                        <span class="{{ $existingRegistration->payment_status === 'verified' ? 'text-green-600 font-medium' : 'text-yellow-600 font-medium' }}">
+                            {{ ucfirst($existingRegistration->payment_status) }}
+                        </span>
+                    </p>
+                </div>
+
+                @if($existingRegistration->payment_status === 'verified')
+                    {{-- Hands On Selection (NO checkbox, direct selection) --}}
+                    <div class="bg-white rounded-lg p-4 border border-green-200">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-2">{{ __('seminar.select_hands_on') }}</h3>
+                        <p class="text-gray-600 mb-4 text-sm">{{ __('seminar.hands_on_separate_payment') }}</p>
+                        
+                        @include('livewire.partials.hands-on-selection', ['isSeparate' => true])
+                    </div>
+                @else
+                    <p class="text-yellow-700">{{ __('seminar.complete_payment_first') }}</p>
+                @endif
+            </div>
+            @endif
+
+            {{-- Main Registration Form (Only show if NOT already registered) --}}
+            @if($is_already_registered === 'no')
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <h2 class="text-xl font-semibold text-gray-800 mb-4">{{ __('seminar.personal_information') }}</h2>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
+                    <div class="md:col-span-2">
                         <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('seminar.country') }} *</label>
-                        <select wire:model.live="country_id" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                            <option value="">{{ __('seminar.select_country') }}</option>
-                            @foreach($countries as $country)
-                                <option value="{{ (int) $country->id }}">{{ $country->name }}</option>
-                            @endforeach
-                        </select>
+                        {{-- Searchable Country Dropdown --}}
+                        <div class="relative" @click.away="countryOpen = false">
+                            <button type="button" @click="countryOpen = !countryOpen" 
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg text-left bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 flex justify-between items-center">
+                                <span>
+                                    {{ $country_id ? $countries->firstWhere('id', $country_id)->name : __('seminar.select_country') }}
+                                </span>
+                                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+                            
+                            <div x-show="countryOpen" x-cloak 
+                                class="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-80 overflow-y-auto">
+                                <div class="p-2 border-b border-gray-200">
+                                    <input type="text" x-model="countrySearch" 
+                                        placeholder="{{ __('seminar.search_country') }}"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                        @keydown.escape="countryOpen = false">
+                                </div>
+                                <div class="max-h-60 overflow-y-auto">
+                                    @foreach($countries as $country)
+                                        <button type="button" 
+                                            x-show="!countrySearch || '{{ strtolower($country->name) }}'.includes(countrySearch.toLowerCase())"
+                                            wire:click="$set('country_id', {{ $country->id }}); countryOpen = false; countrySearch = ''"
+                                            class="w-full px-4 py-2 text-left hover:bg-gray-100 {{ $country_id === $country->id ? 'bg-blue-50 text-blue-700' : '' }}">
+                                            {{ $country->name }}
+                                        </button>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
                         @error('country_id') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
                     </div>
                 </div>
@@ -197,6 +308,29 @@
                 </div>
             </div>
 
+            {{-- Hands On Section --}}
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">{{ __('seminar.hands_on_sessions') }}</h2>
+                
+                <div class="flex items-start mb-4">
+                    <input type="checkbox" wire:model.live="wants_hands_on" id="wants_hands_on" 
+                        class="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-0.5">
+                    <label for="wants_hands_on" class="ml-2 text-sm text-gray-700">
+                        {{ __('seminar.want_to_join_hands_on') }}
+                    </label>
+                </div>
+                
+                @if($wants_hands_on)
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                        <p class="text-sm text-blue-700 mb-4">
+                            {{ __('seminar.hands_on_description') }}
+                        </p>
+                        
+                        @include('livewire.partials.hands-on-selection', ['isSeparate' => false])
+                    </div>
+                @endif
+            </div>
+
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <h2 class="text-xl font-semibold text-gray-800 mb-4">{{ __('seminar.contact_person') }}</h2>
                 
@@ -232,6 +366,45 @@
                         <p class="text-sm text-yellow-800 font-medium mt-2">{{ __('seminar.disclaimer_2') }}</p>
                     </div>
                 </div>
+                
+                {{-- Total Amount Display --}}
+                @if($wants_hands_on && $handsOnTotalPrice > 0)
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-gray-700">{{ __('seminar.seminar_fee') }}</span>
+                        <span class="font-medium">
+                            @php
+                                $seminarAmount = match($pricing_tier) {
+                                    'local_early_bird_snack' => 600000,
+                                    'local_early_bird_lunch' => 900000,
+                                    'local_regular_snack' => 900000,
+                                    'local_regular_lunch' => 1200000,
+                                    'intl_early_bird' => 150,
+                                    'intl_regular' => 200,
+                                    default => 0,
+                                };
+                            @endphp
+                            {{ $isIndonesia ? 'Rp ' . number_format($seminarAmount, 0, ',', '.') : '$' . $seminarAmount }}
+                        </span>
+                    </div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-gray-700">{{ __('seminar.hands_on_fee') }}</span>
+                        <span class="font-medium">Rp {{ number_format($handsOnTotalPrice, 0, ',', '.') }}</span>
+                    </div>
+                    <div class="border-t border-blue-200 pt-2 mt-2">
+                        <div class="flex justify-between items-center">
+                            <span class="font-semibold text-gray-800">{{ __('seminar.total_amount') }}</span>
+                            <span class="font-bold text-lg text-gray-800">
+                                @if($isIndonesia)
+                                    Rp {{ number_format($seminarAmount + $handsOnTotalPrice, 0, ',', '.') }}
+                                @else
+                                    ${{ $seminarAmount }} + Rp {{ number_format($handsOnTotalPrice, 0, ',', '.') }}
+                                @endif
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                @endif
                 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('seminar.payment_proof') }} *</label>
@@ -284,6 +457,7 @@
             <button type="submit" class="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
                 {{ __('seminar.submit_registration') }}
             </button>
+            @endif
             @endif
         </form>
     @endif
