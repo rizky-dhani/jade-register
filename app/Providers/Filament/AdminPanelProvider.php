@@ -48,9 +48,10 @@ class AdminPanelProvider extends PanelProvider
                     ->url(fn () => route('poster.submit')),
             ])
             ->navigationGroups([
-                'Competitions',
                 'Registrations',
+                'Events',
                 'Settings',
+                'Competitions',
             ])
             ->middleware([
                 EncryptCookies::class,
