@@ -23,7 +23,7 @@ class SeminarRegistrationsTable
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('name_license')
-                    ->label('Name on License')
+                    ->label(__('seminar.name_plataran'))
                     ->searchable(),
                 TextColumn::make('nik')
                     ->label('NIK')
@@ -32,7 +32,7 @@ class SeminarRegistrationsTable
                     ->label('NPA')
                     ->searchable(),
                 TextColumn::make('pdgi_branch')
-                    ->label('PDGI Branch')
+                    ->label(__('seminar.pdgi_branch'))
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('phone')
@@ -40,25 +40,25 @@ class SeminarRegistrationsTable
             ])
             ->filters([
                 SelectFilter::make('payment_status')
-                    ->label('Payment Status')
+                    ->label(__('seminar.payment_status'))
                     ->options([
-                        'pending' => 'Pending',
-                        'verified' => 'Verified',
+                        'pending' => __('seminar.pending'),
+                        'verified' => __('seminar.verified'),
                     ]),
                 TernaryFilter::make('has_payment_proof')
-                    ->label('Has Payment Proof')
-                    ->trueLabel('Yes')
-                    ->falseLabel('No')
+                    ->label(__('seminar.payment_proof'))
+                    ->trueLabel(__('seminar.yes'))
+                    ->falseLabel(__('seminar.no'))
                     ->nullable(),
             ])
             ->recordActions([
                 Action::make('viewPaymentProof')
-                    ->label('View Payment Proof')
+                    ->label(__('seminar.view_payment_proof'))
                     ->icon('heroicon-o-photo')
                     ->visible(fn (SeminarRegistration $record): bool => $record->payment_proof_path !== null)
                     ->url(fn (SeminarRegistration $record): string => route('payment-proofs.preview', $record)),
                 Action::make('verifyPayment')
-                    ->label('Verify Payment')
+                    ->label(__('seminar.verify_payment'))
                     ->icon('heroicon-o-check-circle')
                     ->visible(fn (SeminarRegistration $record): bool => $record->payment_status === 'pending')
                     ->requiresConfirmation()

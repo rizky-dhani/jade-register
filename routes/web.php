@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\PaymentProofController;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -17,4 +18,10 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/payment-proofs/{registration}/preview', [PaymentProofController::class, 'preview'])
         ->name('payment-proofs.preview');
+});
+Route::get('/mail-test', function () {
+    Mail::raw('SMTP test successful', function ($message) {
+        $message->to('rizkydhani15@gmail.com')
+                ->subject('Laravel Mail Test');
+    });
 });
