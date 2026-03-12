@@ -19,7 +19,9 @@ class RegistrationService
 
     public function sendSeminarSubmissionConfirmation(SeminarRegistration $registration): void
     {
-        Mail::to($registration->email)->send(new SeminarRegistrationSubmitted($registration));
+        Mail::to($registration->email)
+            ->locale($registration->language ?? 'en')
+            ->send(new SeminarRegistrationSubmitted($registration));
     }
 
     public function sendPaymentVerificationNotification(SeminarRegistration $registration): void
