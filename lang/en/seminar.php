@@ -124,6 +124,7 @@ return [
     'available' => 'Available',
     'limited_seats' => ':count seats left',
     'sold_out' => 'Sold Out',
+    'seats_left' => 'seats left',
 
     // Pricing
     'save_amount' => 'Save :amount',

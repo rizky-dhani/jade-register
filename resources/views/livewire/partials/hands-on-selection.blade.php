@@ -37,11 +37,11 @@
                                     </span>
                                 @elseif($event['remaining_stock'] <= 5)
                                     <span class="inline-flex items-center px-2 py-0.5 mt-1 text-xs font-medium text-orange-700 bg-orange-100 rounded">
-                                        {{ __('seminar.limited_seats', ['count' => $event['remaining_stock']]) }}
+                                        {{ $event['remaining_stock'] }} {{ __('seminar.seats_left') }}
                                     </span>
                                 @else
                                     <span class="inline-flex items-center px-2 py-0.5 mt-1 text-xs font-medium text-green-700 bg-green-100 rounded">
-                                        {{ __('seminar.available') }}
+                                        {{ $event['remaining_stock'] }} {{ __('seminar.seats_left') }}
                                     </span>
                                 @endif
                             </div>

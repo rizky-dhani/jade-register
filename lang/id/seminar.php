@@ -124,6 +124,7 @@ return [
     'available' => 'Tersedia',
     'limited_seats' => 'Tersisa :count kursi',
     'sold_out' => 'Habis Terjual',
+    'seats_left' => 'kursi tersisa',
 
     // Pricing
     'save_amount' => 'Hemat :amount',
