@@ -28,9 +28,4 @@ class SeminarRegistrationSubmitted extends Mailable
             view: 'emails.seminar-registration-submitted',
         );
     }
-
-    public function locale(): string
-    {
-        return $this->registration->language ?? 'en';
-    }
 }
