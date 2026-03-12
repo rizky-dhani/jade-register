@@ -18,7 +18,7 @@ class Seminar extends Model
         'amount',
         'original_price',
         'discounted_price',
-        'stock_limit',
+        'max_seats',
         'early_bird_deadline',
         'currency',
         'includes_lunch',
@@ -31,7 +31,7 @@ class Seminar extends Model
         'amount' => 'integer',
         'original_price' => 'integer',
         'discounted_price' => 'integer',
-        'stock_limit' => 'integer',
+        'max_seats' => 'integer',
         'early_bird_deadline' => 'datetime',
         'includes_lunch' => 'boolean',
         'is_early_bird' => 'boolean',
@@ -146,11 +146,11 @@ class Seminar extends Model
 
     public function getRemainingStockAttribute(): int
     {
-        if ($this->stock_limit === null) {
+        if ($this->max_seats === null) {
             return PHP_INT_MAX;
         }
 
-        return max(0, $this->stock_limit - $this->getRegisteredCount());
+        return max(0, $this->max_seats - $this->getRegisteredCount());
     }
 
     public function isFull(): bool

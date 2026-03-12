@@ -19,7 +19,7 @@ class HandsOn extends Model
         'price',
         'original_price',
         'discounted_price',
-        'stock_limit',
+        'max_seats',
         'early_bird_deadline',
         'currency',
         'is_active',
@@ -31,7 +31,7 @@ class HandsOn extends Model
         'price' => 'integer',
         'original_price' => 'integer',
         'discounted_price' => 'integer',
-        'stock_limit' => 'integer',
+        'max_seats' => 'integer',
         'early_bird_deadline' => 'datetime',
         'is_active' => 'boolean',
     ];
@@ -85,11 +85,11 @@ class HandsOn extends Model
 
     public function getRemainingStockAttribute(): int
     {
-        if ($this->stock_limit === null) {
+        if ($this->max_seats === null) {
             return $this->getAvailableSeats();
         }
 
-        return max(0, $this->stock_limit - $this->getRegisteredCount());
+        return max(0, $this->max_seats - $this->getRegisteredCount());
     }
 
     public function getFormattedOriginalPriceAttribute(): string

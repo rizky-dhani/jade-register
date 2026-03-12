@@ -63,11 +63,11 @@ class HandsOnForm
                     ->placeholder('e.g., 1200000')
                     ->helperText('Early bird promotional price (leave empty for no discount)'),
 
-                TextInput::make('stock_limit')
+                TextInput::make('max_seats')
                     ->numeric()
                     ->integer()
                     ->minValue(1)
-                    ->label('Stock Limit')
+                    ->label('Max Seats')
                     ->placeholder('e.g., 30')
                     ->helperText('Maximum number of registrations allowed (leave empty for unlimited)'),
 

@@ -58,15 +58,6 @@ class SeminarForm
                             ->live()
                             ->helperText('Select which participant type this package applies to'),
 
-                        // TextInput::make('amount')
-                        //     ->required()
-                        //     ->numeric()
-                        //     ->integer()
-                        //     ->minValue(0)
-                        //     ->label('Price Amount (Legacy)')
-                        //     ->placeholder('e.g., 900000')
-                        //     ->helperText('Legacy field - use Original/Discounted Price below for new pricing'),
-
                         TextInput::make('original_price')
                             ->numeric()
                             ->integer()
@@ -83,11 +74,11 @@ class SeminarForm
                             ->placeholder('e.g., 900000')
                             ->helperText('Early bird promotional price (leave empty for no discount)'),
 
-                        TextInput::make('stock_limit')
+                        TextInput::make('max_seats')
                             ->numeric()
                             ->integer()
                             ->minValue(1)
-                            ->label('Stock Limit')
+                            ->label('Max Seats')
                             ->placeholder('e.g., 100')
                             ->helperText('Maximum number of registrations allowed (leave empty for unlimited)'),
 

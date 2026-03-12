@@ -43,10 +43,10 @@ class SeminarsTable
                     ->sortable()
                     ->toggleable(),
 
-                TextColumn::make('stock_limit')
-                    ->label('Stock Limit')
+                TextColumn::make('max_seats')
+                    ->label('Max Seats')
                     ->sortable()
-                    ->getStateUsing(fn ($record): string => $record->stock_limit === null ? 'Unlimited' : (string) $record->stock_limit),
+                    ->getStateUsing(fn ($record): string => $record->max_seats === null ? 'Unlimited' : (string) $record->max_seats),
 
                 IconColumn::make('includes_lunch')
                     ->boolean()
