@@ -24,6 +24,7 @@ return new class extends Migration
             $table->foreignId('country_id')->nullable()->constrained()->onDelete('cascade');
             $table->string('registration_type')->default('online');
             $table->string('pricing_tier')->nullable();
+            $table->integer('amount')->default(0);
             $table->string('currency')->default('IDR');
             $table->string('payment_status')->default('pending');
             $table->string('payment_proof_path')->nullable();
