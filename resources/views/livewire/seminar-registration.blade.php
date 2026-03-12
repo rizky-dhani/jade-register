@@ -56,14 +56,14 @@
                 <h2 class="text-xl font-semibold text-gray-800 mb-4">{{ __('seminar.already_registered') }}</h2>
                 <p class="text-gray-600 mb-4">{{ __('seminar.already_registered_help') }}</p>
                 
-                <div class="flex gap-4">
+                <div class="grid grid-cols-2 gap-4">
                     <button type="button" wire:click="$set('is_already_registered', 'yes')" 
-                        class="px-6 py-3 border-2 rounded-lg font-medium transition-colors
+                        class="w-full px-6 py-3 border-2 rounded-lg font-medium transition-colors
                         {{ $is_already_registered === 'yes' ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-gray-300 hover:border-gray-400' }}">
                         {{ __('seminar.yes') }}
                     </button>
                     <button type="button" wire:click="$set('is_already_registered', 'no')"
-                        class="px-6 py-3 border-2 rounded-lg font-medium transition-colors
+                        class="w-full px-6 py-3 border-2 rounded-lg font-medium transition-colors
                         {{ $is_already_registered === 'no' ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-gray-300 hover:border-gray-400' }}">
                         {{ __('seminar.no') }}
                     </button>
