@@ -51,4 +51,9 @@ class SeminarRegistrationResource extends Resource
             'edit' => EditSeminarRegistration::route('/{record}/edit'),
         ];
     }
+
+    public static function getRedirectUrl(): string
+    {
+        return self::getUrl('index');
+    }
 }

@@ -53,4 +53,9 @@ class HandsOnResource extends Resource
             'edit' => EditHandsOn::route('/{record}/edit'),
         ];
     }
+
+    public static function getRedirectUrl(): string
+    {
+        return self::getUrl('index');
+    }
 }

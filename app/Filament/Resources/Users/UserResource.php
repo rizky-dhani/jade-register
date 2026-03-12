@@ -48,4 +48,9 @@ class UserResource extends Resource
             'edit' => EditUser::route('/{record}/edit'),
         ];
     }
+
+    public static function getRedirectUrl(): string
+    {
+        return self::getUrl('index');
+    }
 }

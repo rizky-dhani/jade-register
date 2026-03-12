@@ -49,4 +49,9 @@ class VisitorResource extends Resource
             'index' => ListVisitors::route('/'),
         ];
     }
+
+    public static function getRedirectUrl(): string
+    {
+        return self::getUrl('index');
+    }
 }
