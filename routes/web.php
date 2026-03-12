@@ -8,6 +8,7 @@ Route::get('/', function () {
     return redirect()->to(filament()->getLoginUrl());
 });
 
+Route::livewire('/register', \App\Livewire\RegisterPortal::class)->name('register.portal');
 Route::livewire('/register/visitor', \App\Livewire\VisitorRegistration::class)->name('register.visitor');
 Route::livewire('/register/seminar', \App\Livewire\SeminarRegistration::class)->name('register.seminar');
 Route::livewire('/poster/submit', \App\Livewire\PosterSubmission::class)->name('poster.submit');
@@ -22,6 +23,6 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/mail-test', function () {
     Mail::raw('SMTP test successful', function ($message) {
         $message->to('rizkydhani15@gmail.com')
-                ->subject('Laravel Mail Test');
+            ->subject('Laravel Mail Test');
     });
 });

@@ -8,7 +8,10 @@
     });
 ">
     <div class="text-center mb-8">
-        <img src="{{ asset('assets/images/Jade_Logo.webp') }}" alt="Jakarta Dental Exhibition 2026" class="h-24 mx-auto mb-4">
+        <div class="flex items-center justify-center gap-6 mb-4">
+            <img src="{{ asset('assets/images/Jade_Logo.webp') }}" alt="Jakarta Dental Exhibition 2026" class="h-24">
+            <img src="{{ asset('assets/images/PDGI_PENGWIL_JKT.webp') }}" alt="PDGI Pengwil DKI Jakarta" class="h-24">
+        </div>
         <h1 class="text-3xl font-bold text-gray-800">{{ __('seminar.page_title') }}</h1>
         <p class="text-gray-600 mt-2">{{ __('seminar.page_subtitle') }}</p>
     </div>
@@ -57,15 +60,15 @@
                 <p class="text-gray-600 mb-4">{{ __('seminar.already_registered_help') }}</p>
                 
                 <div class="grid grid-cols-2 gap-4">
-                    <button type="button" wire:click="$set('is_already_registered', 'yes')" 
-                        class="w-full px-6 py-3 border-2 rounded-lg font-medium transition-colors
-                        {{ $is_already_registered === 'yes' ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-gray-300 hover:border-gray-400' }}">
-                        {{ __('seminar.yes') }}
-                    </button>
                     <button type="button" wire:click="$set('is_already_registered', 'no')"
                         class="w-full px-6 py-3 border-2 rounded-lg font-medium transition-colors
                         {{ $is_already_registered === 'no' ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-gray-300 hover:border-gray-400' }}">
                         {{ __('seminar.no') }}
+                    </button>
+                    <button type="button" wire:click="$set('is_already_registered', 'yes')" 
+                        class="w-full px-6 py-3 border-2 rounded-lg font-medium transition-colors
+                        {{ $is_already_registered === 'yes' ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-gray-300 hover:border-gray-400' }}">
+                        {{ __('seminar.yes') }}
                     </button>
                 </div>
             </div>

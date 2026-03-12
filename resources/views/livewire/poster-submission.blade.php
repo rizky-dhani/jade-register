@@ -1,6 +1,9 @@
 <div class="max-w-3xl mx-auto p-6">
     <div class="text-center mb-8">
-        <img src="{{ asset('assets/images/Jade_Logo.webp') }}" alt="Jakarta Dental Exhibition 2026" class="h-24 mx-auto mb-4">
+        <div class="flex items-center justify-center gap-6 mb-4">
+            <img src="{{ asset('assets/images/Jade_Logo.webp') }}" alt="Jakarta Dental Exhibition 2026" class="h-24">
+            <img src="{{ asset('assets/images/PDGI_PENGWIL_JKT.webp') }}" alt="PDGI Pengwil DKI Jakarta" class="h-24">
+        </div>
         <h1 class="text-3xl font-bold text-gray-800">Scientific Poster Submission</h1>
         <p class="text-gray-600 mt-2">Submit your research or case report for JADE 2026</p>
     </div>

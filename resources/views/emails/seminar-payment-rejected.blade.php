@@ -7,7 +7,7 @@
     <style>
         body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
         .header { text-align: center; padding: 20px 0; border-bottom: 2px solid #4E397C; margin-bottom: 20px; }
-        .logo img { max-width: 300px; height: auto; }
+        .logo img { max-height: 120px; width: auto; }
         .content { padding: 20px 0; }
         .footer { text-align: center; padding: 20px 0; border-top: 1px solid #ddd; margin-top: 20px; font-size: 12px; color: #666; }
         .details { background: #f9f9f9; padding: 15px; border-radius: 5px; margin: 15px 0; }
@@ -24,6 +24,7 @@
     <div class="header">
         <div class="logo">
             <img src="{{ asset('assets/images/Jade_Logo.webp') }}" alt="JADE">
+            <img src="{{ asset('assets/images/PDGI_PENGWIL_JKT.webp') }}" alt="PDGI Pengwil DKI Jakarta">
         </div>
     </div>
     
