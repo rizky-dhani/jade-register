@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('name');
             $table->text('description')->nullable();
             $table->date('event_date');
-            $table->integer('max_seats')->default(30);
             $table->integer('price')->default(0);
             $table->string('currency')->default('IDR');
             $table->boolean('is_active')->default(true);
