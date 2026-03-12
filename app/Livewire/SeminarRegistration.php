@@ -196,8 +196,15 @@ class SeminarRegistration extends Component
         return $packages->map(function ($package) {
             return [
                 'value' => $package->code,
-                'label' => $package->label,
+                'label' => $package->name,
                 'price' => $package->formatted_price,
+                'current_price' => $package->current_price,
+                'original_price' => $package->formatted_original_price,
+                'discounted_price' => $package->formatted_discounted_price,
+                'is_early_bird' => $package->isEarlyBirdActive(),
+                'savings' => $package->formatted_savings,
+                'remaining_stock' => $package->remaining_stock,
+                'is_full' => $package->isFull(),
             ];
         })->toArray();
     }
@@ -211,10 +218,17 @@ class SeminarRegistration extends Component
             foreach ($this->selectedHandsOn as $date => $eventId) {
                 if ($eventId) {
                     $event = HandsOn::find($eventId);
-                    if ($event && $event->getAvailableSeats() <= 0) {
-                        $this->addError('selectedHandsOn.'.$date, 'This session is now full. Please select another.');
+                    if ($event) {
+                        if ($event->isFull()) {
+                            $this->addError('selectedHandsOn.'.$date, 'This session is now full. Please select another.');
 
-                        return;
+                            return;
+                        }
+                        if ($event->remaining_stock <= 0) {
+                            $this->addError('selectedHandsOn.'.$date, 'This session has reached its stock limit.');
+
+                            return;
+                        }
                     }
                 }
             }
@@ -250,7 +264,7 @@ class SeminarRegistration extends Component
             'language' => $this->locale,
             'registration_type' => 'online',
             'pricing_tier' => $package->name,
-            'amount' => $package->amount + $this->handsOnTotalPrice,
+            'amount' => $package->current_price + $this->handsOnTotalPrice,
             'currency' => $package->currency,
             'payment_proof_path' => $path,
             'payment_status' => 'pending',
@@ -334,21 +348,18 @@ class SeminarRegistration extends Component
                 $this->availableHandsOn[$date] = [];
             }
 
-            $registeredCount = $event->handsOnRegistrations()
-                ->whereIn('payment_status', ['pending', 'verified'])
-                ->count();
-
-            $availableSeats = max(0, $event->max_seats - $registeredCount);
-
             $this->availableHandsOn[$date][] = [
                 'id' => $event->id,
                 'name' => $event->name,
                 'description' => $event->description,
-                'price' => $event->price,
+                'price' => $event->current_price,
+                'original_price' => $event->formatted_original_price,
+                'discounted_price' => $event->formatted_discounted_price,
+                'is_early_bird' => $event->isEarlyBirdActive(),
+                'savings' => $event->formatted_savings,
                 'max_seats' => $event->max_seats,
-                'registered_count' => $registeredCount,
-                'available_seats' => $availableSeats,
-                'is_full' => $availableSeats <= 0,
+                'remaining_stock' => $event->remaining_stock,
+                'is_full' => $event->isFull(),
             ];
         }
     }
@@ -382,7 +393,7 @@ class SeminarRegistration extends Component
     public function getTotalAmount(): int
     {
         $package = \App\Models\Seminar::where('code', $this->pricing_tier)->first();
-        $seminarAmount = $package ? $package->amount : 0;
+        $seminarAmount = $package ? $package->current_price : 0;
 
         return $seminarAmount + $this->handsOnTotalPrice;
     }

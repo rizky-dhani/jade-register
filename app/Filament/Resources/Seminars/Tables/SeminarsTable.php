@@ -28,9 +28,25 @@ class SeminarsTable
                     ->fontFamily('mono')
                     ->size('sm'),
 
-                TextColumn::make('formatted_price')
-                    ->label('Price')
+                TextColumn::make('formatted_original_price')
+                    ->label('Original Price')
                     ->sortable(),
+
+                TextColumn::make('formatted_discounted_price')
+                    ->label('Discounted Price')
+                    ->sortable()
+                    ->toggleable(),
+
+                TextColumn::make('early_bird_deadline')
+                    ->label('Discount Until')
+                    ->dateTime('M d, Y H:i')
+                    ->sortable()
+                    ->toggleable(),
+
+                TextColumn::make('stock_limit')
+                    ->label('Stock Limit')
+                    ->sortable()
+                    ->getStateUsing(fn ($record): string => $record->stock_limit === null ? 'Unlimited' : (string) $record->stock_limit),
 
                 IconColumn::make('includes_lunch')
                     ->boolean()
@@ -59,12 +75,6 @@ class SeminarsTable
                 IconColumn::make('is_active')
                     ->boolean()
                     ->label('Active'),
-
-                TextColumn::make('registrations_count')
-                    ->label('Registrations')
-                    ->counts('seminarRegistrations')
-                    ->numeric()
-                    ->sortable(),
 
                 TextColumn::make('sort_order')
                     ->numeric()

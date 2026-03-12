@@ -119,4 +119,13 @@ return [
     'seminar_fee' => 'Biaya Seminar',
     'hands_on_fee' => 'Biaya Hands On',
     'total_amount' => 'Jumlah Total',
+
+    // Stock Status
+    'available' => 'Tersedia',
+    'limited_seats' => 'Tersisa :count kursi',
+    'sold_out' => 'Habis Terjual',
+
+    // Pricing
+    'save_amount' => 'Hemat :amount',
+    'day_number' => 'Hari :day',
 ];

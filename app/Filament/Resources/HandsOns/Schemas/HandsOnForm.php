@@ -35,7 +35,8 @@ class HandsOnForm
                     ->integer()
                     ->minValue(1)
                     ->default(30)
-                    ->label('Maximum Seats'),
+                    ->label('Maximum Seats (Legacy)')
+                    ->helperText('Legacy field - use Stock Limit below for new stock management'),
 
                 TextInput::make('price')
                     ->required()
@@ -43,7 +44,37 @@ class HandsOnForm
                     ->integer()
                     ->minValue(0)
                     ->default(0)
-                    ->label('Price (IDR)'),
+                    ->label('Price (Legacy)')
+                    ->helperText('Legacy field - use Original/Discounted Price below for new pricing'),
+
+                TextInput::make('original_price')
+                    ->numeric()
+                    ->integer()
+                    ->minValue(0)
+                    ->label('Original Price')
+                    ->placeholder('e.g., 1500000')
+                    ->helperText('Regular price before any discounts'),
+
+                TextInput::make('discounted_price')
+                    ->numeric()
+                    ->integer()
+                    ->minValue(0)
+                    ->label('Discounted Price (Early Bird)')
+                    ->placeholder('e.g., 1200000')
+                    ->helperText('Early bird promotional price (leave empty for no discount)'),
+
+                TextInput::make('stock_limit')
+                    ->numeric()
+                    ->integer()
+                    ->minValue(1)
+                    ->label('Stock Limit')
+                    ->placeholder('e.g., 30')
+                    ->helperText('Maximum number of registrations allowed (leave empty for unlimited)'),
+
+                TextInput::make('early_bird_deadline')
+                    ->label('Early Bird Deadline')
+                    ->type('datetime-local')
+                    ->helperText('Deadline for early bird pricing (leave empty for no deadline)'),
 
                 TextInput::make('currency')
                     ->required()

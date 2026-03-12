@@ -3,7 +3,7 @@
     @foreach($availableHandsOn as $date => $events)
         <div class="border border-gray-200 rounded-lg p-4">
             <h4 class="font-semibold text-gray-800 mb-3">
-                {{ \Carbon\Carbon::parse($date)->format('F d, Y') }}
+                {{ __('seminar.day_number', ['day' => \Carbon\Carbon::parse($date)->format('j')]) }}
             </h4>
             
             <div class="space-y-2">
@@ -29,17 +29,38 @@
                                 @if($event['description'])
                                     <p class="text-sm text-gray-600">{{ $event['description'] }}</p>
                                 @endif
+                                
+                                {{-- Stock indicator --}}
+                                @if($event['is_full'])
+                                    <span class="inline-flex items-center px-2 py-0.5 mt-1 text-xs font-medium text-red-700 bg-red-100 rounded">
+                                        {{ __('seminar.sold_out') }}
+                                    </span>
+                                @elseif($event['remaining_stock'] <= 5)
+                                    <span class="inline-flex items-center px-2 py-0.5 mt-1 text-xs font-medium text-orange-700 bg-orange-100 rounded">
+                                        {{ __('seminar.limited_seats', ['count' => $event['remaining_stock']]) }}
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center px-2 py-0.5 mt-1 text-xs font-medium text-green-700 bg-green-100 rounded">
+                                        {{ __('seminar.available') }}
+                                    </span>
+                                @endif
                             </div>
                         </div>
                         
                         <div class="text-right">
-                            <p class="font-semibold text-gray-700">Rp {{ number_format($event['price'], 0, ',', '.') }}</p>
-                            @if($event['is_full'])
-                                <span class="text-xs font-medium text-red-600">Full</span>
+                            {{-- Pricing with slash format --}}
+                            @if($event['is_early_bird'] && $event['discounted_price'])
+                                <div class="text-lg">
+                                    <span class="text-gray-400 line-through text-sm">{{ $event['original_price'] }}</span>
+                                    <span class="font-bold text-green-600">{{ $event['discounted_price'] }}</span>
+                                </div>
+                                <div class="text-xs text-green-600">
+                                    {{ __('seminar.save_amount', ['amount' => $event['savings']]) }}
+                                </div>
                             @else
-                                <span class="text-xs {{ $event['available_seats'] <= 5 ? 'text-orange-600 font-medium' : 'text-green-600' }}">
-                                    {{ $event['available_seats'] }} seats left
-                                </span>
+                                <div class="font-semibold text-gray-700">
+                                    {{ $event['original_price'] }}
+                                </div>
                             @endif
                         </div>
                     </label>

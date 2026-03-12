@@ -20,23 +20,22 @@ class SeminarForm
                         TextInput::make('name')
                             ->required()
                             ->maxLength(255)
-                            ->placeholder('e.g., Early Bird - Snack + Lunch'),
+                            ->placeholder('e.g., Early Bird - Snack + Lunch')
+                            ->live(onBlur: true)
+                            ->afterStateUpdated(function (string $state, callable $set, \Filament\Schemas\Components\Utilities\Get $get) {
+                                // Only auto-generate code if record doesn't exist yet (create page)
+                                if ($get('id') === null) {
+                                    $set('code', \Illuminate\Support\Str::slug($state, '_'));
+                                }
+                            }),
 
                         TextInput::make('code')
                             ->required()
                             ->maxLength(255)
                             ->unique(ignoreRecord: true)
                             ->placeholder('e.g., local_early_bird_lunch')
-                            ->helperText('Unique identifier used in the system. Use lowercase with underscores.')
-                            ->live()
-                            ->default(function (\Filament\Schemas\Components\Utilities\Get $get): string {
-                                $name = $get('name');
-                                if (empty($name)) {
-                                    return '';
-                                }
-
-                                return \Illuminate\Support\Str::slug($name, '_');
-                            }),
+                            ->helperText('Auto-generated from package name on create. Editable on edit page.')
+                            ->readOnly(fn (\Filament\Schemas\Components\Utilities\Get $get): bool => $get('id') === null),
 
                         Textarea::make('description')
                             ->rows(3)
@@ -45,6 +44,7 @@ class SeminarForm
                     ]),
 
                 Section::make('Pricing & Type')
+                    ->columns(3)
                     ->schema([
                         Select::make('applies_to')
                             ->label('Applies To')
@@ -58,13 +58,43 @@ class SeminarForm
                             ->live()
                             ->helperText('Select which participant type this package applies to'),
 
-                        TextInput::make('amount')
-                            ->required()
+                        // TextInput::make('amount')
+                        //     ->required()
+                        //     ->numeric()
+                        //     ->integer()
+                        //     ->minValue(0)
+                        //     ->label('Price Amount (Legacy)')
+                        //     ->placeholder('e.g., 900000')
+                        //     ->helperText('Legacy field - use Original/Discounted Price below for new pricing'),
+
+                        TextInput::make('original_price')
                             ->numeric()
                             ->integer()
                             ->minValue(0)
-                            ->label('Price Amount')
-                            ->placeholder('e.g., 900000'),
+                            ->label('Original Price')
+                            ->placeholder('e.g., 1000000')
+                            ->helperText('Regular price before any discounts'),
+
+                        TextInput::make('discounted_price')
+                            ->numeric()
+                            ->integer()
+                            ->minValue(0)
+                            ->label('Discounted Price (Early Bird)')
+                            ->placeholder('e.g., 900000')
+                            ->helperText('Early bird promotional price (leave empty for no discount)'),
+
+                        TextInput::make('stock_limit')
+                            ->numeric()
+                            ->integer()
+                            ->minValue(1)
+                            ->label('Stock Limit')
+                            ->placeholder('e.g., 100')
+                            ->helperText('Maximum number of registrations allowed (leave empty for unlimited)'),
+
+                        TextInput::make('early_bird_deadline')
+                            ->label('Early Bird Deadline')
+                            ->type('datetime-local')
+                            ->helperText('Deadline for early bird pricing (leave empty to use is_early_bird toggle only)'),
 
                         Select::make('currency')
                             ->required()

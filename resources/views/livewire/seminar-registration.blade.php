@@ -296,10 +296,42 @@
                                 <button
                                     type="button"
                                     wire:click="$set('pricing_tier', '{{ $tier['value'] }}')"
-                                    class="p-4 rounded-lg border-2 text-left transition-all flex justify-between items-center {{ $pricing_tier === $tier['value'] ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50' }}"
+                                    class="p-4 rounded-lg border-2 text-left transition-all flex justify-between items-center {{ $pricing_tier === $tier['value'] ? 'border-blue-500 bg-blue-50' : ($tier['is_full'] ? 'border-gray-300 bg-gray-50 opacity-60' : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50') }}"
+                                    {{ $tier['is_full'] ? 'disabled' : '' }}
                                 >
-                                    <div class="font-medium text-gray-800">{{ $tier['label'] }}</div>
-                                    <div class="font-semibold text-gray-700">{{ $tier['price'] }}</div>
+                                    <div class="flex-1">
+                                        <div class="font-medium text-gray-800">{{ $tier['label'] }}</div>
+                                        
+                                        {{-- Stock indicator --}}
+                                        @if($tier['is_full'])
+                                            <span class="inline-flex items-center px-2 py-1 mt-1 text-xs font-medium text-red-700 bg-red-100 rounded">
+                                                {{ __('seminar.sold_out') }}
+                                            </span>
+                                        @elseif($tier['remaining_stock'] <= 10)
+                                            <span class="inline-flex items-center px-2 py-1 mt-1 text-xs font-medium text-orange-700 bg-orange-100 rounded">
+                                                {{ __('seminar.limited_seats', ['count' => $tier['remaining_stock']]) }}
+                                            </span>
+                                        @else
+                                            <span class="inline-flex items-center px-2 py-1 mt-1 text-xs font-medium text-green-700 bg-green-100 rounded">
+                                                {{ __('seminar.available') }}
+                                            </span>
+                                        @endif
+                                    </div>
+                                    
+                                    <div class="text-right ml-4">
+                                        {{-- Pricing with slash format --}}
+                                        @if($tier['is_early_bird'] && $tier['discounted_price'])
+                                            <div class="text-lg">
+                                                <span class="text-gray-400 line-through text-sm">{{ $tier['original_price'] }}</span>
+                                                <span class="font-bold text-green-600">{{ $tier['discounted_price'] }}</span>
+                                            </div>
+                                            <div class="text-xs text-green-600">
+                                                {{ __('seminar.save_amount', ['amount' => $tier['savings']]) }}
+                                            </div>
+                                        @else
+                                            <div class="font-semibold text-gray-700">{{ $tier['original_price'] }}</div>
+                                        @endif
+                                    </div>
                                 </button>
                             @endforeach
                         </div>

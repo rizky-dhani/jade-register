@@ -119,4 +119,13 @@ return [
     'seminar_fee' => 'Seminar Fee',
     'hands_on_fee' => 'Hands On Fee',
     'total_amount' => 'Total Amount',
+
+    // Stock Status
+    'available' => 'Available',
+    'limited_seats' => ':count seats left',
+    'sold_out' => 'Sold Out',
+
+    // Pricing
+    'save_amount' => 'Save :amount',
+    'day_number' => 'Day :day',
 ];

@@ -17,6 +17,10 @@ class HandsOn extends Model
         'event_date',
         'max_seats',
         'price',
+        'original_price',
+        'discounted_price',
+        'stock_limit',
+        'early_bird_deadline',
         'currency',
         'is_active',
     ];
@@ -25,6 +29,10 @@ class HandsOn extends Model
         'event_date' => 'date',
         'max_seats' => 'integer',
         'price' => 'integer',
+        'original_price' => 'integer',
+        'discounted_price' => 'integer',
+        'stock_limit' => 'integer',
+        'early_bird_deadline' => 'datetime',
         'is_active' => 'boolean',
     ];
 
@@ -55,5 +63,73 @@ class HandsOn extends Model
     public function isFull(): bool
     {
         return $this->getAvailableSeats() <= 0;
+    }
+
+    public function getCurrentPriceAttribute(): int
+    {
+        if ($this->isEarlyBirdActive() && $this->discounted_price !== null) {
+            return $this->discounted_price;
+        }
+
+        return $this->original_price ?? $this->price;
+    }
+
+    public function isEarlyBirdActive(): bool
+    {
+        if ($this->early_bird_deadline === null) {
+            return false;
+        }
+
+        return now()->lt($this->early_bird_deadline);
+    }
+
+    public function getRemainingStockAttribute(): int
+    {
+        if ($this->stock_limit === null) {
+            return $this->getAvailableSeats();
+        }
+
+        return max(0, $this->stock_limit - $this->getRegisteredCount());
+    }
+
+    public function getFormattedOriginalPriceAttribute(): string
+    {
+        $price = $this->original_price ?? $this->price;
+
+        if ($this->currency === 'USD') {
+            return '$'.number_format($price, 2);
+        }
+
+        return 'Rp '.number_format($price, 0, ',', '.');
+    }
+
+    public function getFormattedDiscountedPriceAttribute(): ?string
+    {
+        if ($this->discounted_price === null) {
+            return null;
+        }
+
+        if ($this->currency === 'USD') {
+            return '$'.number_format($this->discounted_price, 2);
+        }
+
+        return 'Rp '.number_format($this->discounted_price, 0, ',', '.');
+    }
+
+    public function getSavingsAmountAttribute(): int
+    {
+        $original = $this->original_price ?? $this->price;
+        $discounted = $this->discounted_price ?? $original;
+
+        return max(0, $original - $discounted);
+    }
+
+    public function getFormattedSavingsAttribute(): string
+    {
+        if ($this->currency === 'USD') {
+            return '$'.number_format($this->savings_amount, 2);
+        }
+
+        return 'Rp '.number_format($this->savings_amount, 0, ',', '.');
     }
 }
