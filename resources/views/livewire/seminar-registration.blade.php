@@ -114,7 +114,7 @@
                     <p><strong>{{ __('seminar.name') }}:</strong> {{ $existingRegistration->name }}</p>
                     <p><strong>{{ __('seminar.email') }}:</strong> {{ $existingRegistration->email }}</p>
                     <p><strong>{{ __('seminar.registration_code') }}:</strong> {{ $existingRegistration->registration_code }}</p>
-                    <p><strong>{{ __('seminar.pricing_tier') }}:</strong> {{ $existingRegistration->pricing_tier }}</p>
+                    <p><strong>{{ __('seminar.selected_package') }}:</strong> {{ $existingRegistration->pricing_tier }}</p>
                     <p><strong>{{ __('seminar.payment_status') }}:</strong> 
                         <span class="{{ $existingRegistration->payment_status === 'verified' ? 'text-green-600 font-medium' : 'text-yellow-600 font-medium' }}">
                             {{ ucfirst($existingRegistration->payment_status) }}
@@ -285,7 +285,7 @@
                 <h2 class="text-xl font-semibold text-gray-800 mb-4">{{ __('seminar.registration_package') }}</h2>
                 
                 <div class="md:col-span-2">
-                    <label class="block text-sm font-medium text-gray-700 mb-3">{{ __('seminar.pricing_tier') }} *</label>
+                    <p class="text-xs text-gray-500 mb-3">{{ __('seminar.valid_until') }}</p>
                     
                     @php 
                     $tiers = $availableTiers ?? [];

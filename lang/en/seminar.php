@@ -42,7 +42,7 @@ return [
     'select_status' => 'Select Status',
     'dentist' => 'Dentist',
     'student' => 'Student',
-    'pricing_tier' => 'Pricing Tier',
+    'valid_until' => 'Valid until May 31, 2026',
     'select_country_first' => 'Please select a country first to see available pricing tiers.',
     'selected_package' => 'Selected Package',
     'registrant_information' => 'Registrant Information',

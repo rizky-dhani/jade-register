@@ -42,7 +42,7 @@ return [
     'select_status' => 'Pilih Status',
     'dentist' => 'Dokter Gigi',
     'student' => 'Mahasiswa',
-    'pricing_tier' => 'Tingkatan Harga',
+    'valid_until' => 'Berlaku s/d 31 Mei 2026',
     'select_country_first' => 'Silakan pilih negara terlebih dahulu untuk melihat tingkatan harga yang tersedia.',
     'selected_package' => 'Paket Terpilih',
     'registrant_information' => 'Informasi Pendaftar',
