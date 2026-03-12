@@ -28,4 +28,9 @@ class SeminarPaymentRejected extends Mailable
             view: 'emails.seminar-payment-rejected',
         );
     }
+
+    public function locale(): string
+    {
+        return $this->registration->language ?? 'en';
+    }
 }

@@ -23,6 +23,7 @@ class SeminarRegistration extends Model
         'kompetensi',
         'phone',
         'country_id',
+        'language',
         'registration_type',
         'pricing_tier',
         'amount',
@@ -49,11 +50,19 @@ class SeminarRegistration extends Model
 
     public static function generateRegistrationCode(): string
     {
-        $prefix = 'JDE-SEM';
-        $year = date('Y');
-        $random = strtoupper(bin2hex(random_bytes(4)));
+        $prefix = 'JADE-SEM-2026-';
 
-        return "{$prefix}-{$year}-{$random}";
+        $lastCode = self::where('registration_code', 'like', $prefix.'%')
+            ->orderByRaw('CAST(SUBSTRING(registration_code, -6) AS UNSIGNED) DESC')
+            ->value('registration_code');
+
+        $nextNumber = 1;
+        if ($lastCode) {
+            $lastNumber = (int) substr($lastCode, -6);
+            $nextNumber = $lastNumber + 1;
+        }
+
+        return $prefix.str_pad($nextNumber, 6, '0', STR_PAD_LEFT);
     }
 
     public function user(): BelongsTo

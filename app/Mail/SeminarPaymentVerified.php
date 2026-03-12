@@ -28,4 +28,9 @@ class SeminarPaymentVerified extends Mailable
             view: 'emails.seminar-payment-verified',
         );
     }
+
+    public function locale(): string
+    {
+        return $this->registration->language ?? 'en';
+    }
 }

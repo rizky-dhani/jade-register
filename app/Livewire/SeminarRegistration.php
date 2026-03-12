@@ -247,6 +247,7 @@ class SeminarRegistration extends Component
             'name' => $this->name,
             'phone' => $this->phone,
             'country_id' => $this->country_id,
+            'language' => $this->locale,
             'registration_type' => 'online',
             'pricing_tier' => $package->name,
             'amount' => $package->amount + $this->handsOnTotalPrice,

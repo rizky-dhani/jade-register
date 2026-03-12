@@ -44,6 +44,8 @@ return [
     'student' => 'Mahasiswa',
     'pricing_tier' => 'Tingkatan Harga',
     'select_country_first' => 'Silakan pilih negara terlebih dahulu untuk melihat tingkatan harga yang tersedia.',
+    'selected_package' => 'Paket Terpilih',
+    'registrant_information' => 'Informasi Pendaftar',
 
     // Competency options
     'competency_gp' => 'Dokter Gigi Umum',

@@ -44,6 +44,8 @@ return [
     'student' => 'Student',
     'pricing_tier' => 'Pricing Tier',
     'select_country_first' => 'Please select a country first to see available pricing tiers.',
+    'selected_package' => 'Selected Package',
+    'registrant_information' => 'Registrant Information',
 
     // Competency options
     'competency_gp' => 'General Dentist',
