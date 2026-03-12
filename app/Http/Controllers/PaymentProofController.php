@@ -18,7 +18,7 @@ class PaymentProofController extends Controller
             abort(404, 'Payment proof not found.');
         }
 
-        $path = 'payment-proofs/'.$registration->payment_proof_path;
+        $path = $registration->payment_proof_path;
 
         if (! Storage::disk('public')->exists($path)) {
             abort(404, 'Payment proof file not found.');
@@ -42,7 +42,7 @@ class PaymentProofController extends Controller
             abort(404, 'Payment proof not found.');
         }
 
-        $path = 'payment-proofs/'.$registration->payment_proof_path;
+        $path = $registration->payment_proof_path;
 
         if (! Storage::disk('public')->exists($path)) {
             abort(404, 'Payment proof file not found.');
