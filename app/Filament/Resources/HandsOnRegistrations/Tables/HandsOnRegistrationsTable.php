@@ -7,12 +7,10 @@ use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Infolists\Components\ImageEntry;
-use Filament\Infolists\Components\Section;
-use Filament\Infolists\Infolist;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Contracts\View\View;
 
 class HandsOnRegistrationsTable
 {
@@ -91,18 +89,10 @@ class HandsOnRegistrationsTable
                     ->icon('heroicon-o-photo')
                     ->visible(fn (HandsOnRegistration $record): bool => $record->payment_proof_path !== null)
                     ->modalHeading('View Payment Proof')
-                    ->modalContent(fn (HandsOnRegistration $record): Infolist => Infolist::make()
-                        ->record($record)
-                        ->schema([
-                            Section::make()
-                                ->schema([
-                                    ImageEntry::make('payment_proof_path')
-                                        ->label(false)
-                                        ->disk('public')
-                                        ->size(800)
-                                        ->extraAttributes(['class' => 'w-full']),
-                                ]),
-                        ])),
+                    ->modalContent(fn (HandsOnRegistration $record): View => view(
+                        'filament.modals.payment-proof',
+                        ['record' => $record]
+                    )),
                 EditAction::make(),
             ])
             ->toolbarActions([
