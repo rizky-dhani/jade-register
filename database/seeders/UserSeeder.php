@@ -16,6 +16,7 @@ class UserSeeder extends Seeder
             [
                 'name' => 'Super Admin',
                 'password' => Hash::make('SuJade2026!'),
+                'email_verified_at' => now(),
             ]
         );
         $superAdmin->assignRole('Super Admin');

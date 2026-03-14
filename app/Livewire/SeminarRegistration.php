@@ -6,10 +6,8 @@ use App\Models\Country;
 use App\Models\HandsOn;
 use App\Models\HandsOnRegistration;
 use App\Models\SeminarRegistration as SeminarRegistrationModel;
-use App\Models\User;
 use App\Services\RegistrationService;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Hash;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -45,10 +43,6 @@ class SeminarRegistration extends Component
     public $payment_proof = null;
 
     public bool $wants_poster_competition = false;
-
-    public string $password = '';
-
-    public string $password_confirmation = '';
 
     public bool $isSuccess = false;
 
@@ -102,21 +96,20 @@ class SeminarRegistration extends Component
             'country_id' => 'required|integer|min:1|exists:countries,id',
             'pricing_tier' => 'required|string',
             'payment_proof' => 'required|file|mimes:jpeg,png,pdf|max:5120',
-            'password' => 'required_if:wants_poster_competition,true|confirmed|min:8',
             'selectedHandsOn' => 'array',
             'selectedHandsOn.*' => 'nullable|integer|exists:hands_ons,id',
         ];
     }
 
-    protected $messages = [
-        'password.required_if' => 'Password is required if you want to participate in the poster competition.',
-        'password.confirmed' => 'Password confirmation does not match.',
-    ];
-
     public function mount(): void
     {
         $this->locale = in_array($this->locale, ['en', 'id']) ? $this->locale : 'en';
         App::setLocale($this->locale);
+
+        if (auth()->check()) {
+            $this->email = auth()->user()->email;
+            $this->name = auth()->user()->name;
+        }
     }
 
     public function setLocale(string $locale): void
@@ -244,16 +237,7 @@ class SeminarRegistration extends Component
 
         $path = $this->payment_proof->store('payment-proofs', 'public');
 
-        $userId = null;
-        if ($this->wants_poster_competition && $this->is_local) {
-            $user = User::create([
-                'name' => $this->name,
-                'email' => $this->email,
-                'password' => Hash::make($this->password),
-            ]);
-            $user->assignRole('poster-participant');
-            $userId = $user->getKey();
-        }
+        $userId = auth()->id();
 
         $registrationData = [
             'registration_code' => SeminarRegistrationModel::generateRegistrationCode(),

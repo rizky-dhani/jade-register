@@ -29,9 +29,11 @@ class AdminPanelProvider extends PanelProvider
             ->id('dashboard')
             ->path('dashboard')
             ->login()
+            ->registration()
+            ->emailVerification()
             ->maxContentWidth(Width::Full)
-            ->brandLogo(fn () => asset('assets/images/Jade_Logo_black.webp'))
-            ->darkModeBrandLogo(fn () => asset('assets/images/Jade_Logo_white.webp'))
+            ->brandLogo(fn () => asset('assets/images/JADE_PDGI_Light.webp'))
+            ->darkModeBrandLogo(fn () => asset('assets/images/JADE_PDGI_Dark.webp'))
             ->brandLogoHeight('6rem')
             ->colors([
                 'primary' => '#4E397C',
