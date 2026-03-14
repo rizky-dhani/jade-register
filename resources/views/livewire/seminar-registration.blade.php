@@ -8,10 +8,7 @@
     });
 ">
     <div class="text-center mb-8">
-        <div class="flex items-center justify-center gap-6 mb-4">
-            <img src="{{ asset('assets/images/Jade_Logo.webp') }}" alt="Jakarta Dental Exhibition 2026" class="h-24">
-            <img src="{{ asset('assets/images/PDGI_PENGWIL_JKT.webp') }}" alt="PDGI Pengwil DKI Jakarta" class="h-24">
-        </div>
+        <img src="{{ asset('assets/images/JADE_PDGI_Light.webp') }}" alt="Jakarta Dental Exhibition 2026" class="h-36 mx-auto mb-4">
         <h1 class="text-3xl font-bold text-gray-800">{{ __('seminar.page_title') }}</h1>
         <p class="text-gray-600 mt-2">{{ __('seminar.page_subtitle') }}</p>
     </div>
