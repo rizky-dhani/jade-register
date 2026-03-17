@@ -119,6 +119,9 @@ return [
     'seminar_fee' => 'Biaya Seminar',
     'hands_on_fee' => 'Biaya Hands On',
     'total_amount' => 'Jumlah Total',
+    'payment_method' => 'Metode Pembayaran',
+    'bank_transfer' => 'Transfer Bank',
+    'qris' => 'QRIS',
 
     // Stock Status
     'available' => 'Tersedia',
@@ -129,4 +132,19 @@ return [
     // Pricing
     'save_amount' => 'Hemat :amount',
     'day_number' => 'Hari :day',
+
+    // Email verification
+    'email_verify_hello' => 'Halo',
+    'email_verify_thank_you' => 'Terima kasih telah mendaftar! Silakan verifikasi alamat email Anda untuk melengkapi pendaftaran.',
+    'email_verify_button' => 'Verifikasi Alamat Email',
+    'email_verify_button_not_work' => 'Jika tombol di atas tidak berfungsi, salin dan tempel tautan di bawah ke browser Anda:',
+    'email_verify_important' => 'Penting',
+    'email_verify_link_expire' => 'Tautan verifikasi ini akan kedaluwarsa dalam 60 menit.',
+    'email_verify_once_verified' => 'Setelah terverifikasi, Anda dapat masuk ke akun Anda dan mengakses semua fitur.',
+    'email_verify_questions' => 'Jika Anda memiliki pertanyaan, jangan ragu untuk menghubungi kami.',
+    'automated_email' => 'Ini adalah email otomatis. Mohon tidak membalas email ini.',
+    'email_verify_check_inbox' => 'Silakan periksa kotak masuk email Anda untuk tautan verifikasi yang baru saja kami kirimkan.',
+    'email_verify_resend' => 'Kirim Ulang Email Verifikasi',
+    'email_verify_logout' => 'Keluar',
+    'email_verify_link_sent' => 'Tautan verifikasi baru telah dikirim ke alamat email Anda.',
 ];

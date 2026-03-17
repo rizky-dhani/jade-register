@@ -51,8 +51,8 @@ class PosterSubmission extends Component
     ];
 
     protected $messages = [
-        'abstract_text.max' => 'Abstract must not exceed 1500 characters (approximately 300 words).',
-        'poster_file.max' => 'Poster file must not exceed 10MB.',
+        'abstract_text.max' => 'seminar.abstract_max_chars',
+        'poster_file.max' => 'seminar.poster_file_max_size',
     ];
 
     public function mount(): void
@@ -103,7 +103,7 @@ class PosterSubmission extends Component
             ->first();
 
         if (! $registration) {
-            session()->flash('error', 'You must have a verified seminar registration to submit a poster.');
+            session()->flash('error', __('seminar.poster_access_denied'));
 
             return;
         }

@@ -38,12 +38,36 @@
         <div class="registration-code">
             {{ $registration->registration_code }}
         </div>
-        
+
+        @php
+            $qrTokenService = app(\App\Services\QrTokenService::class);
+            $qrUrl = $qrTokenService->getQrUrl($registration);
+        @endphp
+
+        @if($qrUrl)
+            <div style="text-align: center; margin: 20px 0; padding: 20px; background: #f0f4ff; border-radius: 8px;">
+                @if($registration->language == 'id')
+                    <h3 style="margin: 0 0 10px 0; color: #4E397C;">Kode QR Anda</h3>
+                    <p style="margin: 0 0 15px 0; color: #666;">Klik tombol di bawah untuk melihat kode QR Anda. Tunjukkan kode QR ini saat check-in di acara.</p>
+                @else
+                    <h3 style="margin: 0 0 10px 0; color: #4E397C;">Your QR Code</h3>
+                    <p style="margin: 0 0 15px 0; color: #666;">Click the button below to view your QR code. Show this QR code when checking in at the event.</p>
+                @endif
+                <a href="{{ $qrUrl }}" style="display: inline-block; padding: 12px 24px; background: #4E397C; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">
+                    {{ $registration->language == 'id' ? 'Lihat Kode QR' : 'View QR Code' }}
+                </a>
+                <p style="margin: 10px 0 0 0; font-size: 12px; color: #888;">
+                    {{ $registration->language == 'id' ? 'Atau salin link ini:' : 'Or copy this link:' }}<br>
+                    <code style="font-size: 11px; word-break: break-all;">{{ $qrUrl }}</code>
+                </p>
+            </div>
+        @endif
+
         {{-- Selected Package Section --}}
         <div class="details">
             <h3>{{ trans('seminar.selected_package') }}</h3>
             <ul class="package-list">
-                <li>{{ $registration->pricing_tier_label }} ({{ $registration->formatted_amount }})</li>
+                <li>{{ $registration->selected_seminar_label }} ({{ $registration->formatted_amount }})</li>
                 @foreach($registration->handsOnRegistrations as $hoReg)
                     <li>Day {{ $hoReg->handsOn->date->format('j') }}: {{ $hoReg->handsOn->name }} ({{ $hoReg->handsOn->formatted_price }})</li>
                 @endforeach

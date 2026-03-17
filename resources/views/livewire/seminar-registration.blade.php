@@ -1,4 +1,4 @@
-<div class="max-w-2xl mx-auto p-6" x-data="{ locale: @entangle('locale'), countryOpen: false, countrySearch: '' }" x-init="
+<div class="max-w-2xl mx-auto p-6" x-data="{ locale: @entangle('locale'), countryOpen: false, countrySearch: '', paymentMethod: @entangle('payment_method') }" x-init="
     const savedLocale = localStorage.getItem('jade_locale');
     if (savedLocale && ['en', 'id'].includes(savedLocale)) {
         locale = savedLocale;
@@ -111,7 +111,7 @@
                     <p><strong>{{ __('seminar.name') }}:</strong> {{ $existingRegistration->name }}</p>
                     <p><strong>{{ __('seminar.email') }}:</strong> {{ $existingRegistration->email }}</p>
                     <p><strong>{{ __('seminar.registration_code') }}:</strong> {{ $existingRegistration->registration_code }}</p>
-                    <p><strong>{{ __('seminar.selected_package') }}:</strong> {{ $existingRegistration->pricing_tier }}</p>
+                    <p><strong>{{ __('seminar.selected_package') }}:</strong> {{ $existingRegistration->selected_seminar }}</p>
                     <p><strong>{{ __('seminar.payment_status') }}:</strong> 
                         <span class="{{ $existingRegistration->payment_status === 'verified' ? 'text-green-600 font-medium' : 'text-yellow-600 font-medium' }}">
                             {{ ucfirst($existingRegistration->payment_status) }}
@@ -295,8 +295,8 @@
                             @foreach($tiers as $tier)
                                 <button
                                     type="button"
-                                    wire:click="$set('pricing_tier', '{{ $tier['value'] }}')"
-                                    class="p-4 rounded-lg border-2 text-left transition-all flex justify-between items-center {{ $pricing_tier === $tier['value'] ? 'border-blue-500 bg-blue-50' : ($tier['is_full'] ? 'border-gray-300 bg-gray-50 opacity-60' : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50') }}"
+                                    wire:click="$set('selected_seminar', '{{ $tier['value'] }}')"
+                                    class="p-4 rounded-lg border-2 text-left transition-all flex justify-between items-center {{ $selected_seminar === $tier['value'] ? 'border-blue-500 bg-blue-50' : ($tier['is_full'] ? 'border-gray-300 bg-gray-50 opacity-60' : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50') }}"
                                     {{ $tier['is_full'] ? 'disabled' : '' }}
                                 >
                                     <div class="flex-1">
@@ -336,7 +336,7 @@
                             @endforeach
                         </div>
                     @endif
-                    @error('pricing_tier') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+                    @error('selected_seminar') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
                 </div>
             </div>
 
@@ -380,33 +380,70 @@
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <h2 class="text-xl font-semibold text-gray-800 mb-4">{{ __('seminar.payment_information') }}</h2>
                 
-                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
-                    <h3 class="font-semibold text-yellow-800 mb-2">{{ __('seminar.bank_transfer_details') }}</h3>
-                    @if($isIndonesia)
-                    <p class="text-sm text-yellow-700"><strong>{{ __('seminar.bank') }}:</strong> {{ config('settings.bank_name') }}</p>
-                    <p class="text-sm text-yellow-700"><strong>{{ __('seminar.account_name') }}:</strong> {{ config('settings.bank_account_name') }}</p>
-                    <p class="text-sm text-yellow-700"><strong>{{ __('seminar.account_number') }}:</strong> {{ config('settings.bank_account_number') }}</p>
-                    @else
-                    <p class="text-sm text-yellow-700"><strong>{{ __('seminar.bank') }}:</strong> {{ config('settings.bank_name') }}</p>
-                    <p class="text-sm text-yellow-700"><strong>{{ __('seminar.account_name') }}:</strong> {{ config('settings.bank_account_name') }}</p>
-                    <p class="text-sm text-yellow-700"><strong>{{ __('seminar.account_number') }}:</strong> {{ config('settings.bank_account_number') }}</p>
-                    <p class="text-sm text-yellow-700"><strong>{{ __('seminar.swift_code') }}:</strong> {{ config('settings.bank_swift_code') }}</p>
-                    @endif
-                    <p class="text-sm text-yellow-700 mt-2">{{ __('seminar.transfer_instructions') }}</p>
-                    <div class="mt-4 pt-4 border-t border-yellow-300">
-                        <p class="text-sm text-yellow-800 font-medium">{{ __('seminar.disclaimer_1') }}</p>
-                        <p class="text-sm text-yellow-800 font-medium mt-2">{{ __('seminar.disclaimer_2') }}</p>
+                {{-- Payment Method Selection --}}
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-3">{{ __('seminar.payment_method') }}</label>
+                    <div class="grid grid-cols-2 gap-4">
+                        <button type="button" 
+                            @click="paymentMethod = 'bank_transfer'"
+                            :class="paymentMethod === 'bank_transfer' ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-gray-300 hover:border-gray-400'"
+                            class="w-full px-6 py-3 border-2 rounded-lg font-medium transition-colors">
+                            {{ __('seminar.bank_transfer') }}
+                        </button>
+                        <button type="button" 
+                            @click="paymentMethod = 'qris'"
+                            :class="paymentMethod === 'qris' ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-gray-300 hover:border-gray-400'"
+                            class="w-full px-6 py-3 border-2 rounded-lg font-medium transition-colors">
+                            QRIS
+                        </button>
+                    </div>
+                </div>
+                
+                {{-- Bank Transfer Details (conditional) --}}
+                <div x-show="paymentMethod === 'bank_transfer'" x-transition>
+                    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+                        <h3 class="font-semibold text-yellow-800 mb-2">{{ __('seminar.bank_transfer_details') }}</h3>
+                        @if($isIndonesia)
+                        <p class="text-sm text-yellow-700"><strong>{{ __('seminar.bank') }}:</strong> {{ config('settings.bank_name') }}</p>
+                        <p class="text-sm text-yellow-700"><strong>{{ __('seminar.account_name') }}:</strong> {{ config('settings.bank_account_name') }}</p>
+                        <p class="text-sm text-yellow-700"><strong>{{ __('seminar.account_number') }}:</strong> {{ config('settings.bank_account_number') }}</p>
+                        @else
+                        <p class="text-sm text-yellow-700"><strong>{{ __('seminar.bank') }}:</strong> {{ config('settings.bank_name') }}</p>
+                        <p class="text-sm text-yellow-700"><strong>{{ __('seminar.account_name') }}:</strong> {{ config('settings.bank_account_name') }}</p>
+                        <p class="text-sm text-yellow-700"><strong>{{ __('seminar.account_number') }}:</strong> {{ config('settings.bank_account_number') }}</p>
+                        <p class="text-sm text-yellow-700"><strong>{{ __('seminar.swift_code') }}:</strong> {{ config('settings.bank_swift_code') }}</p>
+                        @endif
+                        <p class="text-sm text-yellow-700 mt-2">{{ __('seminar.transfer_instructions') }}</p>
+                        <div class="mt-4 pt-4 border-t border-yellow-300">
+                            <p class="text-sm text-yellow-800 font-medium">{{ __('seminar.disclaimer_1') }}</p>
+                            <p class="text-sm text-yellow-800 font-medium mt-2">{{ __('seminar.disclaimer_2') }}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                {{-- QRIS Display (conditional) --}}
+                <div x-show="paymentMethod === 'qris'" x-transition class="mb-4">
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 text-center">
+                        <h3 class="font-semibold text-blue-800 mb-4">Scan QRIS untuk Pembayaran</h3>
+                        <img src="{{ asset('assets/images/QRIS_BNI_WKCI.webp') }}" alt="QRIS Code" class="w-full max-w-xs sm:max-w-sm md:max-w-md mx-auto rounded-lg shadow-md mb-4">
+                        <a href="{{ asset('assets/images/QRIS_BNI_WKCI.webp') }}" download="QRIS_BNI_WKCI.webp" 
+                            class="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                            </svg>
+                            Download QRIS Code
+                        </a>
                     </div>
                 </div>
                 
                 {{-- Total Amount Display --}}
-                @if($wants_hands_on && $handsOnTotalPrice > 0 && $pricing_tier)
+                @if($wants_hands_on && $handsOnTotalPrice > 0 && $selected_seminar)
                 <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
                     <div class="flex justify-between items-center mb-2">
                         <span class="text-gray-700">{{ __('seminar.seminar_fee') }}</span>
                         <span class="font-medium">
                             @php
-                                $package = \App\Models\Seminar::where('code', $pricing_tier)->first();
+                                $package = \App\Models\Seminar::where('code', $selected_seminar)->first();
                                 $seminarAmount = $package ? $package->amount : 0;
                                 $isIdr = $package && $package->currency === 'IDR';
                             @endphp

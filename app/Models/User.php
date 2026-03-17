@@ -23,6 +23,12 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
      */
     protected $fillable = [
         'name',
+        'country_id',
+        'name_license',
+        'nik',
+        'pdgi_branch',
+        'kompetensi',
+        'phone',
         'email',
         'password',
     ];
@@ -65,8 +71,13 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
         return $this->hasMany(SeminarRegistration::class);
     }
 
+    public function country(): BelongsTo
+    {
+        return $this->belongsTo(Country::class);
+    }
+
     public function canAccessPanel(Panel $panel): bool
     {
-        return $this->hasVerifiedEmail();
+        return true;
     }
 }

@@ -38,7 +38,9 @@ class SeminarRegistration extends Component
 
     public ?int $country_id = null;
 
-    public ?string $pricing_tier = null;
+    public ?string $selected_seminar = null;
+
+    public string $payment_method = 'bank_transfer';
 
     public $payment_proof = null;
 
@@ -49,7 +51,7 @@ class SeminarRegistration extends Component
     public ?SeminarRegistrationModel $registration = null;
 
     #[Url(as: 'lang', keep: true)]
-    public string $locale = 'en';
+    public string $locale = 'id';
 
     protected $queryString = ['locale'];
 
@@ -80,7 +82,8 @@ class SeminarRegistration extends Component
                 'phone' => 'required|string|max:20',
                 'status' => 'required|string|in:Dentist,Student',
                 'country_id' => 'required|integer|min:1|exists:countries,id',
-                'pricing_tier' => 'required|string',
+                'selected_seminar' => 'required|string',
+                'payment_method' => 'required|string|in:bank_transfer,qris',
                 'payment_proof' => 'required|file|mimes:jpeg,png,pdf|max:5120',
             ];
         }
@@ -94,7 +97,8 @@ class SeminarRegistration extends Component
             'kompetensi' => 'required|string|max:255',
             'phone' => 'required|string|max:20',
             'country_id' => 'required|integer|min:1|exists:countries,id',
-            'pricing_tier' => 'required|string',
+            'selected_seminar' => 'required|string',
+            'payment_method' => 'required|string|in:bank_transfer,qris',
             'payment_proof' => 'required|file|mimes:jpeg,png,pdf|max:5120',
             'selectedHandsOn' => 'array',
             'selectedHandsOn.*' => 'nullable|integer|exists:hands_ons,id',
@@ -107,8 +111,15 @@ class SeminarRegistration extends Component
         App::setLocale($this->locale);
 
         if (auth()->check()) {
-            $this->email = auth()->user()->email;
-            $this->name = auth()->user()->name;
+            $user = auth()->user();
+            $this->email = $user->email;
+            $this->name = $user->name;
+            $this->name_license = $user->name_license ?? '';
+            $this->nik = $user->nik ?? '';
+            $this->pdgi_branch = $user->pdgi_branch ?? '';
+            $this->kompetensi = $user->kompetensi ?? '';
+            $this->phone = $user->phone ?? '';
+            $this->country_id = $user->country_id;
         }
     }
 
@@ -129,7 +140,7 @@ class SeminarRegistration extends Component
 
     public function updatedIsLocal(): void
     {
-        $this->pricing_tier = null;
+        $this->selected_seminar = null;
     }
 
     public function render()
@@ -146,7 +157,7 @@ class SeminarRegistration extends Component
 
     public function updatedCountryId(): void
     {
-        $this->pricing_tier = null;
+        $this->selected_seminar = null;
         if ($this->country_id) {
             $country = Country::find((int) $this->country_id);
             $this->is_local = $country?->is_indonesia ?? true;
@@ -213,12 +224,12 @@ class SeminarRegistration extends Component
                     $event = HandsOn::find($eventId);
                     if ($event) {
                         if ($event->isFull()) {
-                            $this->addError('selectedHandsOn.'.$date, 'This session is now full. Please select another.');
+                            $this->addError('selectedHandsOn.'.$date, __('seminar.session_full'));
 
                             return;
                         }
                         if ($event->remaining_stock <= 0) {
-                            $this->addError('selectedHandsOn.'.$date, 'This session has reached its stock limit.');
+                            $this->addError('selectedHandsOn.'.$date, __('seminar.session_stock_limit'));
 
                             return;
                         }
@@ -227,10 +238,10 @@ class SeminarRegistration extends Component
             }
         }
 
-        $package = \App\Models\Seminar::where('code', $this->pricing_tier)->first();
+        $package = \App\Models\Seminar::where('code', $this->selected_seminar)->first();
 
         if (! $package) {
-            $this->addError('pricing_tier', 'Invalid pricing tier selected.');
+            $this->addError('selected_seminar', __('seminar.invalid_pricing_tier'));
 
             return;
         }
@@ -247,7 +258,8 @@ class SeminarRegistration extends Component
             'country_id' => $this->country_id,
             'language' => $this->locale,
             'registration_type' => 'online',
-            'pricing_tier' => $package->name,
+            'selected_seminar' => $package->name,
+            'payment_method' => $this->payment_method,
             'amount' => $package->current_price + $this->handsOnTotalPrice,
             'currency' => $package->currency,
             'payment_proof_path' => $path,
@@ -268,6 +280,9 @@ class SeminarRegistration extends Component
         }
 
         $registration = SeminarRegistrationModel::create($registrationData);
+
+        $qrTokenService = app(QrTokenService::class);
+        $qrTokenService->generate($registration);
 
         // Create Hands On registrations
         if ($this->wants_hands_on && ! empty($this->selectedHandsOn)) {
@@ -376,7 +391,7 @@ class SeminarRegistration extends Component
 
     public function getTotalAmount(): int
     {
-        $package = \App\Models\Seminar::where('code', $this->pricing_tier)->first();
+        $package = \App\Models\Seminar::where('code', $this->selected_seminar)->first();
         $seminarAmount = $package ? $package->current_price : 0;
 
         return $seminarAmount + $this->handsOnTotalPrice;

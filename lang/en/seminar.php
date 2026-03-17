@@ -119,6 +119,9 @@ return [
     'seminar_fee' => 'Seminar Fee',
     'hands_on_fee' => 'Hands On Fee',
     'total_amount' => 'Total Amount',
+    'payment_method' => 'Payment Method',
+    'bank_transfer' => 'Bank Transfer',
+    'qris' => 'QRIS',
 
     // Stock Status
     'available' => 'Available',
@@ -129,4 +132,19 @@ return [
     // Pricing
     'save_amount' => 'Save :amount',
     'day_number' => 'Day :day',
+
+    // Email verification
+    'email_verify_hello' => 'Hello',
+    'email_verify_thank_you' => 'Thank you for registering! Please verify your email address to complete your registration.',
+    'email_verify_button' => 'Verify Email Address',
+    'email_verify_button_not_work' => 'If the button above does not work, copy and paste the link below into your browser:',
+    'email_verify_important' => 'Important',
+    'email_verify_link_expire' => 'This verification link will expire in 60 minutes.',
+    'email_verify_once_verified' => 'Once verified, you can log in to your account and access all features.',
+    'email_verify_questions' => 'If you have any questions, please do not hesitate to contact us.',
+    'automated_email' => 'This is an automated email. Please do not reply to this email.',
+    'email_verify_check_inbox' => 'Please check your email inbox for the verification link we just sent you.',
+    'email_verify_resend' => 'Resend Verification Email',
+    'email_verify_logout' => 'Log Out',
+    'email_verify_link_sent' => 'A new verification link has been sent to your email address.',
 ];

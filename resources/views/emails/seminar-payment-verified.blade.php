@@ -38,7 +38,31 @@
         <div class="registration-code">
             {{ $registration->registration_code }}
         </div>
-        
+
+        @php
+            $qrTokenService = app(\App\Services\QrTokenService::class);
+            $qrUrl = $qrTokenService->getQrUrl($registration);
+        @endphp
+
+        @if($qrUrl)
+            <div style="text-align: center; margin: 20px 0; padding: 20px; background: #f0f4ff; border-radius: 8px;">
+                @if($registration->language == 'id')
+                    <h3 style="margin: 0 0 10px 0; color: #4E397C;">Kode QR untuk Check-In</h3>
+                    <p style="margin: 0 0 15px 0; color: #666;">Pembayaran Anda terverifikasi! Gunakan kode QR ini untuk check-in di acara.</p>
+                @else
+                    <h3 style="margin: 0 0 10px 0; color: #4E397C;">Your Check-In QR Code</h3>
+                    <p style="margin: 0 0 15px 0; color: #666;">Your payment is verified! Use this QR code to check in at the event.</p>
+                @endif
+                <a href="{{ $qrUrl }}" style="display: inline-block; padding: 12px 24px; background: #4E397C; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">
+                    {{ $registration->language == 'id' ? 'Lihat Kode QR' : 'View QR Code' }}
+                </a>
+                <p style="margin: 10px 0 0 0; font-size: 12px; color: #888;">
+                    {{ $registration->language == 'id' ? 'Atau salin link ini:' : 'Or copy this link:' }}<br>
+                    <code style="font-size: 11px; word-break: break-all;">{{ $qrUrl }}</code>
+                </p>
+            </div>
+        @endif
+
         <div class="success-box">
             <strong>✓ {{ $registration->language == 'id' ? 'Pembayaran Terverifikasi' : 'Payment Confirmed' }}</strong><br>
             {{ $registration->language == 'id' ? 'Tempat Anda di Jakarta Dental Exhibition 2026 telah dijamin!' : 'Your spot at the Jakarta Dental Exhibition 2026 is secured!' }}
@@ -48,7 +72,7 @@
         <div class="details">
             <h3>{{ trans('seminar.selected_package') }}</h3>
             <ul class="package-list">
-                <li>{{ $registration->pricing_tier_label }} ({{ $registration->formatted_amount }})</li>
+                <li>{{ $registration->selected_seminar_label }} ({{ $registration->formatted_amount }})</li>
                 @foreach($registration->handsOnRegistrations as $hoReg)
                     <li>Day {{ $hoReg->handsOn->date->format('j') }}: {{ $hoReg->handsOn->name }} ({{ $hoReg->handsOn->formatted_price }})</li>
                 @endforeach

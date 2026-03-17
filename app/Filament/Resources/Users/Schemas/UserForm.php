@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources\Users\Schemas;
 
-use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Spatie\Permission\Models\Role;
 
@@ -18,6 +18,14 @@ class UserForm
                     ->schema([
                         TextInput::make('name')
                             ->required(),
+                        TextInput::make('name_license')
+                            ->label('Name License'),
+                        TextInput::make('nik')
+                            ->label('NIK'),
+                        TextInput::make('pdgi_branch')
+                            ->label('PDGI Branch'),
+                        TextInput::make('kompetensi')
+                            ->label('Kompetensi'),
                         TextInput::make('email')
                             ->label('Email address')
                             ->email()

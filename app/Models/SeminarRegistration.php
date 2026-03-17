@@ -25,7 +25,8 @@ class SeminarRegistration extends Model
         'country_id',
         'language',
         'registration_type',
-        'pricing_tier',
+        'selected_seminar',
+        'payment_method',
         'amount',
         'currency',
         'payment_status',
@@ -38,10 +39,13 @@ class SeminarRegistration extends Model
         'status',
         'wants_hands_on',
         'hands_on_total_amount',
+        'qr_token',
+        'qr_expires_at',
     ];
 
     protected $casts = [
         'verified_at' => 'datetime',
+        'qr_expires_at' => 'datetime',
         'amount' => 'integer',
         'wants_poster_competition' => 'boolean',
         'wants_hands_on' => 'boolean',
@@ -92,6 +96,11 @@ class SeminarRegistration extends Model
             ->withTimestamps();
     }
 
+    public function attendances(): HasMany
+    {
+        return $this->hasMany(Attendance::class);
+    }
+
     public function canRegisterHandsOn(): bool
     {
         return $this->payment_status === 'verified';
@@ -113,9 +122,9 @@ class SeminarRegistration extends Model
             && $this->user_id !== null;
     }
 
-    public function getPricingTierLabelAttribute(): string
+    public function getSelectedSeminarLabelAttribute(): string
     {
-        return $this->pricing_tier ?? 'N/A';
+        return $this->selected_seminar ?? 'N/A';
     }
 
     public function getFormattedAmountAttribute(): string

@@ -49,7 +49,7 @@
         <div class="details">
             <h3>{{ trans('seminar.selected_package') }}</h3>
             <ul class="package-list">
-                <li>{{ $registration->pricing_tier_label }} ({{ $registration->formatted_amount }})</li>
+                <li>{{ $registration->selected_seminar_label }} ({{ $registration->formatted_amount }})</li>
                 @foreach($registration->handsOnRegistrations as $hoReg)
                     <li>Day {{ $hoReg->handsOn->date->format('j') }}: {{ $hoReg->handsOn->name }} ({{ $hoReg->handsOn->formatted_price }})</li>
                 @endforeach

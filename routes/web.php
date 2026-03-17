@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\PaymentProofController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 
@@ -10,9 +12,31 @@ Route::get('/', function () {
 
 Route::livewire('/visitor/register', \App\Livewire\VisitorRegistration::class)->name('register.visitor');
 
-Route::middleware(['auth'])->group(function () {
+Route::livewire('/attendance/qr-code/{token}', \App\Livewire\AttendanceQrCode::class)->name('attendance.qr-code');
+
+// Email Verification Routes
+Route::middleware('auth')->group(function () {
+    Route::get('/email/verify', function () {
+        return view('auth.verify-email');
+    })->name('verification.notice');
+
+    Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+        $request->fulfill();
+
+        return redirect()->route('register.seminar');
+    })->middleware(['signed', 'throttle:6,1'])->name('verification.verify');
+
+    Route::post('/email/verification-notification', function (Request $request) {
+        $request->user()->sendEmailVerificationNotification();
+
+        return back()->with('status', 'verification-link-sent');
+    })->middleware('throttle:6,1')->name('verification.send');
+});
+
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::livewire('/seminar/register', \App\Livewire\SeminarRegistration::class)->name('register.seminar');
     Route::livewire('/poster/submit', \App\Livewire\PosterSubmission::class)->name('poster.submit');
+    Route::livewire('/attendance/verify/{token}', \App\Livewire\AttendanceVerify::class)->name('attendance.verify');
 
     Route::get('/payment-proofs/{registration}/download', [PaymentProofController::class, 'show'])
         ->name('payment-proofs.download');

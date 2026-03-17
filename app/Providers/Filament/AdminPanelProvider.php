@@ -2,6 +2,9 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Pages\Auth\AuthLogin;
+use App\Filament\Pages\Auth\EmailVerification\EmailVerificationPrompt;
+use App\Filament\Pages\Auth\Register;
 use App\Filament\Widgets\SeminarParticipantCount;
 use App\Filament\Widgets\VisitorCount;
 use Filament\Http\Middleware\Authenticate;
@@ -28,13 +31,13 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('dashboard')
             ->path('dashboard')
-            ->login()
-            ->registration()
-            ->emailVerification()
+            ->login(AuthLogin::class)
+            ->registration(Register::class)
+            ->emailVerification(EmailVerificationPrompt::class)
             ->maxContentWidth(Width::Full)
             ->brandLogo(fn () => asset('assets/images/JADE_PDGI_Light.webp'))
             ->darkModeBrandLogo(fn () => asset('assets/images/JADE_PDGI_Dark.webp'))
-            ->brandLogoHeight('6rem')
+            ->brandLogoHeight('8rem')
             ->colors([
                 'primary' => '#4E397C',
             ])
@@ -49,8 +52,21 @@ class AdminPanelProvider extends PanelProvider
                 SeminarParticipantCount::class,
             ])
             ->navigationItems([
+                NavigationItem::make('Seminar Registration')
+                    ->url(fn () => route('register.seminar'))
+                    ->icon('heroicon-o-academic-cap')
+                    ->group('Registrations')
+                    ->visible(fn () => auth()->user()?->hasRole('Participant')),
+                NavigationItem::make('Hands On Registration')
+                    ->url(fn () => route('register.seminar').'#hands-on')
+                    ->icon('heroicon-o-hand-raised')
+                    ->group('Registrations')
+                    ->visible(fn () => auth()->user()?->hasRole('Participant')),
                 NavigationItem::make('Poster Registration')
-                    ->url(fn () => route('poster.submit')),
+                    ->url(fn () => route('poster.submit'))
+                    ->icon('heroicon-o-photo')
+                    ->group('Competitions')
+                    ->visible(fn () => auth()->user()?->hasRole('Participant') && auth()->user()?->seminarRegistrations()->exists()),
             ])
             ->navigationGroups([
                 'Registrations',
