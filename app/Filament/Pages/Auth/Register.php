@@ -11,6 +11,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Component;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Model;
@@ -29,11 +30,24 @@ class Register extends BaseRegister
                 $this->getNikFormComponent(),
                 $this->getPdgiBranchFormComponent(),
                 $this->getKompetensiFormComponent(),
+                $this->getStatusFormComponent(),
                 $this->getPhoneFormComponent(),
                 $this->getEmailFormComponent(),
                 $this->getPasswordFormComponent(),
                 $this->getPasswordConfirmationFormComponent(),
             ]);
+    }
+
+    protected function isIndonesia(Get $get): bool
+    {
+        $countryId = $get('country_id');
+        if (! $countryId) {
+            return true;
+        }
+
+        $country = Country::find($countryId);
+
+        return $country?->is_indonesia ?? true;
     }
 
     protected function getCountryFormComponent(): Component
@@ -43,6 +57,7 @@ class Register extends BaseRegister
             ->options(Country::orderBy('name')->pluck('name', 'id'))
             ->searchable()
             ->preload()
+            ->live()
             ->nullable();
     }
 
@@ -60,6 +75,7 @@ class Register extends BaseRegister
         return TextInput::make('name_license')
             ->label('Name Plataran')
             ->maxLength(255)
+            ->visible(fn (Get $get): bool => $get('country_id') && $this->isIndonesia($get))
             ->nullable();
     }
 
@@ -68,6 +84,7 @@ class Register extends BaseRegister
         return TextInput::make('nik')
             ->label('NIK')
             ->maxLength(255)
+            ->visible(fn (Get $get): bool => $get('country_id') && $this->isIndonesia($get))
             ->nullable();
     }
 
@@ -76,6 +93,7 @@ class Register extends BaseRegister
         return TextInput::make('pdgi_branch')
             ->label('PDGI Branch')
             ->maxLength(255)
+            ->visible(fn (Get $get): bool => $get('country_id') && $this->isIndonesia($get))
             ->nullable();
     }
 
@@ -98,6 +116,20 @@ class Register extends BaseRegister
                 'Mahasiswa Kedokteran Gigi' => 'Mahasiswa Kedokteran Gigi',
                 'drg Internship' => 'drg Internship',
             ])
+            ->visible(fn (Get $get): bool => $get('country_id') && $this->isIndonesia($get))
+            ->nullable()
+            ->preload();
+    }
+
+    protected function getStatusFormComponent(): Component
+    {
+        return Select::make('status')
+            ->label('Status')
+            ->options([
+                'Dentist' => 'Dentist',
+                'Student' => 'Student',
+            ])
+            ->visible(fn (Get $get): bool => $get('country_id') && ! $this->isIndonesia($get))
             ->nullable()
             ->preload();
     }
