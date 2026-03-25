@@ -6,6 +6,7 @@ use App\Models\Country;
 use App\Models\HandsOn;
 use App\Models\HandsOnRegistration;
 use App\Models\SeminarRegistration as SeminarRegistrationModel;
+use App\Services\QrTokenService;
 use App\Services\RegistrationService;
 use Illuminate\Support\Facades\App;
 use Livewire\Attributes\Url;
@@ -78,7 +79,7 @@ class SeminarRegistration extends Component
         if (! $this->is_local) {
             return [
                 'name' => 'required|string|max:255',
-                'email' => 'required|email|unique:seminar_registrations,email',
+                'email' => 'required|email',
                 'phone' => 'required|string|max:20',
                 'status' => 'required|string|in:Dentist,Student',
                 'country_id' => 'required|integer|min:1|exists:countries,id',
@@ -89,7 +90,7 @@ class SeminarRegistration extends Component
         }
 
         return [
-            'email' => 'required|email|unique:seminar_registrations,email',
+            'email' => 'required|email',
             'name' => 'required|string|max:255',
             'name_license' => 'required|string|max:255',
             'nik' => 'required|string|max:20',

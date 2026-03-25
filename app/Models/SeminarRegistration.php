@@ -118,8 +118,7 @@ class SeminarRegistration extends Model
     public function canSubmitPoster(): bool
     {
         return $this->payment_status === 'verified'
-            && $this->wants_poster_competition
-            && $this->user_id !== null;
+            && $this->wants_poster_competition;
     }
 
     public function getSelectedSeminarLabelAttribute(): string

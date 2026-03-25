@@ -14,7 +14,20 @@
     </div>
 
     @if($isSuccess)
-        <div class="bg-green-50 border border-green-200 rounded-lg p-6 text-center">
+        <div class="bg-green-50 border border-green-200 rounded-lg p-6 text-center"
+             x-data="{ countdown: 5 }"
+             x-init="
+                const timer = setInterval(() => {
+                    if (countdown > 0) {
+                        countdown--;
+                    } else {
+                        clearInterval(timer);
+                        @auth
+                            window.location.href = '{{ route('filament.dashboard.pages.dashboard') }}';
+                        @endauth
+                    }
+                }, 1000);
+             ">
             <svg class="w-16 h-16 text-green-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
             </svg>
@@ -27,6 +40,13 @@
                 <p class="text-green-700 mb-3">{{ __('seminar.success_message_2') }}</p>
                 <p class="text-green-700">{{ __('seminar.success_message_3') }}<a href="https://chat.whatsapp.com/KtELLi4Q22VHqJWFavOwhQ?mode=hq1tcla" target="_blank" class="underline font-semibold hover:text-green-900">https://chat.whatsapp.com/KtELLi4Q22VHqJWFavOwhQ</a></p>
             </div>
+            @auth
+                <div class="mt-4 pt-4 border-t border-green-200">
+                    <p class="text-green-600 font-medium">
+                        {{ __('seminar.redirecting_to_dashboard') }} <span x-text="countdown"></span>...
+                    </p>
+                </div>
+            @endauth
         </div>
     @else
         <form wire:submit.prevent="submit" class="space-y-6">

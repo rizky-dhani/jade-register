@@ -12,6 +12,11 @@ class VisitorCount extends StatsOverviewWidget
 
     protected static ?int $sort = 1;
 
+    public static function canView(): bool
+    {
+        return ! auth()->user()?->hasRole('Participant');
+    }
+
     protected function getStats(): array
     {
         $day1 = Visitor::whereDate('created_at', '2025-11-13')->count();

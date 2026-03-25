@@ -44,7 +44,7 @@ class QrTokenService
 
     private function getLastEventDate(SeminarRegistration $registration): \Carbon\Carbon
     {
-        $eventEndDate = now()->set(2026, 11, 15);
+        $eventEndDate = \Carbon\Carbon::create(2026, 11, 15);
 
         $handsOnDates = $registration->handsOnRegistrations()
             ->where('payment_status', 'verified')

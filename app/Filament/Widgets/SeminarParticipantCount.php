@@ -13,6 +13,11 @@ class SeminarParticipantCount extends StatsOverviewWidget
 
     protected static ?int $sort = 2;
 
+    public static function canView(): bool
+    {
+        return ! auth()->user()?->hasRole('Participant');
+    }
+
     protected function getStats(): array
     {
         $pending = SeminarRegistration::whereNull('payment_proof_path')->count();

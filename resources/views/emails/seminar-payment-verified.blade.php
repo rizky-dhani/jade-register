@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Payment Verified</title>
+    <title>{{ __('seminar.email_payment_verified_title') }}</title>
     <style>
         body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
         .header { text-align: center; padding: 20px 0; border-bottom: 2px solid #4E397C; margin-bottom: 20px; }
@@ -27,13 +27,8 @@
     </div>
     
     <div class="content">
-        @if($registration->language == 'id')
-            <h2>Pembayaran Terverifikasi! Sampai Jumpa di Acara! 🎉</h2>
-            <p>Kabar baik, {{ $registration->name }}! Pembayaran Anda telah diverifikasi dan registrasi Anda terkonfirmasi.</p>
-        @else
-            <h2>Payment Verified! See You at the Event! 🎉</h2>
-            <p>Great news, {{ $registration->name }}! Your payment has been verified and your registration is confirmed.</p>
-        @endif
+        <h2>{{ __('seminar.email_payment_verified_title') }} 🎉</h2>
+        <p>{{ __('seminar.email_payment_verified_greeting') }}, {{ $registration->name }}! {{ __('seminar.email_payment_verified_message') }}</p>
         
         <div class="registration-code">
             {{ $registration->registration_code }}
@@ -46,26 +41,21 @@
 
         @if($qrUrl)
             <div style="text-align: center; margin: 20px 0; padding: 20px; background: #f0f4ff; border-radius: 8px;">
-                @if($registration->language == 'id')
-                    <h3 style="margin: 0 0 10px 0; color: #4E397C;">Kode QR untuk Check-In</h3>
-                    <p style="margin: 0 0 15px 0; color: #666;">Pembayaran Anda terverifikasi! Gunakan kode QR ini untuk check-in di acara.</p>
-                @else
-                    <h3 style="margin: 0 0 10px 0; color: #4E397C;">Your Check-In QR Code</h3>
-                    <p style="margin: 0 0 15px 0; color: #666;">Your payment is verified! Use this QR code to check in at the event.</p>
-                @endif
+                <h3 style="margin: 0 0 10px 0; color: #4E397C;">{{ __('seminar.email_payment_verified_qr_title') }}</h3>
+                <p style="margin: 0 0 15px 0; color: #666;">{{ __('seminar.email_payment_verified_qr_description') }}</p>
                 <a href="{{ $qrUrl }}" style="display: inline-block; padding: 12px 24px; background: #4E397C; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">
-                    {{ $registration->language == 'id' ? 'Lihat Kode QR' : 'View QR Code' }}
+                    {{ __('seminar.email_payment_verified_view_qr') }}
                 </a>
                 <p style="margin: 10px 0 0 0; font-size: 12px; color: #888;">
-                    {{ $registration->language == 'id' ? 'Atau salin link ini:' : 'Or copy this link:' }}<br>
+                    {{ __('seminar.email_payment_verified_or_copy') }}:<br>
                     <code style="font-size: 11px; word-break: break-all;">{{ $qrUrl }}</code>
                 </p>
             </div>
         @endif
 
         <div class="success-box">
-            <strong>✓ {{ $registration->language == 'id' ? 'Pembayaran Terverifikasi' : 'Payment Confirmed' }}</strong><br>
-            {{ $registration->language == 'id' ? 'Tempat Anda di Jakarta Dental Exhibition 2026 telah dijamin!' : 'Your spot at the Jakarta Dental Exhibition 2026 is secured!' }}
+            <strong>✓ {{ __('seminar.email_payment_verified_confirmed') }}</strong><br>
+            {{ __('seminar.email_payment_verified_spot_secured') }}
         </div>
         
         {{-- Selected Package Section --}}
@@ -79,41 +69,22 @@
             </ul>
         </div>
         
-        @if($registration->language == 'id')
-            <h3>Detail Acara</h3>
-            <p><strong>Tanggal:</strong> 13-15 November 2026</p>
-            <p><strong>Lokasi:</strong> Jakarta Convention Center</p>
-            <p><strong>Waktu:</strong> 09:00 - 17:00 WIB</p>
-            
-            <h3>Apa yang Dibawa</h3>
-            <ul>
-                <li>Email konfirmasi ini (cetak atau digital)</li>
-                <li>KTP / Paspor yang berlaku</li>
-                <li>Kode Registrasi: {{ $registration->registration_code }}</li>
-            </ul>
-            
-            <p>Kami tidak sabar untuk bertemu dengan Anda di acara!</p>
-            
-            <p>Salam hangat,<br>
-            <strong>Jakarta Dental Exhibition 2026</strong></p>
-        @else
-            <h3>Event Details</h3>
-            <p><strong>Dates:</strong> 13-15 November 2026</p>
-            <p><strong>Venue:</strong> Jakarta Convention Center</p>
-            <p><strong>Time:</strong> 09:00 - 17:00 WIB</p>
-            
-            <h3>What to Bring</h3>
-            <ul>
-                <li>This confirmation email (printed or digital)</li>
-                <li>Valid ID Card / Passport</li>
-                <li>Registration Code: {{ $registration->registration_code }}</li>
-            </ul>
-            
-            <p>We can't wait to see you at the event!</p>
-            
-            <p>Best regards,<br>
-            <strong>Jakarta Dental Exhibition 2026</strong></p>
-        @endif
+        <h3>{{ __('seminar.email_payment_verified_event_details') }}</h3>
+        <p><strong>{{ __('seminar.email_payment_verified_dates') }}:</strong> 13-15 November 2026</p>
+        <p><strong>{{ __('seminar.email_payment_verified_venue') }}:</strong> Jakarta Convention Center</p>
+        <p><strong>{{ __('seminar.email_payment_verified_time') }}:</strong> 09:00 - 17:00 WIB</p>
+        
+        <h3>{{ __('seminar.email_payment_verified_what_to_bring') }}</h3>
+        <ul>
+            <li>{{ __('seminar.email_payment_verified_bring_item_1') }}</li>
+            <li>{{ __('seminar.email_payment_verified_bring_item_2') }}</li>
+            <li>{{ __('seminar.email_payment_verified_bring_item_3') }}: {{ $registration->registration_code }}</li>
+        </ul>
+        
+        <p>{{ __('seminar.email_payment_verified_excited') }}</p>
+        
+        <p>{{ trans('seminar.email_best_regards') }}<br>
+        <strong>Jakarta Dental Exhibition 2026</strong></p>
     </div>
     
     <div class="footer">

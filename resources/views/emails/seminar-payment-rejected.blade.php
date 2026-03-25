@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Payment Verification Issue</title>
+    <title>{{ __('seminar.email_payment_rejected_title') }}</title>
     <style>
         body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
         .header { text-align: center; padding: 20px 0; border-bottom: 2px solid #4E397C; margin-bottom: 20px; }
@@ -26,22 +26,16 @@
     </div>
     
     <div class="content">
-        @if($registration->language == 'id')
-            <h2>Masalah Verifikasi Pembayaran</h2>
-            <p>Dear {{ $registration->name }},</p>
-            <p>Maaf, kami tidak dapat memverifikasi pembayaran Anda untuk registrasi seminar. Silakan lihat detail di bawah:</p>
-        @else
-            <h2>Payment Verification Issue</h2>
-            <p>Dear {{ $registration->name }},</p>
-            <p>Unfortunately, we were unable to verify your payment for your seminar registration. Please see the details below:</p>
-        @endif
+        <h2>{{ __('seminar.email_payment_rejected_title') }}</h2>
+        <p>{{ __('seminar.email_payment_rejected_greeting') }} {{ $registration->name }},</p>
+        <p>{{ __('seminar.email_payment_rejected_message') }}</p>
         
         <div class="registration-code">
             {{ $registration->registration_code }}
         </div>
         
         <div class="issue-box">
-            <strong>{{ $registration->language == 'id' ? 'Alasan Penolakan:' : 'Reason for Rejection:' }}</strong><br>
+            <strong>{{ __('seminar.email_payment_rejected_reason') }}:</strong><br>
             {{ $registration->rejection_reason }}
         </div>
         
@@ -56,37 +50,20 @@
             </ul>
         </div>
         
-        @if($registration->language == 'id')
-            <h3>Apa yang Harus Dilakukan Selanjutnya</h3>
-            <ol>
-                <li>Review alasan penolakan di atas</li>
-                <li>Pastikan Anda telah mentransfer jumlah yang tepat</li>
-                <li>Upload bukti pembayaran yang lebih jelas melalui akun pendaftaran Anda</li>
-                <li>Tim kami akan memverifikasi ulang pembayaran Anda</li>
-            </ol>
-            
-            <p><strong>Catatan:</strong> Pastikan bukti pembayaran Anda jelas dan menunjukkan detail transaksi dengan jelas.</p>
-            
-            <p>Jika Anda memiliki pertanyaan, silakan hubungi kami di info@jakartadentalexhibition.com</p>
-            
-            <p>Salam hangat,<br>
-            <strong>Jakarta Dental Exhibition 2026</strong></p>
-        @else
-            <h3>What to Do Next</h3>
-            <ol>
-                <li>Review the rejection reason above</li>
-                <li>Ensure you have transferred the exact amount</li>
-                <li>Upload a clearer payment proof through your registration account</li>
-                <li>Our team will re-verify your payment</li>
-            </ol>
-            
-            <p><strong>Note:</strong> Please ensure your payment proof is clear and shows the transaction details clearly.</p>
-            
-            <p>If you have any questions, please contact us at info@jakartadentalexhibition.com</p>
-            
-            <p>Best regards,<br>
-            <strong>Jakarta Dental Exhibition 2026</strong></p>
-        @endif
+        <h3>{{ __('seminar.email_payment_rejected_next_steps_title') }}</h3>
+        <ol>
+            <li>{{ __('seminar.email_payment_rejected_step_1') }}</li>
+            <li>{{ __('seminar.email_payment_rejected_step_2') }}</li>
+            <li>{{ __('seminar.email_payment_rejected_step_3') }}</li>
+            <li>{{ __('seminar.email_payment_rejected_step_4') }}</li>
+        </ol>
+        
+        <p><strong>{{ __('seminar.email_payment_rejected_note') }}:</strong> {{ __('seminar.email_payment_rejected_note_text') }}</p>
+        
+        <p>{{ __('seminar.email_payment_rejected_contact') }} info@jakartadentalexhibition.com</p>
+        
+        <p>{{ trans('seminar.email_best_regards') }}<br>
+        <strong>Jakarta Dental Exhibition 2026</strong></p>
     </div>
     
     <div class="footer">

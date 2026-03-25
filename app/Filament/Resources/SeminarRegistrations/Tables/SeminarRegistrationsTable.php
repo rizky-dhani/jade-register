@@ -6,9 +6,6 @@ use App\Models\SeminarRegistration;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Infolists\Components\ImageEntry;
-use Filament\Infolists\Components\Section;
-use Filament\Infolists\Infolist;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
@@ -60,18 +57,13 @@ class SeminarRegistrationsTable
                     ->icon('heroicon-o-photo')
                     ->visible(fn (SeminarRegistration $record): bool => $record->payment_proof_path !== null)
                     ->modalHeading(__('seminar.view_payment_proof'))
-                    ->modalContent(fn (SeminarRegistration $record): Infolist => Infolist::make()
-                        ->record($record)
-                        ->schema([
-                            Section::make()
-                                ->schema([
-                                    ImageEntry::make('payment_proof_path')
-                                        ->label(false)
-                                        ->disk('public')
-                                        ->size(800)
-                                        ->extraAttributes(['class' => 'w-full']),
-                                ]),
-                        ])),
+                    ->modalContent(function (SeminarRegistration $record) {
+                        $url = asset('storage/'.$record->payment_proof_path);
+
+                        return view('components.payment-proof-modal', [
+                            'url' => $url,
+                        ]);
+                    }),
                 Action::make('verifyPayment')
                     ->label(__('seminar.verify_payment'))
                     ->icon('heroicon-o-check-circle')
