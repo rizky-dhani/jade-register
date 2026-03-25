@@ -10,6 +10,7 @@ return [
     'success_message_1' => 'Terima kasih telah melakukan pendaftaran seminar / hands on / lomba poster kegiatan JADE 2026.',
     'success_message_2' => 'Rekaman jawaban silahkan cek di email.',
     'success_message_3' => 'Silahkan bergabung ke group WhatsApp: ',
+    'redirecting_to_dashboard' => 'Redirecting to dashboard in',
 
     // Language selector
     'language' => 'Language',
@@ -147,4 +148,42 @@ return [
     'email_verify_resend' => 'Resend Verification Email',
     'email_verify_logout' => 'Log Out',
     'email_verify_link_sent' => 'A new verification link has been sent to your email address.',
+
+    // Email - Registration Submitted
+    'email_thank_you_title' => 'Thank you for registering, :name!',
+    'email_registration_received' => 'Your seminar registration has been received. Please complete your payment to confirm your spot.',
+    'email_your_qr_code' => 'Your QR Code',
+    'email_qr_code_description' => 'Click the button below to view your QR code. Show this QR code when checking in at the event.',
+    'email_view_qr_code' => 'View QR Code',
+    'email_or_copy_link' => 'Or copy this link:',
+    'email_payment_method' => 'Payment Method',
+    'email_qris_scan_instruction' => 'Scan the QRIS code above with your e-wallet or banking app to complete the payment.',
+    'email_next_steps' => 'Next Steps',
+    'email_step_1' => 'Transfer the exact amount to the bank account above',
+    'email_step_2' => 'Upload your payment proof through your registration account',
+    'email_step_3' => 'Wait for payment verification (1-2 business days)',
+    'email_step_4' => 'Receive confirmation email once verified',
+    'email_note' => 'Note',
+    'email_cancellation_warning' => 'Your registration will be cancelled if payment is not received within 7 days.',
+    'email_best_regards' => 'Best regards,',
+    'amount_to_transfer' => 'Amount to Transfer',
+
+    // Table Actions
+    'pending' => 'Pending',
+    'verified' => 'Verified',
+    'view_payment_proof' => 'View Payment Proof',
+    'verify_payment' => 'Verify Payment',
+
+    // Visitor Registration
+    'visitor_registration_title' => 'Visitor Registration',
+    'visitor_registration_subtitle' => 'Register as a visitor for Jakarta Dental Exhibition 2026',
+    'visitor_registration_success_title' => 'Registration Successful!',
+    'visitor_registration_thank_you' => 'Thank you for registering',
+    'visitor_confirmation_email_sent' => 'We have sent a confirmation email to',
+    'visitor_personal_information_section' => 'Personal Information',
+    'visitor_name_label' => 'Full Name',
+    'visitor_email_label' => 'Email Address',
+    'visitor_phone_label' => 'Phone Number',
+    'visitor_affiliation_label' => 'Institution/Company (Optional)',
+    'visitor_register_button' => 'Register as Visitor',
 ];
