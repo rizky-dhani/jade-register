@@ -68,7 +68,7 @@
     
     <div class="footer">
         <p>{{ trans('seminar.automated_email') }}</p>
-        <p>Jakarta Dental Exhibition 2026 | www.jakartadentalexhibition.id</p>
+        <p>Jakarta Dental Exhibition 2026 | https://jakartadentalexhibitions.id</p>
     </div>
 </body>
 </html>

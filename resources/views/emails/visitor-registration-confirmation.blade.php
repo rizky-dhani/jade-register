@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="{{ $visitor->language ?? 'en' }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Welcome to Jakarta Dental Exhibition 2026!</title>
+    <title>{{ __('seminar.email_visitor_title_welcome') }} Jakarta Dental Exhibition 2026!</title>
     <style>
         body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
         .logo { display: flex; align-items: center; justify-content: center; gap: 20px; padding-bottom: 20px; border-bottom: 2px solid #0066cc; margin-bottom: 20px; }
@@ -52,7 +52,7 @@
     
     <div class="footer">
         <p>{{ trans('seminar.automated_email') }}</p>
-        <p>Jakarta Dental Exhibition 2026 | www.jakartadentalexhibition.com</p>
+        <p>Jakarta Dental Exhibition 2026 | https://jakartadentalexhibitions.id</p>
     </div>
 </body>
 </html>

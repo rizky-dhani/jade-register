@@ -27,7 +27,7 @@
     </div>
     
     <div class="content">
-        <h2>{{ __('seminar.email_payment_verified_title') }} 🎉</h2>
+        <h2>{{ __('seminar.email_payment_verified_title') }}</h2>
         <p>{{ __('seminar.email_payment_verified_greeting') }}, {{ $registration->name }}! {{ __('seminar.email_payment_verified_message') }}</p>
         
         <div class="registration-code">
@@ -54,7 +54,7 @@
         @endif
 
         <div class="success-box">
-            <strong>✓ {{ __('seminar.email_payment_verified_confirmed') }}</strong><br>
+            <strong>{{ __('seminar.email_payment_verified_confirmed') }}</strong><br>
             {{ __('seminar.email_payment_verified_spot_secured') }}
         </div>
         
@@ -89,7 +89,7 @@
     
     <div class="footer">
         <p>{{ trans('seminar.automated_email') }}</p>
-        <p>Jakarta Dental Exhibition 2026 | www.jakartadentalexhibition.id</p>
+        <p>Jakarta Dental Exhibition 2026 | https://jakartadentalexhibitions.id</p>
     </div>
 </body>
 </html>
