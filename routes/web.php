@@ -46,6 +46,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/payment-proofs/{registration}/preview', [PaymentProofController::class, 'preview'])
         ->name('payment-proofs.preview');
+
+    Route::get('/database-backups/{filename}/download', [\App\Http\Controllers\DatabaseBackupController::class, 'download'])
+        ->name('database-backups.download');
 });
 
 Route::get('/mail-test', function () {
