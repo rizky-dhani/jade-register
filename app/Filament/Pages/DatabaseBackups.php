@@ -49,6 +49,11 @@ class DatabaseBackups extends Page implements \Filament\Tables\Contracts\HasTabl
         $databasePath = database_path('database.sqlite');
         $backupDir = storage_path('app/backups');
 
+        // Create backup directory if it doesn't exist
+        if (! File::isDirectory($backupDir)) {
+            File::makeDirectory($backupDir, 0755, true);
+        }
+
         if (! File::exists($databasePath)) {
             Notification::make()
                 ->title('Database file not found')
@@ -202,8 +207,14 @@ class DatabaseBackups extends Page implements \Filament\Tables\Contracts\HasTabl
 
     private function restoreBackup(string $filename): void
     {
-        $backupPath = storage_path("app/backups/{$filename}");
+        $backupDir = storage_path('app/backups');
+        $backupPath = "{$backupDir}/{$filename}";
         $databasePath = database_path('database.sqlite');
+
+        // Create backup directory if it doesn't exist
+        if (! File::isDirectory($backupDir)) {
+            File::makeDirectory($backupDir, 0755, true);
+        }
 
         if (! File::exists($backupPath)) {
             Notification::make()
