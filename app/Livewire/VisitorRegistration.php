@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Visitor;
 use App\Services\RegistrationService;
+use App\Services\VisitorQrTokenService;
 use Livewire\Component;
 
 class VisitorRegistration extends Component
@@ -43,9 +44,22 @@ class VisitorRegistration extends Component
             'affiliation' => $this->affiliation,
         ]);
 
+        // Generate QR token for the visitor
+        $qrTokenService = app(VisitorQrTokenService::class);
+        $qrTokenService->generate($this->visitor);
+
         $registrationService = app(RegistrationService::class);
         $registrationService->sendVisitorConfirmation($this->visitor);
 
         $this->isSuccess = true;
+    }
+
+    public function getQrCodeUrlProperty(): ?string
+    {
+        if (! $this->visitor) {
+            return null;
+        }
+
+        return app(VisitorQrTokenService::class)->getVerifyUrl($this->visitor);
     }
 }

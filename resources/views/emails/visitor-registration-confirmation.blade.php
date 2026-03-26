@@ -13,6 +13,11 @@
         .details { background: #f9f9f9; padding: 15px; border-radius: 5px; margin: 15px 0; }
         .detail-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; }
         .detail-label { font-weight: bold; }
+        .qr-section { background: #f0f8ff; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: center; border: 2px solid #0066cc; }
+        .qr-section h3 { color: #0066cc; margin-bottom: 15px; }
+        .qr-button { display: inline-block; padding: 12px 24px; background: #0066cc; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; margin: 10px 0; }
+        .qr-code { margin: 15px 0; }
+        .qr-code img { max-width: 200px; height: auto; }
     </style>
 </head>
 <body>
@@ -32,6 +37,25 @@
             </div>
         </div>
         
+        @php
+            $qrTokenService = app(\App\Services\VisitorQrTokenService::class);
+            $qrUrl = $qrTokenService->getQrUrl($visitor);
+        @endphp
+
+        @if($qrUrl)
+        <div class="qr-section">
+            <h3>{{ trans('seminar.email_payment_verified_qr_title') }}</h3>
+            <p style="margin: 0 0 15px 0; color: #666;">{{ trans('seminar.visitor_qr_code_description') }}</p>
+            <a href="{{ $qrUrl }}" class="qr-button">
+                {{ trans('seminar.email_payment_verified_view_qr') }}
+            </a>
+            <p style="margin: 10px 0 0 0; font-size: 12px; color: #999;">
+                {{ trans('seminar.email_payment_verified_or_copy') }}:<br>
+                <code style="font-size: 11px; word-break: break-all;">{{ $qrUrl }}</code>
+            </p>
+        </div>
+        @endif
+
         <h3>{{ __('seminar.email_visitor_event_details') }}</h3>
         <p><strong>{{ __('seminar.email_visitor_dates') }}:</strong> 13-15 November 2026</p>
         <p><strong>{{ __('seminar.email_visitor_venue') }}:</strong> Jakarta Convention Center</p>

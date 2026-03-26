@@ -201,6 +201,26 @@ return [
     'email_visitor_bring_item_3' => 'ID Pengunjung Anda',
     'email_visitor_looking_forward' => 'Kami menantikan kehadiran Anda di Jakarta Dental Exhibition 2026!',
 
+    // Visitor QR Code
+    'visitor_qr_code_title' => 'Kode QR Anda untuk Check-In',
+    'visitor_qr_code_description' => 'Tunjukkan kode QR ini di lokasi acara untuk check-in cepat. Anda juga dapat menemukannya di email konfirmasi Anda.',
+    'visitor_qr_code_scan_instruction' => 'Pindai kode QR ini di pintu masuk lokasi acara',
+    'visitor_details' => 'Detail Pengunjung',
+    'visitor_qr_scanned' => 'Sudah Check-In',
+    'visitor_qr_not_scanned' => 'Belum Check-In',
+    'visitor_verification_title' => 'Verifikasi Kehadiran Pengunjung',
+    'visitor_already_scanned' => 'Pengunjung Sudah Check-In',
+    'visitor_already_scanned_message' => 'Pengunjung ini sudah melakukan check-in. Kode QR hanya dapat digunakan sekali.',
+    'scanned_at' => 'Check-in pada',
+    'confirm_visitor_attendance' => 'Konfirmasi Kehadiran',
+    'processing' => 'Memproses',
+    'admin_only_action' => 'Tindakan ini hanya untuk administrator',
+    'visitor_check_in_success' => 'Check-In Berhasil!',
+    'visitor_check_in_success_message' => 'Pengunjung telah berhasil check-in.',
+    'visitor_attendance_confirmed' => 'Kehadiran Terkonfirmasi',
+    'login_required' => 'Silakan login untuk melakukan tindakan ini',
+    'admin_only' => 'Tindakan ini memerlukan hak administrator',
+
     // Payment Email - Rejected
     'email_payment_rejected_title' => 'Masalah Verifikasi Pembayaran',
     'email_payment_rejected_greeting' => 'Yth',

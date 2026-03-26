@@ -201,6 +201,26 @@ return [
     'email_visitor_bring_item_3' => 'Your Visitor ID',
     'email_visitor_looking_forward' => 'We look forward to seeing you at Jakarta Dental Exhibition 2026!',
 
+    // Visitor QR Code
+    'visitor_qr_code_title' => 'Your QR Code for Check-In',
+    'visitor_qr_code_description' => 'Show this QR code at the venue for quick check-in. You can also find this in your confirmation email.',
+    'visitor_qr_code_scan_instruction' => 'Scan this QR code at the venue entrance',
+    'visitor_details' => 'Visitor Details',
+    'visitor_qr_scanned' => 'Already Checked In',
+    'visitor_qr_not_scanned' => 'Not Yet Checked In',
+    'visitor_verification_title' => 'Visitor Attendance Verification',
+    'visitor_already_scanned' => 'Visitor Already Checked In',
+    'visitor_already_scanned_message' => 'This visitor has already checked in. QR codes can only be used once.',
+    'scanned_at' => 'Checked in at',
+    'confirm_visitor_attendance' => 'Confirm Attendance',
+    'processing' => 'Processing',
+    'admin_only_action' => 'This action is restricted to administrators only',
+    'visitor_check_in_success' => 'Check-In Successful!',
+    'visitor_check_in_success_message' => 'Visitor has been successfully checked in.',
+    'visitor_attendance_confirmed' => 'Attendance Confirmed',
+    'login_required' => 'Please login to perform this action',
+    'admin_only' => 'This action requires administrator privileges',
+
     // Payment Email - Rejected
     'email_payment_rejected_title' => 'Payment Verification Issue',
     'email_payment_rejected_greeting' => 'Dear',
