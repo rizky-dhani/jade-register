@@ -23,7 +23,7 @@
 </head>
 <body>
     <div class="header">
-        <img src="{{ asset('assets/images/JADE_PDGI_Light.webp') }}" alt="JADE" style="max-height: 144px; margin: 0 auto; display: block;">
+        <img src="{{ asset('assets/images/JADE_PDGI_LightBG.webp') }}" alt="JADE" style="max-height: 144px; margin: 0 auto; display: block;">
     </div>
     
     <div class="content">

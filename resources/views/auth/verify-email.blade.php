@@ -9,7 +9,7 @@
 <body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
     <div class="max-w-md w-full bg-white rounded-lg shadow-lg p-8">
         <div class="text-center mb-6">
-            <img src="{{ asset('assets/images/JADE_PDGI_Light.webp') }}" alt="JADE" class="h-24 mx-auto mb-4">
+            <img src="{{ asset('assets/images/JADE_PDGI_LightBG.webp') }}" alt="JADE" class="h-24 mx-auto mb-4">
             <h1 class="text-2xl font-bold text-gray-800">{{ __('seminar.email_verify_important') }}</h1>
         </div>
 

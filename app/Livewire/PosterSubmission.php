@@ -38,6 +38,9 @@ class PosterSubmission extends Component
 
     public bool $canSubmit = false;
 
+    #[Url(as: 'lang', keep: true)]
+    public string $locale = 'id';
+
     protected $rules = [
         'title' => 'required|string|max:255',
         'poster_category_id' => 'required|integer|exists:poster_categories,id',
@@ -77,6 +80,21 @@ class PosterSubmission extends Component
             ->first();
 
         $this->canSubmit = $registration !== null;
+    }
+
+    public function setLocale(string $locale): void
+    {
+        if (in_array($locale, ['en', 'id'])) {
+            $this->locale = $locale;
+            App::setLocale($locale);
+            $this->dispatch('locale-changed', locale: $locale);
+        }
+    }
+
+    public function updatedLocale(): void
+    {
+        $this->locale = in_array($this->locale, ['en', 'id']) ? $this->locale : 'en';
+        App::setLocale($this->locale);
     }
 
     public function render()

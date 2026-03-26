@@ -10,15 +10,15 @@
         .logo img { max-height: 144px; width: auto; }
         .content { padding: 20px 0; }
         .footer { text-align: center; padding: 20px 0; border-top: 1px solid #ddd; margin-top: 20px; font-size: 12px; color: #666; }
-        .button { display: inline-block; padding: 14px 28px; background: #4E397C; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; margin: 20px 0; }
-        .button:hover { background: #3d2d62; }
+        .button { display: inline-block; padding: 14px 28px; background: #ffffff; color: #000000; text-decoration: none; border-radius: 5px; font-weight: bold; margin: 20px 0; border: 2px solid #000000; }
+        .button:hover { background: #f0f0f0; }
         .info-box { background: #f9f9f9; padding: 15px; border-radius: 5px; margin: 15px 0; }
         .warning { background: #fff3cd; padding: 15px; border-radius: 5px; margin: 15px 0; border-left: 4px solid #ffc107; }
     </style>
 </head>
 <body>
     <div class="header">
-        <img src="{{ asset('assets/images/JADE_PDGI_Light.webp') }}" alt="JADE" style="max-height: 144px; margin: 0 auto; display: block;">
+        <img src="{{ asset('assets/images/JADE_PDGI_LightBG.webp') }}" alt="JADE" style="max-height: 144px; margin: 0 auto; display: block;">
     </div>
     
     <div class="content">

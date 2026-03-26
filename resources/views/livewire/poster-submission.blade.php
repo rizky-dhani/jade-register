@@ -1,4 +1,12 @@
-<div class="max-w-3xl mx-auto p-6">
+<div class="max-w-3xl mx-auto p-6" x-data="{ locale: @entangle('locale') }" x-init="
+    const savedLocale = localStorage.getItem('jade_locale');
+    if (savedLocale && ['en', 'id'].includes(savedLocale)) {
+        locale = savedLocale;
+    }
+    $watch('locale', value => {
+        localStorage.setItem('jade_locale', value);
+    });
+">
     <div class="text-center mb-8">
         <div class="flex items-center justify-center gap-6 mb-4">
             <img src="{{ asset('assets/images/Jade_Logo.webp') }}" alt="Jakarta Dental Exhibition 2026" class="h-24">
@@ -22,6 +30,25 @@
                 </div>
             @else
                 <form wire:submit.prevent="submit" class="space-y-6">
+                    {{-- Language Selector --}}
+                    <div class="flex justify-end">
+                        <div class="inline-flex rounded-lg border border-gray-300 bg-white">
+                            <button
+                                type="button"
+                                wire:click="setLocale('en')"
+                                class="px-4 py-2 text-sm font-medium rounded-l-lg transition-colors {{ $locale === 'en' ? 'bg-blue-600 text-white' : 'text-gray-700 hover:bg-gray-100' }}"
+                            >
+                                {{ __('seminar.english') }}
+                            </button>
+                            <button
+                                type="button"
+                                wire:click="setLocale('id')"
+                                class="px-4 py-2 text-sm font-medium rounded-r-lg transition-colors {{ $locale === 'id' ? 'bg-blue-600 text-white' : 'text-gray-700 hover:bg-gray-100' }}"
+                            >
+                                {{ __('seminar.bahasa') }}
+                            </button>
+                        </div>
+                    </div>
                     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                         <h2 class="text-xl font-semibold text-gray-800 mb-4">{{ __('seminar.poster_details_section') }}</h2>
                         
