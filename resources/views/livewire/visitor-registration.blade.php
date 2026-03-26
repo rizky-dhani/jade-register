@@ -12,7 +12,19 @@
             </svg>
             <h2 class="text-2xl font-bold text-green-800 mb-2">{{ __('seminar.visitor_registration_success_title') }}</h2>
             <p class="text-green-700 mb-4">{{ __('seminar.visitor_registration_thank_you') }}, {{ $visitor->name }}!</p>
-            <p class="text-gray-600">{{ __('seminar.visitor_confirmation_email_sent') }} {{ $visitor->email }}</p>
+            <p class="text-gray-600 mb-6">{{ __('seminar.visitor_confirmation_email_sent') }} {{ $visitor->email }}</p>
+            
+            {{-- QR Code Display --}}
+            @if($visitor->barcode)
+                <div class="mt-6 pt-6 border-t border-green-200">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">{{ __('seminar.visitor_qr_code_title') }}</h3>
+                    <p class="text-gray-600 mb-4">{{ __('seminar.visitor_qr_code_description') }}</p>
+                    <div class="bg-white p-4 rounded-lg inline-block shadow-md">
+                        <img src="{{ asset('storage/'.$visitor->barcode) }}" alt="QR Code" class="w-48 h-48">
+                    </div>
+                    <p class="text-sm text-gray-500 mt-4 text-center">{{ __('seminar.visitor_qr_code_scan_instruction') }}</p>
+                </div>
+            @endif
         </div>
     @else
         <form wire:submit.prevent="submit" class="space-y-6">
