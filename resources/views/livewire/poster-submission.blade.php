@@ -17,7 +17,7 @@
     </div>
 
     @auth
-        @if($canSubmit)
+        @if($canSubmit || $this->isSuperAdmin())
             @if($isSuccess)
                 <div class="bg-green-50 border border-green-200 rounded-lg p-6 text-center">
                     <svg class="w-16 h-16 text-green-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

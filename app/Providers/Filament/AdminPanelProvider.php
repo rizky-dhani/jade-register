@@ -62,6 +62,11 @@ class AdminPanelProvider extends PanelProvider
                     ->icon('heroicon-o-hand-raised')
                     ->group('Registrations')
                     ->visible(fn () => auth()->user()?->hasRole('Participant')),
+                NavigationItem::make('Poster Registrations')
+                    ->url(fn () => route('poster.submit'))
+                    ->icon('heroicon-o-photo')
+                    ->group('Registrations')
+                    ->visible(fn () => auth()->user()?->hasRole('Super Admin')),
                 NavigationItem::make('Poster Registration')
                     ->url(fn () => route('poster.submit'))
                     ->icon('heroicon-o-photo')

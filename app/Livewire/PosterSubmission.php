@@ -5,6 +5,8 @@ namespace App\Livewire;
 use App\Models\PosterCategory;
 use App\Models\PosterSubmission as PosterSubmissionModel;
 use App\Models\PosterTopic;
+use Illuminate\Support\Facades\App;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -73,6 +75,12 @@ class PosterSubmission extends Component
             return;
         }
 
+        if ($user->hasRole('Super Admin')) {
+            $this->canSubmit = true;
+
+            return;
+        }
+
         $registration = $user->seminarRegistrations()
             ->where('wants_poster_competition', true)
             ->where('payment_status', 'verified')
@@ -80,6 +88,13 @@ class PosterSubmission extends Component
             ->first();
 
         $this->canSubmit = $registration !== null;
+    }
+
+    public function isSuperAdmin(): bool
+    {
+        $user = auth()->user();
+
+        return $user && $user->hasRole('Super Admin');
     }
 
     public function setLocale(string $locale): void
@@ -93,7 +108,7 @@ class PosterSubmission extends Component
 
     public function updatedLocale(): void
     {
-        $this->locale = in_array($this->locale, ['en', 'id']) ? $this->locale : 'en';
+        $this->locale = in_array($this->locale, ['en', 'id']) ? $this->locale : 'id';
         App::setLocale($this->locale);
     }
 
@@ -113,6 +128,12 @@ class PosterSubmission extends Component
         $this->validate();
 
         $user = auth()->user();
+
+        if ($user->hasRole('Super Admin')) {
+            $this->submitAsSuperAdmin($user);
+
+            return;
+        }
 
         $registration = $user->seminarRegistrations()
             ->where('wants_poster_competition', true)
@@ -134,6 +155,33 @@ class PosterSubmission extends Component
         $submission = PosterSubmissionModel::create([
             'user_id' => $user->getKey(),
             'seminar_registration_id' => $registration->getKey(),
+            'poster_category_id' => $this->poster_category_id,
+            'poster_topic_id' => $this->poster_topic_id,
+            'title' => $this->title,
+            'abstract_text' => $this->abstract_text,
+            'author_names' => $this->author_names,
+            'author_emails' => $this->author_emails,
+            'affiliation' => $this->affiliation,
+            'presenter_name' => $this->presenter_name,
+            'poster_file_path' => $posterFilePath,
+            'status' => $posterFilePath ? 'submitted' : 'draft',
+            'submitted_at' => $posterFilePath ? now() : null,
+        ]);
+
+        $this->submission = $submission;
+        $this->isSuccess = true;
+    }
+
+    private function submitAsSuperAdmin($user): void
+    {
+        $posterFilePath = null;
+        if ($this->poster_file) {
+            $posterFilePath = $this->poster_file->store('posters', 'public');
+        }
+
+        $submission = PosterSubmissionModel::create([
+            'user_id' => $user->getKey(),
+            'seminar_registration_id' => null,
             'poster_category_id' => $this->poster_category_id,
             'poster_topic_id' => $this->poster_topic_id,
             'title' => $this->title,
