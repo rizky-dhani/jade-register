@@ -55,28 +55,17 @@ class AdminPanelProvider extends PanelProvider
                 NavigationItem::make('Seminar Registration')
                     ->url(fn () => route('register.seminar'))
                     ->icon('heroicon-o-academic-cap')
-                    ->group('Registrations')
-                    ->visible(fn () => auth()->user()?->hasRole('Participant')),
-                NavigationItem::make('Hands On Registration')
-                    ->url(fn () => route('register.seminar').'#hands-on')
-                    ->icon('heroicon-o-hand-raised')
-                    ->group('Registrations')
-                    ->visible(fn () => auth()->user()?->hasRole('Participant')),
-                NavigationItem::make('Poster Registrations')
-                    ->url(fn () => route('poster.submit'))
-                    ->icon('heroicon-o-photo')
-                    ->group('Registrations')
-                    ->visible(fn () => auth()->user()?->hasRole('Super Admin')),
-                NavigationItem::make('Poster Registration')
-                    ->url(fn () => route('poster.submit'))
-                    ->icon('heroicon-o-photo')
-                    ->group('Competitions')
-                    ->visible(fn () => auth()->user()?->hasRole('Participant') && auth()->user()?->seminarRegistrations()->exists()),
+                    ->group('Registrations'),
+                NavigationItem::make('Visitor Registration')
+                    ->url(fn () => route('register.visitor'))
+                    ->icon('heroicon-o-users')
+                    ->group('Registrations'),
             ])
             ->navigationGroups([
                 'Registrations',
                 'Competitions',
                 'Events',
+                'Data',
                 'Settings',
             ])
             ->middleware([

@@ -62,6 +62,7 @@ class PosterSubmission extends Component
 
     public function mount(): void
     {
+        App::setLocale($this->locale);
         $this->checkAccess();
     }
 

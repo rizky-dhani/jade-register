@@ -18,7 +18,7 @@ class HandsOnRegistrationResource extends Resource
 {
     protected static ?string $model = HandsOnRegistration::class;
 
-    protected static \UnitEnum|string|null $navigationGroup = 'Registrations';
+    protected static \UnitEnum|string|null $navigationGroup = 'Data';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedHandRaised;
 

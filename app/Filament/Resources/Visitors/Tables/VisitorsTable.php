@@ -52,14 +52,14 @@ class VisitorsTable
                 DeleteAction::make(),
                 Action::make('qrCode')
                     ->label('View QR')
-                    ->icon(Heroicon::Qrcode)
+                    ->icon(Heroicon::QrCode)
                     ->color('primary')
                     ->url(fn (Visitor $record): ?string => $record->qr_token ? app(VisitorQrTokenService::class)->getQrUrl($record) : null)
                     ->openUrlInNewTab()
                     ->hidden(fn (Visitor $record): bool => ! $record->qr_token),
                 Action::make('confirmAttendance')
                     ->label('Confirm Attendance')
-                    ->icon(Heroicon::SolidCheckCircle)
+                    ->icon(Heroicon::CheckCircle)
                     ->color('success')
                     ->requiresConfirmation()
                     ->modalHeading('Confirm Visitor Attendance')

@@ -16,7 +16,7 @@ class VisitorResource extends Resource
 {
     protected static ?string $model = Visitor::class;
 
-    protected static \UnitEnum|string|null $navigationGroup = 'Registrations';
+    protected static \UnitEnum|string|null $navigationGroup = 'Data';
 
     protected static ?int $navigationGroupSort = 1;
 
