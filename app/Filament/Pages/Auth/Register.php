@@ -93,6 +93,7 @@ class Register extends BaseRegister
     {
         return Select::make('country_id')
             ->label(__('seminar.country'))
+            ->validationAttribute(__('seminar.country'))
             ->options(Country::orderBy('name')->pluck('name', 'id'))
             ->searchable()
             ->preload()
@@ -104,6 +105,7 @@ class Register extends BaseRegister
     {
         return TextInput::make('name')
             ->label(__('seminar.name_str'))
+            ->validationAttribute(__('seminar.name_str'))
             ->required()
             ->maxLength(255)
             ->autofocus()
@@ -114,6 +116,7 @@ class Register extends BaseRegister
     {
         return TextInput::make('name')
             ->label(__('seminar.name'))
+            ->validationAttribute(__('seminar.name'))
             ->required()
             ->maxLength(255)
             ->visible(fn (Get $get): bool => $get('country_id') && ! $this->isIndonesia($get));
@@ -123,6 +126,7 @@ class Register extends BaseRegister
     {
         return TextInput::make('email')
             ->label(__('seminar.email_plataran'))
+            ->validationAttribute(__('seminar.email_plataran'))
             ->email()
             ->required()
             ->maxLength(255)
@@ -134,6 +138,7 @@ class Register extends BaseRegister
     {
         return TextInput::make('email')
             ->label(__('seminar.email'))
+            ->validationAttribute(__('seminar.email'))
             ->email()
             ->required()
             ->maxLength(255)
@@ -145,6 +150,7 @@ class Register extends BaseRegister
     {
         return TextInput::make('password')
             ->label(__('seminar.password'))
+            ->validationAttribute(__('seminar.password'))
             ->password()
             ->revealable(filament()->arePasswordsRevealable())
             ->required()
@@ -167,6 +173,7 @@ class Register extends BaseRegister
     {
         return TextInput::make('phone')
             ->label(__('seminar.whatsapp_number'))
+            ->validationAttribute(__('seminar.whatsapp_number'))
             ->tel()
             ->required()
             ->maxLength(255)
@@ -177,6 +184,7 @@ class Register extends BaseRegister
     {
         return TextInput::make('phone')
             ->label(__('seminar.whatsapp_number'))
+            ->validationAttribute(__('seminar.whatsapp_number'))
             ->tel()
             ->required()
             ->maxLength(255)
@@ -187,6 +195,7 @@ class Register extends BaseRegister
     {
         return TextInput::make('name_license')
             ->label(__('seminar.name_plataran'))
+            ->validationAttribute(__('seminar.name_plataran'))
             ->required()
             ->maxLength(255)
             ->visible(fn (Get $get): bool => $get('country_id') && $this->isIndonesia($get));
@@ -196,6 +205,7 @@ class Register extends BaseRegister
     {
         return TextInput::make('nik')
             ->label(__('seminar.nik'))
+            ->validationAttribute(__('seminar.nik'))
             ->required()
             ->maxLength(255)
             ->visible(fn (Get $get): bool => $get('country_id') && $this->isIndonesia($get));
@@ -205,6 +215,7 @@ class Register extends BaseRegister
     {
         return TextInput::make('pdgi_branch')
             ->label(__('seminar.pdgi_branch'))
+            ->validationAttribute(__('seminar.pdgi_branch'))
             ->required()
             ->maxLength(255)
             ->visible(fn (Get $get): bool => $get('country_id') && $this->isIndonesia($get));
@@ -214,6 +225,7 @@ class Register extends BaseRegister
     {
         return Select::make('kompetensi')
             ->label(__('seminar.competency'))
+            ->validationAttribute(__('seminar.competency'))
             ->options([
                 'Dokter Gigi Umum' => __('seminar.competency_gp'),
                 'Sp.KG' => __('seminar.competency_sp_kg'),
@@ -238,6 +250,7 @@ class Register extends BaseRegister
     {
         return Select::make('status')
             ->label(__('seminar.status'))
+            ->validationAttribute(__('seminar.status'))
             ->options([
                 'Dentist' => __('seminar.dentist'),
                 'Student' => __('seminar.student'),
