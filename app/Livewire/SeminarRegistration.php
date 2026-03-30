@@ -108,6 +108,11 @@ class SeminarRegistration extends Component
 
     public function mount(): void
     {
+        // Require authentication
+        if (! auth()->check()) {
+            return redirect()->route('filament.dashboard.auth.login');
+        }
+
         $this->locale = in_array($this->locale, ['en', 'id']) ? $this->locale : 'en';
         App::setLocale($this->locale);
 
