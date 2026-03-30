@@ -10,14 +10,12 @@ use Filament\Auth\Pages\Register as BaseRegister;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Validation\Rules\Password;
 use Livewire\Features\SupportRedirects\Redirector;
 
@@ -274,12 +272,6 @@ class Register extends BaseRegister
         try {
             $this->rateLimit(2);
         } catch (TooManyRequestsException $exception) {
-            $this->getRateLimitedNotification($exception)?->send();
-
-            return null;
-        }
-
-        if ($this->isRegisterRateLimited($this->data['email'] ?? '')) {
             return null;
         }
 
@@ -305,12 +297,6 @@ class Register extends BaseRegister
 
         $this->sendEmailVerificationNotification($user);
 
-        Notification::make()
-            ->title(__('auth.registration_successful'))
-            ->body(__('auth.check_email_verify'))
-            ->success()
-            ->send();
-
         return new class implements RegistrationResponse
         {
             public function toResponse($request): RedirectResponse|Redirector
@@ -333,43 +319,5 @@ class Register extends BaseRegister
         $user->notify(new VerifyEmail(
             Filament::getVerifyEmailUrl($user)
         ));
-    }
-
-    protected function getRateLimitedNotification(TooManyRequestsException $exception): ?Notification
-    {
-        return Notification::make()
-            ->title(__('filament-panels::auth/pages/register.notifications.throttled.title', [
-                'seconds' => $exception->secondsUntilAvailable,
-                'minutes' => $exception->minutesUntilAvailable,
-            ]))
-            ->body(array_key_exists('body', __('filament-panels::auth/pages/register.notifications.throttled') ?: []) ? __('filament-panels::auth/pages/register.notifications.throttled.body', [
-                'seconds' => $exception->secondsUntilAvailable,
-                'minutes' => $exception->minutesUntilAvailable,
-            ]) : null)
-            ->danger();
-    }
-
-    protected function isRegisterRateLimited(string $email): bool
-    {
-        if (blank($email)) {
-            return false;
-        }
-
-        $rateLimitingKey = 'filament-register:'.sha1($email);
-
-        if (RateLimiter::tooManyAttempts($rateLimitingKey, maxAttempts: 2)) {
-            $this->getRateLimitedNotification(new TooManyRequestsException(
-                static::class,
-                'register',
-                request()->ip(),
-                RateLimiter::availableIn($rateLimitingKey),
-            ))?->send();
-
-            return true;
-        }
-
-        RateLimiter::hit($rateLimitingKey);
-
-        return false;
     }
 }
