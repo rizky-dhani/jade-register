@@ -13,6 +13,10 @@ return [
     'redirecting_to_dashboard' => 'Mengarahkan ke dashboard dalam',
     'seconds' => 'detik',
 
+    // Login page alert
+    'login_alert_title' => 'Pendaftaran Diperlukan',
+    'login_alert_message' => 'Anda harus mendaftar terlebih dahulu sebelum mengakses halaman Pendaftaran Seminar & Hands On. Silakan buat akun untuk melanjutkan.',
+
     // Language selector
     'language' => 'Bahasa',
     'english' => 'English',

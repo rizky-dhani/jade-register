@@ -13,6 +13,10 @@ return [
     'redirecting_to_dashboard' => 'Redirecting to dashboard in',
     'seconds' => 'seconds',
 
+    // Login page alert
+    'login_alert_title' => 'Registration Required',
+    'login_alert_message' => 'You must register first before accessing the Seminar & Hands On Registration page. Please create an account to continue.',
+
     // Language selector
     'language' => 'Language',
     'english' => 'English',
