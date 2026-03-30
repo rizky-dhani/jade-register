@@ -27,7 +27,7 @@
                     <p class="text-green-700 mb-4">{{ __('seminar.poster_submitted_thank_you') }}, {{ auth()->user()->name }}!</p>
                     <p class="text-gray-600">{{ __('seminar.poster_submitted_your_poster') }} <strong>{{ $submission->title }}</strong></p>
                     <p class="text-gray-600 mt-2">{{ __('seminar.poster_submitted_status') }} <span class="font-semibold capitalize">{{ $submission->status }}</span></p>
-                    <p class="text-gray-500 mt-4 text-sm">Redirecting to dashboard in <span x-text="countdown"></span> seconds...</p>
+                    <p class="text-gray-500 mt-4 text-sm">{{ __('seminar.redirecting_to_dashboard') }} <span x-text="countdown"></span> {{ __('seminar.seconds') }}...</p>
                 </div>
             @else
                 <form wire:submit.prevent="submit" class="space-y-6">

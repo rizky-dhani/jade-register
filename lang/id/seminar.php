@@ -11,6 +11,7 @@ return [
     'success_message_2' => 'Rekaman jawaban silahkan cek di email.',
     'success_message_3' => 'Silahkan bergabung ke group WhatsApp: ',
     'redirecting_to_dashboard' => 'Mengarahkan ke dashboard dalam',
+    'seconds' => 'detik',
 
     // Language selector
     'language' => 'Bahasa',
