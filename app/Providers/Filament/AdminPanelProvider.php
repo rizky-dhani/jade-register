@@ -5,6 +5,7 @@ namespace App\Providers\Filament;
 use App\Filament\Pages\Auth\AuthLogin;
 use App\Filament\Pages\Auth\EmailVerification\EmailVerificationPrompt;
 use App\Filament\Pages\Auth\Register;
+use App\Filament\Widgets\RegistrationActions;
 use App\Filament\Widgets\SeminarParticipantCount;
 use App\Filament\Widgets\VisitorCount;
 use Filament\Http\Middleware\Authenticate;
@@ -48,6 +49,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
+                RegistrationActions::class,
                 VisitorCount::class,
                 SeminarParticipantCount::class,
             ])

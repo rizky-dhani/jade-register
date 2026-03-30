@@ -110,7 +110,9 @@ class SeminarRegistration extends Component
     {
         // Require authentication
         if (! auth()->check()) {
-            return redirect()->route('filament.dashboard.auth.login');
+            $this->redirectRoute('filament.dashboard.auth.login');
+
+            return;
         }
 
         $this->locale = in_array($this->locale, ['en', 'id']) ? $this->locale : 'en';
