@@ -59,15 +59,18 @@ class Register extends BaseRegister
     {
         return $schema
             ->components([
-                $this->getNameFormComponent(),
                 $this->getCountryFormComponent(),
+                $this->getNameFormComponent(),
+                $this->getNameInternationalFormComponent(),
                 $this->getNameLicenseFormComponent(),
                 $this->getNikFormComponent(),
                 $this->getPdgiBranchFormComponent(),
                 $this->getKompetensiFormComponent(),
                 $this->getStatusFormComponent(),
                 $this->getPhoneFormComponent(),
+                $this->getPhoneInternationalFormComponent(),
                 $this->getEmailFormComponent(),
+                $this->getEmailInternationalFormComponent(),
                 $this->getPasswordFormComponent(),
                 $this->getPasswordConfirmationFormComponent(),
             ]);
@@ -88,37 +91,59 @@ class Register extends BaseRegister
     protected function getCountryFormComponent(): Component
     {
         return Select::make('country_id')
-            ->label(__('auth.country'))
+            ->label(__('seminar.country'))
             ->options(Country::orderBy('name')->pluck('name', 'id'))
             ->searchable()
             ->preload()
             ->live()
-            ->nullable();
+            ->required();
     }
 
     protected function getNameFormComponent(): Component
     {
         return TextInput::make('name')
-            ->label(__('auth.name'))
+            ->label(__('seminar.name_str'))
             ->required()
             ->maxLength(255)
-            ->autofocus();
+            ->autofocus()
+            ->visible(fn (Get $get): bool => $get('country_id') && $this->isIndonesia($get));
+    }
+
+    protected function getNameInternationalFormComponent(): Component
+    {
+        return TextInput::make('name')
+            ->label(__('seminar.name'))
+            ->required()
+            ->maxLength(255)
+            ->visible(fn (Get $get): bool => $get('country_id') && ! $this->isIndonesia($get));
     }
 
     protected function getEmailFormComponent(): Component
     {
         return TextInput::make('email')
-            ->label(__('auth.email'))
+            ->label(__('seminar.email_plataran'))
             ->email()
             ->required()
             ->maxLength(255)
-            ->unique($this->getUserModel());
+            ->unique($this->getUserModel())
+            ->visible(fn (Get $get): bool => $get('country_id') && $this->isIndonesia($get));
+    }
+
+    protected function getEmailInternationalFormComponent(): Component
+    {
+        return TextInput::make('email')
+            ->label(__('seminar.email'))
+            ->email()
+            ->required()
+            ->maxLength(255)
+            ->unique($this->getUserModel())
+            ->visible(fn (Get $get): bool => $get('country_id') && ! $this->isIndonesia($get));
     }
 
     protected function getPasswordFormComponent(): Component
     {
         return TextInput::make('password')
-            ->label(__('auth.password'))
+            ->label(__('seminar.password'))
             ->password()
             ->revealable(filament()->arePasswordsRevealable())
             ->required()
@@ -129,84 +154,95 @@ class Register extends BaseRegister
     protected function getPasswordConfirmationFormComponent(): Component
     {
         return TextInput::make('passwordConfirmation')
-            ->label(__('auth.confirm_password'))
+            ->label(__('seminar.confirm_password'))
             ->password()
             ->revealable(filament()->arePasswordsRevealable())
             ->required()
             ->same('password')
-            ->validationAttribute(__('auth.confirm_password'));
+            ->validationAttribute(__('seminar.confirm_password'));
     }
 
     protected function getPhoneFormComponent(): Component
     {
         return TextInput::make('phone')
-            ->label(__('auth.whatsapp_number'))
+            ->label(__('seminar.whatsapp_number'))
             ->tel()
+            ->required()
             ->maxLength(255)
-            ->nullable();
+            ->visible(fn (Get $get): bool => $get('country_id') && $this->isIndonesia($get));
+    }
+
+    protected function getPhoneInternationalFormComponent(): Component
+    {
+        return TextInput::make('phone')
+            ->label(__('seminar.whatsapp_number'))
+            ->tel()
+            ->required()
+            ->maxLength(255)
+            ->visible(fn (Get $get): bool => $get('country_id') && ! $this->isIndonesia($get));
     }
 
     protected function getNameLicenseFormComponent(): Component
     {
         return TextInput::make('name_license')
-            ->label(__('auth.name_plataran'))
+            ->label(__('seminar.name_plataran'))
+            ->required()
             ->maxLength(255)
-            ->visible(fn (Get $get): bool => $get('country_id') && $this->isIndonesia($get))
-            ->nullable();
+            ->visible(fn (Get $get): bool => $get('country_id') && $this->isIndonesia($get));
     }
 
     protected function getNikFormComponent(): Component
     {
         return TextInput::make('nik')
-            ->label(__('auth.nik'))
+            ->label(__('seminar.nik'))
+            ->required()
             ->maxLength(255)
-            ->visible(fn (Get $get): bool => $get('country_id') && $this->isIndonesia($get))
-            ->nullable();
+            ->visible(fn (Get $get): bool => $get('country_id') && $this->isIndonesia($get));
     }
 
     protected function getPdgiBranchFormComponent(): Component
     {
         return TextInput::make('pdgi_branch')
-            ->label(__('auth.pdgi_branch'))
+            ->label(__('seminar.pdgi_branch'))
+            ->required()
             ->maxLength(255)
-            ->visible(fn (Get $get): bool => $get('country_id') && $this->isIndonesia($get))
-            ->nullable();
+            ->visible(fn (Get $get): bool => $get('country_id') && $this->isIndonesia($get));
     }
 
     protected function getKompetensiFormComponent(): Component
     {
         return Select::make('kompetensi')
-            ->label(__('auth.competency'))
+            ->label(__('seminar.competency'))
             ->options([
-                'Dokter Gigi Umum' => __('auth.competency_gp'),
-                'Sp.KG' => __('auth.competency_sp_kg'),
-                'Sp.KGA' => __('auth.competency_sp_kga'),
-                'Sp.Pros' => __('auth.competency_sp_pros'),
-                'Sp.B.M.M' => __('auth.competency_sp_bmm'),
-                'Sp.Perio' => __('auth.competency_sp_perio'),
-                'Sp.Ort' => __('auth.competency_sp_ort'),
-                'Sp.RKG' => __('auth.competency_sp_rkg'),
-                'Sp.PM' => __('auth.competency_sp_pm'),
-                'Sp.OF' => __('auth.competency_sp_of'),
-                'Sp.PMM' => __('auth.competency_sp_pmm'),
-                'Mahasiswa Kedokteran Gigi' => __('auth.competency_dental_student'),
-                'drg Internship' => __('auth.competency_dentist_internship'),
+                'Dokter Gigi Umum' => __('seminar.competency_gp'),
+                'Sp.KG' => __('seminar.competency_sp_kg'),
+                'Sp.KGA' => __('seminar.competency_sp_kga'),
+                'Sp.Pros' => __('seminar.competency_sp_pros'),
+                'Sp.B.M.M' => __('seminar.competency_sp_bmm'),
+                'Sp.Perio' => __('seminar.competency_sp_perio'),
+                'Sp.Ort' => __('seminar.competency_sp_ort'),
+                'Sp.RKG' => __('seminar.competency_sp_rkg'),
+                'Sp.PM' => __('seminar.competency_sp_pm'),
+                'Sp.OF' => __('seminar.competency_sp_of'),
+                'Sp.PMM' => __('seminar.competency_sp_pmm'),
+                'Mahasiswa Kedokteran Gigi' => __('seminar.competency_dental_student'),
+                'drg Internship' => __('seminar.competency_dentist_internship'),
             ])
+            ->required()
             ->visible(fn (Get $get): bool => $get('country_id') && $this->isIndonesia($get))
-            ->nullable()
             ->preload();
     }
 
     protected function getStatusFormComponent(): Component
     {
         return Select::make('status')
-            ->label(__('auth.status'))
+            ->label(__('seminar.status'))
             ->options([
-                'Dentist' => __('auth.dentist'),
-                'Student' => __('auth.student'),
+                'Dentist' => __('seminar.dentist'),
+                'Student' => __('seminar.student'),
             ])
+            ->required()
             ->visible(fn (Get $get): bool => $get('country_id') && ! $this->isIndonesia($get))
-            ->nullable()
             ->preload();
     }
 
