@@ -4,6 +4,7 @@ namespace App\Filament\Pages\Auth;
 
 use App\Models\Country;
 use App\Notifications\VerifyEmail;
+use DanHarrin\LivewireRateLimiting\Exceptions\TooManyRequestsException;
 use Filament\Auth\Http\Responses\Contracts\RegistrationResponse;
 use Filament\Auth\Pages\Register as BaseRegister;
 use Filament\Facades\Filament;
@@ -220,6 +221,18 @@ class Register extends BaseRegister
 
     public function register(): ?RegistrationResponse
     {
+        try {
+            $this->rateLimit(2);
+        } catch (TooManyRequestsException $exception) {
+            $this->getRateLimitedNotification($exception)?->send();
+
+            return null;
+        }
+
+        if ($this->isRegisterRateLimited($this->data['email'] ?? '')) {
+            return null;
+        }
+
         $user = $this->wrapInDatabaseTransaction(function () {
             $this->callHook('beforeValidate');
 
@@ -270,5 +283,43 @@ class Register extends BaseRegister
         $user->notify(new VerifyEmail(
             Filament::getVerifyEmailUrl($user)
         ));
+    }
+
+    protected function getRateLimitedNotification(TooManyRequestsException $exception): ?Notification
+    {
+        return Notification::make()
+            ->title(__('filament-panels::auth/pages/register.notifications.throttled.title', [
+                'seconds' => $exception->secondsUntilAvailable,
+                'minutes' => $exception->minutesUntilAvailable,
+            ]))
+            ->body(array_key_exists('body', __('filament-panels::auth/pages/register.notifications.throttled') ?: []) ? __('filament-panels::auth/pages/register.notifications.throttled.body', [
+                'seconds' => $exception->secondsUntilAvailable,
+                'minutes' => $exception->minutesUntilAvailable,
+            ]) : null)
+            ->danger();
+    }
+
+    protected function isRegisterRateLimited(string $email): bool
+    {
+        if (blank($email)) {
+            return false;
+        }
+
+        $rateLimitingKey = 'filament-register:'.sha1($email);
+
+        if (RateLimiter::tooManyAttempts($rateLimitingKey, maxAttempts: 2)) {
+            $this->getRateLimitedNotification(new TooManyRequestsException(
+                static::class,
+                'register',
+                request()->ip(),
+                RateLimiter::availableIn($rateLimitingKey),
+            ))?->send();
+
+            return true;
+        }
+
+        RateLimiter::hit($rateLimitingKey);
+
+        return false;
     }
 }

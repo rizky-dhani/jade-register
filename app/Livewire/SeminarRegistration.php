@@ -265,7 +265,6 @@ class SeminarRegistration extends Component
             'currency' => $package->currency,
             'payment_proof_path' => $path,
             'payment_status' => 'pending',
-            'wants_poster_competition' => $this->is_local ? $this->wants_poster_competition : false,
             'wants_hands_on' => $this->wants_hands_on,
             'hands_on_total_amount' => $this->handsOnTotalPrice,
             'user_id' => $userId,

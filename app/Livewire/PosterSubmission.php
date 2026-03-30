@@ -83,7 +83,6 @@ class PosterSubmission extends Component
         }
 
         $registration = $user->seminarRegistrations()
-            ->where('wants_poster_competition', true)
             ->where('payment_status', 'verified')
             ->latest()
             ->first();
@@ -137,7 +136,6 @@ class PosterSubmission extends Component
         }
 
         $registration = $user->seminarRegistrations()
-            ->where('wants_poster_competition', true)
             ->where('payment_status', 'verified')
             ->latest()
             ->first();

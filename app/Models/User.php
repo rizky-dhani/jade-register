@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Notifications\VerifyEmail;
+use Filament\Facades\Filament;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
