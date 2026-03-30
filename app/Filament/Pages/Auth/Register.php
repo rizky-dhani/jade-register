@@ -297,6 +297,12 @@ class Register extends BaseRegister
 
         $this->sendEmailVerificationNotification($user);
 
+        Notification::make()
+            ->title(__('auth.registration_successful'))
+            ->body(__('auth.check_email_verify'))
+            ->success()
+            ->send();
+
         return new class implements RegistrationResponse
         {
             public function toResponse($request): RedirectResponse|Redirector
