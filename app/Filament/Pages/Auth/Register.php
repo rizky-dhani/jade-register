@@ -17,6 +17,7 @@ use Filament\Schemas\Schema;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Validation\Rules\Password;
 use Livewire\Features\SupportRedirects\Redirector;
 
