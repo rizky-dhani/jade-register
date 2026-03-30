@@ -9,7 +9,8 @@ class PosterEvaluationPolicy
 {
     public function viewAny(User $user): bool
     {
-        return $user->can('manage poster submissions');
+        return $user->can('manage poster submissions')
+            || $user->can('view poster submissions');
     }
 
     public function view(User $user, PosterEvaluation $posterEvaluation): bool

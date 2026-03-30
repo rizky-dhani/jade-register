@@ -6,6 +6,7 @@ use App\Models\PosterEvaluation;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class PosterEvaluationsRelationManager extends RelationManager
 {
@@ -13,10 +14,22 @@ class PosterEvaluationsRelationManager extends RelationManager
 
     public function table(Table $table): Table
     {
+        $user = auth()->user();
+        $isSuperAdmin = $user?->hasRole('Super Admin') ?? false;
+
         return $table
+            ->modifyQueryUsing(function (Builder $query) {
+                $user = auth()->user();
+
+                // Judges can only see their own evaluations
+                if ($user && ! $user->hasRole('Super Admin')) {
+                    $query->where('judge_id', $user->getKey());
+                }
+            })
             ->columns([
                 Tables\Columns\TextColumn::make('judge.name')
-                    ->label('Judge'),
+                    ->label('Judge')
+                    ->visible($isSuperAdmin),
                 Tables\Columns\TextColumn::make('content_score')
                     ->label('Content')
                     ->formatStateUsing(fn (int $state): string => "{$state}/".PosterEvaluation::MAX_CONTENT_SCORE),
@@ -36,15 +49,24 @@ class PosterEvaluationsRelationManager extends RelationManager
                     ->dateTime('d M Y, H:i'),
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                Tables\Actions\CreateAction::make()
+                    ->mutateFormDataUsing(function (array $data): array {
+                        $data['judge_id'] = auth()->id();
+
+                        return $data;
+                    })
+                    ->visible(fn () => $user?->can('evaluate poster submissions') ?? false),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->visible(fn ($record) => $isSuperAdmin || $record->judge_id === $user?->getKey()),
+                Tables\Actions\DeleteAction::make()
+                    ->visible(fn () => $isSuperAdmin),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->visible(fn () => $isSuperAdmin),
                 ]),
             ]);
     }

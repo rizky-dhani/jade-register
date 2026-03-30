@@ -5,6 +5,7 @@ namespace App\Filament\Resources\PosterEvaluations\Schemas;
 use App\Models\PosterEvaluation;
 use App\Models\PosterSubmission;
 use App\Models\User;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -15,6 +16,9 @@ class PosterEvaluationForm
 {
     public static function configure(Schema $schema): Schema
     {
+        $user = auth()->user();
+        $isSuperAdmin = $user?->hasRole('Super Admin') ?? false;
+
         return $schema
             ->components([
                 Section::make('Evaluation Details')
@@ -23,11 +27,15 @@ class PosterEvaluationForm
                         Select::make('poster_submission_id')
                             ->label('Poster Submission')
                             ->options(PosterSubmission::pluck('title', 'id'))
-                            ->required(),
-                        Select::make('judge_id')
-                            ->label('Judge')
-                            ->options(User::pluck('name', 'id'))
-                            ->required(),
+                            ->required()
+                            ->searchable(),
+                        $isSuperAdmin
+                            ? Select::make('judge_id')
+                                ->label('Judge')
+                                ->options(User::pluck('name', 'id'))
+                                ->required()
+                            : Hidden::make('judge_id')
+                                ->default($user?->getKey()),
                     ]),
                 Section::make('Scores')
                     ->description('Score each criterion from 0 to the maximum value.')

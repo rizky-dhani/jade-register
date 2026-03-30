@@ -19,7 +19,7 @@
     @auth
         @if($canSubmit || $this->isSuperAdmin())
             @if($isSuccess)
-                <div class="bg-green-50 border border-green-200 rounded-lg p-6 text-center">
+                <div class="bg-green-50 border border-green-200 rounded-lg p-6 text-center" x-data="{ countdown: 5 }" x-init="setInterval(() => { countdown--; if (countdown <= 0) { window.location.href = '{{ route('filament.dashboard.pages.dashboard') }}'; } }, 1000)">
                     <svg class="w-16 h-16 text-green-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                     </svg>
@@ -27,6 +27,7 @@
                     <p class="text-green-700 mb-4">{{ __('seminar.poster_submitted_thank_you') }}, {{ auth()->user()->name }}!</p>
                     <p class="text-gray-600">{{ __('seminar.poster_submitted_your_poster') }} <strong>{{ $submission->title }}</strong></p>
                     <p class="text-gray-600 mt-2">{{ __('seminar.poster_submitted_status') }} <span class="font-semibold capitalize">{{ $submission->status }}</span></p>
+                    <p class="text-gray-500 mt-4 text-sm">Redirecting to dashboard in <span x-text="countdown"></span> seconds...</p>
                 </div>
             @else
                 <form wire:submit.prevent="submit" class="space-y-6">
