@@ -5,16 +5,13 @@ namespace App\Livewire;
 use App\Models\Visitor;
 use App\Services\RegistrationService;
 use App\Services\VisitorQrTokenService;
-use DanHarrin\LivewireRateLimiting\Exceptions\TooManyRequestsException;
-use DanHarrin\LivewireRateLimiting\WithRateLimiting;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\App;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 
 class VisitorRegistration extends Component
 {
-    use WithRateLimiting;
-
     public string $name = '';
 
     public string $email = '';
@@ -25,6 +22,8 @@ class VisitorRegistration extends Component
 
     public bool $isSuccess = false;
 
+    public bool $isSubmitting = false;
+
     public ?Visitor $visitor = null;
 
     #[Url(as: 'lang', keep: true)]
@@ -34,7 +33,7 @@ class VisitorRegistration extends Component
 
     protected $rules = [
         'name' => 'required|string|max:255',
-        'email' => 'required|email|unique:visitors,email',
+        'email' => 'required|email',
         'phone' => 'required|string|max:20',
         'affiliation' => 'nullable|string|max:255',
     ];
@@ -67,35 +66,51 @@ class VisitorRegistration extends Component
 
     public function submit()
     {
-        // Prevent double submission - check if already successful
-        if ($this->isSuccess) {
+        // Prevent concurrent submissions
+        if ($this->isSubmitting || $this->isSuccess) {
             return;
         }
 
-        // Rate limit to prevent duplicate requests
-        try {
-            $this->rateLimit(2);
-        } catch (TooManyRequestsException $exception) {
-            return;
-        }
+        $this->isSubmitting = true;
 
         $this->validate();
 
-        $this->visitor = Visitor::create([
-            'name' => $this->name,
-            'email' => $this->email,
-            'phone' => $this->phone,
-            'affiliation' => $this->affiliation,
-        ]);
+        // Check if email already exists (prevents duplicate creation)
+        $existingVisitor = Visitor::where('email', $this->email)->first();
 
-        // Generate QR token for the visitor
-        $qrTokenService = app(VisitorQrTokenService::class);
-        $qrTokenService->generate($this->visitor);
+        if ($existingVisitor) {
+            $this->visitor = $existingVisitor;
+            $this->isSuccess = true;
+            $this->isSubmitting = false;
 
-        $registrationService = app(RegistrationService::class);
-        $registrationService->sendVisitorConfirmation($this->visitor);
+            return;
+        }
 
-        $this->isSuccess = true;
+        try {
+            $this->visitor = Visitor::create([
+                'name' => $this->name,
+                'email' => $this->email,
+                'phone' => $this->phone,
+                'affiliation' => $this->affiliation,
+            ]);
+
+            // Generate QR token for the visitor
+            $qrTokenService = app(VisitorQrTokenService::class);
+            $qrTokenService->generate($this->visitor);
+
+            $registrationService = app(RegistrationService::class);
+            $registrationService->sendVisitorConfirmation($this->visitor);
+
+            $this->isSuccess = true;
+        } catch (QueryException $e) {
+            // Handle unique constraint violation - another request created it
+            if (str_contains($e->getMessage(), 'visitors_email_unique')) {
+                $this->visitor = Visitor::where('email', $this->email)->first();
+                $this->isSuccess = true;
+            }
+        } finally {
+            $this->isSubmitting = false;
+        }
     }
 
     public function getQrCodeUrlProperty(): ?string
