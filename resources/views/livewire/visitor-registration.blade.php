@@ -1,5 +1,22 @@
 <div class="max-w-2xl mx-auto p-6">
     <div class="text-center mb-8">
+        <div class="flex justify-end mb-4">
+            <div class="flex items-center gap-2">
+                <button
+                    wire:click="setLocale('en')"
+                    class="text-sm font-medium {{ $locale === 'en' ? 'text-blue-600' : 'text-gray-500 hover:text-gray-700' }}"
+                >
+                    EN
+                </button>
+                <span class="text-gray-300">|</span>
+                <button
+                    wire:click="setLocale('id')"
+                    class="text-sm font-medium {{ $locale === 'id' ? 'text-blue-600' : 'text-gray-500 hover:text-gray-700' }}"
+                >
+                    ID
+                </button>
+            </div>
+        </div>
         <img src="{{ asset('assets/images/JADE_PDGI_Light.webp') }}" alt="Jakarta Dental Exhibition 2026" class="h-36 mx-auto mb-4">
         <h1 class="text-3xl font-bold text-gray-800">{{ __('seminar.visitor_registration_title') }}</h1>
         <p class="text-gray-600 mt-2">{{ __('seminar.visitor_registration_subtitle') }}</p>

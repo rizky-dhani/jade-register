@@ -5,6 +5,8 @@ namespace App\Livewire;
 use App\Models\Visitor;
 use App\Services\RegistrationService;
 use App\Services\VisitorQrTokenService;
+use Illuminate\Support\Facades\App;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 
 class VisitorRegistration extends Component
@@ -21,12 +23,38 @@ class VisitorRegistration extends Component
 
     public ?Visitor $visitor = null;
 
+    #[Url(as: 'lang', keep: true)]
+    public string $locale = 'id';
+
+    protected $queryString = ['locale'];
+
     protected $rules = [
         'name' => 'required|string|max:255',
         'email' => 'required|email|unique:visitors,email',
         'phone' => 'required|string|max:20',
         'affiliation' => 'nullable|string|max:255',
     ];
+
+    public function mount(): void
+    {
+        $this->locale = in_array($this->locale, ['en', 'id']) ? $this->locale : 'id';
+        App::setLocale($this->locale);
+    }
+
+    public function setLocale(string $locale): void
+    {
+        if (in_array($locale, ['en', 'id'])) {
+            $this->locale = $locale;
+            App::setLocale($locale);
+            $this->dispatch('locale-changed', locale: $locale);
+        }
+    }
+
+    public function updatedLocale(): void
+    {
+        $this->locale = in_array($this->locale, ['en', 'id']) ? $this->locale : 'id';
+        App::setLocale($this->locale);
+    }
 
     public function render()
     {

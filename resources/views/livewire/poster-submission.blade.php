@@ -8,6 +8,25 @@
     });
 ">
     <div class="text-center mb-8">
+        <div class="flex justify-end mb-4">
+            <div class="flex items-center gap-2">
+                <button
+                    type="button"
+                    wire:click="setLocale('en')"
+                    class="text-sm font-medium {{ $locale === 'en' ? 'text-blue-600' : 'text-gray-500 hover:text-gray-700' }}"
+                >
+                    EN
+                </button>
+                <span class="text-gray-300">|</span>
+                <button
+                    type="button"
+                    wire:click="setLocale('id')"
+                    class="text-sm font-medium {{ $locale === 'id' ? 'text-blue-600' : 'text-gray-500 hover:text-gray-700' }}"
+                >
+                    ID
+                </button>
+            </div>
+        </div>
         <div class="flex items-center justify-center gap-6 mb-4">
             <img src="{{ asset('assets/images/Jade_Logo.webp') }}" alt="Jakarta Dental Exhibition 2026" class="h-24">
             <img src="{{ asset('assets/images/PDGI_PENGWIL_JKT.webp') }}" alt="PDGI Pengwil DKI Jakarta" class="h-24">
@@ -31,25 +50,6 @@
                 </div>
             @else
                 <form wire:submit.prevent="submit" class="space-y-6">
-                    {{-- Language Selector --}}
-                    <div class="flex justify-end">
-                        <div class="inline-flex rounded-lg border border-gray-300 bg-white">
-                            <button
-                                type="button"
-                                wire:click="setLocale('en')"
-                                class="px-4 py-2 text-sm font-medium rounded-l-lg transition-colors {{ $locale === 'en' ? 'bg-blue-600 text-white' : 'text-gray-700 hover:bg-gray-100' }}"
-                            >
-                                {{ __('seminar.english') }}
-                            </button>
-                            <button
-                                type="button"
-                                wire:click="setLocale('id')"
-                                class="px-4 py-2 text-sm font-medium rounded-r-lg transition-colors {{ $locale === 'id' ? 'bg-blue-600 text-white' : 'text-gray-700 hover:bg-gray-100' }}"
-                            >
-                                {{ __('seminar.bahasa') }}
-                            </button>
-                        </div>
-                    </div>
                     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                         <h2 class="text-xl font-semibold text-gray-800 mb-4">{{ __('seminar.poster_details_section') }}</h2>
                         
