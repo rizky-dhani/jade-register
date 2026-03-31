@@ -5,12 +5,16 @@ namespace App\Livewire;
 use App\Models\Visitor;
 use App\Services\RegistrationService;
 use App\Services\VisitorQrTokenService;
+use DanHarrin\LivewireRateLimiting\Exceptions\TooManyRequestsException;
+use DanHarrin\LivewireRateLimiting\WithRateLimiting;
 use Illuminate\Support\Facades\App;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 
 class VisitorRegistration extends Component
 {
+    use WithRateLimiting;
+
     public string $name = '';
 
     public string $email = '';
@@ -63,6 +67,18 @@ class VisitorRegistration extends Component
 
     public function submit()
     {
+        // Prevent double submission - check if already successful
+        if ($this->isSuccess) {
+            return;
+        }
+
+        // Rate limit to prevent duplicate requests
+        try {
+            $this->rateLimit(2);
+        } catch (TooManyRequestsException $exception) {
+            return;
+        }
+
         $this->validate();
 
         $this->visitor = Visitor::create([
