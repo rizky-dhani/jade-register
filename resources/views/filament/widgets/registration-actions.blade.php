@@ -14,6 +14,7 @@
                 :href="route('poster.submit')"
                 tag="a"
                 :disabled="! $this->hasVerifiedSeminarRegistration()"
+                :tooltip="! $this->hasVerifiedSeminarRegistration() ? 'Please register for the seminar and have your payment verified first to enable poster registration.' : null"
                 color="success"
                 icon="heroicon-o-photo"
             >
