@@ -86,6 +86,12 @@ return [
     'payment_status_pending' => 'Menunggu',
     'payment_status_verified' => 'Terverifikasi',
     'payment_status_rejected' => 'Ditolak',
+    'payment_not_verified' => 'Pembayaran belum terverifikasi. Silakan selesaikan pembayaran Anda terlebih dahulu.',
+    'hands_on_payment_not_verified' => 'Pembayaran Hands On belum terverifikasi.',
+    'payment_status_verified_label' => 'Terverifikasi',
+    'payment_status_pending_label' => 'Menunggu',
+    'payment_status_rejected_label' => 'Ditolak',
+    'payment_status_unknown_label' => 'Tidak Diketahui',
 
     // Poster competition
     'poster_description' => 'Bergabunglah dengan Kompetisi Poster Ilmiah kami! Presentasikan penelitian atau laporan kasus kedokteran gigi Anda dan bersaing dengan rekan-rekan. Pemenang akan diumumkan selama JADE 2026.',

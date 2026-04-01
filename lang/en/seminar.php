@@ -86,6 +86,12 @@ return [
     'payment_status_pending' => 'Pending',
     'payment_status_verified' => 'Verified',
     'payment_status_rejected' => 'Rejected',
+    'payment_not_verified' => 'Payment not verified. Please complete your payment first.',
+    'hands_on_payment_not_verified' => 'Hands On payment not verified.',
+    'payment_status_verified_label' => 'Verified',
+    'payment_status_pending_label' => 'Pending',
+    'payment_status_rejected_label' => 'Rejected',
+    'payment_status_unknown_label' => 'Unknown',
 
     // Poster competition
     'poster_description' => 'Join our Scientific Poster Competition! Present your dental research or case report and compete with peers. Winners will be announced during JADE 2026.',
