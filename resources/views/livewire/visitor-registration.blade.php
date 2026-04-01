@@ -75,7 +75,7 @@
                 </div>
             </div>
 
-            <button type="submit" wire:loading.attr="disabled" :disabled="$isSubmitting" class="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+            <button type="submit" wire:loading.attr="disabled" class="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                 <span wire:loading.remove>{{ __('seminar.visitor_register_button') }}</span>
                 <span wire:loading>{{ __('seminar.processing') }}...</span>
             </button>
