@@ -197,6 +197,7 @@ return [
     'visitor_phone_label' => 'Phone Number',
     'visitor_affiliation_label' => 'Institution/Company (Optional)',
     'visitor_register_button' => 'Register as Visitor',
+    'visitor_registration_id' => 'Visitor ID',
 
     // Visitor Email
     'email_visitor_welcome' => 'Welcome to Jakarta Dental Exhibition 2026',
