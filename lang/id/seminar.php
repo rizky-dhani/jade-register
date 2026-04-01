@@ -140,6 +140,7 @@ return [
     'limited_seats' => 'Tersisa :count kursi',
     'sold_out' => 'Habis Terjual',
     'seats_left' => 'kursi tersisa',
+    'coming_soon' => 'Segera Hadir',
 
     // Pricing
     'save_amount' => 'Hemat :amount',

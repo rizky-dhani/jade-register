@@ -12,16 +12,17 @@
                         $isSelected = isset($selectedHandsOn[$date]) && $selectedHandsOn[$date] == $event['id'];
                     @endphp
                     
-                    <label class="flex items-center justify-between p-3 border rounded-lg cursor-pointer transition-colors
-                        {{ $event['is_full'] ? 'bg-gray-100 border-gray-200 opacity-60' : '' }}
-                        {{ $isSelected ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300' }}">
+                    <label class="flex items-center justify-between p-3 border rounded-lg transition-colors
+                        {{ $event['is_full'] || !$event['has_price'] ? 'bg-gray-100 border-gray-200 opacity-60' : '' }}
+                        {{ $isSelected ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300' }}
+                        {{ !$event['has_price'] ? 'cursor-not-allowed' : 'cursor-pointer' }}">
                         
                         <div class="flex items-center gap-3">
                             <input type="radio" 
                                 name="hands_on_{{ $date }}"
                                 wire:model.live="selectedHandsOn.{{ $date }}"
                                 value="{{ $event['id'] }}"
-                                {{ $event['is_full'] ? 'disabled' : '' }}
+                                {{ $event['is_full'] || !$event['has_price'] ? 'disabled' : '' }}
                                 class="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500">
                             
                             <div>
@@ -31,7 +32,11 @@
                                 @endif
                                 
                                 {{-- Stock indicator --}}
-                                @if($event['is_full'])
+                                @if(!$event['has_price'])
+                                    <span class="inline-flex items-center px-2 py-0.5 mt-1 text-xs font-medium text-gray-600 bg-gray-200 rounded">
+                                        {{ __('seminar.coming_soon') }}
+                                    </span>
+                                @elseif($event['is_full'])
                                     <span class="inline-flex items-center px-2 py-0.5 mt-1 text-xs font-medium text-red-700 bg-red-100 rounded">
                                         {{ __('seminar.sold_out') }}
                                     </span>
@@ -49,7 +54,11 @@
                         
                         <div class="text-right">
                             {{-- Pricing with slash format --}}
-                            @if($event['is_early_bird'] && $event['discounted_price'])
+                            @if(!$event['has_price'])
+                                <div class="text-sm text-gray-500">
+                                    {{ __('seminar.coming_soon') }}
+                                </div>
+                            @elseif($event['is_early_bird'] && $event['discounted_price'])
                                 <div class="text-lg">
                                     <span class="text-gray-400 line-through text-sm">{{ $event['original_price'] }}</span>
                                     <span class="font-bold text-green-600">{{ $event['discounted_price'] }}</span>

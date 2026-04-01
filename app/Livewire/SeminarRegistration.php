@@ -366,6 +366,7 @@ class SeminarRegistration extends Component
                 'max_seats' => $event->max_seats,
                 'remaining_stock' => $event->remaining_stock,
                 'is_full' => $event->isFull(),
+                'has_price' => $event->current_price !== null && $event->current_price > 0,
             ];
         }
     }
