@@ -16,6 +16,9 @@ class CreateUser extends CreateRecord
             $data['password'] = Hash::make('Jade2026!');
         }
 
+        // Mark email as verified when creating from admin panel
+        $data['email_verified_at'] = now();
+
         return $data;
     }
 }
