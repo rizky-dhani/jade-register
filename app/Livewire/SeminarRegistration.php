@@ -108,16 +108,10 @@ class SeminarRegistration extends Component
 
     public function mount(): void
     {
-        // Require authentication
-        if (! auth()->check()) {
-            $this->redirectRoute('filament.dashboard.auth.login');
-
-            return;
-        }
-
         $this->locale = in_array($this->locale, ['en', 'id']) ? $this->locale : 'en';
         App::setLocale($this->locale);
 
+        // Pre-fill data if user is authenticated
         if (auth()->check()) {
             $user = auth()->user();
             $this->email = $user->email;
@@ -256,7 +250,7 @@ class SeminarRegistration extends Component
 
         $path = $this->payment_proof->store('payment-proofs', 'public');
 
-        $userId = auth()->id();
+        $userId = auth()->id() ?: null;
 
         $registrationData = [
             'registration_code' => SeminarRegistrationModel::generateRegistrationCode(),

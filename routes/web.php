@@ -12,6 +12,8 @@ Route::get('/', function () {
 
 Route::livewire('/visitor/register', \App\Livewire\VisitorRegistration::class)->name('register.visitor');
 
+Route::livewire('/seminar/register', \App\Livewire\SeminarRegistration::class)->name('register.seminar');
+
 Route::livewire('/visitor/qr-code/{token}', \App\Livewire\VisitorQrCode::class)->name('visitor.qr-code');
 
 Route::livewire('/attendance/qr-code/{token}', \App\Livewire\AttendanceQrCode::class)->name('attendance.qr-code');
@@ -36,7 +38,6 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::livewire('/seminar/register', \App\Livewire\SeminarRegistration::class)->name('register.seminar');
     Route::livewire('/poster/submit', \App\Livewire\PosterSubmission::class)->name('poster.submit');
     Route::livewire('/attendance/verify/{token}', \App\Livewire\AttendanceVerify::class)->name('attendance.verify');
     Route::livewire('/visitor/verify/{token}', \App\Livewire\VisitorVerify::class)->name('visitor.verify');
