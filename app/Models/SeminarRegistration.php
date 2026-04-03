@@ -18,7 +18,6 @@ class SeminarRegistration extends Model
         'name',
         'name_license',
         'nik',
-        'npa',
         'pdgi_branch',
         'kompetensi',
         'phone',
