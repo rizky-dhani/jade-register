@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\SeminarRegistrations\Schemas;
 
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
@@ -56,6 +57,15 @@ class SeminarRegistrationForm
                         'drg Internship' => __('seminar.competency_dentist_internship'),
                     ])
                     ->placeholder(__('seminar.select_competency')),
+                FileUpload::make('payment_proof_path')
+                    ->label(__('seminar.payment_proof'))
+                    ->image()
+                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'application/pdf'])
+                    ->maxSize(5120)
+                    ->directory('payment-proofs')
+                    ->visibility('public')
+                    ->helperText(__('filament.seminar_registration.form.payment_proof_helper'))
+                    ->nullable(),
             ]);
     }
 }

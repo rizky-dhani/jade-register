@@ -184,6 +184,7 @@ return [
     'pending' => 'Menunggu',
     'verified' => 'Terverifikasi',
     'view_payment_proof' => 'Lihat Bukti Pembayaran',
+    'upload_payment_proof' => 'Unggah Bukti Pembayaran',
     'verify_payment' => 'Verifikasi Pembayaran',
 
     // Visitor Registration

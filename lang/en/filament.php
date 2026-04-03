@@ -20,6 +20,7 @@ return [
             'pdgi_branch' => 'PDGI Branch',
             'competency' => 'Competency',
             'whatsapp_number' => 'WhatsApp Number',
+            'payment_proof_helper' => 'Upload payment proof in JPG, PNG, or PDF format (max 5MB).',
         ],
         'table' => [
             'registration_code' => 'Registration Code',
@@ -197,6 +198,16 @@ return [
         'table' => [
             'name' => 'Name',
         ],
+    ],
+
+    // Notifications
+    'notifications' => [
+        'created_title' => 'Record created successfully',
+        'created_body' => 'The record has been created successfully.',
+        'updated_title' => 'Record updated successfully',
+        'updated_body' => 'The changes have been saved successfully.',
+        'deleted_title' => 'Record deleted successfully',
+        'deleted_body' => 'The record has been deleted successfully.',
     ],
 
     // Common Actions

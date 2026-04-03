@@ -184,6 +184,7 @@ return [
     'pending' => 'Pending',
     'verified' => 'Verified',
     'view_payment_proof' => 'View Payment Proof',
+    'upload_payment_proof' => 'Upload Payment Proof',
     'verify_payment' => 'Verify Payment',
 
     // Visitor Registration

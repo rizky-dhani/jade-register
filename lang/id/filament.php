@@ -20,6 +20,7 @@ return [
             'pdgi_branch' => 'PDGI Cabang',
             'competency' => 'Kompetensi',
             'whatsapp_number' => 'Nomor WhatsApp',
+            'payment_proof_helper' => 'Unggah bukti pembayaran dalam format JPG, PNG, atau PDF (maks. 5MB).',
         ],
         'table' => [
             'registration_code' => 'Kode Pendaftaran',
@@ -197,6 +198,16 @@ return [
         'table' => [
             'name' => 'Nama',
         ],
+    ],
+
+    // Notifications
+    'notifications' => [
+        'created_title' => 'Data berhasil dibuat',
+        'created_body' => 'Data telah berhasil disimpan.',
+        'updated_title' => 'Data berhasil diperbarui',
+        'updated_body' => 'Perubahan telah berhasil disimpan.',
+        'deleted_title' => 'Data berhasil dihapus',
+        'deleted_body' => 'Data telah berhasil dihapus.',
     ],
 
     // Common Actions
