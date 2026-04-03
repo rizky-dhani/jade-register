@@ -85,7 +85,7 @@ class SeminarRegistrationsTable
                 Action::make('verifyPayment')
                     ->label(__('seminar.verify_payment'))
                     ->icon('heroicon-o-check-circle')
-                    ->visible(fn (SeminarRegistration $record): bool => $record->payment_status === 'pending')
+                    ->visible(fn (SeminarRegistration $record): bool => $record->payment_status === 'pending' && $record->payment_proof_path !== null)
                     ->requiresConfirmation()
                     ->action(function (SeminarRegistration $record): void {
                         $record->update([
