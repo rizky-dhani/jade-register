@@ -16,7 +16,6 @@
         .detail-label { font-weight: bold; width: 220px; flex-shrink: 0; }
         .detail-value { flex: 1; }
         .registration-code { background: #4E397C; color: white; padding: 15px; text-align: center; font-size: 24px; font-weight: bold; border-radius: 5px; margin: 20px 0; }
-        .payment-info { background: #fff3cd; padding: 15px; border-radius: 5px; margin: 15px 0; border-left: 4px solid #ffc107; }
         .package-list { padding-left: 20px; margin: 10px 0; }
         .package-list li { margin: 5px 0; }
     </style>
@@ -27,36 +26,12 @@
     </div>
     
     <div class="content">
-        @if($registration->language == 'id')
-            <h2>{{ trans('seminar.email_thank_you_title', ['name' => $registration->name]) }}</h2>
-            <p>{{ trans('seminar.email_registration_received') }}</p>
-        @else
-            <h2>{{ trans('seminar.email_thank_you_title', ['name' => $registration->name]) }}</h2>
-            <p>{{ trans('seminar.email_registration_received') }}</p>
-        @endif
+        <h2>{{ trans('seminar.email_thank_you_title', ['name' => $registration->name]) }}</h2>
+        <p>{{ trans('seminar.email_registration_received') }}</p>
         
         <div class="registration-code">
             {{ $registration->registration_code }}
         </div>
-
-        @php
-            $qrTokenService = app(\App\Services\QrTokenService::class);
-            $qrUrl = $qrTokenService->getQrUrl($registration);
-        @endphp
-
-        @if($qrUrl)
-            <div style="text-align: center; margin: 20px 0; padding: 20px; background: #f0f4ff; border-radius: 8px;">
-                <h3 style="margin: 0 0 10px 0; color: #4E397C;">{{ trans('seminar.email_your_qr_code') }}</h3>
-                <p style="margin: 0 0 15px 0; color: #666;">{{ trans('seminar.email_qr_code_description') }}</p>
-                <a href="{{ $qrUrl }}" style="display: inline-block; padding: 12px 24px; background: #4E397C; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">
-                    {{ trans('seminar.email_view_qr_code') }}
-                </a>
-                <p style="margin: 10px 0 0 0; font-size: 12px; color: #888;">
-                    {{ trans('seminar.email_or_copy_link') }}<br>
-                    <code style="font-size: 11px; word-break: break-all;">{{ $qrUrl }}</code>
-                </p>
-            </div>
-        @endif
 
         {{-- Selected Package Section --}}
         <div class="details">
@@ -127,55 +102,8 @@
             @endif
         </div>
         
-        @if($registration->payment_method === 'qris')
-        <div class="payment-info">
-            <h3>{{ trans('seminar.payment_information') }}</h3>
-            <p style="text-align: center; margin-bottom: 15px;">
-                <strong>{{ trans('seminar.email_payment_method') }}:</strong> QRIS
-            </p>
-            <div style="text-align: center; margin: 15px 0;">
-                <img src="{{ asset('assets/images/QRIS_BNI_WKCI.webp') }}" alt="QRIS Code" style="max-width: 300px; width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-            </div>
-            <p style="text-align: center; margin-top: 15px;">
-                <strong>{{ trans('seminar.amount_to_transfer') }}:</strong> {{ $registration->formatted_amount }}
-            </p>
-            <p style="text-align: center; font-size: 12px; color: #666; margin-top: 10px;">
-                {{ trans('seminar.email_qris_scan_instruction') }}
-            </p>
-        </div>
-        @else
-        <div class="payment-info">
-            <h3>{{ trans('seminar.payment_information') }}</h3>
-            <p><strong>{{ trans('seminar.bank') }}:</strong> {{ config('settings.bank_name', 'Bank Central Asia (BCA)') }}</p>
-            <p><strong>{{ trans('seminar.account_name') }}:</strong> {{ config('settings.bank_account_name', 'PT Jakarta Dental Exhibition') }}</p>
-            <p><strong>{{ trans('seminar.account_number') }}:</strong> {{ config('settings.bank_account_number', '1234567890') }}</p>
-            <p><strong>{{ trans('seminar.amount_to_transfer') }}:</strong> {{ $registration->formatted_amount }}</p>
-        </div>
-        @endif
-        
-        @if($registration->language == 'id')
-            <h3>{{ trans('seminar.email_next_steps') }}</h3>
-            <ol>
-                <li>{{ trans('seminar.email_step_1') }}</li>
-                <li>{{ trans('seminar.email_step_2') }}</li>
-                <li>{{ trans('seminar.email_step_3') }}</li>
-                <li>{{ trans('seminar.email_step_4') }}</li>
-            </ol>
-            <p><strong>{{ trans('seminar.email_note') }}:</strong> {{ trans('seminar.email_cancellation_warning') }}</p>
-            <p>{{ trans('seminar.email_best_regards') }}<br>
-            <strong>Jakarta Dental Exhibition 2026</strong></p>
-        @else
-            <h3>{{ trans('seminar.email_next_steps') }}</h3>
-            <ol>
-                <li>{{ trans('seminar.email_step_1') }}</li>
-                <li>{{ trans('seminar.email_step_2') }}</li>
-                <li>{{ trans('seminar.email_step_3') }}</li>
-                <li>{{ trans('seminar.email_step_4') }}</li>
-            </ol>
-            <p><strong>{{ trans('seminar.email_note') }}:</strong> {{ trans('seminar.email_cancellation_warning') }}</p>
-            <p>{{ trans('seminar.email_best_regards') }}<br>
-            <strong>Jakarta Dental Exhibition 2026</strong></p>
-        @endif
+        <p>{{ trans('seminar.email_best_regards') }}<br>
+        <strong>Jakarta Dental Exhibition 2026</strong></p>
     </div>
     
     <div class="footer">
