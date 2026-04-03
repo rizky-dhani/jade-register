@@ -161,6 +161,27 @@ return [
     'email_verify_logout' => 'Keluar',
     'email_verify_link_sent' => 'Tautan verifikasi baru telah dikirim ke alamat email Anda.',
 
+    // Email - Attendance Confirmation
+    'email_attendance_confirmation_subject' => 'Konfirmasi Kehadiran - :code',
+    'email_attendance_confirmation_title' => 'Konfirmasi Kehadiran Anda',
+    'email_attendance_confirmation_greeting' => 'Selamat :name!',
+    'email_attendance_confirmation_message' => 'Pendaftaran Anda telah dikonfirmasi dan tempat Anda telah terjamin.',
+    'email_attendance_confirmation_status' => 'Pendaftaran Dikonfirmasi',
+    'email_attendance_confirmation_spot_secured' => 'Tempat Anda di Jakarta Dental Exhibition 2026 telah terjamin!',
+    'email_attendance_confirmation_qr_title' => 'Kode QR Check-In Anda',
+    'email_attendance_confirmation_qr_description' => 'Gunakan kode QR ini untuk check-in di acara.',
+    'email_attendance_confirmation_view_qr' => 'Lihat Kode QR',
+    'email_attendance_confirmation_or_copy' => 'Atau salin link ini',
+    'email_attendance_confirmation_event_details' => 'Detail Acara',
+    'email_attendance_confirmation_dates' => 'Tanggal',
+    'email_attendance_confirmation_venue' => 'Lokasi',
+    'email_attendance_confirmation_time' => 'Waktu',
+    'email_attendance_confirmation_what_to_bring' => 'Yang Harus Dibawa',
+    'email_attendance_confirmation_bring_item_1' => 'Email konfirmasi ini (cetak atau digital)',
+    'email_attendance_confirmation_bring_item_2' => 'KTP / Paspor yang berlaku',
+    'email_attendance_confirmation_bring_item_3' => 'Kode Pendaftaran',
+    'email_attendance_confirmation_excited' => 'Kami tidak sabar untuk bertemu Anda di acara!',
+
     // Email - Registration Submitted
     'email_thank_you_title' => 'Terima kasih telah mendaftar, :name!',
     'email_registration_received' => 'Registrasi seminar Anda telah diterima. Silakan selesaikan pembayaran untuk mengkonfirmasi tempat Anda.',

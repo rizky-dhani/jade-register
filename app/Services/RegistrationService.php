@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Mail\SeminarAttendanceConfirmation;
 use App\Mail\SeminarPaymentRejected;
 use App\Mail\SeminarPaymentVerified;
 use App\Mail\SeminarRegistrationSubmitted;
@@ -22,6 +23,13 @@ class RegistrationService
         Mail::to($registration->email)
             ->locale($registration->language ?? 'en')
             ->send(new SeminarRegistrationSubmitted($registration));
+    }
+
+    public function sendAttendanceConfirmation(SeminarRegistration $registration): void
+    {
+        Mail::to($registration->email)
+            ->locale($registration->language ?? 'en')
+            ->send(new SeminarAttendanceConfirmation($registration));
     }
 
     public function sendPaymentVerificationNotification(SeminarRegistration $registration): void

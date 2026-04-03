@@ -161,6 +161,27 @@ return [
     'email_verify_logout' => 'Log Out',
     'email_verify_link_sent' => 'A new verification link has been sent to your email address.',
 
+    // Email - Attendance Confirmation
+    'email_attendance_confirmation_subject' => 'Attendance Confirmation - :code',
+    'email_attendance_confirmation_title' => 'Your Attendance Confirmation',
+    'email_attendance_confirmation_greeting' => 'Congratulations :name!',
+    'email_attendance_confirmation_message' => 'Your registration has been confirmed and your spot is secured.',
+    'email_attendance_confirmation_status' => 'Registration Confirmed',
+    'email_attendance_confirmation_spot_secured' => 'Your spot at the Jakarta Dental Exhibition 2026 is secured!',
+    'email_attendance_confirmation_qr_title' => 'Your Check-In QR Code',
+    'email_attendance_confirmation_qr_description' => 'Use this QR code to check in at the event.',
+    'email_attendance_confirmation_view_qr' => 'View QR Code',
+    'email_attendance_confirmation_or_copy' => 'Or copy this link',
+    'email_attendance_confirmation_event_details' => 'Event Details',
+    'email_attendance_confirmation_dates' => 'Dates',
+    'email_attendance_confirmation_venue' => 'Venue',
+    'email_attendance_confirmation_time' => 'Time',
+    'email_attendance_confirmation_what_to_bring' => 'What to Bring',
+    'email_attendance_confirmation_bring_item_1' => 'This confirmation email (printed or digital)',
+    'email_attendance_confirmation_bring_item_2' => 'Valid ID Card / Passport',
+    'email_attendance_confirmation_bring_item_3' => 'Registration Code',
+    'email_attendance_confirmation_excited' => 'We can\'t wait to see you at the event!',
+
     // Email - Registration Submitted
     'email_thank_you_title' => 'Thank you for registering, :name!',
     'email_registration_received' => 'Your seminar registration has been received. Please complete your payment to confirm your spot.',
