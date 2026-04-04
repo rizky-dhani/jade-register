@@ -158,6 +158,17 @@ class Seminar extends Model
         return $this->remaining_stock <= 0;
     }
 
+    public function getFormattedCurrentPriceAttribute(): string
+    {
+        $price = $this->current_price;
+
+        if ($this->currency === 'USD') {
+            return '$'.number_format($price, 2);
+        }
+
+        return 'Rp '.number_format($price, 0, ',', '.');
+    }
+
     public function getFormattedOriginalPriceAttribute(): string
     {
         $price = $this->original_price ?? $this->amount;
