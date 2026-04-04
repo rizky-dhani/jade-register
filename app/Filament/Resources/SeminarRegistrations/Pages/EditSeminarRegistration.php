@@ -33,4 +33,9 @@ class EditSeminarRegistration extends EditRecord
             ->title(__('filament.notifications.deleted_title'))
             ->body(__('filament.notifications.deleted_body'));
     }
+
+    protected function getRedirectUrl(): string
+    {
+        return static::$resource::getUrl('index');
+    }
 }

@@ -29,4 +29,9 @@ class CreateSeminarRegistration extends CreateRecord
         $registrationService = app(RegistrationService::class);
         $registrationService->sendSeminarSubmissionConfirmation($registration);
     }
+
+    protected function getRedirectUrl(): string
+    {
+        return static::$resource::getUrl('index');
+    }
 }
