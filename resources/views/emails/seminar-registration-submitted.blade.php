@@ -18,7 +18,6 @@
         .registration-code { background: #4E397C; color: white; padding: 15px; text-align: center; font-size: 24px; font-weight: bold; border-radius: 5px; margin: 20px 0; }
         .package-list { padding-left: 20px; margin: 10px 0; }
         .package-list li { margin: 5px 0; }
-        .qr-section { text-align: center; margin: 20px 0; padding: 20px; background: #f0f4ff; border-radius: 8px; }
     </style>
 </head>
 <body>
