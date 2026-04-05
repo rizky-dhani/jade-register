@@ -45,13 +45,18 @@
 
             {{-- QR Code --}}
             <div class="text-center">
-                <div class="bg-gray-100 p-4 rounded-lg inline-block mb-4" style="max-width: 256px;">
-                    <div style="width: 100%; aspect-ratio: 1 / 1;">
-                        {!! DNS2D::getBarcodeHTML($this->qrCodeUrl, 'QRCODE', 8, 8) !!}
-                    </div>
+                <div class="visitor-qr-container bg-gray-100 p-4 rounded-lg inline-block mb-4">
+                    {!! DNS2D::getBarcodeHTML($this->qrCodeUrl, 'QRCODE', 4, 4) !!}
                 </div>
                 <p class="text-sm text-gray-500 mb-3 text-center">{{ __('seminar.visitor_qr_code_scan_instruction') }}</p>
             </div>
+
+            <style>
+                .visitor-qr-container svg {
+                    width: 200px !important;
+                    height: 200px !important;
+                }
+            </style>
 
             {{-- Status --}}
             <div class="mt-6 p-4 rounded-lg {{ $this->scannedStatusColor === 'green' ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200' }}">
