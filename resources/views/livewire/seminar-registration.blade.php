@@ -323,6 +323,7 @@
                     @error('selected_seminar') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
                 </div>
             </div>
+            @endif
 
             {{-- Hands On Section --}}
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
