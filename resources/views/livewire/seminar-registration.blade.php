@@ -486,7 +486,5 @@
                 <span wire:loading>{{ __('seminar.processing') }}...</span>
             </button>
             @endif
-            @endif
         </form>
-    @endif
 </div>
