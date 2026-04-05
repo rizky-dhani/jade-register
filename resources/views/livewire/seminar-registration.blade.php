@@ -33,7 +33,7 @@
     </div>
 
     @if($isSuccess)
-        <div class="bg-green-50 border border-green-200 rounded-lg p-6 text-center"
+        <div wire:key="success-state" class="bg-green-50 border border-green-200 rounded-lg p-6 text-center"
              x-data="{ countdown: 5 }"
              x-init="
                 const timer = setInterval(() => {
@@ -68,7 +68,7 @@
             @endauth
         </div>
     @else
-        <form wire:submit.prevent="submit" class="space-y-6">
+        <form wire:key="form-state" wire:submit.prevent="submit" class="space-y-6">
 
             {{-- Already Registered Check --}}
             @if($is_already_registered === null)
