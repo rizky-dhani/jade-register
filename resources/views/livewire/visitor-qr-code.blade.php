@@ -45,8 +45,10 @@
 
             {{-- QR Code --}}
             <div class="text-center">
-                <div class="bg-gray-100 p-4 rounded-lg inline-block mb-4">
-                    {!! DNS2D::getBarcodeHTML($this->qrCodeUrl, 'QRCODE', 8, 8) !!}
+                <div class="bg-gray-100 p-4 rounded-lg inline-block mb-4" style="max-width: 256px;">
+                    <div style="width: 100%; aspect-ratio: 1 / 1;">
+                        {!! DNS2D::getBarcodeHTML($this->qrCodeUrl, 'QRCODE', 8, 8) !!}
+                    </div>
                 </div>
                 <p class="text-sm text-gray-500 mb-3 text-center">{{ __('seminar.visitor_qr_code_scan_instruction') }}</p>
             </div>

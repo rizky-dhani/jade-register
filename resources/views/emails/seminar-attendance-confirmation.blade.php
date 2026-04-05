@@ -52,7 +52,7 @@
         <div class="schedule-box">
             <p><strong>{{ trans('seminar.email_attendance_confirmation_date') }}:</strong> {{ trans('seminar.email_attendance_confirmation_date_value') }}</p>
             <p><strong>{{ trans('seminar.email_attendance_confirmation_venue') }}:</strong> {{ trans('seminar.email_attendance_confirmation_venue_value') }}</p>
-            <p><a href="https://maps.google.com/?q=Jakarta+International+Convention+Center+JICC+Senayan+Jakarta" class="google-maps-btn" target="_blank">{{ trans('seminar.email_attendance_confirmation_google_maps') }}</a></p>
+            <p><a href="https://maps.google.com/?q=Jakarta+International+Convention+Center+JICC+Senayan+Jakarta" style="display: inline-block; padding: 10px 20px; background-color: #4285f4; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 14px; font-weight: 600; margin-top: 8px;" target="_blank">{{ trans('seminar.email_attendance_confirmation_google_maps') }}</a></p>
             <p><strong>{{ trans('seminar.email_attendance_confirmation_registration_time') }}:</strong> {{ trans('seminar.email_attendance_confirmation_registration_time_value') }}</p>
             <p><strong>{{ trans('seminar.email_attendance_confirmation_dresscode') }}:</strong> {{ trans('seminar.email_attendance_confirmation_dresscode_value') }}</p>
         </div>
@@ -69,7 +69,7 @@
         <div class="qr-section">
             <h3 style="margin: 0 0 10px 0; color: #4E397C;">{{ trans('seminar.email_attendance_confirmation_qr_title') }}</h3>
             <p style="margin: 0 0 15px 0; color: #666;">{{ trans('seminar.email_attendance_confirmation_qr_description') }}</p>
-            <div style="background: white; padding: 16px; display: inline-block; border-radius: 8px; border: 1px solid #e0e0e0;">
+            <div style="background: white; padding: 16px; display: inline-block; border-radius: 8px; border: 1px solid #e0e0e0; max-width: 200px;">
                 {!! DNS2D::getBarcodeHTML($verifyUrl, 'QRCODE', 6, 6) !!}
             </div>
             <p style="margin: 15px 0 0 0; font-size: 13px; color: #555;">

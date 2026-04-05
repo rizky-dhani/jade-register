@@ -46,7 +46,7 @@
         <div class="qr-section">
             <h3>{{ trans('seminar.email_payment_verified_qr_title') }}</h3>
             <p style="margin: 0 0 15px 0; color: #666;">{{ trans('seminar.visitor_qr_code_description') }}</p>
-            <a href="{{ $qrUrl }}" class="qr-button">
+            <a href="{{ $qrUrl }}" class="qr-button" style="display: inline-block; padding: 12px 24px; background: #0066cc; color: #ffffff; text-decoration: none; border-radius: 5px; font-weight: bold; margin: 10px 0;">
                 {{ trans('seminar.email_payment_verified_view_qr') }}
             </a>
             <p style="margin: 10px 0 0 0; font-size: 12px; color: #999;">
