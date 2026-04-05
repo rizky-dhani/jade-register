@@ -58,6 +58,23 @@
         
         <p>{{ trans('seminar.email_attendance_confirmation_show_email_instruction') }}</p>
         
+        @php
+            $qrTokenService = app(\App\Services\QrTokenService::class);
+            $qrUrl = $qrTokenService->getQrUrl($registration);
+        @endphp
+
+        @if($qrUrl)
+        <div style="text-align: center; margin: 20px 0; padding: 20px; background: #f0f4ff; border-radius: 8px;">
+            <h3 style="margin: 0 0 10px 0; color: #4E397C;">{{ trans('seminar.email_attendance_confirmation_qr_title') }}</h3>
+            <p style="margin: 0 0 15px 0; color: #666;">{{ trans('seminar.email_attendance_confirmation_qr_description') }}</p>
+            <a href="{{ $qrUrl }}" style="display: inline-block; padding: 12px 24px; background-color: #4E397C; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 14px; font-weight: 600;" target="_blank">{{ trans('seminar.email_attendance_confirmation_view_qr') }}</a>
+            <p style="margin: 15px 0 0 0; font-size: 12px; color: #888;">
+                {{ trans('seminar.email_attendance_confirmation_or_copy') }}<br>
+                <code style="font-size: 11px; word-break: break-all;">{{ $qrUrl }}</code>
+            </p>
+        </div>
+        @endif
+        
         {{-- Notes Section --}}
         <div class="notes">
             <h3>{{ trans('seminar.email_attendance_confirmation_notes_title') }}</h3>

@@ -215,6 +215,9 @@ class SeminarRegistration extends Component
     {
         $this->validate();
 
+        // Clear any stale email errors before checking
+        $this->resetErrorBag('email');
+
         // Check for existing registration with the same email
         $existingRegistration = SeminarRegistrationModel::whereRaw('LOWER(email) = ?', [strtolower($this->email)])->first();
         if ($existingRegistration) {
@@ -311,7 +314,7 @@ class SeminarRegistration extends Component
         $registrationService = app(RegistrationService::class);
         $registrationService->sendSeminarSubmissionConfirmation($registration);
 
-        $this->redirectRoute('register.seminar.success', ['id' => $registration->id], navigate: true);
+        return redirect()->route('register.seminar.success', ['id' => $registration->id]);
     }
 
     public function checkExistingRegistration(): void
