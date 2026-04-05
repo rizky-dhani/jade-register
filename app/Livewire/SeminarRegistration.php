@@ -47,10 +47,6 @@ class SeminarRegistration extends Component
 
     public bool $wants_poster_competition = false;
 
-    public bool $isSuccess = false;
-
-    public ?SeminarRegistrationModel $registration = null;
-
     #[Url(as: 'lang', keep: true)]
     public string $locale = 'id';
 
@@ -217,10 +213,6 @@ class SeminarRegistration extends Component
 
     public function submit()
     {
-        if ($this->isSuccess) {
-            return;
-        }
-
         $this->validate();
 
         // Check for existing registration with the same email
@@ -319,8 +311,7 @@ class SeminarRegistration extends Component
         $registrationService = app(RegistrationService::class);
         $registrationService->sendSeminarSubmissionConfirmation($registration);
 
-        $this->registration = $registration;
-        $this->isSuccess = true;
+        $this->redirectRoute('register.seminar.success', ['id' => $registration->id], navigate: true);
     }
 
     public function checkExistingRegistration(): void

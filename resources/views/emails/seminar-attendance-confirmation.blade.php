@@ -14,7 +14,6 @@
         .details { background: #f9f9f9; padding: 15px; border-radius: 5px; margin: 15px 0; }
         .package-list { padding-left: 20px; margin: 10px 0; }
         .package-list li { margin: 5px 0; }
-        .qr-section { text-align: center; margin: 20px 0; padding: 20px; background: #f0f4ff; border-radius: 8px; }
         .schedule-box { background: #f0f8ff; padding: 15px; border-radius: 5px; margin: 15px 0; border: 1px solid #b3d9ff; }
         .schedule-box p { margin: 8px 0; }
         .google-maps-btn { display: inline-block; padding: 8px 16px; background: #4285f4; color: white; text-decoration: none; border-radius: 4px; font-size: 14px; margin-top: 5px; }
@@ -58,31 +57,6 @@
         </div>
         
         <p>{{ trans('seminar.email_attendance_confirmation_show_email_instruction') }}</p>
-        
-        @php
-            $qrTokenService = app(\App\Services\QrTokenService::class);
-            $qrUrl = $qrTokenService->getQrUrl($registration);
-            $verifyUrl = $qrTokenService->getVerifyUrl($registration);
-        @endphp
-
-        @if($verifyUrl)
-        <div class="qr-section">
-            <h3 style="margin: 0 0 10px 0; color: #4E397C;">{{ trans('seminar.email_attendance_confirmation_qr_title') }}</h3>
-            <p style="margin: 0 0 15px 0; color: #666;">{{ trans('seminar.email_attendance_confirmation_qr_description') }}</p>
-            <div style="background: white; padding: 16px; display: inline-block; border-radius: 8px; border: 1px solid #e0e0e0; max-width: 200px;">
-                {!! DNS2D::getBarcodeHTML($verifyUrl, 'QRCODE', 6, 6) !!}
-            </div>
-            <p style="margin: 15px 0 0 0; font-size: 13px; color: #555;">
-                {{ trans('seminar.email_attendance_confirmation_qr_scan_instruction') }}
-            </p>
-            @if($qrUrl)
-            <p style="margin: 10px 0 0 0; font-size: 12px; color: #888;">
-                {{ trans('seminar.email_attendance_confirmation_or_copy') }}<br>
-                <code style="font-size: 11px; word-break: break-all;">{{ $qrUrl }}</code>
-            </p>
-            @endif
-        </div>
-        @endif
         
         {{-- Notes Section --}}
         <div class="notes">

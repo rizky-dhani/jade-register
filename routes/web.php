@@ -13,6 +13,7 @@ Route::get('/', function () {
 Route::livewire('/visitor/register', \App\Livewire\VisitorRegistration::class)->name('register.visitor');
 
 Route::livewire('/seminar/register', \App\Livewire\SeminarRegistration::class)->name('register.seminar');
+Route::livewire('/seminar/success/{id}', \App\Livewire\SeminarRegistrationSuccess::class)->name('register.seminar.success');
 
 Route::livewire('/visitor/qr-code/{token}', \App\Livewire\VisitorQrCode::class)->name('visitor.qr-code');
 
