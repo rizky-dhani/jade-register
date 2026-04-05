@@ -68,11 +68,18 @@
                     <div class="border-t pt-4">
                         <p class="text-sm text-gray-500 mb-3 text-center">{{ __('seminar.qr_code_scan_instruction') }}</p>
                         <div class="flex justify-center items-center">
-                            <div style="width: 200px; height: 200px; overflow: hidden;">
-                                {!! DNS2D::getBarcodeHTML($this->qrCodeUrl, 'QRCODE', 6, 6) !!}
+                            <div class="qr-container" style="width: 200px; height: 200px;">
+                                {!! DNS2D::getBarcodeHTML($this->qrCodeUrl, 'QRCODE', 4, 4) !!}
                             </div>
                         </div>
                     </div>
+
+                    <style>
+                        .qr-container svg {
+                            width: 200px !important;
+                            height: 200px !important;
+                        }
+                    </style>
 
                     @if($registration->qr_expires_at)
                         <div class="mt-4 text-center text-sm text-gray-500">
