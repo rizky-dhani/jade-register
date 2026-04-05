@@ -217,6 +217,10 @@ class SeminarRegistration extends Component
 
     public function submit()
     {
+        if ($this->isSuccess) {
+            return;
+        }
+
         $this->validate();
 
         // Validate Hands On selections have available seats
