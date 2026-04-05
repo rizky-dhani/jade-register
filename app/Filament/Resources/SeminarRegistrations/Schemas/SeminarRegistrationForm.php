@@ -30,7 +30,9 @@ class SeminarRegistrationForm
                     ->required()
                     ->default(fn (): ?int => Country::where('is_indonesia', true)->value('id'))
                     ->columnSpanFull(),
-                Section::make(__('seminar.participant_information'))
+
+                // Local (Indonesia) Participant Information
+                Section::make(__('seminar.local_participant'))
                     ->schema([
                         TextInput::make('name')
                             ->label(__('filament.seminar_registration.form.name_str'))
@@ -79,7 +81,38 @@ class SeminarRegistrationForm
                             ->columnSpanFull(),
                     ])
                     ->columns(3)
-                    ->columnSpanFull(),
+                    ->columnSpanFull()
+                    ->visible(fn (Get $get): bool => self::isIndonesia($get('country_id'))),
+
+                // International Participant Information
+                Section::make(__('seminar.international_participant'))
+                    ->schema([
+                        TextInput::make('name')
+                            ->label(__('seminar.name'))
+                            ->required()
+                            ->maxLength(255),
+                        TextInput::make('email')
+                            ->label(__('seminar.email'))
+                            ->required()
+                            ->email()
+                            ->maxLength(255),
+                        TextInput::make('phone')
+                            ->label(__('seminar.whatsapp_number'))
+                            ->required()
+                            ->maxLength(20),
+                        Select::make('status')
+                            ->label(__('seminar.status'))
+                            ->required()
+                            ->options([
+                                'Dentist' => __('seminar.dentist'),
+                                'Student' => __('seminar.student'),
+                            ])
+                            ->placeholder(__('seminar.select_status')),
+                    ])
+                    ->columns(2)
+                    ->columnSpanFull()
+                    ->visible(fn (Get $get): bool => ! self::isIndonesia($get('country_id'))),
+
                 Section::make(__('seminar.seminar_package'))
                     ->schema([
                         Radio::make('selected_seminar')
@@ -146,5 +179,16 @@ class SeminarRegistrationForm
                     ->helperText(__('filament.seminar_registration.form.payment_proof_helper'))
                     ->nullable(),
             ]);
+    }
+
+    private static function isIndonesia(?int $countryId): bool
+    {
+        if (! $countryId) {
+            return true;
+        }
+
+        $country = Country::find($countryId);
+
+        return $country?->is_indonesia ?? true;
     }
 }

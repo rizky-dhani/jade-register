@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="{{ $registration->language ?? 'en' }}">
+<html lang="{{ $registration->language ?? 'id' }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ trans('seminar.email_attendance_confirmation_title') }}</title>
+    <title>{{ trans('seminar.email_attendance_confirmation_subject', ['code' => $registration->registration_code]) }}</title>
     <style>
         body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
         .header { text-align: center; padding: 20px 0; border-bottom: 2px solid #4E397C; margin-bottom: 20px; }
@@ -15,6 +15,22 @@
         .package-list { padding-left: 20px; margin: 10px 0; }
         .package-list li { margin: 5px 0; }
         .qr-section { text-align: center; margin: 20px 0; padding: 20px; background: #f0f4ff; border-radius: 8px; }
+        .schedule-box { background: #f0f8ff; padding: 15px; border-radius: 5px; margin: 15px 0; border: 1px solid #b3d9ff; }
+        .schedule-box p { margin: 8px 0; }
+        .google-maps-btn { display: inline-block; padding: 8px 16px; background: #4285f4; color: white; text-decoration: none; border-radius: 4px; font-size: 14px; margin-top: 5px; }
+        .notes { background: #fff8e1; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #ff9800; }
+        .notes h3 { color: #e65100; margin-top: 0; }
+        .notes ol { margin: 10px 0; padding-left: 20px; }
+        .notes li { margin-bottom: 8px; }
+        .important { background: #ffebee; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #f44336; }
+        .important h3 { color: #c62828; margin-top: 0; }
+        .important ol { margin: 10px 0; padding-left: 20px; }
+        .important li { margin-bottom: 8px; }
+        .contact-info { background: #e8f5e9; padding: 15px; border-radius: 5px; margin: 20px 0; }
+        .contact-info h4 { margin-top: 0; color: #2e7d32; }
+        .contact-info ul { list-style: none; padding-left: 0; }
+        .contact-info li { margin-bottom: 5px; }
+        .contact-info a { color: #2e7d32; text-decoration: none; }
     </style>
 </head>
 <body>
@@ -23,64 +39,87 @@
     </div>
     
     <div class="content">
-        <h2>{{ trans('seminar.email_attendance_confirmation_greeting', ['name' => $registration->name]) }}</h2>
-        <p>{{ trans('seminar.email_attendance_confirmation_message') }}</p>
+        <h2 style="text-align: center; color: #4E397C; margin-bottom: 20px;">
+            {{ trans('seminar.email_attendance_confirmation_title') }}
+        </h2>
         
-        <div class="success-box">
-            <strong>{{ trans('seminar.email_attendance_confirmation_status') }}</strong><br>
-            {{ trans('seminar.email_attendance_confirmation_spot_secured') }}
+        <p>{{ trans('seminar.email_attendance_confirmation_greeting') }}</p>
+        
+        <p>{!! trans('seminar.email_attendance_confirmation_message') !!}</p>
+        
+        <p style="margin-top: 20px;"><strong>{{ trans('seminar.email_attendance_confirmation_registered_message') }}</strong></p>
+        
+        <div class="schedule-box">
+            <p><strong>{{ trans('seminar.email_attendance_confirmation_date') }}:</strong> {{ trans('seminar.email_attendance_confirmation_date_value') }}</p>
+            <p><strong>{{ trans('seminar.email_attendance_confirmation_venue') }}:</strong> {{ trans('seminar.email_attendance_confirmation_venue_value') }}</p>
+            <p><a href="https://maps.google.com/?q=Jakarta+International+Convention+Center+JICC+Senayan+Jakarta" class="google-maps-btn" target="_blank">{{ trans('seminar.email_attendance_confirmation_google_maps') }}</a></p>
+            <p><strong>{{ trans('seminar.email_attendance_confirmation_registration_time') }}:</strong> {{ trans('seminar.email_attendance_confirmation_registration_time_value') }}</p>
+            <p><strong>{{ trans('seminar.email_attendance_confirmation_dresscode') }}:</strong> {{ trans('seminar.email_attendance_confirmation_dresscode_value') }}</p>
         </div>
         
-        <div class="registration-code">
-            {{ $registration->registration_code }}
-        </div>
-
+        <p>{{ trans('seminar.email_attendance_confirmation_show_email_instruction') }}</p>
+        
         @php
             $qrTokenService = app(\App\Services\QrTokenService::class);
             $qrUrl = $qrTokenService->getQrUrl($registration);
+            $verifyUrl = $qrTokenService->getVerifyUrl($registration);
         @endphp
 
-        @if($qrUrl)
-            <div class="qr-section">
-                <h3 style="margin: 0 0 10px 0; color: #4E397C;">{{ trans('seminar.email_attendance_confirmation_qr_title') }}</h3>
-                <p style="margin: 0 0 15px 0; color: #666;">{{ trans('seminar.email_attendance_confirmation_qr_description') }}</p>
-                <a href="{{ $qrUrl }}" style="display: inline-block; padding: 12px 24px; background: #4E397C; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">
-                    {{ trans('seminar.email_attendance_confirmation_view_qr') }}
-                </a>
-                <p style="margin: 10px 0 0 0; font-size: 12px; color: #888;">
-                    {{ trans('seminar.email_attendance_confirmation_or_copy') }}<br>
-                    <code style="font-size: 11px; word-break: break-all;">{{ $qrUrl }}</code>
-                </p>
+        @if($verifyUrl)
+        <div class="qr-section">
+            <h3 style="margin: 0 0 10px 0; color: #4E397C;">{{ trans('seminar.email_attendance_confirmation_qr_title') }}</h3>
+            <p style="margin: 0 0 15px 0; color: #666;">{{ trans('seminar.email_attendance_confirmation_qr_description') }}</p>
+            <div style="background: white; padding: 16px; display: inline-block; border-radius: 8px; border: 1px solid #e0e0e0;">
+                {!! DNS2D::getBarcodeHTML($verifyUrl, 'QRCODE', 6, 6) !!}
             </div>
+            <p style="margin: 15px 0 0 0; font-size: 13px; color: #555;">
+                {{ trans('seminar.email_attendance_confirmation_qr_scan_instruction') }}
+            </p>
+            @if($qrUrl)
+            <p style="margin: 10px 0 0 0; font-size: 12px; color: #888;">
+                {{ trans('seminar.email_attendance_confirmation_or_copy') }}<br>
+                <code style="font-size: 11px; word-break: break-all;">{{ $qrUrl }}</code>
+            </p>
+            @endif
+        </div>
         @endif
+        
+        {{-- Notes Section --}}
+        <div class="notes">
+            <h3>{{ trans('seminar.email_attendance_confirmation_notes_title') }}</h3>
+            <ol>
+                <li>{!! trans('seminar.email_attendance_confirmation_note_1') !!}</li>
+                <li>{!! trans('seminar.email_attendance_confirmation_note_2') !!}</li>
+                <li>{!! trans('seminar.email_attendance_confirmation_note_3') !!}</li>
+                <li>{!! trans('seminar.email_attendance_confirmation_note_4') !!}</li>
+                <li>{!! trans('seminar.email_attendance_confirmation_note_5') !!}</li>
+            </ol>
+        </div>
 
-        {{-- Selected Package Section --}}
-        <div class="details">
-            <h3>{{ trans('seminar.selected_package') }}</h3>
-            <ul class="package-list">
-                <li>{{ $registration->selected_seminar_label }} ({{ $registration->formatted_amount }})</li>
-                @foreach($registration->handsOnRegistrations as $hoReg)
-                    <li>Day {{ $hoReg->handsOn->date->format('j') }}: {{ $hoReg->handsOn->name }} ({{ $hoReg->handsOn->formatted_price }})</li>
-                @endforeach
+        {{-- Important SKP Section --}}
+        <div class="important">
+            <h3>{{ trans('seminar.email_attendance_confirmation_skp_title') }}</h3>
+            <ol>
+                <li>{!! trans('seminar.email_attendance_confirmation_skp_1') !!}</li>
+                <li>{!! trans('seminar.email_attendance_confirmation_skp_2') !!}</li>
+                <li>{!! trans('seminar.email_attendance_confirmation_skp_3') !!}</li>
+                <li>{!! trans('seminar.email_attendance_confirmation_skp_4') !!}</li>
+            </ol>
+        </div>
+
+        <p>{{ trans('seminar.email_attendance_confirmation_closing') }}</p>
+        <p>{!! trans('seminar.email_attendance_confirmation_signature') !!}</p>
+
+        {{-- Contact Information --}}
+        <div class="contact-info">
+            <h4>{{ trans('seminar.email_attendance_confirmation_contact_title') }}</h4>
+            <ul>
+                <li>{!! trans('seminar.email_attendance_confirmation_contact_eka') !!}</li>
+                <li>{!! trans('seminar.email_attendance_confirmation_contact_helani') !!}</li>
+                <li>{!! trans('seminar.email_attendance_confirmation_contact_fitri') !!}</li>
+                <li>{!! trans('seminar.email_attendance_confirmation_contact_annisa') !!}</li>
             </ul>
         </div>
-        
-        <h3>{{ trans('seminar.email_attendance_confirmation_event_details') }}</h3>
-        <p><strong>{{ trans('seminar.email_attendance_confirmation_dates') }}:</strong> 13-15 November 2026</p>
-        <p><strong>{{ trans('seminar.email_attendance_confirmation_venue') }}:</strong> Jakarta Convention Center</p>
-        <p><strong>{{ trans('seminar.email_attendance_confirmation_time') }}:</strong> 09:00 - 17:00 WIB</p>
-        
-        <h3>{{ trans('seminar.email_attendance_confirmation_what_to_bring') }}</h3>
-        <ul>
-            <li>{{ trans('seminar.email_attendance_confirmation_bring_item_1') }}</li>
-            <li>{{ trans('seminar.email_attendance_confirmation_bring_item_2') }}</li>
-            <li>{{ trans('seminar.email_attendance_confirmation_bring_item_3') }}: {{ $registration->registration_code }}</li>
-        </ul>
-        
-        <p>{{ trans('seminar.email_attendance_confirmation_excited') }}</p>
-        
-        <p>{{ trans('seminar.email_best_regards') }}<br>
-        <strong>Jakarta Dental Exhibition 2026</strong></p>
     </div>
     
     <div class="footer">

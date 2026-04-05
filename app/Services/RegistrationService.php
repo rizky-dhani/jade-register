@@ -20,9 +20,17 @@ class RegistrationService
 
     public function sendSeminarSubmissionConfirmation(SeminarRegistration $registration): void
     {
+        $locale = $registration->language ?? 'en';
+
+        // Send registration submitted confirmation (with QR code)
         Mail::to($registration->email)
-            ->locale($registration->language ?? 'en')
+            ->locale($locale)
             ->send(new SeminarRegistrationSubmitted($registration));
+
+        // Send detailed JADE 2026 confirmation (with schedule, notes, SKP info)
+        Mail::to($registration->email)
+            ->locale($locale)
+            ->send(new SeminarAttendanceConfirmation($registration));
     }
 
     public function sendAttendanceConfirmation(SeminarRegistration $registration): void

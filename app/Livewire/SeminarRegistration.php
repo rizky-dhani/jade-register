@@ -252,13 +252,17 @@ class SeminarRegistration extends Component
 
         $userId = auth()->id() ?: null;
 
+        // Determine language based on selected country (Indonesia = id, others = en)
+        $country = Country::find((int) $this->country_id);
+        $language = $country?->is_indonesia ? 'id' : 'en';
+
         $registrationData = [
             'registration_code' => SeminarRegistrationModel::generateRegistrationCode(),
             'email' => $this->email,
             'name' => $this->name,
             'phone' => $this->phone,
             'country_id' => $this->country_id,
-            'language' => $this->locale,
+            'language' => $language,
             'registration_type' => 'online',
             'selected_seminar' => $package->name,
             'payment_method' => $this->payment_method,

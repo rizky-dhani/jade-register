@@ -45,10 +45,10 @@ class AttendanceQrCode extends Component
     public function getPaymentStatusLabelProperty(): string
     {
         return match ($this->registration->payment_status) {
-            'verified' => 'Verified',
-            'pending' => 'Pending',
-            'rejected' => 'Rejected',
-            default => 'Unknown',
+            'verified' => __('seminar.payment_status_verified_label'),
+            'pending' => __('seminar.payment_status_pending_label'),
+            'rejected' => __('seminar.payment_status_rejected_label'),
+            default => __('seminar.payment_status_unknown_label'),
         };
     }
 

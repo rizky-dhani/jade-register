@@ -18,6 +18,7 @@
         .registration-code { background: #4E397C; color: white; padding: 15px; text-align: center; font-size: 24px; font-weight: bold; border-radius: 5px; margin: 20px 0; }
         .package-list { padding-left: 20px; margin: 10px 0; }
         .package-list li { margin: 5px 0; }
+        .qr-section { text-align: center; margin: 20px 0; padding: 20px; background: #f0f4ff; border-radius: 8px; }
     </style>
 </head>
 <body>
@@ -37,7 +38,22 @@
         <div class="details">
             <h3>{{ trans('seminar.selected_package') }}</h3>
             <ul class="package-list">
-                <li>{{ $registration->selected_seminar_label }} ({{ $registration->formatted_amount }})</li>
+                @php
+                    $seminar = \App\Models\Seminar::where('code', $registration->selected_seminar)->first();
+                @endphp
+                @if($seminar)
+                    <li>
+                        {{ $seminar->name }} ({{ $seminar->label }})
+                        @if($seminar->isEarlyBirdActive() && $seminar->discounted_price)
+                            - <span style="text-decoration: line-through; color: #999;">{{ $seminar->formatted_original_price }}</span>
+                            <strong>{{ $seminar->formatted_discounted_price }}</strong>
+                        @else
+                            - <strong>{{ $seminar->formatted_current_price }}</strong>
+                        @endif
+                    </li>
+                @else
+                    <li>{{ $registration->selected_seminar_label }}</li>
+                @endif
                 @foreach($registration->handsOnRegistrations as $hoReg)
                     <li>Day {{ $hoReg->handsOn->date->format('j') }}: {{ $hoReg->handsOn->name }} ({{ $hoReg->handsOn->formatted_price }})</li>
                 @endforeach

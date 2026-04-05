@@ -18,7 +18,7 @@ class SeminarRegistrationSubmitted extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Seminar Registration Received - '.$this->registration->registration_code,
+            subject: trans('seminar.email_registration_submitted_subject', ['code' => $this->registration->registration_code]),
         );
     }
 
