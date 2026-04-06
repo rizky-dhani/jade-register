@@ -82,6 +82,12 @@
                         </a>
                     </p>
                 @endif
+                <p class="text-sm mt-3 text-gray-600">
+                    {{ __('seminar.not_registered_yet') }}
+                    <a href="#" wire:click="$set('is_already_registered', 'no')" class="text-blue-600 underline font-medium">
+                        {{ __('seminar.register_new') }}
+                    </a>
+                </p>
             </div>
             @endif
 

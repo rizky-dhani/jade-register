@@ -121,6 +121,8 @@ return [
     'registration_found' => 'Registration Found!',
     'complete_payment_first' => 'Please complete your seminar payment before adding Hands On sessions.',
     'register_here' => 'Register here',
+    'not_registered_yet' => 'Not registered yet?',
+    'register_new' => 'Register here',
 
     // Hands On
     'hands_on_sessions' => 'Hands On Sessions',

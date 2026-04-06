@@ -121,6 +121,8 @@ return [
     'registration_found' => 'Pendaftaran Ditemukan!',
     'complete_payment_first' => 'Silakan lengkapi pembayaran seminar Anda sebelum menambahkan sesi Hands On.',
     'register_here' => 'Daftar di sini',
+    'not_registered_yet' => 'Belum terdaftar?',
+    'register_new' => 'Daftar di sini',
 
     // Hands On
     'hands_on_sessions' => 'Sesi Hands On',
