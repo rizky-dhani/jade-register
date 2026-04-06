@@ -83,7 +83,7 @@
 
                     @if($registration->qr_expires_at)
                         <div class="mt-4 text-center text-sm text-gray-500">
-                            <p>{{ __('seminar.valid_until') }}: {{ $registration->qr_expires_at->format('d M Y H:i') }}</p>
+                            <p>{{ $registration->qr_expires_at->format('d M Y, H:i') }}</p>
                         </div>
                     @endif
                 </div>

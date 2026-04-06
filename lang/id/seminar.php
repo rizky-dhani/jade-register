@@ -87,6 +87,7 @@ return [
     'disclaimer_1' => 'Kami hanya menerima transfer dari rekening bank, yang menampilkan nama pengirim pada mutasi untuk mempermudah verifikasi bukti transfer.',
     'disclaimer_2' => 'Dana yang sudah masuk ke rekening diatas tidak bisa dikembalikan dengan alasan apapun.',
     'payment_status' => 'Status Pembayaran',
+    'payment_status_label' => 'Status Pembayaran',
     'payment_status_pending' => 'Menunggu',
     'payment_status_verified' => 'Terverifikasi',
     'payment_status_rejected' => 'Ditolak',

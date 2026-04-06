@@ -277,11 +277,11 @@
             @if($country_id)
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <h2 class="text-xl font-semibold text-gray-800 mb-4">{{ __('seminar.registration_package') }}</h2>
-                
+
                 <div class="md:col-span-2">
                     <p class="text-xs text-gray-500 mb-3">{{ __('seminar.valid_until') }}</p>
-                    
-                    @php 
+
+                    @php
                     $tiers = $availableTiers ?? [];
                     @endphp
                     
