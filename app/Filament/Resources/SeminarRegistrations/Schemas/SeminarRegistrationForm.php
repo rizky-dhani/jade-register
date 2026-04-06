@@ -65,17 +65,22 @@ class SeminarRegistrationForm
                             ->options([
                                 'Dokter Gigi Umum' => __('seminar.competency_gp'),
                                 'Sp.KG' => __('seminar.competency_sp_kg'),
-                                'Sp.KGA' => __('seminar.competency_sp_kga'),
+                                'Sp.KGA' => __('seminar.competency_sp_kga') . ' (Disabled)',
                                 'Sp.Pros' => __('seminar.competency_sp_pros'),
-                                'Sp.B.M.M' => __('seminar.competency_sp_bmm'),
+                                'Sp.B.M.M' => __('seminar.competency_sp_bmm') . ' (Disabled)',
                                 'Sp.Perio' => __('seminar.competency_sp_perio'),
-                                'Sp.Ort' => __('seminar.competency_sp_ort'),
+                                'Sp.Ort' => __('seminar.competency_sp_ort') . ' (Disabled)',
                                 'Sp.RKG' => __('seminar.competency_sp_rkg'),
                                 'Sp.PM' => __('seminar.competency_sp_pm'),
                                 'Sp.OF' => __('seminar.competency_sp_of'),
                                 'Sp.PMM' => __('seminar.competency_sp_pmm'),
                                 'Mahasiswa Kedokteran Gigi' => __('seminar.competency_dental_student'),
                                 'drg Internship' => __('seminar.competency_dentist_internship'),
+                            ])
+                            ->disabledOptionNumbers([
+                                'Sp.KGA',
+                                'Sp.B.M.M',
+                                'Sp.Ort',
                             ])
                             ->placeholder(__('seminar.select_competency'))
                             ->columnSpanFull(),

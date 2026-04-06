@@ -215,11 +215,11 @@
                             <option value="">{{ __('seminar.select_competency') }}</option>
                             <option value="Dokter Gigi Umum">{{ __('seminar.competency_gp') }}</option>
                             <option value="Sp.KG">{{ __('seminar.competency_sp_kg') }}</option>
-                            <option value="Sp.KGA">{{ __('seminar.competency_sp_kga') }}</option>
+                            <option value="Sp.KGA" disabled>{{ __('seminar.competency_sp_kga') }}</option>
                             <option value="Sp.Pros">{{ __('seminar.competency_sp_pros') }}</option>
-                            <option value="Sp.B.M.M">{{ __('seminar.competency_sp_bmm') }}</option>
+                            <option value="Sp.B.M.M" disabled>{{ __('seminar.competency_sp_bmm') }}</option>
                             <option value="Sp.Perio">{{ __('seminar.competency_sp_perio') }}</option>
-                            <option value="Sp.Ort">{{ __('seminar.competency_sp_ort') }}</option>
+                            <option value="Sp.Ort" disabled>{{ __('seminar.competency_sp_ort') }}</option>
                             <option value="Sp.RKG">{{ __('seminar.competency_sp_rkg') }}</option>
                             <option value="Sp.PM">{{ __('seminar.competency_sp_pm') }}</option>
                             <option value="Sp.OF">{{ __('seminar.competency_sp_of') }}</option>
