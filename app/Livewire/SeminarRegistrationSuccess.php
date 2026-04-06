@@ -18,6 +18,11 @@ class SeminarRegistrationSuccess extends Component
         }
     }
 
+    public function isInternational(): bool
+    {
+        return $this->registration->country && ! $this->registration->country->is_indonesia;
+    }
+
     public function render()
     {
         return view('livewire.seminar-registration-success');

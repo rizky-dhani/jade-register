@@ -13,11 +13,13 @@
             <p class="text-gray-600 mb-1">{{ __('seminar.registration_code') }} <strong>{{ $registration->registration_code }}</strong></p>
             <p class="text-gray-600 mb-6">{{ __('seminar.confirmation_email_sent') }} {{ $registration->email }}</p>
 
+            @if (!$isInternational())
             <div class="mt-6 pt-6 border-t border-green-200 text-left">
                 <p class="text-green-800 font-medium mb-3">{{ __('seminar.success_message_1') }}</p>
                 <p class="text-green-700 mb-3">{{ __('seminar.success_message_2') }}</p>
                 <p class="text-green-700">{{ __('seminar.success_message_3') }} <a href="https://chat.whatsapp.com/KtELLi4Q22VHqJWFavOwhQ?mode=hq1tcla" target="_blank" class="underline font-semibold hover:text-green-900">https://chat.whatsapp.com/KtELLi4Q22VHqJWFavOwhQ</a></p>
             </div>
+            @endif
 
             @auth
                 <div class="mt-6 pt-6 border-t border-green-200"
@@ -28,12 +30,12 @@
                                 countdown--;
                             } else {
                                 clearInterval(timer);
-                                window.location.href = '{{ route('filament.dashboard.pages.dashboard') }}';
+                                window.location.href = '{{ route('register.seminar') }}';
                             }
                         }, 1000);
                      ">
                     <p class="text-green-600 font-medium">
-                        {{ __('seminar.redirecting_to_dashboard') }} <span x-text="countdown"></span>...
+                        {{ __('seminar.redirecting_to_registration') }} <span x-text="countdown"></span>...
                     </p>
                 </div>
             @endauth
