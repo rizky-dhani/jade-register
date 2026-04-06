@@ -5,6 +5,7 @@ namespace App\Providers\Filament;
 use App\Filament\Pages\Auth\AuthLogin;
 use App\Filament\Pages\Auth\EmailVerification\EmailVerificationPrompt;
 use App\Filament\Pages\Auth\Register;
+use App\Filament\Resources\Attendances\AttendanceResource;
 use App\Filament\Widgets\RegistrationActions;
 use App\Filament\Widgets\SeminarParticipantCount;
 use App\Filament\Widgets\VisitorCount;
@@ -23,6 +24,8 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+
+use function Filament\Support\original_request;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -67,6 +70,16 @@ class AdminPanelProvider extends PanelProvider
                     ->icon('heroicon-o-photo')
                     ->group('Registrations')
                     ->visible(fn () => auth()->user()?->hasRole('Participant') && auth()->user()?->seminarRegistrations()->where('payment_status', 'verified')->exists()),
+                NavigationItem::make('Seminar')
+                    ->url(fn () => AttendanceResource::getUrl('seminar'))
+                    ->icon('heroicon-o-rectangle-stack')
+                    ->group('Attendance')
+                    ->isActiveWhen(fn (): bool => request()->routeIs('filament.dashboard.resources.attendances.seminar')),
+                NavigationItem::make('Hands On')
+                    ->url(fn () => AttendanceResource::getUrl('hands-on'))
+                    ->icon('heroicon-o-wrench-screwdriver')
+                    ->group('Attendance')
+                    ->isActiveWhen(fn (): bool => request()->routeIs('filament.dashboard.resources.attendances.hands-on')),
             ])
             ->navigationGroups([
                 'Registrations',

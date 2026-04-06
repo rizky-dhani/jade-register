@@ -5,6 +5,8 @@ namespace App\Filament\Resources\Attendances;
 use App\Filament\Resources\Attendances\Pages\CreateAttendance;
 use App\Filament\Resources\Attendances\Pages\EditAttendance;
 use App\Filament\Resources\Attendances\Pages\ListAttendances;
+use App\Filament\Resources\Attendances\Pages\ListHandsOnAttendances;
+use App\Filament\Resources\Attendances\Pages\ListSeminarAttendances;
 use App\Filament\Resources\Attendances\Schemas\AttendanceForm;
 use App\Filament\Resources\Attendances\Tables\AttendancesTable;
 use App\Models\Attendance;
@@ -23,6 +25,8 @@ class AttendanceResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     protected static ?string $recordTitleAttribute = 'name';
+
+    protected static bool $shouldRegisterNavigation = false;
 
     public static function form(Schema $schema): Schema
     {
@@ -45,6 +49,8 @@ class AttendanceResource extends Resource
     {
         return [
             'index' => ListAttendances::route('/'),
+            'seminar' => ListSeminarAttendances::route('/seminar'),
+            'hands-on' => ListHandsOnAttendances::route('/hands-on'),
             'create' => CreateAttendance::route('/create'),
             'edit' => EditAttendance::route('/{record}/edit'),
         ];
