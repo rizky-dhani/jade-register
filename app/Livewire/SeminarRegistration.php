@@ -61,6 +61,8 @@ class SeminarRegistration extends Component
 
     public bool $showVerificationError = false;
 
+    public bool $emailTaken = false;
+
     // Hands On properties
     public bool $wants_hands_on = false;
 
@@ -165,6 +167,18 @@ class SeminarRegistration extends Component
         }
     }
 
+    public function updatedEmail(): void
+    {
+        $this->emailTaken = false;
+
+        if (filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
+            $existingRegistration = SeminarRegistrationModel::whereRaw('LOWER(email) = ?', [strtolower($this->email)])->first();
+            if ($existingRegistration) {
+                $this->emailTaken = true;
+            }
+        }
+    }
+
     public function isIndonesia(): bool
     {
         if (! $this->country_id) {
@@ -218,12 +232,17 @@ class SeminarRegistration extends Component
     {
         $this->validate();
 
-        // Clear any stale email errors before checking
-        $this->resetErrorBag('email');
-
         // Check for existing registration with the same email
+        if ($this->emailTaken) {
+            $this->addError('email', __('seminar.email_already_registered'));
+            $this->dispatch('focus-element', selector: 'input[name="email"]');
+
+            return;
+        }
+
         $existingRegistration = SeminarRegistrationModel::whereRaw('LOWER(email) = ?', [strtolower($this->email)])->first();
         if ($existingRegistration) {
+            $this->emailTaken = true;
             $this->addError('email', __('seminar.email_already_registered'));
             $this->dispatch('focus-element', selector: 'input[name="email"]');
 
@@ -318,7 +337,7 @@ class SeminarRegistration extends Component
         $registrationService = app(RegistrationService::class);
         $registrationService->sendSeminarSubmissionConfirmation($registration);
 
-        return redirect()->route('register.seminar.success', ['id' => $registration->id]);
+        $this->redirectRoute('register.seminar.success', ['id' => $registration->id], navigate: true);
     }
 
     public function checkExistingRegistration(): void
