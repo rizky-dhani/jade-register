@@ -142,11 +142,14 @@ class SeminarRegistrationsTable
                     ->color('info')
                     ->visible(fn (SeminarRegistration $record): bool => $record->payment_proof_path !== null)
                     ->modalHeading(__('seminar.view_payment_proof'))
+                    ->slideOver()
                     ->modalContent(function (SeminarRegistration $record) {
                         $url = asset('storage/'.$record->payment_proof_path);
+                        $extension = pathinfo($record->payment_proof_path, PATHINFO_EXTENSION);
 
                         return view('components.payment-proof-modal', [
                             'url' => $url,
+                            'extension' => strtolower($extension),
                         ]);
                     }),
                 Action::make('verifyPayment')
