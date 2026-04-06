@@ -53,4 +53,19 @@ class UserResource extends Resource
     {
         return self::getUrl('index');
     }
+
+    public static function getModelLabel(): string
+    {
+        return __('filament.navigation.users');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('filament.navigation.users');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('filament.navigation.users');
+    }
 }

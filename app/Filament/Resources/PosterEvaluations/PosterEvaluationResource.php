@@ -26,6 +26,21 @@ class PosterEvaluationResource extends Resource
 
     protected static ?int $navigationSort = 2;
 
+    public static function getModelLabel(): string
+    {
+        return __('filament.navigation.poster_evaluations');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('filament.navigation.poster_evaluations');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('filament.navigation.poster_evaluations');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return PosterEvaluationForm::configure($schema);

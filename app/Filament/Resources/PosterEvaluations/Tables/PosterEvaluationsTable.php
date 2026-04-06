@@ -25,32 +25,32 @@ class PosterEvaluationsTable
             })
             ->columns([
                 TextColumn::make('submission.title')
-                    ->label('Poster')
+                    ->label(__('filament.poster_evaluations.poster'))
                     ->searchable()
                     ->limit(40),
                 TextColumn::make('judge.name')
-                    ->label('Judge')
+                    ->label(__('filament.poster_evaluations.judge'))
                     ->searchable()
                     ->visible(fn () => auth()->user()?->hasRole('Super Admin') ?? false),
                 TextColumn::make('content_score')
-                    ->label('Content')
+                    ->label(__('filament.poster_evaluations.content'))
                     ->formatStateUsing(fn (int $state): string => "{$state}/".PosterEvaluation::MAX_CONTENT_SCORE),
                 TextColumn::make('creativity_score')
-                    ->label('Creativity')
+                    ->label(__('filament.poster_evaluations.creativity'))
                     ->formatStateUsing(fn (int $state): string => "{$state}/".PosterEvaluation::MAX_CREATIVITY_SCORE),
                 TextColumn::make('visual_score')
-                    ->label('Visual')
+                    ->label(__('filament.poster_evaluations.visual'))
                     ->formatStateUsing(fn (int $state): string => "{$state}/".PosterEvaluation::MAX_VISUAL_SCORE),
                 TextColumn::make('presentation_score')
-                    ->label('Presentation')
+                    ->label(__('filament.poster_evaluations.presentation'))
                     ->formatStateUsing(fn (int $state): string => "{$state}/".PosterEvaluation::MAX_PRESENTATION_SCORE),
                 TextColumn::make('total_score')
-                    ->label('Total')
+                    ->label(__('filament.poster_evaluations.total'))
                     ->formatStateUsing(fn (int $state): string => "{$state}/100")
                     ->sortable(),
                 TextColumn::make('evaluated_at')
                     ->dateTime('d M Y, H:i')
-                    ->label('Evaluated'),
+                    ->label(__('filament.poster_evaluations.evaluated')),
             ])
             ->filters([
                 //

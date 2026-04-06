@@ -26,6 +26,21 @@ class SeminarRegistrationResource extends Resource
 
     protected static ?int $navigationSort = 2;
 
+    public static function getModelLabel(): string
+    {
+        return __('filament.navigation.seminar_registrations');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('filament.navigation.seminar_registrations');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('filament.navigation.seminar_registrations');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return SeminarRegistrationForm::configure($schema);

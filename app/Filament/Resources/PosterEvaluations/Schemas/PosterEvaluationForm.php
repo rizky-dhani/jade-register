@@ -25,13 +25,13 @@ class PosterEvaluationForm
                     ->columns(2)
                     ->schema([
                         Select::make('poster_submission_id')
-                            ->label('Poster Submission')
+                            ->label(__('filament.poster_evaluations.poster_submission'))
                             ->options(PosterSubmission::pluck('title', 'id'))
                             ->required()
                             ->searchable(),
                         $isSuperAdmin
                             ? Select::make('judge_id')
-                                ->label('Judge')
+                                ->label(__('filament.poster_evaluations.judge'))
                                 ->options(User::pluck('name', 'id'))
                                 ->required()
                             : Hidden::make('judge_id')
@@ -45,35 +45,35 @@ class PosterEvaluationForm
                             ->numeric()
                             ->minValue(0)
                             ->maxValue(PosterEvaluation::MAX_CONTENT_SCORE)
-                            ->label('Content Score')
+                            ->label(__('filament.poster_evaluations.content_score'))
                             ->helperText('Max: '.PosterEvaluation::MAX_CONTENT_SCORE.' points')
                             ->required(),
                         TextInput::make('creativity_score')
                             ->numeric()
                             ->minValue(0)
                             ->maxValue(PosterEvaluation::MAX_CREATIVITY_SCORE)
-                            ->label('Creativity Score')
+                            ->label(__('filament.poster_evaluations.creativity_score'))
                             ->helperText('Max: '.PosterEvaluation::MAX_CREATIVITY_SCORE.' points')
                             ->required(),
                         TextInput::make('visual_score')
                             ->numeric()
                             ->minValue(0)
                             ->maxValue(PosterEvaluation::MAX_VISUAL_SCORE)
-                            ->label('Visual Score')
+                            ->label(__('filament.poster_evaluations.visual_score'))
                             ->helperText('Max: '.PosterEvaluation::MAX_VISUAL_SCORE.' points')
                             ->required(),
                         TextInput::make('presentation_score')
                             ->numeric()
                             ->minValue(0)
                             ->maxValue(PosterEvaluation::MAX_PRESENTATION_SCORE)
-                            ->label('Presentation Score')
+                            ->label(__('filament.poster_evaluations.presentation_score'))
                             ->helperText('Max: '.PosterEvaluation::MAX_PRESENTATION_SCORE.' points')
                             ->required(),
                     ]),
                 Section::make('Feedback')
                     ->schema([
                         Textarea::make('comments')
-                            ->label('Comments')
+                            ->label(__('filament.poster_evaluations.comments'))
                             ->rows(4),
                     ]),
             ]);

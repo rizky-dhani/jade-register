@@ -1,231 +1,134 @@
 <?php
 
 return [
-    // Navigation Groups
-    'navigation' => [
-        'data' => 'Data',
-        'settings' => 'Settings',
-        'events' => 'Events',
-    ],
+    // Navigation
+    'navigation.attendance' => 'Attendance',
+    'navigation.countries' => 'Countries',
+    'navigation.hands_on' => 'Hands On',
+    'navigation.hands_on_registrations' => 'Hands On Registrations',
+    'navigation.permissions' => 'Permissions',
+    'navigation.poster_evaluations' => 'Poster Evaluations',
+    'navigation.poster_submissions' => 'Poster Submissions',
+    'navigation.roles' => 'Roles',
+    'navigation.seminar_registrations' => 'Seminar Registrations',
+    'navigation.seminars' => 'Seminars',
+    'navigation.users' => 'Users',
+    'navigation.visitors' => 'Visitors',
 
-    // Resources - Seminar Registrations
-    'seminar_registration' => [
-        'label' => 'Seminar Registration',
-        'plural_label' => 'Seminar Registrations',
-        'form' => [
-            'email_plataran' => 'Email as per Plataran Sehat',
-            'name_str' => 'Name as per STR (without title)',
-            'name_plataran' => 'Name as per Plataran Sehat',
-            'nik' => 'NIK',
-            'pdgi_branch' => 'PDGI Branch',
-            'competency' => 'Competency',
-            'whatsapp_number' => 'WhatsApp Number',
-            'payment_proof_helper' => 'Upload payment proof in JPG, PNG, or PDF format (max 5MB).',
-        ],
-        'table' => [
-            'registration_code' => 'Registration Code',
-            'name' => 'Name',
-            'email' => 'Email',
-            'phone' => 'Phone',
-            'selected_seminar' => 'Selected Seminar',
-            'payment_status' => 'Payment Status',
-            'created_at' => 'Created At',
-        ],
-    ],
+    // Attendance
+    'attendance.participant_name' => 'Participant Name',
+    'attendance.seminar_registration' => 'Seminar Registration',
+    'attendance.hands_on_registrations' => 'Hands On Registrations',
+    'attendance.activity_type' => 'Activity Type',
+    'attendance.checked_in_by' => 'Checked In By',
+    'attendance.checked_in' => 'Checked In',
+    'attendance.check_in_time' => 'Check-in Time',
+    'attendance.check_in_status' => 'Check-in Status',
+    'attendance.hands_on_session' => 'Hands On Session',
+    'attendance.not_checked_in' => 'Not Checked In',
 
-    // Resources - Users
-    'user' => [
-        'label' => 'User',
-        'plural_label' => 'Users',
-        'form' => [
-            'section_user_info' => 'User Information',
-            'name' => 'Name',
-            'name_license' => 'Name License',
-            'nik' => 'NIK',
-            'pdgi_branch' => 'PDGI Branch',
-            'kompetensi' => 'Kompetensi',
-            'email' => 'Email Address',
-            'section_roles' => 'Roles',
-            'roles_placeholder' => 'Select roles...',
-        ],
-        'table' => [
-            'name' => 'Name',
-            'email' => 'Email',
-            'roles' => 'Roles',
-            'created_at' => 'Created At',
-        ],
-    ],
+    // Countries
+    'countries.code' => 'Code',
+    'countries.phone_code' => 'Phone Code',
+    'countries.local' => 'Local',
+    'countries.country_code_iso' => 'Country Code (ISO 2)',
+    'countries.mark_as_local' => 'Mark as Local (Indonesia)',
 
-    // Resources - Seminars
-    'seminar' => [
-        'label' => 'Seminar',
-        'plural_label' => 'Seminars',
-        'form' => [
-            'section_package_info' => 'Package Information',
-            'name' => 'Package Name',
-            'name_placeholder' => 'e.g., Early Bird - Snack + Lunch',
-            'code' => 'Code',
-            'code_placeholder' => 'e.g., local_early_bird_lunch',
-            'code_helper' => 'Auto-generated from package name on create. Editable on edit page.',
-            'description' => 'Description',
-            'description_placeholder' => 'Optional description of what this package includes',
-            'section_pricing' => 'Pricing & Type',
-            'applies_to' => 'Applies To',
-            'applies_to_local' => 'Local (Indonesia)',
-            'applies_to_international' => 'International',
-            'applies_to_all' => 'All Participants',
-            'applies_to_helper' => 'Select which participant type this package applies to',
-            'original_price' => 'Original Price',
-            'original_price_placeholder' => 'e.g., 1000000',
-            'original_price_helper' => 'Regular price before any discounts',
-            'discounted_price' => 'Discounted Price (Early Bird)',
-            'discounted_price_placeholder' => 'e.g., 900000',
-            'discounted_price_helper' => 'Early bird promotional price (leave empty for no discount)',
-            'max_seats' => 'Max Seats',
-            'max_seats_placeholder' => 'e.g., 100',
-            'max_seats_helper' => 'Maximum number of registrations allowed (leave empty for unlimited)',
-            'early_bird_deadline' => 'Early Bird Deadline',
-            'early_bird_deadline_helper' => 'Deadline for early bird pricing (leave empty to use is_early_bird toggle only)',
-            'currency' => 'Currency',
-            'currency_idr' => 'IDR - Indonesian Rupiah',
-            'currency_usd' => 'USD - US Dollar',
-            'section_features' => 'Package Features',
-            'includes_lunch' => 'Includes Lunch',
-            'includes_lunch_helper' => 'Check if this package includes lunch (not just snacks)',
-            'is_early_bird' => 'Early Bird Pricing',
-            'is_early_bird_helper' => 'Check if this is an early bird promotional price',
-            'is_active' => 'Active',
-            'is_active_helper' => 'Inactive packages will not be shown to users',
-            'section_display_order' => 'Display Order',
-            'sort_order' => 'Sort Order',
-            'sort_order_helper' => 'Lower numbers appear first. Use this to control display order.',
-        ],
-        'table' => [
-            'name' => 'Name',
-            'code' => 'Code',
-            'applies_to' => 'Applies To',
-            'price' => 'Price',
-            'is_active' => 'Active',
-            'sort_order' => 'Sort Order',
-        ],
-    ],
+    // Hands On
+    'hands_on.max_seats' => 'Max Seats',
+    'hands_on.registered' => 'Registered',
+    'hands_on.available' => 'Available',
+    'hands_on.active' => 'Active',
+    'hands_on.active_only' => 'Active Only',
+    'hands_on.has_available_seats' => 'Has Available Seats',
+    'hands_on.event_date' => 'Event Date',
+    'hands_on.max_seats_legacy' => 'Maximum Seats (Legacy)',
+    'hands_on.price_legacy' => 'Price (Legacy)',
+    'hands_on.original_price' => 'Original Price',
+    'hands_on.discounted_price' => 'Discounted Price (Early Bird)',
+    'hands_on.early_bird_deadline' => 'Early Bird Deadline',
+    'hands_on.applies_to' => 'Applies To',
+    'hands_on.currency' => 'Currency',
+    'hands_on.includes_lunch' => 'Includes Lunch',
+    'hands_on.early_bird_pricing' => 'Early Bird Pricing',
+    'hands_on.sort_order' => 'Sort Order',
+    'hands_on.lunch' => 'Lunch',
+    'hands_on.early_bird' => 'Early Bird',
+    'hands_on.early_bird_only' => 'Early Bird Only',
 
-    // Resources - Hands Ons
-    'hands_on' => [
-        'label' => 'Hands On',
-        'plural_label' => 'Hands Ons',
-    ],
+    // Hands On Registrations
+    'hands_on_registrations.registration_code' => 'Registration Code',
+    'hands_on_registrations.participant' => 'Participant',
+    'hands_on_registrations.hands_on_event' => 'Hands On Event',
+    'hands_on_registrations.event_date' => 'Event Date',
+    'hands_on_registrations.type' => 'Type',
+    'hands_on_registrations.payment_status' => 'Payment Status',
+    'hands_on_registrations.verified_at' => 'Verified At',
+    'hands_on_registrations.created_at' => 'Created At',
+    'hands_on_registrations.view_payment_proof' => 'View Payment Proof',
+    'hands_on_registrations.registration_type' => 'Registration Type',
+    'hands_on_registrations.payment_proof' => 'Payment Proof',
 
-    // Resources - Hands On Registrations
-    'hands_on_registration' => [
-        'label' => 'Hands On Registration',
-        'plural_label' => 'Hands On Registrations',
-    ],
+    // Poster Evaluations
+    'poster_evaluations.poster' => 'Poster',
+    'poster_evaluations.judge' => 'Judge',
+    'poster_evaluations.content' => 'Content',
+    'poster_evaluations.creativity' => 'Creativity',
+    'poster_evaluations.visual' => 'Visual',
+    'poster_evaluations.presentation' => 'Presentation',
+    'poster_evaluations.total' => 'Total',
+    'poster_evaluations.evaluated' => 'Evaluated',
+    'poster_evaluations.content_score' => 'Content Score',
+    'poster_evaluations.creativity_score' => 'Creativity Score',
+    'poster_evaluations.visual_score' => 'Visual Score',
+    'poster_evaluations.presentation_score' => 'Presentation Score',
+    'poster_evaluations.comments' => 'Comments',
+    'poster_evaluations.poster_submission' => 'Poster Submission',
 
-    // Resources - Visitors
-    'visitor' => [
-        'label' => 'Visitor',
-        'plural_label' => 'Visitors',
-        'form' => [
-            'name' => 'Name',
-            'email' => 'Email',
-            'phone' => 'Phone',
-            'affiliation' => 'Affiliation',
-            'section_attendance' => 'Attendance Status',
-            'section_attendance_description' => 'Visitor check-in information',
-            'is_scanned' => 'Checked In',
-            'scanned_at' => 'Checked In At',
-            'not_scanned' => 'Not checked in yet',
-        ],
-        'table' => [
-            'name' => 'Name',
-            'email' => 'Email',
-            'phone' => 'Phone',
-            'affiliation' => 'Affiliation',
-            'checked_in' => 'Checked In',
-        ],
-    ],
+    // Poster Submissions
+    'poster_submissions.author' => 'Author',
+    'poster_submissions.category' => 'Category',
+    'poster_submissions.topic' => 'Topic',
+    'poster_submissions.score' => 'Score',
+    'poster_submissions.submitted' => 'Submitted',
+    'poster_submissions.author_names' => 'Author Names',
+    'poster_submissions.author_emails' => 'Author Emails',
+    'poster_submissions.presenter_name' => 'Presenter Name',
+    'poster_submissions.rejection_reason' => 'Rejection Reason',
 
-    // Resources - Poster Submissions
-    'poster_submission' => [
-        'label' => 'Poster Submission',
-        'plural_label' => 'Poster Submissions',
-    ],
+    // Seminar Registrations
+    'seminar_registrations.nik' => 'NIK',
 
-    // Resources - Poster Evaluations
-    'poster_evaluation' => [
-        'label' => 'Poster Evaluation',
-        'plural_label' => 'Poster Evaluations',
-    ],
+    // Seminars
+    'seminars.original_price' => 'Original Price',
+    'seminars.discounted_price' => 'Discounted Price',
+    'seminars.discount_until' => 'Discount Until',
+    'seminars.max_seats' => 'Max Seats',
+    'seminars.lunch' => 'Lunch',
+    'seminars.early_bird' => 'Early Bird',
+    'seminars.applies_to' => 'Applies To',
+    'seminars.active' => 'Active',
+    'seminars.active_only' => 'Active Only',
+    'seminars.early_bird_only' => 'Early Bird Only',
+    'seminars.includes_lunch' => 'Includes Lunch',
 
-    // Resources - Countries
-    'country' => [
-        'label' => 'Country',
-        'plural_label' => 'Countries',
-        'form' => [
-            'name' => 'Country Name',
-            'code' => 'Country Code',
-            'is_indonesia' => 'Indonesia',
-        ],
-        'table' => [
-            'name' => 'Name',
-            'code' => 'Code',
-            'is_indonesia' => 'Indonesia',
-        ],
-    ],
+    // Users
+    'users.email' => 'Email address',
+    'users.name_license' => 'Name License',
+    'users.nik' => 'NIK',
+    'users.pdgi_branch' => 'PDGI Branch',
+    'users.kompetensi' => 'Kompetensi',
 
-    // Resources - Roles
-    'role' => [
-        'label' => 'Role',
-        'plural_label' => 'Roles',
-        'form' => [
-            'name' => 'Role Name',
-            'permissions' => 'Permissions',
-        ],
-        'table' => [
-            'name' => 'Name',
-            'permissions_count' => 'Permissions Count',
-        ],
-    ],
+    // Visitors
+    'visitors.checked_in' => 'Checked In',
+    'visitors.checked_in_at' => 'Checked In At',
+    'visitors.view_qr' => 'View QR',
+    'visitors.confirm_attendance' => 'Confirm Attendance',
 
-    // Resources - Permissions
-    'permission' => [
-        'label' => 'Permission',
-        'plural_label' => 'Permissions',
-        'form' => [
-            'name' => 'Permission Name',
-        ],
-        'table' => [
-            'name' => 'Name',
-        ],
-    ],
+    // Actions
+    'actions.export_excel' => 'Export Excel',
+    'actions.generate_permissions' => 'Generate from Permissions',
 
     // Notifications
-    'notifications' => [
-        'created_title' => 'Record created successfully',
-        'created_body' => 'The record has been created successfully.',
-        'updated_title' => 'Record updated successfully',
-        'updated_body' => 'The changes have been saved successfully.',
-        'deleted_title' => 'Record deleted successfully',
-        'deleted_body' => 'The record has been deleted successfully.',
-    ],
-
-    // Common Actions
-    'actions' => [
-        'create' => 'Create',
-        'edit' => 'Edit',
-        'delete' => 'Delete',
-        'view' => 'View',
-        'save' => 'Save',
-        'cancel' => 'Cancel',
-        'back' => 'Back',
-        'confirm' => 'Confirm',
-    ],
-
-    // Common Fields
-    'fields' => [
-        'created_at' => 'Created At',
-        'updated_at' => 'Updated At',
-        'id' => 'ID',
-    ],
+    'notifications.permissions_generated' => 'Permissions Generated',
 ];

@@ -19,15 +19,15 @@ class UserForm
                         TextInput::make('name')
                             ->required(),
                         TextInput::make('name_license')
-                            ->label('Name License'),
+                            ->label(__('filament.users.name_license')),
                         TextInput::make('nik')
-                            ->label('NIK'),
+                            ->label(__('filament.users.nik')),
                         TextInput::make('pdgi_branch')
-                            ->label('PDGI Branch'),
+                            ->label(__('filament.users.pdgi_branch')),
                         TextInput::make('kompetensi')
-                            ->label('Kompetensi'),
+                            ->label(__('filament.users.kompetensi')),
                         TextInput::make('email')
-                            ->label('Email address')
+                            ->label(__('filament.users.email'))
                             ->email()
                             ->required(),
                     ]),

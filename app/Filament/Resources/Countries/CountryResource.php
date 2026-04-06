@@ -51,4 +51,19 @@ class CountryResource extends Resource
             'edit' => EditCountry::route('/{record}/edit'),
         ];
     }
+
+    public static function getModelLabel(): string
+    {
+        return __('filament.navigation.countries');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('filament.navigation.countries');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('filament.navigation.countries');
+    }
 }

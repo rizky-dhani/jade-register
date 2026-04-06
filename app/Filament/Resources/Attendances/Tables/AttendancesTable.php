@@ -16,7 +16,7 @@ class AttendancesTable
         return $table
             ->columns([
                 TextColumn::make('participant_name')
-                    ->label('Participant Name')
+                    ->label(__('filament.attendance.participant_name'))
                     ->state(function ($record): string {
                         if ($record->isSeminar() && $record->seminarRegistration) {
                             return $record->seminarRegistration->name;
@@ -29,11 +29,11 @@ class AttendancesTable
                         return 'N/A';
                     }),
                 IconColumn::make('is_seminar_checked_in')
-                    ->label('Seminar Registration')
+                    ->label(__('filament.attendance.seminar_registration'))
                     ->state(fn ($record): bool => $record->isSeminar() && $record->checked_in_at !== null)
                     ->boolean(),
                 TextColumn::make('hands_on_registrations')
-                    ->label('Hands On Registrations')
+                    ->label(__('filament.attendance.hands_on_registrations'))
                     ->state(function ($record): string {
                         $handsOns = collect();
 
@@ -56,14 +56,14 @@ class AttendancesTable
                             ->join(', ');
                     }),
                 TextColumn::make('activity_type')
-                    ->label('Activity Type')
+                    ->label(__('filament.attendance.activity_type'))
                     ->formatStateUsing(fn (string $state): string => ucwords(str_replace('_', ' ', $state)))
                     ->searchable(),
                 TextColumn::make('checked_in_at')
                     ->dateTime()
                     ->sortable(),
                 TextColumn::make('checkedInBy.name')
-                    ->label('Checked In By')
+                    ->label(__('filament.attendance.checked_in_by'))
                     ->searchable(),
                 TextColumn::make('created_at')
                     ->dateTime()

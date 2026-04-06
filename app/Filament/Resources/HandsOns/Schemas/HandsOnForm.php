@@ -24,7 +24,7 @@ class HandsOnForm
 
                 DatePicker::make('event_date')
                     ->required()
-                    ->label('Event Date')
+                    ->label(__('filament.hands_on.event_date'))
                     ->displayFormat('F j, Y')
                     ->minDate('2026-11-13')
                     ->maxDate('2026-11-15'),
@@ -35,7 +35,7 @@ class HandsOnForm
                     ->integer()
                     ->minValue(1)
                     ->default(30)
-                    ->label('Maximum Seats (Legacy)')
+                    ->label(__('filament.hands_on.max_seats_legacy'))
                     ->helperText('Legacy field - use Stock Limit below for new stock management'),
 
                 TextInput::make('price')
@@ -44,14 +44,14 @@ class HandsOnForm
                     ->integer()
                     ->minValue(0)
                     ->default(0)
-                    ->label('Price (Legacy)')
+                    ->label(__('filament.hands_on.price_legacy'))
                     ->helperText('Legacy field - use Original/Discounted Price below for new pricing'),
 
                 TextInput::make('original_price')
                     ->numeric()
                     ->integer()
                     ->minValue(0)
-                    ->label('Original Price')
+                    ->label(__('filament.hands_on.original_price'))
                     ->placeholder('e.g., 1500000')
                     ->helperText('Regular price before any discounts'),
 
@@ -59,7 +59,7 @@ class HandsOnForm
                     ->numeric()
                     ->integer()
                     ->minValue(0)
-                    ->label('Discounted Price (Early Bird)')
+                    ->label(__('filament.hands_on.discounted_price'))
                     ->placeholder('e.g., 1200000')
                     ->helperText('Early bird promotional price (leave empty for no discount)'),
 
@@ -67,12 +67,12 @@ class HandsOnForm
                     ->numeric()
                     ->integer()
                     ->minValue(1)
-                    ->label('Max Seats')
+                    ->label(__('filament.hands_on.max_seats'))
                     ->placeholder('e.g., 30')
                     ->helperText('Maximum number of registrations allowed (leave empty for unlimited)'),
 
                 TextInput::make('early_bird_deadline')
-                    ->label('Early Bird Deadline')
+                    ->label(__('filament.hands_on.early_bird_deadline'))
                     ->type('datetime-local')
                     ->helperText('Deadline for early bird pricing (leave empty for no deadline)'),
 
@@ -82,7 +82,7 @@ class HandsOnForm
                     ->maxLength(3),
 
                 Toggle::make('is_active')
-                    ->label('Active')
+                    ->label(__('filament.hands_on.active'))
                     ->default(true),
             ]);
     }

@@ -47,7 +47,7 @@ class SeminarForm
                     ->columns(3)
                     ->schema([
                         Select::make('applies_to')
-                            ->label('Applies To')
+                            ->label(__('filament.seminars.applies_to'))
                             ->options([
                                 'local' => 'Local (Indonesia)',
                                 'international' => 'International',
@@ -62,7 +62,7 @@ class SeminarForm
                             ->numeric()
                             ->integer()
                             ->minValue(0)
-                            ->label('Original Price')
+                            ->label(__('filament.seminars.original_price'))
                             ->placeholder('e.g., 1000000')
                             ->helperText('Regular price before any discounts'),
 
@@ -70,7 +70,7 @@ class SeminarForm
                             ->numeric()
                             ->integer()
                             ->minValue(0)
-                            ->label('Discounted Price (Early Bird)')
+                            ->label(__('filament.seminars.discounted_price'))
                             ->placeholder('e.g., 900000')
                             ->helperText('Early bird promotional price (leave empty for no discount)'),
 
@@ -78,12 +78,12 @@ class SeminarForm
                             ->numeric()
                             ->integer()
                             ->minValue(1)
-                            ->label('Max Seats')
+                            ->label(__('filament.seminars.max_seats'))
                             ->placeholder('e.g., 100')
                             ->helperText('Maximum number of registrations allowed (leave empty for unlimited)'),
 
                         TextInput::make('early_bird_deadline')
-                            ->label('Early Bird Deadline')
+                            ->label(__('filament.hands_on.early_bird_deadline'))
                             ->type('datetime-local')
                             ->helperText('Deadline for early bird pricing (leave empty to use is_early_bird toggle only)'),
 
@@ -94,23 +94,23 @@ class SeminarForm
                                 'IDR' => 'IDR - Indonesian Rupiah',
                                 'USD' => 'USD - US Dollar',
                             ])
-                            ->label('Currency'),
+                            ->label(__('filament.hands_on.currency')),
                     ]),
 
                 Section::make('Package Features')
                     ->schema([
                         Toggle::make('includes_lunch')
-                            ->label('Includes Lunch')
+                            ->label(__('filament.seminars.includes_lunch'))
                             ->default(false)
                             ->helperText('Check if this package includes lunch (not just snacks)'),
 
                         Toggle::make('is_early_bird')
-                            ->label('Early Bird Pricing')
+                            ->label(__('filament.seminars.early_bird'))
                             ->default(false)
                             ->helperText('Check if this is an early bird promotional price'),
 
                         Toggle::make('is_active')
-                            ->label('Active')
+                            ->label(__('filament.seminars.active'))
                             ->default(true)
                             ->helperText('Inactive packages will not be shown to users'),
                     ]),
@@ -121,7 +121,7 @@ class SeminarForm
                             ->numeric()
                             ->integer()
                             ->default(0)
-                            ->label('Sort Order')
+                            ->label(__('filament.hands_on.sort_order'))
                             ->helperText('Lower numbers appear first. Use this to control display order.'),
                     ]),
             ]);

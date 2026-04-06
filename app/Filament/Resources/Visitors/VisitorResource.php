@@ -26,6 +26,21 @@ class VisitorResource extends Resource
 
     protected static ?int $navigationSort = 1;
 
+    public static function getModelLabel(): string
+    {
+        return __('filament.navigation.visitors');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('filament.navigation.visitors');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('filament.navigation.visitors');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return VisitorForm::configure($schema);

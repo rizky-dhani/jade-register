@@ -26,6 +26,21 @@ class HandsOnRegistrationResource extends Resource
 
     protected static ?int $navigationSort = 3;
 
+    public static function getModelLabel(): string
+    {
+        return __('filament.navigation.hands_on_registrations');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('filament.navigation.hands_on_registrations');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('filament.navigation.hands_on_registrations');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return HandsOnRegistrationForm::configure($schema);

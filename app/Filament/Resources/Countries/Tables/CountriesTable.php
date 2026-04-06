@@ -18,13 +18,13 @@ class CountriesTable
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('code')
-                    ->label('Code')
+                    ->label(__('filament.countries.code'))
                     ->sortable(),
                 TextColumn::make('phone_code')
-                    ->label('Phone Code')
+                    ->label(__('filament.countries.phone_code'))
                     ->sortable(),
                 IconColumn::make('is_local')
-                    ->label('Local')
+                    ->label(__('filament.countries.local'))
                     ->boolean()
                     ->trueIcon('heroicon-o-check-circle')
                     ->falseIcon('heroicon-o-x-circle'),

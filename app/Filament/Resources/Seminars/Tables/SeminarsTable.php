@@ -29,35 +29,35 @@ class SeminarsTable
                     ->size('sm'),
 
                 TextColumn::make('formatted_original_price')
-                    ->label('Original Price')
+                    ->label(__('filament.seminars.original_price'))
                     ->sortable(),
 
                 TextColumn::make('formatted_discounted_price')
-                    ->label('Discounted Price')
+                    ->label(__('filament.seminars.discounted_price'))
                     ->sortable()
                     ->toggleable(),
 
                 TextColumn::make('early_bird_deadline')
-                    ->label('Discount Until')
+                    ->label(__('filament.seminars.discount_until'))
                     ->dateTime('M d, Y H:i')
                     ->sortable()
                     ->toggleable(),
 
                 TextColumn::make('max_seats')
-                    ->label('Max Seats')
+                    ->label(__('filament.seminars.max_seats'))
                     ->sortable()
                     ->getStateUsing(fn ($record): string => $record->max_seats === null ? 'Unlimited' : (string) $record->max_seats),
 
                 IconColumn::make('includes_lunch')
                     ->boolean()
-                    ->label('Lunch'),
+                    ->label(__('filament.seminars.lunch')),
 
                 IconColumn::make('is_early_bird')
                     ->boolean()
-                    ->label('Early Bird'),
+                    ->label(__('filament.seminars.early_bird')),
 
                 TextColumn::make('applies_to')
-                    ->label('Applies To')
+                    ->label(__('filament.seminars.applies_to'))
                     ->formatStateUsing(fn (string $state): string => match ($state) {
                         'local' => 'Local',
                         'international' => 'International',
@@ -74,7 +74,7 @@ class SeminarsTable
 
                 IconColumn::make('is_active')
                     ->boolean()
-                    ->label('Active'),
+                    ->label(__('filament.seminars.active')),
 
                 TextColumn::make('sort_order')
                     ->numeric()
@@ -83,7 +83,7 @@ class SeminarsTable
             ])
             ->filters([
                 SelectFilter::make('applies_to')
-                    ->label('Applies To')
+                    ->label(__('filament.seminars.applies_to'))
                     ->options([
                         'local' => 'Local (Indonesia)',
                         'international' => 'International',
@@ -91,15 +91,15 @@ class SeminarsTable
                     ]),
 
                 Filter::make('is_active')
-                    ->label('Active Only')
+                    ->label(__('filament.seminars.active_only'))
                     ->query(fn (Builder $query) => $query->where('is_active', true)),
 
                 Filter::make('is_early_bird')
-                    ->label('Early Bird Only')
+                    ->label(__('filament.seminars.early_bird_only'))
                     ->query(fn (Builder $query) => $query->where('is_early_bird', true)),
 
                 Filter::make('includes_lunch')
-                    ->label('Includes Lunch')
+                    ->label(__('filament.seminars.includes_lunch'))
                     ->query(fn (Builder $query) => $query->where('includes_lunch', true)),
             ])
             ->recordActions([

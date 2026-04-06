@@ -20,14 +20,14 @@ class PosterSubmissionsTable
                     ->searchable()
                     ->limit(50),
                 TextColumn::make('user.name')
-                    ->label('Author')
+                    ->label(__('filament.poster_submissions.author'))
                     ->searchable(),
                 TextColumn::make('category.name')
-                    ->label('Category'),
+                    ->label(__('filament.poster_submissions.category')),
                 TextColumn::make('topic.name')
-                    ->label('Topic'),
+                    ->label(__('filament.poster_submissions.topic')),
                 TextColumn::make('average_score')
-                    ->label('Score')
+                    ->label(__('filament.poster_submissions.score'))
                     ->formatStateUsing(fn (?int $state): string => $state ? "{$state}/100" : '-')
                     ->sortable(),
                 BadgeColumn::make('status')
@@ -50,7 +50,7 @@ class PosterSubmissionsTable
                     }),
                 TextColumn::make('submitted_at')
                     ->dateTime('d M Y, H:i')
-                    ->label('Submitted'),
+                    ->label(__('filament.poster_submissions.submitted')),
             ])
             ->filters([
                 //

@@ -35,11 +35,11 @@ class PosterSubmissionForm
                             ])
                             ->required(),
                         Select::make('poster_category_id')
-                            ->label('Category')
+                            ->label(__('filament.poster_submissions.category'))
                             ->options(PosterCategory::pluck('name', 'id'))
                             ->required(),
                         Select::make('poster_topic_id')
-                            ->label('Topic')
+                            ->label(__('filament.poster_submissions.topic'))
                             ->options(PosterTopic::pluck('name', 'id'))
                             ->required(),
                     ]),
@@ -47,18 +47,18 @@ class PosterSubmissionForm
                     ->columns(2)
                     ->schema([
                         TextInput::make('author_names')
-                            ->label('Author Names')
+                            ->label(__('filament.poster_submissions.author_names'))
                             ->required()
                             ->maxLength(500),
                         TextInput::make('author_emails')
-                            ->label('Author Emails')
+                            ->label(__('filament.poster_submissions.author_emails'))
                             ->required()
                             ->maxLength(500),
                         TextInput::make('affiliation')
                             ->required()
                             ->maxLength(255),
                         TextInput::make('presenter_name')
-                            ->label('Presenter Name')
+                            ->label(__('filament.poster_submissions.presenter_name'))
                             ->required()
                             ->maxLength(255),
                     ]),
@@ -72,7 +72,7 @@ class PosterSubmissionForm
                 Section::make('Admin Notes')
                     ->schema([
                         Textarea::make('rejection_reason')
-                            ->label('Rejection Reason')
+                            ->label(__('filament.poster_submissions.rejection_reason'))
                             ->rows(3),
                     ]),
             ]);

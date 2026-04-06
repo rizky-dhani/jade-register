@@ -32,11 +32,11 @@ class VisitorsTable
                 TextColumn::make('affiliation')
                     ->searchable(),
                 IconColumn::make('scanned_at')
-                    ->label('Checked In')
+                    ->label(__('filament.visitors.checked_in'))
                     ->icon(fn (?Visitor $record): string => $record && $record->isScanned() ? Heroicon::SolidCheckCircle : Heroicon::OutlineXCircle)
                     ->color(fn (?Visitor $record): string => $record && $record->isScanned() ? 'success' : 'danger'),
                 TextColumn::make('scanned_at')
-                    ->label('Checked In At')
+                    ->label(__('filament.visitors.checked_in_at'))
                     ->dateTime()
                     ->sortable()
                     ->placeholder('Not checked in'),
@@ -51,14 +51,14 @@ class VisitorsTable
                 EditAction::make(),
                 DeleteAction::make(),
                 Action::make('qrCode')
-                    ->label('View QR')
+                    ->label(__('filament.visitors.view_qr'))
                     ->icon(Heroicon::QrCode)
                     ->color('primary')
                     ->url(fn (Visitor $record): ?string => $record->qr_token ? app(VisitorQrTokenService::class)->getQrUrl($record) : null)
                     ->openUrlInNewTab()
                     ->hidden(fn (Visitor $record): bool => ! $record->qr_token),
                 Action::make('confirmAttendance')
-                    ->label('Confirm Attendance')
+                    ->label(__('filament.visitors.confirm_attendance'))
                     ->icon(Heroicon::CheckCircle)
                     ->color('success')
                     ->requiresConfirmation()

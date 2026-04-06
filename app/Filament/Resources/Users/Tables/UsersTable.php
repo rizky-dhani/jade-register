@@ -17,7 +17,7 @@ class UsersTable
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('email')
-                    ->label('Email address')
+                    ->label(__('filament.users.email'))
                     ->searchable(),
             ])
             ->filters([

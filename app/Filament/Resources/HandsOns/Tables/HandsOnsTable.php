@@ -27,17 +27,17 @@ class HandsOnsTable
                     ->sortable(),
 
                 TextColumn::make('max_seats')
-                    ->label('Max Seats')
+                    ->label(__('filament.hands_on.max_seats'))
                     ->numeric()
                     ->sortable(),
 
                 TextColumn::make('registrations_count')
-                    ->label('Registered')
+                    ->label(__('filament.hands_on.registered'))
                     ->counts('handsOnRegistrations')
                     ->numeric(),
 
                 TextColumn::make('available_seats')
-                    ->label('Available')
+                    ->label(__('filament.hands_on.available'))
                     ->state(function ($record) {
                         $registered = $record->handsOnRegistrations()
                             ->whereIn('payment_status', ['pending', 'verified'])
@@ -67,7 +67,7 @@ class HandsOnsTable
 
                 IconColumn::make('is_active')
                     ->boolean()
-                    ->label('Active'),
+                    ->label(__('filament.hands_on.active')),
             ])
             ->filters([
                 SelectFilter::make('event_date')
@@ -78,11 +78,11 @@ class HandsOnsTable
                     ]),
 
                 Filter::make('is_active')
-                    ->label('Active Only')
+                    ->label(__('filament.hands_on.active_only'))
                     ->query(fn (Builder $query) => $query->where('is_active', true)),
 
                 Filter::make('has_available_seats')
-                    ->label('Has Available Seats')
+                    ->label(__('filament.hands_on.has_available_seats'))
                     ->query(function (Builder $query) {
                         $query->whereHas('handsOnRegistrations', function ($q) {
                             $q->whereIn('payment_status', ['pending', 'verified']);

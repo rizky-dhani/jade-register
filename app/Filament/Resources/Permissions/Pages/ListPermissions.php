@@ -18,7 +18,7 @@ class ListPermissions extends ListRecords
     {
         return [
             Action::make('generateFromPolicies')
-                ->label('Generate from Policies')
+                ->label(__('filament.actions.generate_permissions'))
                 ->icon('heroicon-o-sparkles')
                 ->color('warning')
                 ->requiresConfirmation()
@@ -54,7 +54,7 @@ class ListPermissions extends ListRecords
         }
 
         Notification::make()
-            ->title('Permissions Generated')
+            ->title(__('filament.notifications.permissions_generated'))
             ->body("Created {$createdCount} new permissions. {$existingCount} permissions already exist.")
             ->success()
             ->send();

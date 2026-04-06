@@ -31,12 +31,12 @@ class VisitorForm
                     ->columns(2)
                     ->schema([
                         TextEntry::make('isScanned')
-                            ->label('Checked In')
+                            ->label(__('filament.visitors.checked_in'))
                             ->state(fn ($record) => $record->isScanned() ? 'Yes' : 'No')
                             ->badge()
                             ->color(fn ($record) => $record->isScanned() ? 'success' : 'danger'),
                         TextEntry::make('scanned_at')
-                            ->label('Checked In At')
+                            ->label(__('filament.visitors.checked_in_at'))
                             ->placeholder('Not checked in yet'),
                     ]),
             ]);

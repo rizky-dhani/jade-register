@@ -77,7 +77,7 @@ class SeminarRegistrationsTable
                 TextColumn::make('email')
                     ->searchable(),
                 TextColumn::make('nik')
-                    ->label('NIK')
+                    ->label(__('filament.seminar_registrations.nik'))
                     ->searchable(),
                 TextColumn::make('pdgi_branch')
                     ->label(__('seminar.pdgi_branch'))

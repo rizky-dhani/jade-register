@@ -14,21 +14,21 @@ class HandsOnRegistrationForm
         return $schema
             ->components([
                 Select::make('seminar_registration_id')
-                    ->label('Seminar Registration')
+                    ->label(__('filament.hands_on_registrations.seminar_registration'))
                     ->relationship('seminarRegistration', 'registration_code')
                     ->searchable()
                     ->preload()
                     ->required(),
 
                 Select::make('hands_on_id')
-                    ->label('Hands On Event')
+                    ->label(__('filament.hands_on_registrations.hands_on_event'))
                     ->relationship('handsOn', 'name')
                     ->searchable()
                     ->preload()
                     ->required(),
 
                 Select::make('registration_type')
-                    ->label('Registration Type')
+                    ->label(__('filament.hands_on_registrations.registration_type'))
                     ->options([
                         'combined' => 'Combined',
                         'standalone' => 'Standalone',
@@ -37,7 +37,7 @@ class HandsOnRegistrationForm
                     ->required(),
 
                 Select::make('payment_status')
-                    ->label('Payment Status')
+                    ->label(__('filament.hands_on_registrations.payment_status'))
                     ->options([
                         'pending' => 'Pending',
                         'verified' => 'Verified',
@@ -47,13 +47,13 @@ class HandsOnRegistrationForm
                     ->required(),
 
                 FileUpload::make('payment_proof_path')
-                    ->label('Payment Proof')
+                    ->label(__('filament.hands_on_registrations.payment_proof'))
                     ->image()
                     ->directory('payment-proofs')
                     ->visibility('public'),
 
                 DateTimePicker::make('verified_at')
-                    ->label('Verified At'),
+                    ->label(__('filament.hands_on_registrations.verified_at')),
             ]);
     }
 }

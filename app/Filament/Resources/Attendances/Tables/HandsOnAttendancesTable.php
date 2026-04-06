@@ -17,7 +17,7 @@ class HandsOnAttendancesTable
         return $table
             ->columns([
                 TextColumn::make('participant_name')
-                    ->label('Participant Name')
+                    ->label(__('filament.attendance.participant_name'))
                     ->state(function ($record): string {
                         if ($record->handsOnRegistration && $record->handsOnRegistration->seminarRegistration) {
                             return $record->handsOnRegistration->seminarRegistration->name;
@@ -31,7 +31,7 @@ class HandsOnAttendancesTable
                         });
                     }),
                 TextColumn::make('hands_on_name')
-                    ->label('Hands On Session')
+                    ->label(__('filament.attendance.hands_on_session'))
                     ->state(function ($record): string {
                         if ($record->handsOnRegistration && $record->handsOnRegistration->handsOn) {
                             return $record->handsOnRegistration->handsOn->name;
@@ -41,15 +41,15 @@ class HandsOnAttendancesTable
                     })
                     ->searchable(),
                 IconColumn::make('is_checked_in')
-                    ->label('Checked In')
+                    ->label(__('filament.attendance.checked_in'))
                     ->state(fn ($record): bool => $record->checked_in_at !== null)
                     ->boolean(),
                 TextColumn::make('checked_in_at')
-                    ->label('Check-in Time')
+                    ->label(__('filament.attendance.check_in_time'))
                     ->dateTime()
                     ->sortable(),
                 TextColumn::make('checkedInBy.name')
-                    ->label('Checked In By')
+                    ->label(__('filament.attendance.checked_in_by'))
                     ->searchable(),
                 TextColumn::make('created_at')
                     ->dateTime()
@@ -63,10 +63,10 @@ class HandsOnAttendancesTable
             ->defaultSort('created_at', 'desc')
             ->filters([
                 SelectFilter::make('is_checked_in')
-                    ->label('Check-in Status')
+                    ->label(__('filament.attendance.check_in_status'))
                     ->options([
-                        'checked_in' => 'Checked In',
-                        'not_checked_in' => 'Not Checked In',
+                        'checked_in' => __('filament.attendance.checked_in'),
+                        'not_checked_in' => __('filament.attendance.not_checked_in'),
                     ])
                     ->query(function ($query, array $data): void {
                         if ($data['value'] === 'checked_in') {

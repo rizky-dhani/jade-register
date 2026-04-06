@@ -28,6 +28,21 @@ class AttendanceResource extends Resource
 
     protected static bool $shouldRegisterNavigation = false;
 
+    public static function getModelLabel(): string
+    {
+        return __('filament.navigation.attendance');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('filament.navigation.attendance');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('filament.navigation.attendance');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return AttendanceForm::configure($schema);

@@ -19,27 +19,27 @@ class HandsOnRegistrationsTable
         return $table
             ->columns([
                 TextColumn::make('seminarRegistration.registration_code')
-                    ->label('Registration Code')
+                    ->label(__('filament.hands_on_registrations.registration_code'))
                     ->searchable()
                     ->sortable(),
 
                 TextColumn::make('seminarRegistration.name')
-                    ->label('Participant')
+                    ->label(__('filament.hands_on_registrations.participant'))
                     ->searchable()
                     ->sortable(),
 
                 TextColumn::make('handsOn.name')
-                    ->label('Hands On Event')
+                    ->label(__('filament.hands_on_registrations.hands_on_event'))
                     ->searchable()
                     ->sortable(),
 
                 TextColumn::make('handsOn.event_date')
-                    ->label('Event Date')
+                    ->label(__('filament.hands_on_registrations.event_date'))
                     ->date('F j, Y')
                     ->sortable(),
 
                 TextColumn::make('registration_type')
-                    ->label('Type')
+                    ->label(__('filament.hands_on_registrations.type'))
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         'combined' => 'info',
@@ -48,7 +48,7 @@ class HandsOnRegistrationsTable
                     }),
 
                 TextColumn::make('payment_status')
-                    ->label('Payment Status')
+                    ->label(__('filament.hands_on_registrations.payment_status'))
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         'pending' => 'warning',
@@ -58,12 +58,12 @@ class HandsOnRegistrationsTable
                     }),
 
                 TextColumn::make('verified_at')
-                    ->label('Verified At')
+                    ->label(__('filament.hands_on_registrations.verified_at'))
                     ->dateTime()
                     ->sortable(),
 
                 TextColumn::make('created_at')
-                    ->label('Created At')
+                    ->label(__('filament.hands_on_registrations.created_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -76,7 +76,7 @@ class HandsOnRegistrationsTable
                     ]),
 
                 SelectFilter::make('payment_status')
-                    ->label('Payment Status')
+                    ->label(__('filament.hands_on_registrations.payment_status'))
                     ->options([
                         'pending' => 'Pending',
                         'verified' => 'Verified',
@@ -85,10 +85,10 @@ class HandsOnRegistrationsTable
             ])
             ->recordActions([
                 Action::make('viewPaymentProof')
-                    ->label('View Payment Proof')
+                    ->label(__('filament.hands_on_registrations.view_payment_proof'))
                     ->icon('heroicon-o-photo')
                     ->visible(fn (HandsOnRegistration $record): bool => $record->payment_proof_path !== null)
-                    ->modalHeading('View Payment Proof')
+                    ->modalHeading(__('filament.hands_on_registrations.view_payment_proof'))
                     ->modalContent(fn (HandsOnRegistration $record): View => view(
                         'filament.modals.payment-proof',
                         ['record' => $record]
