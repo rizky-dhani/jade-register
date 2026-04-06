@@ -34,6 +34,9 @@ return [
     // Form fields
     'country' => 'Negara',
     'select_country' => 'Pilih Negara',
+    'participant_type' => 'Tipe Peserta',
+    'local' => 'Lokal',
+    'international' => 'Internasional',
     'name_str' => 'Nama sesuai STR (tanpa gelar)',
     'name_plataran' => 'Nama sesuai Plataran Sehat',
     'email_plataran' => 'Email sesuai Plataran Sehat',
