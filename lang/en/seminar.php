@@ -7,9 +7,9 @@ return [
     'success_thank_you' => 'Thank you for registering, ',
     'registration_code' => 'Your Registration Code: ',
     'confirmation_email_sent' => 'We have sent a confirmation email to ',
-    'success_message_1' => 'Terima kasih telah melakukan pendaftaran seminar / hands on / lomba poster kegiatan JADE 2026.',
-    'success_message_2' => 'Rekaman jawaban silahkan cek di email.',
-    'success_message_3' => 'Silahkan bergabung ke group WhatsApp: ',
+    'success_message_1' => 'Thank you for registering for the JADE 2026 seminar / hands on / poster competition.',
+    'success_message_2' => 'Please check your email for the response recording.',
+    'success_message_3' => 'Please join the WhatsApp group: ',
     'redirecting_to_dashboard' => 'Redirecting to dashboard in',
     'seconds' => 'seconds',
 
