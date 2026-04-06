@@ -13,7 +13,7 @@
             <p class="text-gray-600 mb-1">{{ __('seminar.registration_code') }} <strong>{{ $registration->registration_code }}</strong></p>
             <p class="text-gray-600 mb-6">{{ __('seminar.confirmation_email_sent') }} {{ $registration->email }}</p>
 
-            @if (!$isInternational())
+            @if (!$isInternational)
             <div class="mt-6 pt-6 border-t border-green-200 text-left">
                 <p class="text-green-800 font-medium mb-3">{{ __('seminar.success_message_1') }}</p>
                 <p class="text-green-700 mb-3">{{ __('seminar.success_message_2') }}</p>
@@ -30,7 +30,7 @@
                                 countdown--;
                             } else {
                                 clearInterval(timer);
-                                window.location.href = '{{ route('register.seminar') }}';
+                                window.location.href = '{{ route('register.seminar', ['locale' => app()->getLocale()]) }}';
                             }
                         }, 1000);
                      ">

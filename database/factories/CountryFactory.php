@@ -25,4 +25,11 @@ class CountryFactory extends Factory
             'phone_code' => '+62',
         ]);
     }
+
+    public function international(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'is_indonesia' => false,
+        ]);
+    }
 }
