@@ -19,7 +19,12 @@ class SeminarRegistrationsTable
     {
         return $table
             ->modifyQueryUsing(fn (Builder $query) => $query->with('country'))
+            ->defaultSort('registration_code', 'desc')
             ->columns([
+                TextColumn::make('registration_code')
+                    ->label(__('seminar.registration_code'))
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('name')
                     ->searchable()
                     ->sortable(),

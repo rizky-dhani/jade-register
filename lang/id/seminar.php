@@ -37,6 +37,7 @@ return [
     'participant_type' => 'Tipe Peserta',
     'local' => 'Lokal',
     'international' => 'Internasional',
+    'registration_code' => 'Kode Pendaftaran',
     'name_str' => 'Nama sesuai STR (tanpa gelar)',
     'name_plataran' => 'Nama sesuai Plataran Sehat',
     'email_plataran' => 'Email sesuai Plataran Sehat',
