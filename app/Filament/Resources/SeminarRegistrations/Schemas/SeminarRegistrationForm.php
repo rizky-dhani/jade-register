@@ -37,28 +37,36 @@ class SeminarRegistrationForm
                         TextInput::make('name')
                             ->label(__('filament.seminar_registration.form.name_str'))
                             ->required()
-                            ->maxLength(255),
+                            ->maxLength(255)
+                            ->autocomplete('name'),
                         TextInput::make('name_license')
                             ->label(__('filament.seminar_registration.form.name_plataran'))
                             ->required()
-                            ->maxLength(255),
+                            ->maxLength(255)
+                            ->autocomplete('name'),
                         TextInput::make('email')
                             ->label(__('filament.seminar_registration.form.email_plataran'))
                             ->required()
                             ->email()
-                            ->maxLength(255),
+                            ->maxLength(255)
+                            ->autocomplete('email'),
                         TextInput::make('phone')
                             ->label(__('filament.seminar_registration.form.whatsapp_number'))
                             ->required()
-                            ->maxLength(20),
+                            ->maxLength(20)
+                            ->autocomplete('tel'),
                         TextInput::make('nik')
                             ->label(__('filament.seminar_registration.form.nik'))
                             ->required()
-                            ->maxLength(20),
+                            ->maxLength(16)
+                            ->numeric()
+                            ->autocomplete('off')
+                            ->helperText(__('seminar.nik_helper')),
                         TextInput::make('pdgi_branch')
                             ->label(__('filament.seminar_registration.form.pdgi_branch'))
                             ->required()
-                            ->maxLength(255),
+                            ->maxLength(255)
+                            ->autocomplete('organization'),
                         Select::make('kompetensi')
                             ->label(__('filament.seminar_registration.form.competency'))
                             ->required()
@@ -91,16 +99,19 @@ class SeminarRegistrationForm
                         TextInput::make('name')
                             ->label(__('seminar.name'))
                             ->required()
-                            ->maxLength(255),
+                            ->maxLength(255)
+                            ->autocomplete('name'),
                         TextInput::make('email')
                             ->label(__('seminar.email'))
                             ->required()
                             ->email()
-                            ->maxLength(255),
+                            ->maxLength(255)
+                            ->autocomplete('email'),
                         TextInput::make('phone')
                             ->label(__('seminar.whatsapp_number'))
                             ->required()
-                            ->maxLength(20),
+                            ->maxLength(20)
+                            ->autocomplete('tel'),
                         Select::make('status')
                             ->label(__('seminar.status'))
                             ->required()
