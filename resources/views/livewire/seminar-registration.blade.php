@@ -6,6 +6,12 @@
     $watch('locale', value => {
         localStorage.setItem('jade_locale', value);
     });
+" x-on:focus-element.window="
+    const el = document.querySelector($event.detail.selector);
+    if (el) {
+        el.focus();
+        el.select();
+    }
 ">
     <div class="text-center mb-8">
         <div class="flex justify-end mb-4">
