@@ -39,6 +39,7 @@ return [
     'email_plataran' => 'Email as per Plataran Sehat',
     'whatsapp_number' => 'WhatsApp Number',
     'nik' => 'NIK',
+    'nik_helper' => 'Enter 16-digit National Identification Number',
     'pdgi_branch' => 'PDGI Branch',
     'competency' => 'Competency',
     'select_competency' => 'Select Competency',

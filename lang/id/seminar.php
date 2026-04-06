@@ -39,6 +39,7 @@ return [
     'email_plataran' => 'Email sesuai Plataran Sehat',
     'whatsapp_number' => 'Nomor WhatsApp',
     'nik' => 'NIK',
+    'nik_helper' => 'Masukkan 16 digit Nomor Induk Kependudukan',
     'pdgi_branch' => 'PDGI Cabang',
     'competency' => 'Kompetensi',
     'select_competency' => 'Pilih Kompetensi',
