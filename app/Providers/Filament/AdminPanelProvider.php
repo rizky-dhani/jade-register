@@ -72,6 +72,7 @@ class AdminPanelProvider extends PanelProvider
                 'Registrations',
                 'Competitions',
                 'Events',
+                'Attendance',
                 'Data',
                 'Settings',
             ])
