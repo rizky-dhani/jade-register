@@ -107,6 +107,9 @@ class SeminarRegistration extends Component
         $this->locale = in_array($this->locale, ['en', 'id']) ? $this->locale : 'en';
         App::setLocale($this->locale);
 
+        // Set default country to Indonesia
+        $this->country_id = 1;
+
         // Pre-fill data if user is authenticated
         if (auth()->check()) {
             $user = auth()->user();
@@ -117,7 +120,7 @@ class SeminarRegistration extends Component
             $this->pdgi_branch = $user->pdgi_branch ?? '';
             $this->kompetensi = $user->kompetensi ?? '';
             $this->phone = $user->phone ?? '';
-            $this->country_id = $user->country_id;
+            $this->country_id = $user->country_id ?? 1;
         }
     }
 
