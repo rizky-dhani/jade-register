@@ -2,7 +2,7 @@
 
 return [
     'page_title' => 'Seminar Registration',
-    'page_subtitle' => 'Register for the Jakarta Dental Exhibition 2026 Seminar',
+    'page_subtitle' => 'Registration for the Jakarta Dental Exhibition 2026 Seminar',
     'success_title' => 'Registration Submitted!',
     'success_thank_you' => 'Thank you for registering, ',
     'registration_code' => 'Your Registration Code: ',
@@ -72,7 +72,7 @@ return [
     'competency_dentist_internship' => 'Dentist Internship',
 
     // Contact person
-    'contact_description' => 'For any questions, please contact:',
+    'contact_description' => 'For any inquiries, please contact:',
 
     // Payment
     'bank_transfer_details' => 'Bank Transfer Details',
@@ -190,11 +190,9 @@ return [
     'email_attendance_confirmation_dresscode_value' => 'Smart Casual',
     'email_attendance_confirmation_show_email_instruction' => 'Please show this confirmation email at the registration desk upon arrival.',
     'email_attendance_confirmation_notes_title' => 'NOTES:',
-    'email_attendance_confirmation_note_1' => 'Seminar attendance is done by stating your name at the <strong>seminar registration desk</strong> and showing your barcode, every day on <strong>13–15 November 2026</strong>.',
-    'email_attendance_confirmation_note_2' => 'Participants eligible for <strong>SKP (Continuing Professional Development credits)</strong> are those who <strong>attend from start to finish</strong> and <strong>complete the learning on Plataran Sehat</strong>.',
-    'email_attendance_confirmation_note_3' => 'Make sure you have a <strong>SATU SEHAT account</strong> and have <strong>linked it to your Plataran Sehat account</strong>.',
-    'email_attendance_confirmation_note_4' => 'Participants must <strong>check out</strong> at the registration desk by ensuring they have <strong>clicked "Learning on Plataran Sehat"</strong>.',
-    'email_attendance_confirmation_note_5' => 'Participants are encouraged to post about this event on social media mentioning IG <strong>@pdgipengwildkijakarta</strong>.',
+    'email_attendance_confirmation_note_1' => 'Seminar attendance is confirmed daily (<strong>13–15 November 2026</strong>) by stating your name at the registration desk and presenting your barcode.',
+    'email_attendance_confirmation_note_2' => 'Certificates with <strong>SKP (Continuing Professional Development credits)</strong> will be granted only to participants who attend the full session from start to finish.',
+    'email_attendance_confirmation_note_3' => 'Participants are encouraged to post about this event on social media mentioning IG <strong>@pdgipengwildkijakarta</strong>.',
     'email_attendance_confirmation_skp_title' => 'IMPORTANT NOTICE REGARDING SKP:',
     'email_attendance_confirmation_skp_1' => 'Learning on Plataran Sehat (satusehat/sdmk) will begin on <strong>Friday, 13 November 2026, at 09:00 WIB</strong>. All participants are expected to click <strong>"Start Learning"</strong> and complete the <strong>pre-test</strong> on that day. Learning is only open according to the event day schedule.<br><em>(Please check <strong>My Learning</strong> in your <strong>Plataran Sehat</strong> account, on the <strong>"Not Yet Started"</strong> page).</em>',
     'email_attendance_confirmation_skp_2' => 'All <strong>learning invitations</strong> will be sent to each participant\'s Plataran Sehat account and will be announced through the <strong>participant group</strong>.',

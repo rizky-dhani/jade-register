@@ -2,7 +2,7 @@
 
 return [
     'page_title' => 'Pendaftaran Seminar',
-    'page_subtitle' => 'Daftar untuk Seminar Jakarta Dental Exhibition 2026',
+    'page_subtitle' => 'Pendaftaran untuk Seminar Jakarta Dental Exhibition 2026',
     'success_title' => 'Pendaftaran Berhasil Dikirim!',
     'success_thank_you' => 'Terima kasih telah mendaftar, ',
     'registration_code' => 'Kode Pendaftaran Anda: ',
@@ -72,7 +72,7 @@ return [
     'competency_dentist_internship' => 'drg Internship',
 
     // Contact person
-    'contact_description' => 'Untuk pertanyaan, silakan hubungi:',
+    'contact_description' => 'Untuk permintaan informasi, silakan hubungi:',
 
     // Payment
     'bank_transfer_details' => 'Detail Transfer Bank',
@@ -190,11 +190,9 @@ return [
     'email_attendance_confirmation_dresscode_value' => 'Bebas sopan',
     'email_attendance_confirmation_show_email_instruction' => 'Mohon tunjukkan email konfirmasi ini di meja registrasi saat kedatangan.',
     'email_attendance_confirmation_notes_title' => 'CATATAN (NOTE):',
-    'email_attendance_confirmation_note_1' => 'Absensi kehadiran seminar dilakukan dengan menyebutkan nama di <strong>meja registrasi seminar</strong> dan menunjukkan kode barcode, setiap hari pada tanggal <strong>13–15 November 2026</strong>.',
-    'email_attendance_confirmation_note_2' => 'Peserta yang berhak mendapatkan <strong>SKP</strong> adalah peserta yang <strong>hadir dari awal hingga kegiatan selesai</strong> serta <strong>menyelesaikan pembelajaran di Plataran Sehat</strong>.',
-    'email_attendance_confirmation_note_3' => 'Pastikan Anda telah memiliki <strong>akun SATU SEHAT</strong> dan sudah <strong>menautkannya ke akun Plataran Sehat</strong>.',
-    'email_attendance_confirmation_note_4' => 'Peserta wajib <strong>absen pulang</strong> di meja registrasi dengan memastikan telah <strong>mengklik Pembelajaran di Plataran Sehat</strong>.',
-    'email_attendance_confirmation_note_5' => 'Peserta dihimbau memposting kegiatan ini di sosial media dengan mention IG <strong>@pdgipengwildkijakarta</strong>.',
+    'email_attendance_confirmation_note_1' => 'Kehadiran seminar dikonfirmasi setiap hari (<strong>13–15 November 2026</strong>) dengan menyebutkan nama di meja registrasi dan menunjukkan barcode Anda.',
+    'email_attendance_confirmation_note_2' => 'Sertifikat dengan <strong>SKP</strong> hanya diberikan kepada peserta yang menghadiri sesi penuh dari awal hingga selesai.',
+    'email_attendance_confirmation_note_3' => 'Peserta dihimbau memposting kegiatan ini di sosial media dengan mention IG <strong>@pdgipengwildkijakarta</strong>.',
     'email_attendance_confirmation_skp_title' => 'PERHATIAN PENTING TERKAIT SKP:',
     'email_attendance_confirmation_skp_1' => 'Pembelajaran di Plataran Sehat (satusehat/sdmk) akan dimulai pada <strong>Jum\'at, 13 November 2026, pukul 09.00 WIB</strong>. Seluruh peserta diharapkan melakukan klik <strong>"Mulai Belajar"</strong> dan mengerjakan <strong>pre Test</strong> pada hari tersebut. Pembelajaran hanya dibuka sesuai dengan hari kegiatan.<br><em>(Silakan periksa <strong>Pembelajaran Saya</strong> di akun <strong>Plataran Sehat</strong>, pada halaman <strong>"Belum Dimulai"</strong>).</em>',
     'email_attendance_confirmation_skp_2' => 'Seluruh <strong>undangan pembelajaran</strong> akan dikirim ke akun Plataran Sehat masing-masing peserta dan akan diinformasikan melalui <strong>grup peserta</strong>.',

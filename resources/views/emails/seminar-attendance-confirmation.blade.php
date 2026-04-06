@@ -82,12 +82,11 @@
                 <li>{!! trans('seminar.email_attendance_confirmation_note_1') !!}</li>
                 <li>{!! trans('seminar.email_attendance_confirmation_note_2') !!}</li>
                 <li>{!! trans('seminar.email_attendance_confirmation_note_3') !!}</li>
-                <li>{!! trans('seminar.email_attendance_confirmation_note_4') !!}</li>
-                <li>{!! trans('seminar.email_attendance_confirmation_note_5') !!}</li>
             </ol>
         </div>
 
-        {{-- Important SKP Section --}}
+        {{-- Important SKP Section (Indonesian participants only) --}}
+        @if($registration->country?->is_indonesia)
         <div class="important">
             <h3>{{ trans('seminar.email_attendance_confirmation_skp_title') }}</h3>
             <ol>
@@ -97,6 +96,7 @@
                 <li>{!! trans('seminar.email_attendance_confirmation_skp_4') !!}</li>
             </ol>
         </div>
+        @endif
 
         <p>{{ trans('seminar.email_attendance_confirmation_closing') }}</p>
         <p>{!! trans('seminar.email_attendance_confirmation_signature') !!}</p>
