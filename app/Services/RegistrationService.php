@@ -20,6 +20,16 @@ class RegistrationService
 
     public function sendSeminarSubmissionConfirmation(SeminarRegistration $registration): void
     {
+        // Prevent duplicate emails
+        if ($registration->confirmation_email_sent_at) {
+            \Illuminate\Support\Facades\Log::warning('Skipping duplicate email send', [
+                'registration_code' => $registration->registration_code,
+                'email' => $registration->email,
+            ]);
+
+            return;
+        }
+
         $locale = $registration->language ?? 'en';
 
         // Send registration submitted confirmation (with QR code)
@@ -31,6 +41,9 @@ class RegistrationService
         Mail::to($registration->email)
             ->locale($locale)
             ->send(new SeminarAttendanceConfirmation($registration));
+
+        // Mark as sent to prevent duplicates
+        $registration->update(['confirmation_email_sent_at' => now()]);
     }
 
     public function sendAttendanceConfirmation(SeminarRegistration $registration): void

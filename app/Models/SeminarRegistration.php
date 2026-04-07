@@ -29,6 +29,7 @@ class SeminarRegistration extends Model
         'amount',
         'currency',
         'payment_status',
+        'confirmation_email_sent_at',
         'payment_proof_path',
         'rejection_reason',
         'verified_by',
