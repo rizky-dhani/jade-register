@@ -133,6 +133,11 @@ class SeminarRegistrationsTable
                     ->nullable(),
             ])
             ->recordActions([
+                Action::make('view')
+                    ->label(__('filament::tables/actions/view.label'))
+                    ->icon('heroicon-o-eye')
+                    ->color('gray')
+                    ->url(fn (SeminarRegistration $record): string => route('filament.admin.resources.seminar-registrations.view', $record)),
                 Action::make('uploadPaymentProof')
                     ->label(__('seminar.upload_payment_proof'))
                     ->icon('heroicon-o-arrow-up-tray')

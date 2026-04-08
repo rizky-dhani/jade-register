@@ -5,10 +5,13 @@ namespace App\Filament\Resources\SeminarRegistrations;
 use App\Filament\Resources\SeminarRegistrations\Pages\CreateSeminarRegistration;
 use App\Filament\Resources\SeminarRegistrations\Pages\EditSeminarRegistration;
 use App\Filament\Resources\SeminarRegistrations\Pages\ListSeminarRegistrations;
+use App\Filament\Resources\SeminarRegistrations\Pages\ViewSeminarRegistration;
 use App\Filament\Resources\SeminarRegistrations\Schemas\SeminarRegistrationForm;
+use App\Filament\Resources\SeminarRegistrations\Schemas\SeminarRegistrationInfolist;
 use App\Filament\Resources\SeminarRegistrations\Tables\SeminarRegistrationsTable;
 use App\Models\SeminarRegistration;
 use BackedEnum;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -51,6 +54,11 @@ class SeminarRegistrationResource extends Resource
         return SeminarRegistrationsTable::configure($table);
     }
 
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return SeminarRegistrationInfolist::configure($infolist);
+    }
+
     public static function getRelations(): array
     {
         return [
@@ -63,6 +71,7 @@ class SeminarRegistrationResource extends Resource
         return [
             'index' => ListSeminarRegistrations::route('/'),
             'create' => CreateSeminarRegistration::route('/create'),
+            'view' => ViewSeminarRegistration::route('/{record}'),
             'edit' => EditSeminarRegistration::route('/{record}/edit'),
         ];
     }
