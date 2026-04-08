@@ -13,8 +13,10 @@ class SeminarRegistrationInfolist
     public static function configure(Schema $schema): Schema
     {
         return $schema
+            ->columns(6)
             ->components([
                 Section::make(__('seminar.registration_code'))
+                    ->columnSpan(2)
                     ->schema([
                         TextEntry::make('registration_code')
                             ->label(__('seminar.registration_code'))
@@ -38,6 +40,7 @@ class SeminarRegistrationInfolist
                     ])->columns(3),
 
                 Section::make(__('seminar.personal_information'))
+                    ->columnSpan(4)
                     ->schema([
                         TextEntry::make('name_license')
                             ->label(__('seminar.name_plataran')),
@@ -70,7 +73,7 @@ class SeminarRegistrationInfolist
                                 default => $state,
                             })
                             ->visible(fn (SeminarRegistration $record): bool => ! ($record->country?->is_indonesia ?? true)),
-                    ])->columns(6),
+                    ])->columns(2),
 
                 Section::make(__('seminar.registration_package'))
                     ->schema([
