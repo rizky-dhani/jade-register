@@ -13,6 +13,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 
 class SeminarRegistrationsTable
 {
@@ -188,7 +189,7 @@ class SeminarRegistrationsTable
                         ->color('warning')
                         ->requiresConfirmation()
                         ->deselectRecordsAfterCompletion()
-                        ->action(function (array $records): void {
+                        ->action(function (Collection $records): void {
                             foreach ($records as $record) {
                                 if ($record instanceof SeminarRegistration && $record->payment_status === 'pending') {
                                     $record->update([
