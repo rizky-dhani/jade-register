@@ -4,6 +4,7 @@ namespace App\Filament\Resources\SeminarRegistrations\Tables;
 
 use App\Models\SeminarRegistration;
 use Filament\Actions\Action;
+use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Forms\Components\FileUpload;
@@ -181,6 +182,23 @@ class SeminarRegistrationsTable
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
+                    BulkAction::make('bulkVerifyPayment')
+                        ->label(__('seminar.bulk_verify_payment'))
+                        ->icon('heroicon-o-check-circle')
+                        ->color('warning')
+                        ->requiresConfirmation()
+                        ->deselectRecordsAfterCompletion()
+                        ->action(function (array $records): void {
+                            foreach ($records as $record) {
+                                if ($record instanceof SeminarRegistration && $record->payment_status === 'pending') {
+                                    $record->update([
+                                        'payment_status' => 'verified',
+                                        'verified_by' => auth()->id(),
+                                        'verified_at' => now(),
+                                    ]);
+                                }
+                            }
+                        }),
                     DeleteBulkAction::make(),
                 ]),
             ]);

@@ -251,6 +251,7 @@ return [
     'view_payment_proof' => 'Lihat Bukti Pembayaran',
     'upload_payment_proof' => 'Unggah Bukti Pembayaran',
     'verify_payment' => 'Verifikasi Pembayaran',
+    'bulk_verify_payment' => 'Verifikasi Pembayaran yang Dipilih',
 
     // Visitor Registration
     'visitor_registration_title' => 'Pendaftaran Pengunjung',

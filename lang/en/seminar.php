@@ -252,6 +252,7 @@ return [
     'view_payment_proof' => 'View Payment Proof',
     'upload_payment_proof' => 'Upload Payment Proof',
     'verify_payment' => 'Verify Payment',
+    'bulk_verify_payment' => 'Verify Selected Payments',
 
     // Visitor Registration
     'visitor_registration_title' => 'Visitor Registration',
