@@ -5,16 +5,16 @@ namespace App\Filament\Resources\SeminarRegistrations\Pages;
 use App\Filament\Resources\SeminarRegistrations\Schemas\SeminarRegistrationInfolist;
 use App\Filament\Resources\SeminarRegistrations\SeminarRegistrationResource;
 use Filament\Actions\EditAction;
-use Filament\Infolists\Infolist;
 use Filament\Resources\Pages\ViewRecord;
+use Filament\Schemas\Schema;
 
 class ViewSeminarRegistration extends ViewRecord
 {
     protected static string $resource = SeminarRegistrationResource::class;
 
-    public function infolist(Infolist $infolist): Infolist
+    public function schema(Schema $schema): Schema
     {
-        return SeminarRegistrationInfolist::configure($infolist);
+        return SeminarRegistrationInfolist::configure($schema);
     }
 
     protected function getHeaderActions(): array

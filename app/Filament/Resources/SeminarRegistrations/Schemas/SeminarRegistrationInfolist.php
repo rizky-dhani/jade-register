@@ -6,14 +6,14 @@ use App\Models\SeminarRegistration;
 use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\ViewEntry;
-use Filament\Infolists\Infolist;
+use Filament\Schemas\Schema;
 
 class SeminarRegistrationInfolist
 {
-    public static function configure(Infolist $infolist): Infolist
+    public static function configure(Schema $schema): Schema
     {
-        return $infolist
-            ->schema([
+        return $schema
+            ->components([
                 Section::make(__('seminar.registration_code'))
                     ->schema([
                         TextEntry::make('registration_code')

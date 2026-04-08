@@ -11,7 +11,6 @@ use App\Filament\Resources\SeminarRegistrations\Schemas\SeminarRegistrationInfol
 use App\Filament\Resources\SeminarRegistrations\Tables\SeminarRegistrationsTable;
 use App\Models\SeminarRegistration;
 use BackedEnum;
-use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -54,9 +53,9 @@ class SeminarRegistrationResource extends Resource
         return SeminarRegistrationsTable::configure($table);
     }
 
-    public static function infolist(Infolist $infolist): Infolist
+    public static function infolist(Schema $schema): Schema
     {
-        return SeminarRegistrationInfolist::configure($infolist);
+        return SeminarRegistrationInfolist::configure($schema);
     }
 
     public static function getRelations(): array
