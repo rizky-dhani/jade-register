@@ -9,7 +9,7 @@
                 <path stroke-linecap="round" strokejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
             </svg>
             <h1 class="text-2xl font-bold text-green-800 mb-2">{{ __('seminar.success_title') }}</h1>
-            <p class="text-green-700 mb-4">{{ __('seminar.success_thank_you') }}{{ $registration->name }}!</p>
+            <p class="text-green-700 mb-4">{{ __('seminar.success_thank_you') }}{{ $registration->name_license }}!</p>
             <p class="text-gray-600 mb-1">{{ __('seminar.registration_code') }} <strong>{{ $registration->registration_code }}</strong></p>
             <p class="text-gray-600 mb-6">{{ __('seminar.confirmation_email_sent') }} {{ $registration->email }}</p>
 
