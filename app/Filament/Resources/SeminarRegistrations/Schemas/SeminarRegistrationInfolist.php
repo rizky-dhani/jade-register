@@ -3,9 +3,9 @@
 namespace App\Filament\Resources\SeminarRegistrations\Schemas;
 
 use App\Models\SeminarRegistration;
-use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\ViewEntry;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
 class SeminarRegistrationInfolist
