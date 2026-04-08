@@ -171,6 +171,7 @@ return [
     'email_verify_questions' => 'Jika Anda memiliki pertanyaan, jangan ragu untuk menghubungi kami.',
     'automated_email' => 'Ini adalah email otomatis. Mohon tidak membalas email ini.',
     'email_footer' => 'Jakarta Dental Exhibition 2026 | https://jakartadentalexhibitions.id',
+    'email_already_registered' => 'Email ini sudah terdaftar. Mengalihkan ke halaman pendaftaran Anda...',
     'email_verify_check_inbox' => 'Silakan periksa kotak masuk email Anda untuk tautan verifikasi yang baru saja kami kirimkan.',
     'email_verify_resend' => 'Kirim Ulang Email Verifikasi',
     'email_verify_logout' => 'Keluar',

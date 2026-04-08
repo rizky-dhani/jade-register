@@ -218,6 +218,15 @@ class SeminarRegistration extends Component
     {
         $this->validate();
 
+        // Prevent duplicate registration by email
+        $existingRegistration = SeminarRegistrationModel::whereRaw('LOWER(email) = ?', [strtolower($this->email)])->first();
+        if ($existingRegistration) {
+            $this->addError('email', __('seminar.email_already_registered'));
+            $this->redirectRoute('register.seminar.success', ['id' => $existingRegistration->id], navigate: true);
+
+            return;
+        }
+
         // Validate Hands On selections have available seats
         if ($this->wants_hands_on && ! empty($this->selectedHandsOn)) {
             foreach ($this->selectedHandsOn as $date => $eventId) {
