@@ -12,9 +12,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Find and remove duplicate emails, keeping only the most recent registration per email
+        // Find and remove duplicate emails, keeping only the oldest (original) registration per email
         $duplicates = DB::table('seminar_registrations')
-            ->select('email', DB::raw('MAX(id) as max_id'))
+            ->select('email', DB::raw('MIN(id) as min_id'))
             ->groupBy('email')
             ->havingRaw('COUNT(*) > 1')
             ->get();
@@ -22,7 +22,7 @@ return new class extends Migration
         foreach ($duplicates as $duplicate) {
             DB::table('seminar_registrations')
                 ->where('email', $duplicate->email)
-                ->where('id', '!=', $duplicate->max_id)
+                ->where('id', '!=', $duplicate->min_id)
                 ->delete();
         }
 
