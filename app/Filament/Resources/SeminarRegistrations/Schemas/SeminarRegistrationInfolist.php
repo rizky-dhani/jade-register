@@ -76,6 +76,7 @@ class SeminarRegistrationInfolist
                     ])->columns(6),
 
                 Section::make(__('seminar.registration_package'))
+                    ->columnSpan(3)
                     ->schema([
                         TextEntry::make('selected_seminar')
                             ->label(__('seminar.selected_package')),
@@ -96,9 +97,10 @@ class SeminarRegistrationInfolist
                                 'qris' => __('seminar.qris'),
                                 default => $state,
                             }),
-                    ])->columns(2),
+                    ])->columns(3),
 
                 Section::make(__('seminar.hands_on_sessions'))
+                    ->columnSpan(3)
                     ->schema([
                         TextEntry::make('wants_hands_on')
                             ->label(__('seminar.wants_hands_on'))
@@ -110,9 +112,10 @@ class SeminarRegistrationInfolist
                             ->label(__('seminar.hands_on_registrations'))
                             ->view('filament.infolists.hands-on-list')
                             ->visible(fn (SeminarRegistration $record): bool => $record->handsOnRegistrations->isNotEmpty()),
-                    ])->columns(1),
+                    ])->columns(3),
 
                 Section::make(__('seminar.payment_proof'))
+                    ->columnSpan(6)
                     ->schema([
                         ViewEntry::make('payment_proof_path')
                             ->label(__('seminar.payment_proof'))
@@ -127,7 +130,7 @@ class SeminarRegistrationInfolist
                         TextEntry::make('verifiedBy.name')
                             ->label(__('seminar.verified_by'))
                             ->placeholder('—'),
-                    ])->columns(2),
+                    ])->columns(3),
             ]);
     }
 }
