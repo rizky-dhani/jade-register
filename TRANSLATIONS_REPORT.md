@@ -17,13 +17,13 @@ Found **47** hardcoded text strings across 13 view files that should be translat
 - Line 87-88: **HARDCODED** - Signature
   - `"Jakarta Dental Exhibition 2026"` in footer
 
-### 2. `seminar-registration-submitted.blade.php`
-- Line 137: **HARDCODED** - QRIS alt text
+### 2. `seminar-registration-confirmation.blade.php` (combined template)
+- Line ~147: **HARDCODED** - QRIS alt text
   - `alt="QRIS Code"`
-- Line 166, 177: **HARDCODED** - Signature
+- Line ~176, ~187: **HARDCODED** - Signature
   - `"Jakarta Dental Exhibition 2026"`
-- Line 183-184: **HARDCODED** - Footer
-  - `"Jakarta Dental Exhibition 2026 | www.jakartadentalexhibition.id"`
+- Line ~193-194: **HARDCODED** - Footer
+  - `"Jakarta Dental Exhibition 2026 | https://jakartadentalexhibitions.id"`
 
 ### 3. `verify-email.blade.php`
 - Line 2: **HARDCODED** - HTML lang
@@ -187,7 +187,7 @@ Found **47** hardcoded text strings across 13 view files that should be translat
 
 ### Medium Priority (Email templates)
 5. `seminar-payment-verified.blade.php` - 3 missing strings
-6. `seminar-registration-submitted.blade.php` - 3 missing strings
+6. `seminar-registration-confirmation.blade.php` - 3 missing strings
 7. `seminar-payment-rejected.blade.php` - 2 missing strings
 8. `verify-email.blade.php` (auth) - 2 missing strings
 

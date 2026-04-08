@@ -21,7 +21,7 @@ class SeminarRegistration extends Component
 
     public bool $is_local = true;
 
-    public string $name = '';
+    public ?string $name = null;
 
     public string $email = '';
 
@@ -87,7 +87,7 @@ class SeminarRegistration extends Component
 
         return [
             'email' => 'required|email',
-            'name' => 'required|string|max:255',
+            'name' => 'nullable|string|max:255',
             'name_license' => 'required|string|max:255',
             'nik' => 'required|string|max:20',
             'pdgi_branch' => 'required|string|max:255',
@@ -114,7 +114,7 @@ class SeminarRegistration extends Component
         if (auth()->check()) {
             $user = auth()->user();
             $this->email = $user->email;
-            $this->name = $user->name;
+            $this->name = $user->name ?? '';
             $this->name_license = $user->name_license ?? '';
             $this->nik = $user->nik ?? '';
             $this->pdgi_branch = $user->pdgi_branch ?? '';

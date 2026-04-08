@@ -179,8 +179,9 @@
                 <h2 class="text-xl font-semibold text-gray-800 mb-4">{{ __('seminar.local_participant') }}</h2>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('seminar.name_str') }} *</label>
+                    {{-- Name STR field - hidden but still rendered for data binding --}}
+                    <div class="hidden">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('seminar.name_str') }}</label>
                         <input type="text" wire:model="name" wire:key="name-str" autocomplete="name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                         @error('name') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
                     </div>
@@ -217,8 +218,8 @@
                         <input type="text" wire:model="pdgi_branch" autocomplete="organization" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                         @error('pdgi_branch') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
                     </div>
-                    
-                    <div class="md:col-span-2">
+
+                    <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('seminar.competency') }} *</label>
                         <select wire:model="kompetensi" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                             <option value="">{{ __('seminar.select_competency') }}</option>

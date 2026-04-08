@@ -2,13 +2,13 @@
 
 namespace App\Services;
 
-use App\Mail\SeminarAttendanceConfirmation;
 use App\Mail\SeminarPaymentRejected;
 use App\Mail\SeminarPaymentVerified;
-use App\Mail\SeminarRegistrationSubmitted;
+use App\Mail\SeminarRegistrationConfirmation;
 use App\Mail\VisitorRegistrationConfirmation;
 use App\Models\SeminarRegistration;
 use App\Models\Visitor;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class RegistrationService
@@ -22,7 +22,7 @@ class RegistrationService
     {
         // Prevent duplicate emails
         if ($registration->confirmation_email_sent_at) {
-            \Illuminate\Support\Facades\Log::warning('Skipping duplicate email send', [
+            Log::warning('Skipping duplicate email send', [
                 'registration_code' => $registration->registration_code,
                 'email' => $registration->email,
             ]);
@@ -32,15 +32,10 @@ class RegistrationService
 
         $locale = $registration->language ?? 'en';
 
-        // Send registration submitted confirmation (with QR code)
+        // Send unified registration confirmation (includes package details, registrant info, schedule, QR code, notes, SKP)
         Mail::to($registration->email)
             ->locale($locale)
-            ->send(new SeminarRegistrationSubmitted($registration));
-
-        // Send detailed JADE 2026 confirmation (with schedule, notes, SKP info)
-        Mail::to($registration->email)
-            ->locale($locale)
-            ->send(new SeminarAttendanceConfirmation($registration));
+            ->send(new SeminarRegistrationConfirmation($registration));
 
         // Mark as sent to prevent duplicates
         $registration->update(['confirmation_email_sent_at' => now()]);
@@ -50,7 +45,7 @@ class RegistrationService
     {
         Mail::to($registration->email)
             ->locale($registration->language ?? 'en')
-            ->send(new SeminarAttendanceConfirmation($registration));
+            ->send(new SeminarRegistrationConfirmation($registration));
     }
 
     public function sendPaymentVerificationNotification(SeminarRegistration $registration): void

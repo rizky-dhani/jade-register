@@ -36,9 +36,10 @@ class SeminarRegistrationForm
                     ->schema([
                         TextInput::make('name')
                             ->label(__('filament.seminar_registration.form.name_str'))
-                            ->required()
+                            ->nullable()
                             ->maxLength(255)
-                            ->autocomplete('name'),
+                            ->autocomplete('name')
+                            ->hidden(),
                         TextInput::make('name_license')
                             ->label(__('filament.seminar_registration.form.name_plataran'))
                             ->required()

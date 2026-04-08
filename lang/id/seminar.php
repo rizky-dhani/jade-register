@@ -168,12 +168,14 @@ return [
     'email_verify_once_verified' => 'Setelah terverifikasi, Anda dapat masuk ke akun Anda dan mengakses semua fitur.',
     'email_verify_questions' => 'Jika Anda memiliki pertanyaan, jangan ragu untuk menghubungi kami.',
     'automated_email' => 'Ini adalah email otomatis. Mohon tidak membalas email ini.',
+    'email_footer' => 'Jakarta Dental Exhibition 2026 | https://jakartadentalexhibitions.id',
     'email_verify_check_inbox' => 'Silakan periksa kotak masuk email Anda untuk tautan verifikasi yang baru saja kami kirimkan.',
     'email_verify_resend' => 'Kirim Ulang Email Verifikasi',
     'email_verify_logout' => 'Keluar',
     'email_verify_link_sent' => 'Tautan verifikasi baru telah dikirim ke alamat email Anda.',
 
-    // Email - Attendance Confirmation
+    // Email - Unified Registration Confirmation
+    'email_registration_confirmation_subject' => 'Konfirmasi Pendaftaran - :code',
     'email_attendance_confirmation_subject' => 'Konfirmasi Kehadiran - :code',
     'email_attendance_confirmation_title' => 'Konfirmasi Peserta Seminar Jakarta Dental Exhibition International (JADE) 2026',
     'email_attendance_confirmation_greeting' => 'Yth Para Peserta Seminar JADE 2026,',

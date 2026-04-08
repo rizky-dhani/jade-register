@@ -1,22 +1,23 @@
 <!DOCTYPE html>
-<html lang="{{ $registration->language ?? 'id' }}">
+<html lang="{{ $registration->language ?? 'en' }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ trans('seminar.email_attendance_confirmation_subject', ['code' => $registration->registration_code]) }}</title>
+    <title>{{ trans('seminar.email_registration_confirmation_subject', ['code' => $registration->registration_code]) }}</title>
     <style>
         body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
         .header { text-align: center; padding: 20px 0; border-bottom: 2px solid #4E397C; margin-bottom: 20px; }
         .content { padding: 20px 0; }
         .footer { text-align: center; padding: 20px 0; border-top: 1px solid #ddd; margin-top: 20px; font-size: 12px; color: #666; }
         .registration-code { background: #4E397C; color: white; padding: 15px; text-align: center; font-size: 24px; font-weight: bold; border-radius: 5px; margin: 20px 0; }
-        .success-box { background: #d4edda; padding: 15px; border-radius: 5px; margin: 15px 0; border-left: 4px solid #28a745; }
         .details { background: #f9f9f9; padding: 15px; border-radius: 5px; margin: 15px 0; }
+        .detail-row { display: flex; padding: 8px 0; border-bottom: 1px solid #eee; gap: 24px; }
+        .detail-label { font-weight: bold; width: 220px; flex-shrink: 0; }
+        .detail-value { flex: 1; }
         .package-list { padding-left: 20px; margin: 10px 0; }
         .package-list li { margin: 5px 0; }
         .schedule-box { background: #f0f8ff; padding: 15px; border-radius: 5px; margin: 15px 0; border: 1px solid #b3d9ff; }
         .schedule-box p { margin: 8px 0; }
-        .google-maps-btn { display: inline-block; padding: 8px 16px; background: #4285f4; color: white; text-decoration: none; border-radius: 4px; font-size: 14px; margin-top: 5px; }
         .notes { background: #fff8e1; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #ff9800; }
         .notes h3 { color: #e65100; margin-top: 0; }
         .notes ol { margin: 10px 0; padding-left: 20px; }
@@ -36,18 +37,109 @@
     <div class="header">
         <img src="{{ asset('assets/images/JADE_PDGI_LightBG.webp') }}" alt="JADE" style="max-height: 144px; margin: 0 auto; display: block;">
     </div>
-    
+
     <div class="content">
-        <h2 style="text-align: center; color: #4E397C; margin-bottom: 20px;">
+        {{-- Thank You Message + Registration Code --}}
+        <h2>{{ trans('seminar.email_thank_you_title', ['name' => $registration->name]) }}</h2>
+        <p>{{ trans('seminar.email_registration_received') }}</p>
+
+        <div class="registration-code">
+            {{ $registration->registration_code }}
+        </div>
+
+        {{-- Selected Package Details --}}
+        <div class="details">
+            <h3>{{ trans('seminar.selected_package') }}</h3>
+            <ul class="package-list">
+                @php
+                    $seminar = \App\Models\Seminar::where('code', $registration->selected_seminar)->first();
+                @endphp
+                @if($seminar)
+                    <li>
+                        {{ $seminar->name }} ({{ $seminar->label }})
+                        @if($seminar->isEarlyBirdActive() && $seminar->discounted_price)
+                            - <span style="text-decoration: line-through; color: #999;">{{ $seminar->formatted_original_price }}</span>
+                            <strong>{{ $seminar->formatted_discounted_price }}</strong>
+                        @else
+                            - <strong>{{ $seminar->formatted_current_price }}</strong>
+                        @endif
+                    </li>
+                @else
+                    <li>{{ $registration->selected_seminar_label }}</li>
+                @endif
+                @foreach($registration->handsOnRegistrations as $hoReg)
+                    <li>Day {{ $hoReg->handsOn->date->format('j') }}: {{ $hoReg->handsOn->name }} ({{ $hoReg->handsOn->formatted_price }})</li>
+                @endforeach
+            </ul>
+        </div>
+
+        {{-- Registrant Information --}}
+        <div class="details">
+            <h3>{{ trans('seminar.registrant_information') }}</h3>
+            @if($registration->country->name !== 'Indonesia')
+                <div class="detail-row">
+                    <span class="detail-label">{{ trans('seminar.name') }}</span>
+                    <span class="detail-value">{{ $registration->name }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">{{ trans('seminar.email') }}</span>
+                    <span class="detail-value">{{ $registration->email }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">{{ trans('seminar.whatsapp_number') }}</span>
+                    <span class="detail-value">{{ $registration->phone }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">{{ trans('seminar.status') }}</span>
+                    <span class="detail-value">{{ $registration->status }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">{{ trans('seminar.country') }}</span>
+                    <span class="detail-value">{{ $registration->country->name }}</span>
+                </div>
+            @else
+                <div class="detail-row">
+                    <span class="detail-label">{{ trans('seminar.name_str') }}</span>
+                    <span class="detail-value">{{ $registration->name }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">{{ trans('seminar.name_plataran') }}</span>
+                    <span class="detail-value">{{ $registration->name_license }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">{{ trans('seminar.email_plataran') }}</span>
+                    <span class="detail-value">{{ $registration->email }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">{{ trans('seminar.whatsapp_number') }}</span>
+                    <span class="detail-value">{{ $registration->phone }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">{{ trans('seminar.nik') }}</span>
+                    <span class="detail-value">{{ $registration->nik }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">{{ trans('seminar.pdgi_branch') }}</span>
+                    <span class="detail-value">{{ $registration->pdgi_branch }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">{{ trans('seminar.competency') }}</span>
+                    <span class="detail-value">{{ $registration->kompetensi }}</span>
+                </div>
+            @endif
+        </div>
+
+        {{-- Event Schedule and Venue Info --}}
+        <h2 style="text-align: center; color: #4E397C; margin: 30px 0 20px 0;">
             {{ trans('seminar.email_attendance_confirmation_title') }}
         </h2>
-        
+
         <p>{{ trans('seminar.email_attendance_confirmation_greeting') }}</p>
-        
+
         <p>{!! trans('seminar.email_attendance_confirmation_message') !!}</p>
-        
+
         <p style="margin-top: 20px;"><strong>{{ trans('seminar.email_attendance_confirmation_registered_message') }}</strong></p>
-        
+
         <div class="schedule-box">
             <p><strong>{{ trans('seminar.email_attendance_confirmation_date') }}:</strong> {{ trans('seminar.email_attendance_confirmation_date_value') }}</p>
             <p><strong>{{ trans('seminar.email_attendance_confirmation_venue') }}:</strong> {{ trans('seminar.email_attendance_confirmation_venue_value') }}</p>
@@ -55,9 +147,10 @@
             <p><strong>{{ trans('seminar.email_attendance_confirmation_registration_time') }}:</strong> {{ trans('seminar.email_attendance_confirmation_registration_time_value') }}</p>
             <p><strong>{{ trans('seminar.email_attendance_confirmation_dresscode') }}:</strong> {{ trans('seminar.email_attendance_confirmation_dresscode_value') }}</p>
         </div>
-        
+
         <p>{{ trans('seminar.email_attendance_confirmation_show_email_instruction') }}</p>
-        
+
+        {{-- QR Code Section --}}
         @php
             $qrTokenService = app(\App\Services\QrTokenService::class);
             $qrUrl = $qrTokenService->getQrUrl($registration);
@@ -74,7 +167,7 @@
             </p>
         </div>
         @endif
-        
+
         {{-- Notes Section --}}
         <div class="notes">
             <h3>{{ trans('seminar.email_attendance_confirmation_notes_title') }}</h3>
@@ -85,7 +178,7 @@
             </ol>
         </div>
 
-        {{-- Important SKP Section (Indonesian participants only) --}}
+        {{-- SKP Section for Indonesian Participants --}}
         @if($registration->country?->is_indonesia)
         <div class="important">
             <h3>{{ trans('seminar.email_attendance_confirmation_skp_title') }}</h3>
@@ -98,6 +191,7 @@
         </div>
         @endif
 
+        {{-- Closing and Signature --}}
         <p>{{ trans('seminar.email_attendance_confirmation_closing') }}</p>
         <p>{!! trans('seminar.email_attendance_confirmation_signature') !!}</p>
 
@@ -112,10 +206,10 @@
             </ul>
         </div>
     </div>
-    
+
     <div class="footer">
         <p>{{ trans('seminar.automated_email') }}</p>
-        <p>Jakarta Dental Exhibition 2026 | https://jakartadentalexhibitions.id</p>
+        <p>{{ trans('seminar.email_footer') }}</p>
     </div>
 </body>
 </html>
