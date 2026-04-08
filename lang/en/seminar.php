@@ -9,7 +9,9 @@ return [
     'confirmation_email_sent' => 'We have sent a confirmation email to ',
     'success_message_1' => 'Thank you for registering for the JADE 2026 seminar / hands on / poster competition.',
     'success_message_2' => 'Please check your email for the response recording.',
-    'success_message_3' => 'Please join the WhatsApp group: ',
+    'whatsapp_group_title' => 'Join Our WhatsApp Group',
+    'whatsapp_group_description' => 'Join the participant WhatsApp group to receive event updates and important announcements.',
+    'whatsapp_group_button' => 'Join WhatsApp Group',
     'redirecting_to_dashboard' => 'Redirecting to dashboard in',
     'seconds' => 'seconds',
 

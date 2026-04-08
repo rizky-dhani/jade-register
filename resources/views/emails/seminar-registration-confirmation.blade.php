@@ -99,10 +99,6 @@
                 </div>
             @else
                 <div class="detail-row">
-                    <span class="detail-label">{{ trans('seminar.name_str') }}</span>
-                    <span class="detail-value">{{ $registration->name }}</span>
-                </div>
-                <div class="detail-row">
                     <span class="detail-label">{{ trans('seminar.name_plataran') }}</span>
                     <span class="detail-value">{{ $registration->name_license }}</span>
                 </div>

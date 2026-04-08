@@ -25,7 +25,8 @@ class SeminarRegistrationsTable
                     ->label(__('seminar.registration_code'))
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('name')
+                TextColumn::make('name_license')
+                    ->label(__('seminar.name_plataran'))
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('country.name')

@@ -9,7 +9,9 @@ return [
     'confirmation_email_sent' => 'Kami telah mengirimkan email konfirmasi ke ',
     'success_message_1' => 'Terima kasih telah melakukan pendaftaran seminar / hands on / lomba poster kegiatan JADE 2026.',
     'success_message_2' => 'Rekaman jawaban silahkan cek di email.',
-    'success_message_3' => 'Silahkan bergabung ke group WhatsApp: ',
+    'whatsapp_group_title' => 'Bergabung ke Grup WhatsApp',
+    'whatsapp_group_description' => 'Bergabunglah ke grup WhatsApp peserta untuk mendapatkan informasi update acara dan pengumuman penting.',
+    'whatsapp_group_button' => 'Bergabung ke Grup WhatsApp',
     'redirecting_to_dashboard' => 'Mengarahkan ke dashboard dalam',
     'seconds' => 'detik',
 
