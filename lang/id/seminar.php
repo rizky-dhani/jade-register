@@ -41,7 +41,7 @@ return [
     'international' => 'Internasional',
     'registration_code' => 'Kode Pendaftaran',
     'name_str' => 'Nama sesuai STR (tanpa gelar)',
-    'name_plataran' => 'Nama sesuai Plataran Sehat',
+    'name_plataran' => 'Nama (Plataran Sehat)',
     'email_plataran' => 'Email sesuai Plataran Sehat',
     'whatsapp_number' => 'Nomor WhatsApp',
     'nik' => 'NIK',
