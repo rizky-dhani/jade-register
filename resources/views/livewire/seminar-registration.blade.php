@@ -66,8 +66,8 @@
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <h2 class="text-xl font-semibold text-gray-800 mb-4">{{ __('seminar.verify_registration') }}</h2>
                 <div class="flex gap-2">
-                    <input type="text" wire:model="verification_name_license"
-                        placeholder="{{ __('seminar.enter_name_license') }}"
+                    <input type="email" wire:model="verification_email"
+                        placeholder="{{ __('seminar.enter_email') }}"
                         class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                     <button type="button" wire:click="checkExistingRegistration"
                         wire:loading.attr="disabled"
@@ -104,11 +104,11 @@
                 
                 {{-- Registration Details --}}
                 <div class="space-y-2 mb-6 bg-white rounded-lg p-4 border border-green-200">
-                    <p><strong>{{ __('seminar.name') }}:</strong> {{ $existingRegistration->name }}</p>
+                    <p><strong>{{ __('seminar.name_plataran') }}:</strong> {{ $existingRegistration->name_license }}</p>
                     <p><strong>{{ __('seminar.email') }}:</strong> {{ $existingRegistration->email }}</p>
                     <p><strong>{{ __('seminar.registration_code') }}:</strong> {{ $existingRegistration->registration_code }}</p>
                     <p><strong>{{ __('seminar.selected_package') }}:</strong> {{ $existingRegistration->selected_seminar }}</p>
-                    <p><strong>{{ __('seminar.payment_status') }}:</strong> 
+                    <p><strong>{{ __('seminar.payment_status') }}:</strong>
                         <span class="{{ $existingRegistration->payment_status === 'verified' ? 'text-green-600 font-medium' : 'text-yellow-600 font-medium' }}">
                             {{ ucfirst($existingRegistration->payment_status) }}
                         </span>
