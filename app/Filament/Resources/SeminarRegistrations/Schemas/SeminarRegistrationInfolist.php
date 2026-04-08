@@ -67,7 +67,8 @@ class SeminarRegistrationInfolist
                                 'Dentist' => __('seminar.dentist'),
                                 'Student' => __('seminar.student'),
                                 default => $state,
-                            }),
+                            })
+                            ->visible(fn (SeminarRegistration $record): bool => ! ($record->country?->is_indonesia ?? true)),
                     ])->columns(2),
 
                 Section::make(__('seminar.registration_package'))
@@ -87,27 +88,10 @@ class SeminarRegistrationInfolist
                         TextEntry::make('payment_method')
                             ->label(__('seminar.payment_method'))
                             ->formatStateUsing(fn (string $state): string => match ($state) {
-                                'bank_transfer' => 'Bank Transfer',
-                                'qris' => 'QRIS',
+                                'bank_transfer' => __('seminar.bank_transfer'),
+                                'qris' => __('seminar.qris'),
                                 default => $state,
                             }),
-                    ])->columns(2),
-
-                Section::make(__('seminar.payment_proof'))
-                    ->schema([
-                        ViewEntry::make('payment_proof_path')
-                            ->label(__('seminar.payment_proof'))
-                            ->view('filament.infolists.payment-proof-preview')
-                            ->visible(fn (SeminarRegistration $record): bool => $record->payment_proof_path !== null),
-
-                        TextEntry::make('verified_at')
-                            ->label(__('filament.hands_on_registrations.verified_at'))
-                            ->dateTime('d M Y H:i')
-                            ->placeholder('—'),
-
-                        TextEntry::make('verifiedBy.name')
-                            ->label(__('seminar.verified_by'))
-                            ->placeholder('—'),
                     ])->columns(2),
 
                 Section::make(__('seminar.hands_on_sessions'))
@@ -123,6 +107,23 @@ class SeminarRegistrationInfolist
                             ->view('filament.infolists.hands-on-list')
                             ->visible(fn (SeminarRegistration $record): bool => $record->handsOnRegistrations->isNotEmpty()),
                     ])->columns(1),
+
+                Section::make(__('seminar.payment_proof'))
+                    ->schema([
+                        ViewEntry::make('payment_proof_path')
+                            ->label(__('seminar.payment_proof'))
+                            ->view('filament.infolists.payment-proof-preview')
+                            ->visible(fn (SeminarRegistration $record): bool => $record->payment_proof_path !== null),
+
+                        TextEntry::make('verified_at')
+                            ->label(__('seminar.verified_at'))
+                            ->dateTime('d M Y H:i')
+                            ->placeholder('—'),
+
+                        TextEntry::make('verifiedBy.name')
+                            ->label(__('seminar.verified_by'))
+                            ->placeholder('—'),
+                    ])->columns(2),
             ]);
     }
 }

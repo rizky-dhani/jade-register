@@ -298,6 +298,7 @@ return [
     'check_in_seminar_button' => 'Check-in Seminar',
     'hands_on_sessions_title' => 'Sesi Hands On',
     'verified_by' => 'Diverifikasi Oleh',
+    'verified_at' => 'Tanggal Verifikasi',
     'hands_on_registrations' => 'Pendaftaran Hands On',
     'hands_on_total_amount' => 'Total Hands On',
     'wants_hands_on' => 'Ingin Mengikuti Hands On',

@@ -299,6 +299,7 @@ return [
     'check_in_seminar_button' => 'Check-in Seminar',
     'hands_on_sessions_title' => 'Hands-On Sessions',
     'verified_by' => 'Verified By',
+    'verified_at' => 'Verified At',
     'hands_on_registrations' => 'Hands On Registrations',
     'hands_on_total_amount' => 'Hands On Total Amount',
     'wants_hands_on' => 'Wants Hands On',
