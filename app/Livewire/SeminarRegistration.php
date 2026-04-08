@@ -57,7 +57,7 @@ class SeminarRegistration extends Component
     // Already registered check properties
     public ?string $is_already_registered = null;
 
-    public string $verification_email = '';
+    public string $verification_name_license = '';
 
     public ?SeminarRegistrationModel $existingRegistration = null;
 
@@ -353,13 +353,13 @@ class SeminarRegistration extends Component
     public function checkExistingRegistration(): void
     {
         $this->validate([
-            'verification_email' => 'required|email',
+            'verification_name_license' => 'required|string|max:255',
         ]);
 
         $this->showVerificationError = false;
         $this->existingRegistration = null;
 
-        $registration = SeminarRegistrationModel::whereRaw('LOWER(email) = ?', [strtolower($this->verification_email)])
+        $registration = SeminarRegistrationModel::whereRaw('LOWER(name_license) = ?', [strtolower($this->verification_name_license)])
             ->first();
 
         if (! $registration) {
