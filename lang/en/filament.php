@@ -126,6 +126,7 @@ return [
     'visitors.confirm_attendance' => 'Confirm Attendance',
 
     // Actions
+    'actions.edit' => 'Edit',
     'actions.export_excel' => 'Export Excel',
     'actions.generate_permissions' => 'Generate from Permissions',
 

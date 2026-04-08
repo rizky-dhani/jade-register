@@ -61,6 +61,7 @@ return [
     'valid_until' => 'Berlaku s/d 31 Mei 2026',
     'select_country_first' => 'Silakan pilih negara terlebih dahulu untuk melihat tingkatan harga yang tersedia.',
     'selected_package' => 'Paket Terpilih',
+    'amount' => 'Jumlah',
     'registrant_information' => 'Informasi Pendaftar',
 
     // Competency options

@@ -61,6 +61,7 @@ return [
     'valid_until' => 'Valid until May 31, 2026',
     'select_country_first' => 'Please select a country first to see available pricing tiers.',
     'selected_package' => 'Selected Package',
+    'amount' => 'Amount',
     'registrant_information' => 'Registrant Information',
 
     // Competency options
