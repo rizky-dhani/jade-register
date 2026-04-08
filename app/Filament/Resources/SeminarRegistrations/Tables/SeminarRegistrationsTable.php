@@ -75,6 +75,16 @@ class SeminarRegistrationsTable
                         default => 'gray',
                     })
                     ->searchable(),
+                TextColumn::make('payment_status')
+                    ->label(__('seminar.payment_status'))
+                    ->badge()
+                    ->formatStateUsing(fn (string $state): string => ucfirst($state))
+                    ->color(fn (string $state): string => match ($state) {
+                        'pending' => 'warning',
+                        'verified' => 'success',
+                        default => 'gray',
+                    })
+                    ->searchable(),
                 TextColumn::make('phone')
                     ->searchable(),
                 TextColumn::make('email')
