@@ -182,7 +182,7 @@ return [
     'email_attendance_confirmation_subject' => 'Attendance Confirmation - :code',
     'email_attendance_confirmation_title' => 'Seminar Participant Confirmation - Jakarta Dental Exhibition International (JADE) 2026',
     'email_attendance_confirmation_greeting' => 'Dear JADE 2026 Seminar Participants,',
-    'email_attendance_confirmation_message' => 'Thank you for registering for the Jakarta Dental Exhibition International (JADE) 2026 Seminar (Hands ON participants will receive a separate Hands ON confirmation).<br><br>We hereby confirm that you are officially registered as a seminar participant.',
+    'email_attendance_confirmation_message' => 'Thank you for registering for the Jakarta Dental Exhibition International (JADE) 2026 Seminar (Hands ON participants will receive a separate Hands On confirmation).<br><br>We hereby confirm that you are officially registered as a seminar participant.',
     'email_attendance_confirmation_status' => 'Registration Confirmed',
     'email_attendance_confirmation_spot_secured' => 'We hereby confirm that you are officially registered as a seminar participant.',
     'email_attendance_confirmation_qr_title' => 'Your Check-In QR Code',
