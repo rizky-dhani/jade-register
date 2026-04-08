@@ -321,6 +321,7 @@ return [
     'scanned_at' => 'Check-in pada',
     'confirm_visitor_attendance' => 'Konfirmasi Kehadiran',
     'processing' => 'Memproses',
+    'uploading' => 'Mengunggah',
     'admin_only_action' => 'Tindakan ini hanya untuk administrator',
     'visitor_check_in_success' => 'Check-In Berhasil!',
     'visitor_check_in_success_message' => 'Pengunjung telah berhasil check-in.',

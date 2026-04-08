@@ -498,8 +498,12 @@
             </div>
             @endif
 
-            <button type="submit" wire:loading.attr="disabled" wire:target="submit" class="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-                <span wire:loading.remove wire:target="submit">{{ __('seminar.submit_registration') }}</span>
+            <button type="submit"
+                wire:loading.attr="disabled"
+                wire:target="submit,payment_proof"
+                class="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                <span wire:loading.remove wire:target="submit,payment_proof">{{ __('seminar.submit_registration') }}</span>
+                <span wire:loading wire:target="payment_proof">{{ __('seminar.uploading') }}...</span>
                 <span wire:loading wire:target="submit">{{ __('seminar.processing') }}...</span>
             </button>
             @endif

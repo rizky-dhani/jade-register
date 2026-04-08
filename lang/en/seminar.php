@@ -322,6 +322,7 @@ return [
     'scanned_at' => 'Checked in at',
     'confirm_visitor_attendance' => 'Confirm Attendance',
     'processing' => 'Processing',
+    'uploading' => 'Uploading',
     'admin_only_action' => 'This action is restricted to administrators only',
     'visitor_check_in_success' => 'Check-In Successful!',
     'visitor_check_in_success_message' => 'Visitor has been successfully checked in.',
