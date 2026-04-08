@@ -59,7 +59,8 @@ class SeminarRegistrationInfolist
                             ->label(__('seminar.competency')),
 
                         TextEntry::make('country.name')
-                            ->label(__('seminar.country')),
+                            ->label(__('seminar.country'))
+                            ->visible(fn (SeminarRegistration $record): bool => ! ($record->country?->is_indonesia ?? true)),
 
                         TextEntry::make('status')
                             ->label(__('seminar.status'))
@@ -69,7 +70,7 @@ class SeminarRegistrationInfolist
                                 default => $state,
                             })
                             ->visible(fn (SeminarRegistration $record): bool => ! ($record->country?->is_indonesia ?? true)),
-                    ])->columns(2),
+                    ])->columns(6),
 
                 Section::make(__('seminar.registration_package'))
                     ->schema([
