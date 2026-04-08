@@ -156,19 +156,26 @@ class SeminarRegistrationsTable
                             'url' => $url,
                             'extension' => strtolower($extension),
                         ]);
-                    }),
-                Action::make('verifyPayment')
-                    ->label(__('seminar.verify_payment'))
-                    ->icon('heroicon-o-check-circle')
-                    ->color('warning')
-                    ->visible(fn (SeminarRegistration $record): bool => $record->payment_status === 'pending' && $record->payment_proof_path !== null)
-                    ->requiresConfirmation()
-                    ->action(function (SeminarRegistration $record): void {
-                        $record->update([
-                            'payment_status' => 'verified',
-                            'verified_by' => auth()->id(),
-                            'verified_at' => now(),
-                        ]);
+                    })
+                    ->extraModalFooterActions(function (SeminarRegistration $record): array {
+                        if ($record->payment_status === 'pending') {
+                            return [
+                                Action::make('verifyPayment')
+                                    ->label(__('seminar.verify_payment'))
+                                    ->icon('heroicon-o-check-circle')
+                                    ->color('warning')
+                                    ->requiresConfirmation()
+                                    ->action(function (SeminarRegistration $record): void {
+                                        $record->update([
+                                            'payment_status' => 'verified',
+                                            'verified_by' => auth()->id(),
+                                            'verified_at' => now(),
+                                        ]);
+                                    }),
+                            ];
+                        }
+
+                        return [];
                     }),
             ])
             ->toolbarActions([

@@ -92,7 +92,26 @@ class HandsOnRegistrationsTable
                     ->modalContent(fn (HandsOnRegistration $record): View => view(
                         'filament.modals.payment-proof',
                         ['record' => $record]
-                    )),
+                    ))
+                    ->extraModalFooterActions(function (HandsOnRegistration $record): array {
+                        if ($record->payment_status === 'pending') {
+                            return [
+                                Action::make('verifyPayment')
+                                    ->label(__('seminar.verify_payment'))
+                                    ->icon('heroicon-o-check-circle')
+                                    ->color('warning')
+                                    ->requiresConfirmation()
+                                    ->action(function (HandsOnRegistration $record): void {
+                                        $record->update([
+                                            'payment_status' => 'verified',
+                                            'verified_at' => now(),
+                                        ]);
+                                    }),
+                            ];
+                        }
+
+                        return [];
+                    }),
                 EditAction::make(),
             ])
             ->toolbarActions([
