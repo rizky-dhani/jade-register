@@ -7,6 +7,8 @@ use Filament\Actions\Action;
 use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Forms\Components\FileUpload;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
@@ -133,11 +135,10 @@ class SeminarRegistrationsTable
                     ->nullable(),
             ])
             ->recordActions([
-                Action::make('view')
-                    ->label(__('filament::tables/actions/view.label'))
-                    ->icon('heroicon-o-eye')
-                    ->color('gray')
+                ViewAction::make()
                     ->url(fn (SeminarRegistration $record): string => route('filament.admin.resources.seminar-registrations.view', $record)),
+                EditAction::make()
+                    ->url(fn (SeminarRegistration $record): string => route('filament.admin.resources.seminar-registrations.edit', $record)),
                 Action::make('uploadPaymentProof')
                     ->label(__('seminar.upload_payment_proof'))
                     ->icon('heroicon-o-arrow-up-tray')
