@@ -8,7 +8,9 @@ use App\Models\HandsOnRegistration;
 use App\Models\SeminarRegistration as SeminarRegistrationModel;
 use App\Services\QrTokenService;
 use App\Services\RegistrationService;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -69,6 +71,9 @@ class SeminarRegistration extends Component
     public array $availableHandsOn = [];
 
     public int $handsOnTotalPrice = 0;
+
+    // Submission lock to prevent duplicate submissions
+    public bool $isSubmitting = false;
 
     protected function rules(): array
     {
@@ -216,6 +221,11 @@ class SeminarRegistration extends Component
 
     public function submit()
     {
+        // Prevent duplicate submissions
+        if ($this->isSubmitting) {
+            return;
+        }
+
         $this->validate();
 
         // Prevent duplicate registration by email
@@ -226,6 +236,9 @@ class SeminarRegistration extends Component
 
             return;
         }
+
+        // Set submission lock
+        $this->isSubmitting = true;
 
         // Validate Hands On selections have available seats
         if ($this->wants_hands_on && ! empty($this->selectedHandsOn)) {
@@ -292,7 +305,26 @@ class SeminarRegistration extends Component
             $registrationData['status'] = $this->status;
         }
 
-        $registration = SeminarRegistrationModel::create($registrationData);
+        $registration = null;
+
+        try {
+            $registration = DB::transaction(function () use ($registrationData) {
+                return SeminarRegistrationModel::create($registrationData);
+            });
+        } catch (QueryException $e) {
+            // Handle duplicate entry error (MySQL error code 1062)
+            if ($e->getCode() === '23000') {
+                $existingRegistration = SeminarRegistrationModel::whereRaw('LOWER(email) = ?', [strtolower($this->email)])->first();
+                if ($existingRegistration) {
+                    $this->addError('email', __('seminar.email_already_registered'));
+                    $this->redirectRoute('register.seminar.success', ['id' => $existingRegistration->id], navigate: true);
+
+                    return;
+                }
+            }
+
+            throw $e;
+        }
 
         $qrTokenService = app(QrTokenService::class);
         $qrTokenService->generate($registration);
