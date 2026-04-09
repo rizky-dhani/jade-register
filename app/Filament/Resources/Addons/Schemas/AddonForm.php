@@ -79,12 +79,14 @@ class AddonForm
                         DatePicker::make('available_from')
                             ->label(__('filament.addons.available_from'))
                             ->native(false)
-                            ->displayFormat('d M Y'),
+                            ->displayFormat('d M Y')
+                            ->helperText(__('filament.addons.available_from_helper')),
 
                         DatePicker::make('available_until')
                             ->label(__('filament.addons.available_until'))
                             ->native(false)
-                            ->displayFormat('d M Y'),
+                            ->displayFormat('d M Y')
+                            ->helperText(__('filament.addons.available_until_helper')),
 
                         TextInput::make('max_seats')
                             ->label(__('filament.addons.max_seats'))
