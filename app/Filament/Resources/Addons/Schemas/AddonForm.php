@@ -36,6 +36,7 @@ class AddonForm
                             ->maxLength(255)
                             ->unique(ignoreRecord: true)
                             ->helperText(__('filament.addons.code_helper'))
+                            ->readOnly()
                             ->columnSpanFull(),
 
                         Textarea::make('description')
