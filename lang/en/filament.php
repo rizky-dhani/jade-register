@@ -35,6 +35,9 @@ return [
     'addons.inactive_only' => 'Inactive Only',
     'addons.created_at' => 'Created At',
     'addons.updated_at' => 'Updated At',
+    'addons.section_information' => 'Information',
+    'addons.section_pricing' => 'Pricing',
+    'addons.section_availability' => 'Availability',
 
     // Attendance
     'attendance.participant_name' => 'Participant Name',

@@ -35,6 +35,9 @@ return [
     'addons.inactive_only' => 'Hanya Tidak Aktif',
     'addons.created_at' => 'Dibuat Pada',
     'addons.updated_at' => 'Diperbarui Pada',
+    'addons.section_information' => 'Informasi',
+    'addons.section_pricing' => 'Harga',
+    'addons.section_availability' => 'Ketersediaan',
 
     // Attendance
     'attendance.participant_name' => 'Nama Peserta',
