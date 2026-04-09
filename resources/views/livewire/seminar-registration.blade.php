@@ -116,6 +116,46 @@
                 </div>
 
                 @if($existingRegistration->payment_status === 'verified')
+                    {{-- Add-On Section (Existing Registration) --}}
+                    @if(count($availableAddons) > 0)
+                    <div class="bg-white rounded-lg p-4 border border-green-200 mb-4">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-2">{{ __('seminar.available_addons') }}</h3>
+                        <p class="text-gray-600 mb-4 text-sm">{{ __('seminar.addon_existing_description') }}</p>
+
+                        <div class="space-y-3">
+                            @foreach($availableAddons as $addon)
+                                @if(!$addon['is_purchased'])
+                                <label class="flex items-start p-4 bg-gray-50 rounded-lg border border-gray-200 cursor-pointer hover:border-purple-400 transition-colors">
+                                    <input type="checkbox"
+                                        wire:model.live="selectedAddons.{{ $addon['code'] }}"
+                                        class="w-5 h-5 text-purple-600 border-gray-300 rounded focus:ring-purple-500 mt-0.5">
+                                    <div class="ml-3 flex-1">
+                                        <div class="flex justify-between items-start">
+                                            <div>
+                                                <p class="font-medium text-gray-800">{{ $addon['name'] }}</p>
+                                                <p class="text-sm text-gray-600">{{ $addon['description'] }}</p>
+                                            </div>
+                                            <p class="font-semibold text-purple-700">{{ $addon['formatted_price'] }}</p>
+                                        </div>
+                                    </div>
+                                </label>
+                                @else
+                                <div class="flex items-start p-4 bg-gray-50 rounded-lg border border-gray-200 opacity-75">
+                                    <svg class="w-5 h-5 text-green-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    <div class="ml-3 flex-1">
+                                        <p class="font-medium text-gray-800">{{ $addon['name'] }}</p>
+                                        <p class="text-sm text-green-600">{{ __('seminar.addon_already_included') }}</p>
+                                    </div>
+                                    <p class="font-semibold text-gray-400">{{ $addon['formatted_price'] }}</p>
+                                </div>
+                                @endif
+                            @endforeach
+                        </div>
+                    </div>
+                    @endif
+
                     {{-- Hands On Selection (NO checkbox, direct selection) --}}
                     <div class="bg-white rounded-lg p-4 border border-green-200">
                         <h3 class="text-lg font-semibold text-gray-800 mb-2">{{ __('seminar.select_hands_on') }}</h3>
@@ -375,6 +415,51 @@
                     </div>
                 @endif
             </div>
+
+            {{-- Add-On Section (New Registration) --}}
+            @if($country_id && count($availableAddons) > 0 && $is_already_registered === 'no')
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-2">{{ __('seminar.available_addons') }}</h2>
+                <p class="text-sm text-gray-600 mb-4">{{ __('seminar.addon_description') }}</p>
+
+                <div class="space-y-3">
+                    @foreach($availableAddons as $addon)
+                    <label class="flex items-start p-4 rounded-lg border transition-colors
+                        {{ $addon['is_full'] ? 'bg-gray-50 border-gray-200 opacity-60 cursor-not-allowed' : 'bg-gray-50 border-gray-200 cursor-pointer hover:border-blue-400' }}">
+                        <input type="checkbox"
+                            wire:model.live="selectedAddons.{{ $addon['code'] }}"
+                            {{ $addon['is_full'] ? 'disabled' : '' }}
+                            class="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-0.5">
+                        <div class="ml-3 flex-1">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="font-medium text-gray-800">{{ $addon['name'] }}</p>
+                                    <p class="text-sm text-gray-600">{{ $addon['description'] }}</p>
+                                    @if($addon['is_full'])
+                                        <span class="inline-flex items-center px-2 py-0.5 mt-1 text-xs font-medium text-red-700 bg-red-100 rounded">
+                                            {{ __('seminar.sold_out') }}
+                                        </span>
+                                    @endif
+                                </div>
+                                <p class="font-semibold text-blue-700">{{ $addon['formatted_price'] }}</p>
+                            </div>
+                        </div>
+                    </label>
+                    @endforeach
+                </div>
+
+                @if($addonsTotalPrice > 0)
+                <div class="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-3">
+                    <p class="text-sm text-blue-700">
+                        <svg class="inline-block w-4 h-4 mr-1 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        {{ __('seminar.addons_included_in_payment') }}
+                    </p>
+                </div>
+                @endif
+            </div>
+            @endif
 
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <h2 class="text-xl font-semibold text-gray-800 mb-4">{{ __('seminar.contact_person') }}</h2>

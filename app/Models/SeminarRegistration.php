@@ -39,6 +39,7 @@ class SeminarRegistration extends Model
         'status',
         'wants_hands_on',
         'hands_on_total_amount',
+        'addons_total_amount',
         'qr_token',
         'qr_expires_at',
     ];
@@ -50,6 +51,7 @@ class SeminarRegistration extends Model
         'wants_poster_competition' => 'boolean',
         'wants_hands_on' => 'boolean',
         'hands_on_total_amount' => 'integer',
+        'addons_total_amount' => 'integer',
     ];
 
     public static function generateRegistrationCode(): string
@@ -99,6 +101,11 @@ class SeminarRegistration extends Model
     public function attendances(): HasMany
     {
         return $this->hasMany(Attendance::class);
+    }
+
+    public function addonRegistrations(): HasMany
+    {
+        return $this->hasMany(AddonRegistration::class);
     }
 
     public function canRegisterHandsOn(): bool

@@ -2,6 +2,8 @@
 
 namespace App\Livewire;
 
+use App\Models\Addon;
+use App\Models\AddonRegistration;
 use App\Models\Country;
 use App\Models\HandsOn;
 use App\Models\HandsOnRegistration;
@@ -72,6 +74,15 @@ class SeminarRegistration extends Component
 
     public int $handsOnTotalPrice = 0;
 
+    // Add-On properties
+    public bool $wantsAddons = true;
+
+    public array $selectedAddons = [];
+
+    public array $availableAddons = [];
+
+    public int $addonsTotalPrice = 0;
+
     // Submission lock to prevent duplicate submissions
     public bool $isSubmitting = false;
 
@@ -127,6 +138,9 @@ class SeminarRegistration extends Component
             $this->phone = $user->phone ?? '';
             $this->country_id = $user->country_id ?? 1;
         }
+
+        // Load available add-ons
+        $this->loadAvailableAddons();
     }
 
     public function setLocale(string $locale): void
@@ -158,6 +172,7 @@ class SeminarRegistration extends Component
             'availableTiers' => $this->getAvailableTiers(),
             'isIndonesia' => $this->isIndonesia(),
             'availableHandsOn' => $this->availableHandsOn,
+            'availableAddons' => $this->availableAddons,
         ]);
     }
 
@@ -287,12 +302,13 @@ class SeminarRegistration extends Component
             'registration_type' => 'online',
             'selected_seminar' => $package->name,
             'payment_method' => $this->payment_method,
-            'amount' => $package->current_price + $this->handsOnTotalPrice,
+            'amount' => $package->current_price + $this->handsOnTotalPrice + $this->addonsTotalPrice,
             'currency' => $package->currency,
             'payment_proof_path' => $path,
             'payment_status' => 'pending',
             'wants_hands_on' => $this->wants_hands_on,
             'hands_on_total_amount' => $this->handsOnTotalPrice,
+            'addons_total_amount' => $this->addonsTotalPrice,
             'user_id' => $userId,
         ];
 
@@ -308,8 +324,44 @@ class SeminarRegistration extends Component
         $registration = null;
 
         try {
-            $registration = DB::transaction(function () use ($registrationData) {
-                return SeminarRegistrationModel::create($registrationData);
+            $registration = DB::transaction(function () use ($registrationData, $path) {
+                $reg = SeminarRegistrationModel::create($registrationData);
+
+                // Create Hands On registrations
+                if ($this->wants_hands_on && ! empty($this->selectedHandsOn)) {
+                    foreach ($this->selectedHandsOn as $date => $eventId) {
+                        if ($eventId) {
+                            HandsOnRegistration::create([
+                                'seminar_registration_id' => $reg->id,
+                                'hands_on_id' => $eventId,
+                                'registration_type' => 'combined',
+                                'payment_status' => 'pending',
+                                'payment_proof_path' => $path,
+                            ]);
+                        }
+                    }
+                }
+
+                // Create Addon registrations
+                if (! empty($this->selectedAddons)) {
+                    foreach ($this->selectedAddons as $addonCode => $selected) {
+                        if ($selected) {
+                            $addon = Addon::where('code', $addonCode)->first();
+                            if ($addon) {
+                                AddonRegistration::create([
+                                    'seminar_registration_id' => $reg->id,
+                                    'addon_id' => $addon->id,
+                                    'amount' => $addon->price,
+                                    'currency' => $addon->currency,
+                                    'payment_proof_path' => $path,
+                                    'payment_status' => 'pending',
+                                ]);
+                            }
+                        }
+                    }
+                }
+
+                return $reg;
             });
         } catch (QueryException $e) {
             // Handle duplicate entry error (MySQL error code 1062)
@@ -328,21 +380,6 @@ class SeminarRegistration extends Component
 
         $qrTokenService = app(QrTokenService::class);
         $qrTokenService->generate($registration);
-
-        // Create Hands On registrations
-        if ($this->wants_hands_on && ! empty($this->selectedHandsOn)) {
-            foreach ($this->selectedHandsOn as $date => $eventId) {
-                if ($eventId) {
-                    HandsOnRegistration::create([
-                        'seminar_registration_id' => $registration->id,
-                        'hands_on_id' => $eventId,
-                        'registration_type' => 'combined',
-                        'payment_status' => 'pending',
-                        'payment_proof_path' => $path,
-                    ]);
-                }
-            }
-        }
 
         $registrationService = app(RegistrationService::class);
         $registrationService->sendSeminarSubmissionConfirmation($registration);
@@ -369,6 +406,9 @@ class SeminarRegistration extends Component
         }
 
         $this->existingRegistration = $registration;
+
+        // Reload addons with purchased status for existing registration
+        $this->loadAvailableAddons();
 
         if ($registration->payment_status === 'verified') {
             $this->loadAvailableHandsOn();
@@ -429,6 +469,61 @@ class SeminarRegistration extends Component
                         $this->handsOnTotalPrice += $event['price'];
                         break;
                     }
+                }
+            }
+        }
+    }
+
+    // Add-On methods
+    public function loadAvailableAddons(): void
+    {
+        $selectedPackage = \App\Models\Seminar::where('code', $this->selected_seminar)->first();
+        $packageIncludesLunch = $selectedPackage?->includes_lunch ?? false;
+
+        $query = Addon::active()
+            ->available()
+            ->orderBy('sort_order');
+
+        $this->availableAddons = $query->get()
+            ->map(function ($addon) use ($packageIncludesLunch) {
+                // Skip lunch addon if package already includes lunch
+                if ($packageIncludesLunch && $addon->code === 'LUNCH_ADDON') {
+                    return null;
+                }
+
+                $isPurchased = $this->existingRegistration
+                    ? $this->existingRegistration->addonRegistrations()
+                        ->whereHas('addon', fn ($q) => $q->where('code', $addon->code))
+                        ->where('payment_status', 'verified')
+                        ->exists()
+                    : false;
+
+                return [
+                    'id' => $addon->id,
+                    'code' => $addon->code,
+                    'name' => $addon->name,
+                    'description' => $addon->description,
+                    'price' => $addon->price,
+                    'formatted_price' => $addon->formatted_price,
+                    'remaining_stock' => $addon->remaining_stock,
+                    'is_full' => $addon->isFull(),
+                    'is_purchased' => $isPurchased,
+                ];
+            })
+            ->filter()
+            ->values()
+            ->toArray();
+    }
+
+    public function updatedSelectedAddons(): void
+    {
+        $this->addonsTotalPrice = 0;
+
+        foreach ($this->selectedAddons as $addonCode => $selected) {
+            if ($selected) {
+                $addon = collect($this->availableAddons)->firstWhere('code', $addonCode);
+                if ($addon) {
+                    $this->addonsTotalPrice += $addon['price'];
                 }
             }
         }
