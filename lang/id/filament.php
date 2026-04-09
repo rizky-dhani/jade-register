@@ -3,6 +3,7 @@
 return [
     // Navigation
     'navigation.attendance' => 'Kehadiran',
+    'navigation.addons' => 'Add-On',
     'navigation.countries' => 'Negara',
     'navigation.hands_on' => 'Hands On',
     'navigation.hands_on_registrations' => 'Pendaftaran Hands On',
@@ -14,6 +15,26 @@ return [
     'navigation.seminars' => 'Seminar',
     'navigation.users' => 'Pengguna',
     'navigation.visitors' => 'Pengunjung',
+
+    // Add-Ons
+    'addons.name' => 'Nama',
+    'addons.code' => 'Kode',
+    'addons.code_helper' => 'Pengenal unik untuk add-on ini (contoh: LUNCH_ADDON)',
+    'addons.description' => 'Deskripsi',
+    'addons.price' => 'Harga',
+    'addons.currency' => 'Mata Uang',
+    'addons.max_seats' => 'Kursi Maksimal',
+    'addons.max_seats_helper' => 'Kosongkan untuk kursi tidak terbatas',
+    'addons.is_active' => 'Aktif',
+    'addons.available_from' => 'Tersedia Mulai',
+    'addons.available_until' => 'Tersedia Hingga',
+    'addons.sort_order' => 'Urutan',
+    'addons.registered' => 'Terdaftar',
+    'addons.unlimited' => 'Tidak Terbatas',
+    'addons.active_only' => 'Hanya Aktif',
+    'addons.inactive_only' => 'Hanya Tidak Aktif',
+    'addons.created_at' => 'Dibuat Pada',
+    'addons.updated_at' => 'Diperbarui Pada',
 
     // Attendance
     'attendance.participant_name' => 'Nama Peserta',

@@ -3,6 +3,7 @@
 return [
     // Navigation
     'navigation.attendance' => 'Attendance',
+    'navigation.addons' => 'Add-Ons',
     'navigation.countries' => 'Countries',
     'navigation.hands_on' => 'Hands On',
     'navigation.hands_on_registrations' => 'Hands On Registrations',
@@ -14,6 +15,26 @@ return [
     'navigation.seminars' => 'Seminars',
     'navigation.users' => 'Users',
     'navigation.visitors' => 'Visitors',
+
+    // Add-Ons
+    'addons.name' => 'Name',
+    'addons.code' => 'Code',
+    'addons.code_helper' => 'Unique identifier for this add-on (e.g., LUNCH_ADDON)',
+    'addons.description' => 'Description',
+    'addons.price' => 'Price',
+    'addons.currency' => 'Currency',
+    'addons.max_seats' => 'Max Seats',
+    'addons.max_seats_helper' => 'Leave blank for unlimited seats',
+    'addons.is_active' => 'Active',
+    'addons.available_from' => 'Available From',
+    'addons.available_until' => 'Available Until',
+    'addons.sort_order' => 'Sort Order',
+    'addons.registered' => 'Registered',
+    'addons.unlimited' => 'Unlimited',
+    'addons.active_only' => 'Active Only',
+    'addons.inactive_only' => 'Inactive Only',
+    'addons.created_at' => 'Created At',
+    'addons.updated_at' => 'Updated At',
 
     // Attendance
     'attendance.participant_name' => 'Participant Name',
