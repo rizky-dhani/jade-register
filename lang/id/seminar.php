@@ -29,6 +29,7 @@ return [
     'local_participant' => 'Peserta Lokal (Indonesia)',
     'international_participant' => 'Peserta Internasional',
     'registration_package' => 'Paket Pendaftaran',
+    'package_excludes_hands_on' => 'Biaya pendaftaran seminar tidak termasuk sesi Hands-on. Workshop Hands-on memiliki harga terpisah dan harus dipilih secara individual.',
     'contact_person' => 'Kontak Person',
     'payment_information' => 'Informasi Pembayaran',
     'scientific_poster_competition' => 'Kompetisi Poster Ilmiah (Opsional)',

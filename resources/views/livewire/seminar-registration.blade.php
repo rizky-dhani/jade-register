@@ -283,6 +283,12 @@
 
                 <div class="md:col-span-2">
                     <p class="text-xs text-gray-500 mb-3">{{ __('seminar.valid_until') }}</p>
+                    <p class="text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-lg p-3 mb-3">
+                        <svg class="inline-block w-4 h-4 mr-1 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        {{ __('seminar.package_excludes_hands_on') }}
+                    </p>
 
                     @php
                     $tiers = $availableTiers ?? [];

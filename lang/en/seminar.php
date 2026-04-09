@@ -29,6 +29,7 @@ return [
     'local_participant' => 'Local Participant (Indonesia)',
     'international_participant' => 'International Participant',
     'registration_package' => 'Registration Package',
+    'package_excludes_hands_on' => 'Seminar registration fee does not include Hands-on sessions. Hands-on workshops have separate pricing and must be selected individually.',
     'contact_person' => 'Contact Person',
     'payment_information' => 'Payment Information',
     'scientific_poster_competition' => 'Scientific Poster Competition (Optional)',
