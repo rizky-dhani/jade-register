@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\SeminarRegistrations\Tables;
 
 use App\Models\SeminarRegistration;
+use App\Services\RegistrationService;
 use Filament\Actions\Action;
 use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
@@ -194,6 +195,18 @@ class SeminarRegistrationsTable
 
                         return [];
                     }),
+                Action::make('resendEmailConfirmation')
+                    ->label(__('seminar.resend_email_confirmation'))
+                    ->icon('heroicon-o-envelope')
+                    ->color('primary')
+                    ->requiresConfirmation()
+                    ->modalHeading(__('seminar.resend_email_confirmation'))
+                    ->modalDescription(__('seminar.resend_email_confirmation_description'))
+                    ->modalSubmitActionLabel(__('seminar.resend_email_confirmation'))
+                    ->action(function (SeminarRegistration $record, RegistrationService $registrationService): void {
+                        $registrationService->sendAttendanceConfirmation($record);
+                    })
+                    ->successNotificationTitle(__('seminar.email_confirmation_resent')),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

@@ -257,6 +257,9 @@ return [
     'upload_payment_proof' => 'Unggah Bukti Pembayaran',
     'verify_payment' => 'Verifikasi Pembayaran',
     'bulk_verify_payment' => 'Verifikasi Pembayaran yang Dipilih',
+    'resend_email_confirmation' => 'Kirim Ulang Email Konfirmasi',
+    'resend_email_confirmation_description' => 'Apakah Anda yakin ingin mengirim ulang email konfirmasi pendaftaran ke peserta ini?',
+    'email_confirmation_resent' => 'Email konfirmasi berhasil dikirim ulang',
 
     // Visitor Registration
     'visitor_registration_title' => 'Pendaftaran Pengunjung',

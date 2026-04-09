@@ -258,6 +258,9 @@ return [
     'upload_payment_proof' => 'Upload Payment Proof',
     'verify_payment' => 'Verify Payment',
     'bulk_verify_payment' => 'Verify Selected Payments',
+    'resend_email_confirmation' => 'Resend Email Confirmation',
+    'resend_email_confirmation_description' => 'Are you sure you want to resend the registration confirmation email to this participant?',
+    'email_confirmation_resent' => 'Email confirmation has been resent successfully',
 
     // Visitor Registration
     'visitor_registration_title' => 'Visitor Registration',
