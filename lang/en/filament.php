@@ -158,4 +158,10 @@ return [
 
     // Notifications
     'notifications.permissions_generated' => 'Permissions Generated',
+    'notifications.addon_created_title' => 'Add-On Created',
+    'notifications.addon_created_body' => 'The add-on has been created successfully.',
+    'notifications.addon_updated_title' => 'Add-On Updated',
+    'notifications.addon_updated_body' => 'The add-on has been updated successfully.',
+    'notifications.addon_deleted_title' => 'Add-On Deleted',
+    'notifications.addon_deleted_body' => 'The add-on has been deleted successfully.',
 ];

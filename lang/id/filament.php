@@ -158,4 +158,10 @@ return [
 
     // Notifications
     'notifications.permissions_generated' => 'Izin Dibuat',
+    'notifications.addon_created_title' => 'Add-On Dibuat',
+    'notifications.addon_created_body' => 'Add-on berhasil dibuat.',
+    'notifications.addon_updated_title' => 'Add-On Diperbarui',
+    'notifications.addon_updated_body' => 'Add-on berhasil diperbarui.',
+    'notifications.addon_deleted_title' => 'Add-On Dihapus',
+    'notifications.addon_deleted_body' => 'Add-on berhasil dihapus.',
 ];
