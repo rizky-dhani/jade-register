@@ -163,8 +163,13 @@ return [
     'available' => 'Tersedia',
     'limited_seats' => 'Tersisa :count kursi',
     'sold_out' => 'Habis Terjual',
+    'unavailable' => 'Tidak Tersedia',
     'seats_left' => 'kursi tersisa',
     'coming_soon' => 'Segera Hadir',
+
+    // Summaries
+    'total_idr' => 'Total (IDR)',
+    'total_usd' => 'Total (USD)',
 
     // Pricing
     'save_amount' => 'Hemat :amount',

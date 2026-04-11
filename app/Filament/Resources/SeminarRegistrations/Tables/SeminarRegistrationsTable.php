@@ -11,6 +11,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\FileUpload;
+use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
@@ -23,7 +24,12 @@ class SeminarRegistrationsTable
     public static function configure(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(fn (Builder $query) => $query->with(['country', 'seminarPackage']))
+            ->modifyQueryUsing(fn (Builder $query) => $query
+                ->with(['country', 'seminarPackage'])
+                ->leftJoin('seminars', 'seminar_registrations.selected_seminar', '=', 'seminars.code')
+                ->select('seminar_registrations.*')
+                ->addSelect('seminars.original_price as seminar_original_price')
+                ->addSelect('seminars.currency as seminar_currency'))
             ->defaultSort('registration_code', 'desc')
             ->columns([
                 TextColumn::make('registration_code')
@@ -124,6 +130,28 @@ class SeminarRegistrationsTable
                     ->label(__('seminar.pdgi_branch'))
                     ->searchable()
                     ->sortable(),
+                TextColumn::make('seminar_price_idr')
+                    ->label(__('seminar.total_idr'))
+                    ->state(fn (): string => '')
+                    ->summarize(
+                        Sum::make('seminar_original_price')
+                            ->label(__('seminar.total_idr'))
+                            ->money('IDR')
+                            ->query(fn (Builder $query) => $query->where('seminars.currency', 'IDR'))
+                    )
+                    ->hidden()
+                    ->visible(fn (): bool => auth()->user()?->hasRole('Super Admin') ?? false),
+                TextColumn::make('seminar_price_usd')
+                    ->label(__('seminar.total_usd'))
+                    ->state(fn (): string => '')
+                    ->summarize(
+                        Sum::make('seminar_original_price')
+                            ->label(__('seminar.total_usd'))
+                            ->money('USD')
+                            ->query(fn (Builder $query) => $query->where('seminars.currency', 'USD'))
+                    )
+                    ->hidden()
+                    ->visible(fn (): bool => auth()->user()?->hasRole('Super Admin') ?? false),
             ])
             ->filters([
                 SelectFilter::make('payment_status')

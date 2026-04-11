@@ -163,8 +163,13 @@ return [
     'available' => 'Available',
     'limited_seats' => ':count seats left',
     'sold_out' => 'Sold Out',
+    'unavailable' => 'Unavailable',
     'seats_left' => 'seats left',
     'coming_soon' => 'Coming Soon',
+
+    // Summaries
+    'total_idr' => 'Total (IDR)',
+    'total_usd' => 'Total (USD)',
 
     // Pricing
     'save_amount' => 'Save :amount',
