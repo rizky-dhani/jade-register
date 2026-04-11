@@ -108,6 +108,11 @@ class SeminarRegistration extends Model
         return $this->hasMany(AddonRegistration::class);
     }
 
+    public function seminarPackage(): BelongsTo
+    {
+        return $this->belongsTo(Seminar::class, 'selected_seminar', 'code');
+    }
+
     public function canRegisterHandsOn(): bool
     {
         return $this->payment_status === 'verified';

@@ -23,7 +23,7 @@ class SeminarRegistrationsTable
     public static function configure(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(fn (Builder $query) => $query->with('country'))
+            ->modifyQueryUsing(fn (Builder $query) => $query->with(['country', 'seminarPackage']))
             ->defaultSort('registration_code', 'desc')
             ->columns([
                 TextColumn::make('registration_code')
@@ -78,6 +78,31 @@ class SeminarRegistrationsTable
                         default => 'gray',
                     })
                     ->searchable(),
+                TextColumn::make('selected_seminar')
+                    ->label(__('seminar.seminar_package'))
+                    ->state(function (SeminarRegistration $record): string {
+                        if (! $record->selected_seminar) {
+                            return '-';
+                        }
+
+                        $seminar = $record->seminarPackage;
+
+                        return $seminar && $seminar->exists ? "{$seminar->name} ({$seminar->label})" : $record->selected_seminar;
+                    })
+                    ->searchable(query: function (Builder $query, string $search): Builder {
+                        return $query->where(function (Builder $q) use ($search) {
+                            $q->whereHas('seminarPackage', function (Builder $sq) use ($search) {
+                                $sq->where('name', 'like', "%{$search}%")
+                                    ->orWhere('code', 'like', "%{$search}%");
+                            })
+                                ->orWhere('selected_seminar', 'like', "%{$search}%");
+                        });
+                    })
+                    ->sortable(query: function (Builder $query, bool $isAscending): Builder {
+                        return $query->leftJoin('seminars', 'seminar_registrations.selected_seminar', '=', 'seminars.code')
+                            ->orderBy('seminars.name', $isAscending ? 'asc' : 'desc')
+                            ->select('seminar_registrations.*');
+                    }),
                 TextColumn::make('payment_status')
                     ->label(__('seminar.payment_status'))
                     ->badge()
