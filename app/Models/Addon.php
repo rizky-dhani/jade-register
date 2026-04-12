@@ -21,6 +21,7 @@ class Addon extends Model
         'available_from',
         'available_until',
         'sort_order',
+        'disable_condition',
     ];
 
     protected $casts = [
@@ -30,6 +31,7 @@ class Addon extends Model
         'is_active' => 'boolean',
         'available_from' => 'date',
         'available_until' => 'date',
+        'disable_condition' => 'string',
     ];
 
     public function addonRegistrations(): HasMany
@@ -76,5 +78,20 @@ class Addon extends Model
     public function isFull(): bool
     {
         return $this->remaining_stock <= 0;
+    }
+
+    public function isDisabled(): bool
+    {
+        if (! $this->is_active) {
+            return true;
+        }
+
+        return match ($this->disable_condition) {
+            'never' => false,
+            'when_full' => $this->isFull(),
+            'when_date_passed' => $this->available_until && $this->available_until->isPast(),
+            'always' => true,
+            default => false,
+        };
     }
 }

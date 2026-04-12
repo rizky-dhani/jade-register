@@ -186,4 +186,12 @@ return [
     'notifications.attendance_updated_body' => 'The attendance record has been updated successfully.',
     'notifications.attendance_deleted_title' => 'Attendance Deleted',
     'notifications.attendance_deleted_body' => 'The attendance record has been deleted successfully.',
+
+    // Seminar Registration Notifications
+    'notifications.created_title' => 'Registration Created',
+    'notifications.created_body' => 'The seminar registration has been created successfully.',
+    'notifications.updated_title' => 'Registration Updated',
+    'notifications.updated_body' => 'The seminar registration has been updated successfully.',
+    'notifications.deleted_title' => 'Registration Deleted',
+    'notifications.deleted_body' => 'The seminar registration has been deleted successfully.',
 ];

@@ -186,4 +186,12 @@ return [
     'notifications.attendance_updated_body' => 'Data kehadiran berhasil diperbarui.',
     'notifications.attendance_deleted_title' => 'Kehadiran Dihapus',
     'notifications.attendance_deleted_body' => 'Data kehadiran berhasil dihapus.',
+
+    // Seminar Registration Notifications
+    'notifications.created_title' => 'Pendaftaran Dibuat',
+    'notifications.created_body' => 'Pendaftaran seminar berhasil dibuat.',
+    'notifications.updated_title' => 'Pendaftaran Diperbarui',
+    'notifications.updated_body' => 'Pendaftaran seminar berhasil diperbarui.',
+    'notifications.deleted_title' => 'Pendaftaran Dihapus',
+    'notifications.deleted_body' => 'Pendaftaran seminar berhasil dihapus.',
 ];

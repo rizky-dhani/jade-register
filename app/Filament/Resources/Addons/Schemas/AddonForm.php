@@ -76,6 +76,19 @@ class AddonForm
                             ->default(true)
                             ->columnSpanFull(),
 
+                        Select::make('disable_condition')
+                            ->label(__('filament.addons.disable_condition'))
+                            ->required()
+                            ->default('when_full')
+                            ->options([
+                                'never' => __('filament.addons.disable_condition_never'),
+                                'when_full' => __('filament.addons.disable_condition_when_full'),
+                                'when_date_passed' => __('filament.addons.disable_condition_when_date_passed'),
+                                'always' => __('filament.addons.disable_condition_always'),
+                            ])
+                            ->helperText(__('filament.addons.disable_condition_helper'))
+                            ->columnSpanFull(),
+
                         DatePicker::make('available_from')
                             ->label(__('filament.addons.available_from'))
                             ->native(false)

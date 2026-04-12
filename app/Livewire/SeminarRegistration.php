@@ -507,6 +507,7 @@ class SeminarRegistration extends Component
                     'formatted_price' => $addon->formatted_price,
                     'remaining_stock' => $addon->remaining_stock,
                     'is_full' => $addon->isFull(),
+                    'is_disabled' => $addon->isDisabled(),
                     'is_purchased' => $isPurchased,
                 ];
             })

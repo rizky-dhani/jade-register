@@ -425,19 +425,19 @@
                 <div class="space-y-3">
                     @foreach($availableAddons as $addon)
                     <label class="flex items-start p-4 rounded-lg border transition-colors
-                        {{ $addon['is_full'] ? 'bg-gray-50 border-gray-200 opacity-60 cursor-not-allowed' : 'bg-gray-50 border-gray-200 cursor-pointer hover:border-blue-400' }}">
+                        {{ $addon['is_disabled'] ? 'bg-gray-50 border-gray-200 opacity-60 cursor-not-allowed' : 'bg-gray-50 border-gray-200 cursor-pointer hover:border-blue-400' }}">
                         <input type="checkbox"
                             wire:model.live="selectedAddons.{{ $addon['code'] }}"
-                            {{ $addon['is_full'] ? 'disabled' : '' }}
+                            {{ $addon['is_disabled'] ? 'disabled' : '' }}
                             class="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-0.5">
                         <div class="ml-3 flex-1">
                             <div class="flex justify-between items-start">
                                 <div>
                                     <p class="font-medium text-gray-800">{{ $addon['name'] }}</p>
                                     <p class="text-sm text-gray-600">{{ $addon['description'] }}</p>
-                                    @if($addon['is_full'])
+                                    @if($addon['is_disabled'])
                                         <span class="inline-flex items-center px-2 py-0.5 mt-1 text-xs font-medium text-red-700 bg-red-100 rounded">
-                                            {{ __('seminar.sold_out') }}
+                                            {{ __('seminar.unavailable') }}
                                         </span>
                                     @endif
                                 </div>
