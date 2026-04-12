@@ -110,7 +110,7 @@ class SeminarRegistration extends Model
 
     public function seminarPackage(): BelongsTo
     {
-        return $this->belongsTo(Seminar::class, 'selected_seminar', 'code');
+        return $this->belongsTo(Seminar::class, 'selected_seminar', 'name');
     }
 
     public function canRegisterHandsOn(): bool

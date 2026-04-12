@@ -11,7 +11,6 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\FileUpload;
-use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
@@ -25,11 +24,7 @@ class SeminarRegistrationsTable
     {
         return $table
             ->modifyQueryUsing(fn (Builder $query) => $query
-                ->with(['country', 'seminarPackage'])
-                ->leftJoin('seminars', 'seminar_registrations.selected_seminar', '=', 'seminars.code')
-                ->select('seminar_registrations.*')
-                ->addSelect('seminars.original_price as seminar_original_price')
-                ->addSelect('seminars.currency as seminar_currency'))
+                ->with(['country', 'seminarPackage']))
             ->defaultSort('registration_code', 'desc')
             ->columns([
                 TextColumn::make('registration_code')
@@ -105,9 +100,9 @@ class SeminarRegistrationsTable
                         });
                     })
                     ->sortable(query: function (Builder $query, bool $isAscending): Builder {
-                        return $query->leftJoin('seminars', 'seminar_registrations.selected_seminar', '=', 'seminars.code')
-                            ->orderBy('seminars.name', $isAscending ? 'asc' : 'desc')
-                            ->select('seminar_registrations.*');
+                        return $query->whereHas('seminarPackage', function (Builder $sq) use ($isAscending) {
+                            $sq->orderBy('name', $isAscending ? 'asc' : 'desc');
+                        });
                     }),
                 TextColumn::make('payment_status')
                     ->label(__('seminar.payment_status'))
@@ -130,27 +125,21 @@ class SeminarRegistrationsTable
                     ->label(__('seminar.pdgi_branch'))
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('seminar_price_idr')
-                    ->label(__('seminar.total_idr'))
-                    ->state(fn (): string => '')
-                    ->summarize(
-                        Sum::make('seminar_original_price')
-                            ->label(__('seminar.total_idr'))
-                            ->money('IDR')
-                            ->query(fn (Builder $query) => $query->where('seminars.currency', 'IDR'))
-                    )
-                    ->hidden()
-                    ->visible(fn (): bool => auth()->user()?->hasRole('Super Admin') ?? false),
-                TextColumn::make('seminar_price_usd')
-                    ->label(__('seminar.total_usd'))
-                    ->state(fn (): string => '')
-                    ->summarize(
-                        Sum::make('seminar_original_price')
-                            ->label(__('seminar.total_usd'))
-                            ->money('USD')
-                            ->query(fn (Builder $query) => $query->where('seminars.currency', 'USD'))
-                    )
-                    ->hidden()
+                TextColumn::make('seminar_price')
+                    ->label(__('seminar.package_price'))
+                    ->state(function (SeminarRegistration $record): ?string {
+                        $seminar = $record->seminarPackage;
+                        if (! $seminar || ! $seminar->original_price) {
+                            return null;
+                        }
+
+                        $currency = $seminar->currency;
+                        if ($currency === 'USD') {
+                            return '$'.number_format($seminar->original_price, 2);
+                        }
+
+                        return 'Rp '.number_format($seminar->original_price, 0, ',', '.');
+                    })
                     ->visible(fn (): bool => auth()->user()?->hasRole('Super Admin') ?? false),
             ])
             ->filters([

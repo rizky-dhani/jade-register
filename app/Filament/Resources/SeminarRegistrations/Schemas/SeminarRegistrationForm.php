@@ -135,7 +135,7 @@ class SeminarRegistrationForm
                                 return Seminar::active()
                                     ->get()
                                     ->mapWithKeys(function (Seminar $seminar) {
-                                        return [$seminar->code => "{$seminar->name} - {$seminar->label} - {$seminar->formatted_current_price}"];
+                                        return [$seminar->name => "{$seminar->name} - {$seminar->label} - {$seminar->formatted_current_price}"];
                                     })
                                     ->toArray();
                             }),

@@ -31,6 +31,12 @@ return [
     'addons.available_until' => 'Tersedia Hingga',
     'addons.available_until_helper' => 'Opsional. Kosongkan jika tidak ada tanggal kedaluwarsa.',
     'addons.sort_order' => 'Urutan',
+    'addons.disable_condition' => 'Kondasi Nonaktif',
+    'addons.disable_condition_never' => 'Jangan pernah nonaktifkan (selalu tersedia)',
+    'addons.disable_condition_when_full' => 'Nonaktifkan saat penuh (habis)',
+    'addons.disable_condition_when_date_passed' => 'Nonaktifkan saat tanggal lewat',
+    'addons.disable_condition_always' => 'Selalu nonaktif (hanya manual)',
+    'addons.disable_condition_helper' => 'Pilih kapan add-on ini harus dinonaktifkan secara otomatis',
     'addons.registered' => 'Terdaftar',
     'addons.unlimited' => 'Tidak Terbatas',
     'addons.active_only' => 'Hanya Aktif',
@@ -125,6 +131,16 @@ return [
     // Seminar Registrations
     'seminar_registrations.nik' => 'NIK',
 
+    // Seminar Registration Form
+    'seminar_registration.form.name_str' => 'Nama sesuai STR (tanpa gelar)',
+    'seminar_registration.form.name_plataran' => 'Nama (Plataran Sehat)',
+    'seminar_registration.form.email_plataran' => 'Email sesuai Plataran Sehat',
+    'seminar_registration.form.whatsapp_number' => 'Nomor WhatsApp',
+    'seminar_registration.form.nik' => 'NIK',
+    'seminar_registration.form.pdgi_branch' => 'PDGI Cabang',
+    'seminar_registration.form.competency' => 'Kompetensi',
+    'seminar_registration.form.payment_proof_helper' => 'Unggah foto bukti pembayaran yang jelas. Format yang diterima: JPG, PNG, PDF. Ukuran maksimal: 5MB.',
+
     // Seminars
     'seminars.original_price' => 'Harga Asli',
     'seminars.discounted_price' => 'Harga Diskon',
@@ -164,4 +180,10 @@ return [
     'notifications.addon_updated_body' => 'Add-on berhasil diperbarui.',
     'notifications.addon_deleted_title' => 'Add-On Dihapus',
     'notifications.addon_deleted_body' => 'Add-on berhasil dihapus.',
+    'notifications.attendance_created_title' => 'Kehadiran Dibuat',
+    'notifications.attendance_created_body' => 'Data kehadiran berhasil dibuat.',
+    'notifications.attendance_updated_title' => 'Kehadiran Diperbarui',
+    'notifications.attendance_updated_body' => 'Data kehadiran berhasil diperbarui.',
+    'notifications.attendance_deleted_title' => 'Kehadiran Dihapus',
+    'notifications.attendance_deleted_body' => 'Data kehadiran berhasil dihapus.',
 ];

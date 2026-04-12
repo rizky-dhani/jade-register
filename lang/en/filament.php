@@ -31,6 +31,12 @@ return [
     'addons.available_until' => 'Available Until',
     'addons.available_until_helper' => 'Optional. Leave blank for no expiry date.',
     'addons.sort_order' => 'Sort Order',
+    'addons.disable_condition' => 'Disable Condition',
+    'addons.disable_condition_never' => 'Never disable (always available)',
+    'addons.disable_condition_when_full' => 'Disable when full (sold out)',
+    'addons.disable_condition_when_date_passed' => 'Disable when date passed',
+    'addons.disable_condition_always' => 'Always disabled (manual only)',
+    'addons.disable_condition_helper' => 'Choose when this add-on should be automatically disabled',
     'addons.registered' => 'Registered',
     'addons.unlimited' => 'Unlimited',
     'addons.active_only' => 'Active Only',
@@ -125,6 +131,16 @@ return [
     // Seminar Registrations
     'seminar_registrations.nik' => 'NIK',
 
+    // Seminar Registration Form
+    'seminar_registration.form.name_str' => 'Name as per STR (without title)',
+    'seminar_registration.form.name_plataran' => 'Name as per Plataran Sehat',
+    'seminar_registration.form.email_plataran' => 'Email as per Plataran Sehat',
+    'seminar_registration.form.whatsapp_number' => 'WhatsApp Number',
+    'seminar_registration.form.nik' => 'NIK',
+    'seminar_registration.form.pdgi_branch' => 'PDGI Branch',
+    'seminar_registration.form.competency' => 'Competency',
+    'seminar_registration.form.payment_proof_helper' => 'Upload a clear photo of your payment proof. Accepted formats: JPG, PNG, PDF. Max size: 5MB.',
+
     // Seminars
     'seminars.original_price' => 'Original Price',
     'seminars.discounted_price' => 'Discounted Price',
@@ -164,4 +180,10 @@ return [
     'notifications.addon_updated_body' => 'The add-on has been updated successfully.',
     'notifications.addon_deleted_title' => 'Add-On Deleted',
     'notifications.addon_deleted_body' => 'The add-on has been deleted successfully.',
+    'notifications.attendance_created_title' => 'Attendance Created',
+    'notifications.attendance_created_body' => 'The attendance record has been created successfully.',
+    'notifications.attendance_updated_title' => 'Attendance Updated',
+    'notifications.attendance_updated_body' => 'The attendance record has been updated successfully.',
+    'notifications.attendance_deleted_title' => 'Attendance Deleted',
+    'notifications.attendance_deleted_body' => 'The attendance record has been deleted successfully.',
 ];
