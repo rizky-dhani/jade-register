@@ -41,7 +41,7 @@ class Seminar extends Model
 
     public function seminarRegistrations(): HasMany
     {
-        return $this->hasMany(SeminarRegistration::class, 'selected_seminar', 'name');
+        return $this->hasMany(SeminarRegistration::class, 'seminar_id');
     }
 
     public function getFormattedPriceAttribute(): string

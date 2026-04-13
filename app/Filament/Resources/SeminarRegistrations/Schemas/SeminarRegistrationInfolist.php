@@ -78,7 +78,7 @@ class SeminarRegistrationInfolist
                 Section::make(__('seminar.registration_package'))
                     ->columnSpan(3)
                     ->schema([
-                        TextEntry::make('selected_seminar')
+                        TextEntry::make('selected_seminar_label')
                             ->label(__('seminar.selected_package')),
 
                         ViewEntry::make('seminar_package')

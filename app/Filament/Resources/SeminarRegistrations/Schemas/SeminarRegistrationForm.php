@@ -127,14 +127,14 @@ class SeminarRegistrationForm
 
                 Section::make(__('seminar.seminar_package'))
                     ->schema([
-                        Radio::make('selected_seminar')
+                        Radio::make('seminar_id')
                             ->label(__('seminar.select_seminar'))
                             ->required()
                             ->options(function (): array {
                                 return Seminar::active()
                                     ->get()
                                     ->mapWithKeys(function (Seminar $seminar) {
-                                        return [$seminar->name => "{$seminar->name} - {$seminar->label} - {$seminar->formatted_current_price}"];
+                                        return [$seminar->id => "{$seminar->name} - {$seminar->label} - {$seminar->formatted_current_price}"];
                                     })
                                     ->toArray();
                             }),

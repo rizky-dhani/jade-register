@@ -7,6 +7,7 @@ use App\Models\AddonRegistration;
 use App\Models\Country;
 use App\Models\HandsOn;
 use App\Models\HandsOnRegistration;
+use App\Models\Seminar;
 use App\Models\SeminarRegistration as SeminarRegistrationModel;
 use App\Services\QrTokenService;
 use App\Services\RegistrationService;
@@ -210,7 +211,7 @@ class SeminarRegistration extends Component
         $isLocal = $country->is_indonesia;
         $this->is_local = $isLocal;
 
-        $packages = \App\Models\Seminar::active()
+        $packages = Seminar::active()
             ->where(function ($query) use ($isLocal) {
                 $query->where('applies_to', $isLocal ? 'local' : 'international')
                     ->orWhere('applies_to', 'all');
@@ -276,7 +277,7 @@ class SeminarRegistration extends Component
             }
         }
 
-        $package = \App\Models\Seminar::where('code', $this->selected_seminar)->first();
+        $package = Seminar::where('code', $this->selected_seminar)->first();
 
         if (! $package) {
             $this->addError('selected_seminar', __('seminar.invalid_pricing_tier'));
@@ -301,6 +302,7 @@ class SeminarRegistration extends Component
             'language' => $language,
             'registration_type' => 'online',
             'selected_seminar' => $package->name,
+            'seminar_id' => $package->id,
             'payment_method' => $this->payment_method,
             'amount' => $package->current_price + $this->handsOnTotalPrice + $this->addonsTotalPrice,
             'currency' => $package->currency,
@@ -477,7 +479,7 @@ class SeminarRegistration extends Component
     // Add-On methods
     public function loadAvailableAddons(): void
     {
-        $selectedPackage = \App\Models\Seminar::where('code', $this->selected_seminar)->first();
+        $selectedPackage = Seminar::where('code', $this->selected_seminar)->first();
         $packageIncludesLunch = $selectedPackage?->includes_lunch ?? false;
 
         $query = Addon::active()
@@ -532,7 +534,7 @@ class SeminarRegistration extends Component
 
     public function getTotalAmount(): int
     {
-        $package = \App\Models\Seminar::where('code', $this->selected_seminar)->first();
+        $package = Seminar::where('code', $this->selected_seminar)->first();
         $seminarAmount = $package ? $package->current_price : 0;
 
         return $seminarAmount + $this->handsOnTotalPrice;

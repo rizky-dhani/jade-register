@@ -25,6 +25,7 @@ class SeminarRegistration extends Model
         'language',
         'registration_type',
         'selected_seminar',
+        'seminar_id',
         'payment_method',
         'amount',
         'currency',
@@ -111,7 +112,7 @@ class SeminarRegistration extends Model
 
     public function seminarPackage(): BelongsTo
     {
-        return $this->belongsTo(Seminar::class, 'selected_seminar', 'name');
+        return $this->belongsTo(Seminar::class, 'seminar_id');
     }
 
     public function canRegisterHandsOn(): bool
@@ -136,6 +137,12 @@ class SeminarRegistration extends Model
 
     public function getSelectedSeminarLabelAttribute(): string
     {
+        // Prefer the relationship if available
+        if ($this->seminarPackage && $this->seminarPackage->exists) {
+            return "{$this->seminarPackage->name} ({$this->seminarPackage->label})";
+        }
+
+        // Fall back to stored name for backward compatibility
         return $this->selected_seminar ?? 'N/A';
     }
 

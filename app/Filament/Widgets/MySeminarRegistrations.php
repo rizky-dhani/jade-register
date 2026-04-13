@@ -37,7 +37,7 @@ class MySeminarRegistrations extends TableWidget
                     ->label('Registration Code')
                     ->searchable()
                     ->copyable(),
-                TextColumn::make('selected_seminar')
+                TextColumn::make('selected_seminar_label')
                     ->label('Seminar Package')
                     ->searchable(),
                 TextColumn::make('country.name')

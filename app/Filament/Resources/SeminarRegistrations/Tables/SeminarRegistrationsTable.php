@@ -79,17 +79,8 @@ class SeminarRegistrationsTable
                         default => 'gray',
                     })
                     ->searchable(),
-                TextColumn::make('selected_seminar')
+                TextColumn::make('selected_seminar_label')
                     ->label(__('seminar.seminar_package'))
-                    ->state(function (SeminarRegistration $record): string {
-                        if (! $record->selected_seminar) {
-                            return '-';
-                        }
-
-                        $seminar = $record->seminarPackage;
-
-                        return $seminar && $seminar->exists ? "{$seminar->name} ({$seminar->label})" : $record->selected_seminar;
-                    })
                     ->searchable(query: function (Builder $query, string $search): Builder {
                         return $query->where(function (Builder $q) use ($search) {
                             $q->whereHas('seminarPackage', function (Builder $sq) use ($search) {
