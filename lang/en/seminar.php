@@ -61,6 +61,7 @@ return [
     'select_seminar' => 'Select Seminar',
     'participant_information' => 'Participant Information',
     'seminar_package' => 'Seminar Package',
+    'package_price' => 'Package Price',
     'name' => 'Name',
     'email' => 'Email',
     'status' => 'Status',

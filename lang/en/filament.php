@@ -144,6 +144,7 @@ return [
     // Seminars
     'seminars.original_price' => 'Original Price',
     'seminars.discounted_price' => 'Discounted Price',
+    'seminars.seminar_price' => 'Seminar Price',
     'seminars.discount_until' => 'Discount Until',
     'seminars.max_seats' => 'Max Seats',
     'seminars.lunch' => 'Lunch',

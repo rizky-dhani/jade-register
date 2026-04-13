@@ -28,9 +28,21 @@ class SeminarsTable
                     ->fontFamily('mono')
                     ->size('sm'),
 
+                IconColumn::make('is_early_bird')
+                    ->boolean()
+                    ->label(__('filament.seminars.early_bird')),
+
+                TextColumn::make('seminar_price')
+                    ->label(__('filament.seminars.seminar_price'))
+                    ->getStateUsing(fn ($record): string => $record->is_early_bird && $record->discounted_price
+                        ? $record->formatted_discounted_price
+                        : $record->formatted_original_price)
+                    ->sortable(),
+
                 TextColumn::make('formatted_original_price')
                     ->label(__('filament.seminars.original_price'))
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(),
 
                 TextColumn::make('formatted_discounted_price')
                     ->label(__('filament.seminars.discounted_price'))
@@ -51,10 +63,6 @@ class SeminarsTable
                 IconColumn::make('includes_lunch')
                     ->boolean()
                     ->label(__('filament.seminars.lunch')),
-
-                IconColumn::make('is_early_bird')
-                    ->boolean()
-                    ->label(__('filament.seminars.early_bird')),
 
                 TextColumn::make('applies_to')
                     ->label(__('filament.seminars.applies_to'))

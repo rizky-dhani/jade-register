@@ -61,6 +61,7 @@ return [
     'select_seminar' => 'Pilih Seminar',
     'participant_information' => 'Informasi Peserta',
     'seminar_package' => 'Paket Seminar',
+    'package_price' => 'Harga Paket',
     'name' => 'Nama',
     'email' => 'Email',
     'status' => 'Status',

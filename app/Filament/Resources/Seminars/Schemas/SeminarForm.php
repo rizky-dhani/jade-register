@@ -58,6 +58,11 @@ class SeminarForm
                             ->live()
                             ->helperText('Select which participant type this package applies to'),
 
+                        Toggle::make('is_early_bird')
+                            ->label(__('filament.seminars.early_bird'))
+                            ->default(false)
+                            ->helperText('Enable early bird pricing for this package'),
+
                         TextInput::make('original_price')
                             ->numeric()
                             ->integer()
@@ -103,11 +108,6 @@ class SeminarForm
                             ->label(__('filament.seminars.includes_lunch'))
                             ->default(false)
                             ->helperText('Check if this package includes lunch (not just snacks)'),
-
-                        Toggle::make('is_early_bird')
-                            ->label(__('filament.seminars.early_bird'))
-                            ->default(false)
-                            ->helperText('Check if this is an early bird promotional price'),
 
                         Toggle::make('is_active')
                             ->label(__('filament.seminars.active'))
