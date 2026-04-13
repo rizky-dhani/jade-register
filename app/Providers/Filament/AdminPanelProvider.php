@@ -80,13 +80,13 @@ class AdminPanelProvider extends PanelProvider
                     ->isActiveWhen(fn (): bool => request()->routeIs('filament.dashboard.resources.attendances.hands-on')),
             ])
             ->navigationGroups([
-                'Registrations',
-                'Competitions',
-                'Events',
                 'Attendance',
                 'Data',
-                'Settings',
                 'Reporting',
+                'Competitions',
+                'Registrations',
+                'Events',
+                'Settings',
             ])
             ->middleware([
                 EncryptCookies::class,
