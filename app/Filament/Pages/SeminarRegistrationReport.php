@@ -2,8 +2,8 @@
 
 namespace App\Filament\Pages;
 
-use App\Filament\Widgets\SeminarPackageChartWidget;
-use App\Filament\Widgets\SeminarPackageStatsWidget;
+use App\Filament\Resources\SeminarRegistrations\Widgets\SeminarPackageChartWidget;
+use App\Filament\Resources\SeminarRegistrations\Widgets\SeminarPackageStatsWidget;
 use Filament\Pages\Page;
 use Filament\Support\Icons\Heroicon;
 

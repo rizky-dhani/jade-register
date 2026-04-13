@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Widgets;
+namespace App\Filament\Resources\SeminarRegistrations\Widgets;
 
 use App\Models\SeminarRegistration;
 use Filament\Widgets\StatsOverviewWidget;
