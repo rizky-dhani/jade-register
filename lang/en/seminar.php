@@ -435,4 +435,13 @@ return [
     'poster_login_required_title' => 'Login Required',
     'poster_login_required_message' => 'Please login or register to submit your poster.',
     'poster_login_button' => 'Login',
+
+    // Report
+    'seminar_registration_report' => 'Seminar Registration Report',
+    'seminar_registration_description' => 'Overview of seminar registrations and package distribution',
+    'total_participants_description' => 'Total registered participants',
+    'verified_payments_description' => 'Payments verified',
+    'pending_payments_description' => 'Awaiting payment verification',
+    'total_revenue_description' => 'Total seminar package revenue',
+    'registered_participants' => 'Registered Participants',
 ];

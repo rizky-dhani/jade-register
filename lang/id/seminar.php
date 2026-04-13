@@ -434,4 +434,13 @@ return [
     'poster_login_required_title' => 'Login Diperlukan',
     'poster_login_required_message' => 'Silakan login atau daftar untuk mengumpulkan poster Anda.',
     'poster_login_button' => 'Login',
+
+    // Report
+    'seminar_registration_report' => 'Laporan Pendaftaran Seminar',
+    'seminar_registration_description' => 'Ringkasan pendaftaran seminar dan distribusi paket',
+    'total_participants_description' => 'Total peserta terdaftar',
+    'verified_payments_description' => 'Pembayaran terverifikasi',
+    'pending_payments_description' => 'Menunggu verifikasi pembayaran',
+    'total_revenue_description' => 'Total pendapatan paket seminar',
+    'registered_participants' => 'Peserta Terdaftar',
 ];
