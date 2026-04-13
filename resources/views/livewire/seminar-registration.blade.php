@@ -38,6 +38,48 @@
         <p class="text-gray-600 mt-2">{{ __('seminar.page_subtitle') }}</p>
     </div>
 
+    {{-- Flash Messages --}}
+    @if (session()->has('error'))
+    <div class="bg-red-50 border-2 border-red-200 rounded-lg p-4 mb-6">
+        <div class="flex items-start">
+            <svg class="w-5 h-5 text-red-600 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <p class="text-red-700 font-medium">{{ session('error') }}</p>
+        </div>
+    </div>
+    @endif
+
+    @if (session()->has('success'))
+    <div class="bg-green-50 border-2 border-green-200 rounded-lg p-4 mb-6">
+        <div class="flex items-start">
+            <svg class="w-5 h-5 text-green-600 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <p class="text-green-700 font-medium">{{ session('success') }}</p>
+        </div>
+    </div>
+    @endif
+
+    {{-- Seminar Full Banner (shown when full) --}}
+    @if(\App\Models\SeminarRegistration::isSeminarFull())
+    <div class="bg-green-50 border-2 border-red-200 rounded-lg p-6 text-center">
+        <svg class="w-16 h-16 text-red-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+        </svg>
+        <h1 class="text-2xl font-bold text-red-800 mb-2">{{ __('seminar.registration_closed') }}</h1>
+        <p class="text-red-700 mb-4">{{ __('seminar.seminar_is_full') }}</p>
+
+        @php
+            $registeredCount = \App\Models\SeminarRegistration::getTotalRegistrations();
+            $maxParticipants = \App\Models\Setting::get('max_participants', 0);
+        @endphp
+        <p class="text-gray-600 text-sm">
+            {{ __('seminar.total_registered', ['count' => $registeredCount, 'max' => $maxParticipants]) }}
+        </p>
+    </div>
+    @else
+        {{-- Registration Form (hidden when full) --}}
         <form wire:key="form-state" wire:submit="submit" class="space-y-6">
 
             {{-- Already Registered Check --}}
@@ -605,4 +647,5 @@
             </button>
             @endif
         </form>
+    @endif
 </div>

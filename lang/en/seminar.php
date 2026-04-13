@@ -447,4 +447,11 @@ return [
     'registered_participants' => 'Registered Participants',
     'seminar_package_statistics' => 'Seminar Package Statistics',
     'participants_per_package' => 'Participants per Seminar Package',
+
+    // Seminar Full Banner
+    'registration_closed' => 'Registration Temporarily Closed',
+    'seminar_is_full' => 'We have reached our current maximum capacity. Registration may reopen if more spots become available. Please check back later!',
+    'seminar_just_filled' => 'The seminar just reached its current capacity. Registration may reopen if more spots become available.',
+    'spots_remaining' => ':count spots remaining - register now!',
+    'total_registered' => ':count / :max participants registered',
 ];

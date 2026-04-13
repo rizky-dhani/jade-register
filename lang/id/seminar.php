@@ -446,4 +446,11 @@ return [
     'registered_participants' => 'Peserta Terdaftar',
     'seminar_package_statistics' => 'Statistik Paket Seminar',
     'participants_per_package' => 'Peserta per Paket Seminar',
+
+    // Seminar Full Banner
+    'registration_closed' => 'Pendaftaran Sementara Ditutup',
+    'seminar_is_full' => 'Kami telah mencapai kapasitas maksimum saat ini. Pendaftaran dapat dibuka kembali jika tersedia lebih banyak tempat. Silakan periksa kembali nanti!',
+    'seminar_just_filled' => 'Seminar baru saja mencapai kapasitas saat ini. Pendaftaran dapat dibuka kembali jika tersedia lebih banyak tempat.',
+    'spots_remaining' => 'Tersisa :count tempat - segera daftar!',
+    'total_registered' => ':count / :max peserta terdaftar',
 ];

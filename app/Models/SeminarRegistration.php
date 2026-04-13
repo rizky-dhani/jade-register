@@ -159,4 +159,46 @@ class SeminarRegistration extends Model
     {
         return ucfirst($this->registration_type ?? 'Online');
     }
+
+    public static function getTotalRegistrations(): int
+    {
+        return self::whereIn('payment_status', ['pending', 'verified'])->count();
+    }
+
+    public static function isSeminarFull(): bool
+    {
+        $maxParticipants = Setting::get('max_participants', PHP_INT_MAX);
+
+        return self::getTotalRegistrations() >= $maxParticipants;
+    }
+
+    public static function getRemainingSpots(): int
+    {
+        $maxParticipants = Setting::get('max_participants', PHP_INT_MAX);
+
+        return max(0, $maxParticipants - self::getTotalRegistrations());
+    }
+
+    /**
+     * Check if seminar is full with pessimistic locking.
+     * This should be called INSIDE a database transaction to prevent race conditions.
+     */
+    public static function checkCapacityAndReserve(): bool
+    {
+        // The settings row lock is the ONLY mutex — this is sufficient
+        $setting = Setting::where('key', 'max_participants')
+            ->lockForUpdate()
+            ->first();
+
+        if (! $setting) {
+            return true; // No limit configured
+        }
+
+        $maxParticipants = (int) $setting->value;
+
+        // Plain count — no lockForUpdate needed here
+        $currentCount = self::whereIn('payment_status', ['pending', 'verified'])->count();
+
+        return $currentCount < $maxParticipants;
+    }
 }

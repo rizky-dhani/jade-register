@@ -211,6 +211,9 @@ class SeminarRegistration extends Component
         $isLocal = $country->is_indonesia;
         $this->is_local = $isLocal;
 
+        // Check if seminar is globally full
+        $isSeminarFull = SeminarRegistrationModel::isSeminarFull();
+
         $packages = Seminar::active()
             ->where(function ($query) use ($isLocal) {
                 $query->where('applies_to', $isLocal ? 'local' : 'international')
@@ -219,7 +222,7 @@ class SeminarRegistration extends Component
             ->orderBy('sort_order')
             ->get();
 
-        return $packages->map(function ($package) {
+        return $packages->map(function ($package) use ($isSeminarFull) {
             return [
                 'value' => $package->code,
                 'label' => $package->name,
@@ -230,7 +233,7 @@ class SeminarRegistration extends Component
                 'is_early_bird' => $package->isEarlyBirdActive(),
                 'savings' => $package->formatted_savings,
                 'remaining_stock' => $package->remaining_stock,
-                'is_full' => $package->isFull(),
+                'is_full' => $isSeminarFull || $package->isFull(),
             ];
         })->toArray();
     }
@@ -239,6 +242,14 @@ class SeminarRegistration extends Component
     {
         // Prevent duplicate submissions
         if ($this->isSubmitting) {
+            return;
+        }
+
+        // Initial check (outside transaction) - quick fail if already full
+        if (SeminarRegistrationModel::isSeminarFull()) {
+            session()->flash('error', __('seminar.seminar_just_filled'));
+            $this->redirectRoute('register.seminar', ['locale' => $this->locale], navigate: true);
+
             return;
         }
 
@@ -327,6 +338,12 @@ class SeminarRegistration extends Component
 
         try {
             $registration = DB::transaction(function () use ($registrationData, $path) {
+                // CRITICAL: Check capacity with pessimistic locking INSIDE transaction
+                // This prevents race conditions when multiple users submit simultaneously
+                if (! SeminarRegistrationModel::checkCapacityAndReserve()) {
+                    throw new \Exception(__('seminar.seminar_just_filled'));
+                }
+
                 $reg = SeminarRegistrationModel::create($registrationData);
 
                 // Create Hands On registrations
@@ -365,9 +382,24 @@ class SeminarRegistration extends Component
 
                 return $reg;
             });
-        } catch (QueryException $e) {
+        } catch (\Exception $e) {
+            // Log the exception for debugging
+            \Log::error('Seminar registration failed', [
+                'error' => $e->getMessage(),
+                'email' => $this->email,
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            // Handle capacity check exception
+            if ($e->getMessage() === __('seminar.seminar_just_filled')) {
+                session()->flash('error', __('seminar.seminar_just_filled'));
+                $this->redirectRoute('register.seminar', ['locale' => $this->locale], navigate: true);
+
+                return;
+            }
+
             // Handle duplicate entry error (MySQL error code 1062)
-            if ($e->getCode() === '23000') {
+            if ($e instanceof QueryException && $e->getCode() === '23000') {
                 $existingRegistration = SeminarRegistrationModel::whereRaw('LOWER(email) = ?', [strtolower($this->email)])->first();
                 if ($existingRegistration) {
                     $this->addError('email', __('seminar.email_already_registered'));
@@ -419,6 +451,13 @@ class SeminarRegistration extends Component
 
     public function loadAvailableHandsOn(): void
     {
+        // If seminar is full, don't load hands-on
+        if (SeminarRegistrationModel::isSeminarFull()) {
+            $this->availableHandsOn = [];
+
+            return;
+        }
+
         $events = HandsOn::where('is_active', true)
             ->whereIn('event_date', ['2026-11-13', '2026-11-14', '2026-11-15'])
             ->orderBy('event_date')
@@ -482,12 +521,20 @@ class SeminarRegistration extends Component
         $selectedPackage = Seminar::where('code', $this->selected_seminar)->first();
         $packageIncludesLunch = $selectedPackage?->includes_lunch ?? false;
 
+        // Check if seminar is globally full
+        $isSeminarFull = SeminarRegistrationModel::isSeminarFull();
+
         $query = Addon::active()
             ->available()
             ->orderBy('sort_order');
 
         $this->availableAddons = $query->get()
-            ->map(function ($addon) use ($packageIncludesLunch) {
+            ->map(function ($addon) use ($packageIncludesLunch, $isSeminarFull) {
+                // Skip if seminar is full
+                if ($isSeminarFull) {
+                    return null;
+                }
+
                 // Skip lunch addon if package already includes lunch
                 if ($packageIncludesLunch && $addon->code === 'LUNCH_ADDON') {
                     return null;

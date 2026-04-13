@@ -202,4 +202,29 @@ return [
     'notifications.seminar_updated_body' => 'Seminar berhasil diperbarui.',
     'notifications.seminar_deleted_title' => 'Seminar Dihapus',
     'notifications.seminar_deleted_body' => 'Seminar berhasil dihapus.',
+
+    // Setting Notifications
+    'notifications.setting_created_title' => 'Pengaturan Dibuat',
+    'notifications.setting_created_body' => 'Pengaturan berhasil dibuat.',
+    'notifications.setting_updated_title' => 'Pengaturan Diperbarui',
+    'notifications.setting_updated_body' => 'Pengaturan berhasil diperbarui.',
+    'notifications.setting_deleted_title' => 'Pengaturan Dihapus',
+    'notifications.setting_deleted_body' => 'Pengaturan berhasil dihapus.',
+
+    // Settings Form Labels
+    'settings.form.key' => 'Kunci Pengaturan',
+    'settings.form.key_helper' => 'Pengenal unik untuk pengaturan ini (misalnya, max_participants)',
+    'settings.form.value' => 'Nilai',
+    'settings.form.type' => 'Tipe Data',
+    'settings.form.type_helper' => 'Tipe menentukan bagaimana nilai akan diparsed saat diambil',
+    'settings.form.description' => 'Deskripsi',
+    'settings.form.description_helper' => 'Deskripsi opsional untuk menjelaskan fungsi pengaturan ini',
+
+    // Settings Table Columns
+    'settings.table.key' => 'Kunci',
+    'settings.table.value' => 'Nilai',
+    'settings.table.type' => 'Tipe',
+    'settings.table.description' => 'Deskripsi',
+    'settings.table.created_at' => 'Dibuat Pada',
+    'settings.table.updated_at' => 'Diperbarui Pada',
 ];

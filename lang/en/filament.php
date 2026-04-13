@@ -203,4 +203,29 @@ return [
     'notifications.seminar_updated_body' => 'The seminar has been updated successfully.',
     'notifications.seminar_deleted_title' => 'Seminar Deleted',
     'notifications.seminar_deleted_body' => 'The seminar has been deleted successfully.',
+
+    // Setting Notifications
+    'notifications.setting_created_title' => 'Setting Created',
+    'notifications.setting_created_body' => 'The setting has been created successfully.',
+    'notifications.setting_updated_title' => 'Setting Updated',
+    'notifications.setting_updated_body' => 'The setting has been updated successfully.',
+    'notifications.setting_deleted_title' => 'Setting Deleted',
+    'notifications.setting_deleted_body' => 'The setting has been deleted successfully.',
+
+    // Settings Form Labels
+    'settings.form.key' => 'Setting Key',
+    'settings.form.key_helper' => 'Unique identifier for this setting (e.g., max_participants)',
+    'settings.form.value' => 'Value',
+    'settings.form.type' => 'Data Type',
+    'settings.form.type_helper' => 'The type determines how the value will be parsed when retrieved',
+    'settings.form.description' => 'Description',
+    'settings.form.description_helper' => 'Optional description to explain what this setting does',
+
+    // Settings Table Columns
+    'settings.table.key' => 'Key',
+    'settings.table.value' => 'Value',
+    'settings.table.type' => 'Type',
+    'settings.table.description' => 'Description',
+    'settings.table.created_at' => 'Created At',
+    'settings.table.updated_at' => 'Updated At',
 ];
