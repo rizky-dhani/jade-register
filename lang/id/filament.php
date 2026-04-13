@@ -194,4 +194,12 @@ return [
     'notifications.updated_body' => 'Pendaftaran seminar berhasil diperbarui.',
     'notifications.deleted_title' => 'Pendaftaran Dihapus',
     'notifications.deleted_body' => 'Pendaftaran seminar berhasil dihapus.',
+
+    // Seminar Notifications
+    'notifications.seminar_created_title' => 'Seminar Dibuat',
+    'notifications.seminar_created_body' => 'Seminar berhasil dibuat.',
+    'notifications.seminar_updated_title' => 'Seminar Diperbarui',
+    'notifications.seminar_updated_body' => 'Seminar berhasil diperbarui.',
+    'notifications.seminar_deleted_title' => 'Seminar Dihapus',
+    'notifications.seminar_deleted_body' => 'Seminar berhasil dihapus.',
 ];

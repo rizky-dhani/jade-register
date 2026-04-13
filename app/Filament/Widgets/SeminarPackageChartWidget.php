@@ -18,7 +18,7 @@ class SeminarPackageChartWidget extends ChartWidget
 
     public static function canView(): bool
     {
-        return auth()->user()?->hasAnyRole(['Super Admin', 'Admin']) ?? false;
+        return auth()->user()?->hasRole('Super Admin') ?? false;
     }
 
     protected function getData(): array

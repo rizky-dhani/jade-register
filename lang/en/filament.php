@@ -195,4 +195,12 @@ return [
     'notifications.updated_body' => 'The seminar registration has been updated successfully.',
     'notifications.deleted_title' => 'Registration Deleted',
     'notifications.deleted_body' => 'The seminar registration has been deleted successfully.',
+
+    // Seminar Notifications
+    'notifications.seminar_created_title' => 'Seminar Created',
+    'notifications.seminar_created_body' => 'The seminar has been created successfully.',
+    'notifications.seminar_updated_title' => 'Seminar Updated',
+    'notifications.seminar_updated_body' => 'The seminar has been updated successfully.',
+    'notifications.seminar_deleted_title' => 'Seminar Deleted',
+    'notifications.seminar_deleted_body' => 'The seminar has been deleted successfully.',
 ];
