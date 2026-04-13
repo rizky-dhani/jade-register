@@ -167,6 +167,7 @@ return [
     'unavailable' => 'Unavailable',
     'seats_left' => 'seats left',
     'coming_soon' => 'Coming Soon',
+    'includes_lunch' => 'Includes Lunch',
 
     // Summaries
     'total_idr' => 'Total (IDR)',

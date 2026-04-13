@@ -234,6 +234,7 @@ class SeminarRegistration extends Component
                 'savings' => $package->formatted_savings,
                 'remaining_stock' => $package->remaining_stock,
                 'is_full' => $isSeminarFull || $package->isFull(),
+                'includes_lunch' => $package->includes_lunch,
             ];
         })->toArray();
     }

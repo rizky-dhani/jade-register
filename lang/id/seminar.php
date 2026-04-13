@@ -167,6 +167,7 @@ return [
     'unavailable' => 'Tidak Tersedia',
     'seats_left' => 'kursi tersisa',
     'coming_soon' => 'Segera Hadir',
+    'includes_lunch' => 'Termasuk Makan Siang',
 
     // Summaries
     'total_idr' => 'Total (IDR)',
