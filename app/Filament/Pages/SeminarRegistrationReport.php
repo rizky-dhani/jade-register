@@ -9,7 +9,7 @@ use Filament\Support\Icons\Heroicon;
 
 class SeminarRegistrationReport extends Page
 {
-    protected static \UnitEnum|string|null $navigationGroup = 'Registrations';
+    protected static \UnitEnum|string|null $navigationGroup = 'Reporting';
 
     protected static \BackedEnum|string|null $navigationIcon = Heroicon::OutlinedChartBarSquare;
 
