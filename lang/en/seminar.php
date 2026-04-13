@@ -175,6 +175,13 @@ return [
     // Pricing
     'save_amount' => 'Save :amount',
     'day_number' => 'Day :day',
+    'early_bird' => 'Early Bird',
+    'early_bird_price' => 'Early Bird Price',
+    'early_bird_active' => 'Early Bird Pricing Active',
+    'early_bird_savings' => 'You Saved',
+    'original_price' => 'Original Price',
+    'amount_paid' => 'Amount Paid',
+    'package_price_breakdown' => 'Package Price Breakdown',
 
     // Email verification
     'email_verify_hello' => 'Hello',

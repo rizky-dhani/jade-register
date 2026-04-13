@@ -175,6 +175,13 @@ return [
     // Pricing
     'save_amount' => 'Hemat :amount',
     'day_number' => 'Hari :day',
+    'early_bird' => 'Early Bird',
+    'early_bird_price' => 'Harga Early Bird',
+    'early_bird_active' => 'Harga Early Bird Aktif',
+    'early_bird_savings' => 'Hemat',
+    'original_price' => 'Harga Asli',
+    'amount_paid' => 'Jumlah Dibayar',
+    'package_price_breakdown' => 'Rincian Harga Paket',
 
     // Email verification
     'email_verify_hello' => 'Halo',

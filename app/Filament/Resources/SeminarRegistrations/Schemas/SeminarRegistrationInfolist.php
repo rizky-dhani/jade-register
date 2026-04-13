@@ -81,6 +81,11 @@ class SeminarRegistrationInfolist
                         TextEntry::make('selected_seminar')
                             ->label(__('seminar.selected_package')),
 
+                        ViewEntry::make('seminar_package')
+                            ->label(__('seminar.package_price_breakdown'))
+                            ->view('filament.infolists.seminar-price-breakdown')
+                            ->visible(fn (SeminarRegistration $record): bool => $record->seminarPackage !== null),
+
                         TextEntry::make('amount')
                             ->label(__('seminar.amount'))
                             ->money('IDR'),

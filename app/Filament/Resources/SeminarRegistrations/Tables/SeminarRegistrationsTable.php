@@ -129,17 +129,25 @@ class SeminarRegistrationsTable
                     ->label(__('seminar.package_price'))
                     ->state(function (SeminarRegistration $record): ?string {
                         $seminar = $record->seminarPackage;
-                        if (! $seminar || ! $seminar->original_price) {
+                        if (! $seminar) {
                             return null;
                         }
 
-                        $currency = $seminar->currency;
-                        if ($currency === 'USD') {
-                            return '$'.number_format($seminar->original_price, 2);
+                        // Check if early bird was active at the time of registration
+                        $wasEarlyBirdActive = $seminar->early_bird_deadline !== null
+                            && $record->created_at < $seminar->early_bird_deadline;
+
+                        if ($wasEarlyBirdActive && $seminar->discounted_price) {
+                            return "{$seminar->formatted_discounted_price} (Early Bird)";
                         }
 
-                        return 'Rp '.number_format($seminar->original_price, 0, ',', '.');
+                        return $seminar->formatted_original_price;
                     })
+                    ->badge()
+                    ->color(fn (SeminarRegistration $record): string => $record->seminarPackage?->early_bird_deadline !== null
+                        && $record->created_at < $record->seminarPackage->early_bird_deadline
+                        ? 'success'
+                        : 'gray')
                     ->visible(fn (): bool => auth()->user()?->hasRole('Super Admin') ?? false),
             ])
             ->filters([
