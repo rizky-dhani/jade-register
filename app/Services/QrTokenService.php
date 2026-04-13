@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\SeminarRegistration;
+use Carbon\Carbon;
 use Illuminate\Support\Str;
 
 class QrTokenService
@@ -35,16 +36,16 @@ class QrTokenService
         return $registration->qr_expires_at && $registration->qr_expires_at->isPast();
     }
 
-    public function calculateExpiration(SeminarRegistration $registration): \Carbon\Carbon
+    public function calculateExpiration(SeminarRegistration $registration): Carbon
     {
         $lastEventDate = $this->getLastEventDate($registration);
 
         return $lastEventDate->addDay()->endOfDay();
     }
 
-    private function getLastEventDate(SeminarRegistration $registration): \Carbon\Carbon
+    private function getLastEventDate(SeminarRegistration $registration): Carbon
     {
-        $eventEndDate = \Carbon\Carbon::create(2026, 11, 15);
+        $eventEndDate = Carbon::create(2026, 11, 15);
 
         $handsOnDates = $registration->handsOnRegistrations()
             ->where('payment_status', 'verified')
@@ -52,7 +53,7 @@ class QrTokenService
             ->get()
             ->pluck('handsOn.event_date')
             ->filter()
-            ->map(fn ($date) => \Carbon\Carbon::parse($date));
+            ->map(fn ($date) => Carbon::parse($date));
 
         if ($handsOnDates->isNotEmpty()) {
             return $handsOnDates->max();

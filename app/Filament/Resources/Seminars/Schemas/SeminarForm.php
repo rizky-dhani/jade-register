@@ -7,7 +7,9 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Str;
 
 class SeminarForm
 {
@@ -22,10 +24,10 @@ class SeminarForm
                             ->maxLength(255)
                             ->placeholder('e.g., Early Bird - Snack + Lunch')
                             ->live(onBlur: true)
-                            ->afterStateUpdated(function (string $state, callable $set, \Filament\Schemas\Components\Utilities\Get $get) {
+                            ->afterStateUpdated(function (string $state, callable $set, Get $get) {
                                 // Only auto-generate code if record doesn't exist yet (create page)
                                 if ($get('id') === null) {
-                                    $set('code', \Illuminate\Support\Str::slug($state, '_'));
+                                    $set('code', Str::slug($state, '_'));
                                 }
                             }),
 
@@ -35,7 +37,7 @@ class SeminarForm
                             ->unique(ignoreRecord: true)
                             ->placeholder('e.g., local_early_bird_lunch')
                             ->helperText('Auto-generated from package name on create. Editable on edit page.')
-                            ->readOnly(fn (\Filament\Schemas\Components\Utilities\Get $get): bool => $get('id') === null),
+                            ->readOnly(fn (Get $get): bool => $get('id') === null),
 
                         Textarea::make('description')
                             ->rows(3)
@@ -94,7 +96,7 @@ class SeminarForm
 
                         Select::make('currency')
                             ->required()
-                            ->default(fn (\Filament\Schemas\Components\Utilities\Get $get): string => $get('applies_to') === 'local' ? 'IDR' : 'USD')
+                            ->default(fn (Get $get): string => $get('applies_to') === 'local' ? 'IDR' : 'USD')
                             ->options([
                                 'IDR' => 'IDR - Indonesian Rupiah',
                                 'USD' => 'USD - US Dollar',

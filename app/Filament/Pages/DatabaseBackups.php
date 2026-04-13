@@ -7,12 +7,14 @@ use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Concerns\InteractsWithTable;
+use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\File;
 
-class DatabaseBackups extends Page implements \Filament\Tables\Contracts\HasTable
+class DatabaseBackups extends Page implements HasTable
 {
-    use \Filament\Tables\Concerns\InteractsWithTable;
+    use InteractsWithTable;
 
     protected static \BackedEnum|string|null $navigationIcon = 'heroicon-o-circle-stack';
 
