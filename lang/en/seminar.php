@@ -438,6 +438,7 @@ return [
 
     // Report
     'seminar_registration_report' => 'Seminar Registration Report',
+    'seminar_registration_navigation' => 'Seminar Registration',
     'seminar_registration_description' => 'Overview of seminar registrations and package distribution',
     'total_participants_description' => 'Total registered participants',
     'verified_payments_description' => 'Payments verified',

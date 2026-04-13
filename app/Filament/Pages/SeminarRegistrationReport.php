@@ -13,11 +13,16 @@ class SeminarRegistrationReport extends Page
 
     protected static \BackedEnum|string|null $navigationIcon = Heroicon::OutlinedChartBarSquare;
 
-    protected static ?string $navigationLabel = 'Seminar Registration Report';
+    protected static ?string $navigationLabel = '';
 
     protected static ?int $navigationSort = 10;
 
     protected string $view = 'filament.pages.seminar-registration-report';
+
+    public static function getNavigationLabel(): string
+    {
+        return __('seminar.seminar_registration_navigation');
+    }
 
     public static function canAccess(): bool
     {

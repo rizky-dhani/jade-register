@@ -437,6 +437,7 @@ return [
 
     // Report
     'seminar_registration_report' => 'Laporan Pendaftaran Seminar',
+    'seminar_registration_navigation' => 'Pendaftaran Seminar',
     'seminar_registration_description' => 'Ringkasan pendaftaran seminar dan distribusi paket',
     'total_participants_description' => 'Total peserta terdaftar',
     'verified_payments_description' => 'Pembayaran terverifikasi',
