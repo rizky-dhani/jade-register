@@ -60,7 +60,6 @@ class SeminarRegistrationForm
                             ->label(__('filament.seminar_registration.form.nik'))
                             ->required()
                             ->maxLength(16)
-                            ->numeric()
                             ->autocomplete('off')
                             ->helperText(__('seminar.nik_helper')),
                         TextInput::make('pdgi_branch')

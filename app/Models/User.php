@@ -55,6 +55,7 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     protected function casts(): array
     {
         return [
+            'nik' => 'string',
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];

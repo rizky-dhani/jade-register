@@ -45,14 +45,14 @@
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <h2 class="text-xl font-semibold text-gray-800 mb-4">{{ __('seminar.already_registered') }}</h2>
                 <p class="text-gray-600 mb-4">{{ __('seminar.already_registered_help') }}</p>
-                
+
                 <div class="grid grid-cols-2 gap-4">
                     <button type="button" wire:click="$set('is_already_registered', 'no')"
                         class="w-full px-6 py-3 border-2 rounded-lg font-medium transition-colors
                         {{ $is_already_registered === 'no' ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-gray-300 hover:border-gray-400' }}">
                         {{ __('seminar.no') }}
                     </button>
-                    <button type="button" wire:click="$set('is_already_registered', 'yes')" 
+                    <button type="button" wire:click="$set('is_already_registered', 'yes')"
                         class="w-full px-6 py-3 border-2 rounded-lg font-medium transition-colors
                         {{ $is_already_registered === 'yes' ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-gray-300 hover:border-gray-400' }}">
                         {{ __('seminar.yes') }}
@@ -101,7 +101,7 @@
             @if($existingRegistration)
             <div class="bg-green-50 border border-green-200 rounded-lg p-6">
                 <h2 class="text-xl font-semibold text-green-800 mb-4">{{ __('seminar.registration_found') }}</h2>
-                
+
                 {{-- Registration Details --}}
                 <div class="space-y-2 mb-6 bg-white rounded-lg p-4 border border-green-200">
                     <p><strong>{{ __('seminar.name_plataran') }}:</strong> {{ $existingRegistration->name_license }}</p>
@@ -160,7 +160,7 @@
                     <div class="bg-white rounded-lg p-4 border border-green-200">
                         <h3 class="text-lg font-semibold text-gray-800 mb-2">{{ __('seminar.select_hands_on') }}</h3>
                         <p class="text-gray-600 mb-4 text-sm">{{ __('seminar.hands_on_separate_payment') }}</p>
-                        
+
                         @include('livewire.partials.hands-on-selection', ['isSeparate' => true])
                     </div>
                 @else
@@ -173,13 +173,13 @@
             @if($is_already_registered === 'no')
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <h2 class="text-xl font-semibold text-gray-800 mb-4">{{ __('seminar.personal_information') }}</h2>
-                
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="md:col-span-2">
                         <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('seminar.country') }} *</label>
                         {{-- Searchable Country Dropdown --}}
                         <div class="relative" @click.away="countryOpen = false">
-                            <button type="button" @click="countryOpen = !countryOpen; if (countryOpen) $nextTick(() => $refs.countrySearch.focus())" 
+                            <button type="button" @click="countryOpen = !countryOpen; if (countryOpen) $nextTick(() => $refs.countrySearch.focus())"
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg text-left bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 flex justify-between items-center">
                                 <span>
                                     {{ $country_id ? $countries->firstWhere('id', $country_id)->name : __('seminar.select_country') }}
@@ -188,8 +188,8 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                                 </svg>
                             </button>
-                            
-                            <div x-show="countryOpen" x-cloak 
+
+                            <div x-show="countryOpen" x-cloak
                                 class="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-80 overflow-y-auto">
                                 <div class="p-2 border-b border-gray-200">
                                     <input type="text" x-model="countrySearch" x-ref="countrySearch"
@@ -199,7 +199,7 @@
                                 </div>
                                 <div class="max-h-60 overflow-y-auto">
                                     @foreach($countries as $country)
-                                        <button type="button" 
+                                        <button type="button"
                                             x-show="!countrySearch || '{{ strtolower($country->name) }}'.includes(countrySearch.toLowerCase())"
                                             wire:click="$set('country_id', {{ $country->id }}); countryOpen = false; countrySearch = ''"
                                             class="w-full px-4 py-2 text-left hover:bg-gray-100 {{ $country_id === $country->id ? 'bg-blue-50 text-blue-700' : '' }}">
@@ -217,7 +217,7 @@
             @if($country_id && $isIndonesia)
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <h2 class="text-xl font-semibold text-gray-800 mb-4">{{ __('seminar.local_participant') }}</h2>
-                
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {{-- Name STR field - hidden but still rendered for data binding --}}
                     <div class="hidden">
@@ -246,7 +246,7 @@
 
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('seminar.nik') }} *</label>
-                        <input type="tel" wire:model="nik" inputmode="numeric" maxlength="16" pattern="[0-9]{16}"
+                        <input type="text" wire:model="nik" inputmode="numeric" maxlength="16" pattern="[0-9]{16}"
                             x-on:input="$event.target.value = $event.target.value.replace(/[^0-9]/g, '')"
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                         <p class="text-xs text-gray-500 mt-1">{{ __('seminar.nik_helper') }}</p>
@@ -284,7 +284,7 @@
             @elseif($country_id && !$isIndonesia)
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <h2 class="text-xl font-semibold text-gray-800 mb-4">{{ __('seminar.international_participant') }}</h2>
-                
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('seminar.name') }} *</label>
@@ -303,7 +303,7 @@
                         <input type="tel" wire:model="phone" wire:key="whatsapp-intl" autocomplete="tel" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="+1234567890">
                         @error('phone') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
                     </div>
-                    
+
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('seminar.status') }} *</label>
                         <select wire:model="status" wire:key="status-intl" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
@@ -339,7 +339,7 @@
                     @php
                     $tiers = $availableTiers ?? [];
                     @endphp
-                    
+
                     @if(count($tiers) === 0)
                         <p class="text-gray-500 text-sm">{{ __('seminar.select_country_first') }}</p>
                     @else
@@ -353,7 +353,7 @@
                                 >
                                     <div class="flex-1">
                                         <div class="font-medium text-gray-800">{{ $tier['label'] }}</div>
-                                        
+
                                         {{-- Stock indicator --}}
                                         @if($tier['is_full'])
                                             <span class="inline-flex items-center px-2 py-1 mt-1 text-xs font-medium text-red-700 bg-red-100 rounded">
@@ -369,7 +369,7 @@
                                             </span>
                                         @endif
                                     </div>
-                                    
+
                                     <div class="text-right ml-4">
                                         {{-- Pricing with slash format --}}
                                         @if($tier['is_early_bird'] && $tier['discounted_price'])
@@ -396,21 +396,21 @@
             {{-- Hands On Section --}}
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <h2 class="text-xl font-semibold text-gray-800 mb-4">{{ __('seminar.hands_on_sessions') }}</h2>
-                
+
                 <div class="flex items-start mb-4">
-                    <input type="checkbox" wire:model.live="wants_hands_on" id="wants_hands_on" 
+                    <input type="checkbox" wire:model.live="wants_hands_on" id="wants_hands_on"
                         class="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-0.5">
                     <label for="wants_hands_on" class="ml-2 text-sm text-gray-700">
                         {{ __('seminar.want_to_join_hands_on') }}
                     </label>
                 </div>
-                
+
                 @if($wants_hands_on)
                     <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
                         <p class="text-sm text-blue-700 mb-4">
                             {{ __('seminar.hands_on_description') }}
                         </p>
-                        
+
                         @include('livewire.partials.hands-on-selection', ['isSeparate' => false])
                     </div>
                 @endif
@@ -463,7 +463,7 @@
 
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <h2 class="text-xl font-semibold text-gray-800 mb-4">{{ __('seminar.contact_person') }}</h2>
-                
+
                 <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
                     <p class="text-sm text-blue-700 mb-3">{{ __('seminar.contact_description') }}</p>
                     <div class="space-y-2">
@@ -477,18 +477,18 @@
 
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <h2 class="text-xl font-semibold text-gray-800 mb-4">{{ __('seminar.payment_information') }}</h2>
-                
+
                 {{-- Payment Method Selection --}}
                 <div class="mb-6">
                     <label class="block text-sm font-medium text-gray-700 mb-3">{{ __('seminar.payment_method') }}</label>
                     <div class="grid grid-cols-2 gap-4">
-                        <button type="button" 
+                        <button type="button"
                             @click="paymentMethod = 'bank_transfer'"
                             :class="paymentMethod === 'bank_transfer' ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-gray-300 hover:border-gray-400'"
                             class="w-full px-6 py-3 border-2 rounded-lg font-medium transition-colors">
                             {{ __('seminar.bank_transfer') }}
                         </button>
-                        <button type="button" 
+                        <button type="button"
                             @click="paymentMethod = 'qris'"
                             :class="paymentMethod === 'qris' ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-gray-300 hover:border-gray-400'"
                             class="w-full px-6 py-3 border-2 rounded-lg font-medium transition-colors">
@@ -496,7 +496,7 @@
                         </button>
                     </div>
                 </div>
-                
+
                 {{-- Bank Transfer Details (conditional) --}}
                 <div x-show="paymentMethod === 'bank_transfer'" x-transition>
                     <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
@@ -518,13 +518,13 @@
                         </div>
                     </div>
                 </div>
-                
+
                 {{-- QRIS Display (conditional) --}}
                 <div x-show="paymentMethod === 'qris'" x-transition class="mb-4">
                     <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 text-center">
                         <h3 class="font-semibold text-blue-800 mb-4">Scan QRIS untuk Pembayaran</h3>
                         <img src="{{ asset('assets/images/QRIS_BNI_WKCI.webp') }}" alt="QRIS Code" class="w-full max-w-xs sm:max-w-sm md:max-w-md mx-auto rounded-lg shadow-md mb-4">
-                        <a href="{{ asset('assets/images/QRIS_BNI_WKCI.webp') }}" download="QRIS_BNI_WKCI.webp" 
+                        <a href="{{ asset('assets/images/QRIS_BNI_WKCI.webp') }}" download="QRIS_BNI_WKCI.webp"
                             class="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
@@ -533,7 +533,7 @@
                         </a>
                     </div>
                 </div>
-                
+
                 {{-- Total Amount Display --}}
                 @if($wants_hands_on && $handsOnTotalPrice > 0 && $selected_seminar)
                 <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
@@ -566,7 +566,7 @@
                     </div>
                 </div>
                 @endif
-                
+
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('seminar.payment_proof') }} *</label>
                     <input type="file" wire:model="payment_proof" accept="image/jpeg,image/png,application/pdf" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
@@ -578,14 +578,14 @@
             @if($isIndonesia)
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <h2 class="text-xl font-semibold text-gray-800 mb-4">{{ __('seminar.scientific_poster_competition') }}</h2>
-                
+
                 <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
                     <p class="text-sm text-blue-700">
                         {{ __('seminar.poster_description') }}
                         <a href="https://jakartadentalexhibitions.id/poster-competition/" target="_blank" class="underline font-medium">{{ __('seminar.learn_more') }}</a>
                     </p>
                 </div>
-                
+
                 <div class="flex items-start">
                     <input type="checkbox" wire:model="wants_poster_competition" id="wants_poster_competition" class="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-0.5">
                     <label for="wants_poster_competition" class="ml-2 text-sm text-gray-700">

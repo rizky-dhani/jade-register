@@ -45,6 +45,7 @@ class SeminarRegistration extends Model
     ];
 
     protected $casts = [
+        'nik' => 'string',
         'verified_at' => 'datetime',
         'qr_expires_at' => 'datetime',
         'amount' => 'integer',
