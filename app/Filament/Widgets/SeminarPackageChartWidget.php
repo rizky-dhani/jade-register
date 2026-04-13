@@ -7,9 +7,14 @@ use Filament\Widgets\ChartWidget;
 
 class SeminarPackageChartWidget extends ChartWidget
 {
-    protected ?string $heading = 'Participants per Seminar Package';
+    protected ?string $heading = '';
 
     protected static ?int $sort = 2;
+
+    public function getHeading(): string
+    {
+        return __('seminar.participants_per_package');
+    }
 
     public static function canView(): bool
     {

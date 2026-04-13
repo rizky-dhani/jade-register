@@ -8,9 +8,14 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class SeminarPackageStatsWidget extends StatsOverviewWidget
 {
-    protected ?string $heading = 'Seminar Package Statistics';
+    protected ?string $heading = '';
 
     protected static ?int $sort = 1;
+
+    public function getHeading(): string
+    {
+        return __('seminar.seminar_package_statistics');
+    }
 
     public static function canView(): bool
     {
@@ -61,14 +66,6 @@ class SeminarPackageStatsWidget extends StatsOverviewWidget
 
     private function formatCurrency(int $amount): string
     {
-        if ($amount >= 1000000000) {
-            return 'Rp '.number_format($amount / 1000000000, 1).'B';
-        }
-
-        if ($amount >= 1000000) {
-            return 'Rp '.number_format($amount / 1000000, 1).'M';
-        }
-
         return 'Rp '.number_format($amount, 0, ',', '.');
     }
 }

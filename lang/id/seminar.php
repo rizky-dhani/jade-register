@@ -444,4 +444,6 @@ return [
     'pending_payments_description' => 'Menunggu verifikasi pembayaran',
     'total_revenue_description' => 'Total pendapatan paket seminar',
     'registered_participants' => 'Peserta Terdaftar',
+    'seminar_package_statistics' => 'Statistik Paket Seminar',
+    'participants_per_package' => 'Peserta per Paket Seminar',
 ];

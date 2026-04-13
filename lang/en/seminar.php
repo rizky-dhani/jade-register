@@ -445,4 +445,6 @@ return [
     'pending_payments_description' => 'Awaiting payment verification',
     'total_revenue_description' => 'Total seminar package revenue',
     'registered_participants' => 'Registered Participants',
+    'seminar_package_statistics' => 'Seminar Package Statistics',
+    'participants_per_package' => 'Participants per Seminar Package',
 ];
