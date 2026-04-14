@@ -186,6 +186,11 @@ class SeminarRegistration extends Component
         }
     }
 
+    public function updatedSelectedSeminar(): void
+    {
+        $this->loadAvailableAddons();
+    }
+
     public function isIndonesia(): bool
     {
         if (! $this->country_id) {
