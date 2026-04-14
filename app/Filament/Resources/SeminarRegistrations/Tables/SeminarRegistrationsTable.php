@@ -24,7 +24,7 @@ class SeminarRegistrationsTable
     {
         return $table
             ->modifyQueryUsing(fn (Builder $query) => $query
-                ->with(['country', 'seminarPackage']))
+                ->with(['country', 'seminarPackage', 'addonRegistrations.addon']))
             ->defaultSort('registration_code', 'desc')
             ->columns([
                 TextColumn::make('registration_code')
@@ -140,6 +140,31 @@ class SeminarRegistrationsTable
                         ? 'success'
                         : 'gray')
                     ->visible(fn (): bool => auth()->user()?->hasRole('Super Admin') ?? false),
+                TextColumn::make('addons')
+                    ->label(__('seminar.available_addons'))
+                    ->state(function (SeminarRegistration $record): ?string {
+                        $addons = $record->addonRegistrations->loadMissing('addon');
+
+                        if ($addons->isEmpty()) {
+                            return '-';
+                        }
+
+                        $addonLabels = $addons->map(function ($addonRegistration): string {
+                            $addon = $addonRegistration->addon;
+                            if (! $addon) {
+                                return 'Unknown';
+                            }
+
+                            $price = $addon->currency === 'USD'
+                                ? '$'.number_format($addon->price, 2)
+                                : 'Rp '.number_format($addon->price, 0, ',', '.');
+
+                            return "{$addon->name} ({$price})";
+                        })->implode(', ');
+
+                        return $addonLabels;
+                    })
+                    ->limit(100),
             ])
             ->filters([
                 SelectFilter::make('payment_status')
