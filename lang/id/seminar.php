@@ -13,6 +13,7 @@ return [
     'whatsapp_group_description' => 'Bergabunglah ke grup WhatsApp peserta untuk mendapatkan informasi update acara dan pengumuman penting.',
     'whatsapp_group_button' => 'Bergabung ke Grup WhatsApp',
     'redirecting_to_dashboard' => 'Mengarahkan ke dashboard dalam',
+    'redirecting_to_registration' => 'Mengarahkan ke halaman pendaftaran dalam',
     'seconds' => 'detik',
 
     // Login page alert

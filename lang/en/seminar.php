@@ -13,6 +13,7 @@ return [
     'whatsapp_group_description' => 'Join the participant WhatsApp group to receive event updates and important announcements.',
     'whatsapp_group_button' => 'Join WhatsApp Group',
     'redirecting_to_dashboard' => 'Redirecting to dashboard in',
+    'redirecting_to_registration' => 'Redirecting to registration page in',
     'seconds' => 'seconds',
 
     // Login page alert
