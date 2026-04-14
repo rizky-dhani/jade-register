@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Addons\Schemas;
 
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -76,9 +77,80 @@ class AddonForm
                             ->default(true)
                             ->columnSpanFull(),
 
+                        Repeater::make('disable_conditions')
+                            ->label(__('filament.addons.disable_conditions'))
+                            ->schema([
+                                Select::make('model')
+                                    ->label(__('filament.addons.condition_model'))
+                                    ->required()
+                                    ->options([
+                                        'seminar' => __('filament.addons.model_seminar'),
+                                        'addon' => __('filament.addons.model_addon'),
+                                        'seminar_registration' => __('filament.addons.model_seminar_registration'),
+                                    ])
+                                    ->live()
+                                    ->afterStateUpdated(fn (Set $set) => $set('field', null)),
+
+                                Select::make('field')
+                                    ->label(__('filament.addons.condition_field'))
+                                    ->required()
+                                    ->options(function (Get $get): array {
+                                        return match ($get('model')) {
+                                            'seminar' => [
+                                                'includes_lunch' => 'Includes Lunch',
+                                                'is_active' => 'Is Active',
+                                                'applies_to' => 'Applies To',
+                                                'max_seats' => 'Max Seats',
+                                            ],
+                                            'addon' => [
+                                                'is_active' => 'Is Active',
+                                                'max_seats' => 'Max Seats',
+                                                'code' => 'Code',
+                                            ],
+                                            'seminar_registration' => [
+                                                'payment_status' => 'Payment Status',
+                                            ],
+                                            default => [],
+                                        };
+                                    })
+                                    ->live(),
+
+                                Select::make('operator')
+                                    ->label(__('filament.addons.condition_operator'))
+                                    ->required()
+                                    ->options([
+                                        '=' => __('filament.addons.operator_equals'),
+                                        '!=' => __('filament.addons.operator_not_equals'),
+                                        '>' => __('filament.addons.operator_greater_than'),
+                                        '<' => __('filament.addons.operator_less_than'),
+                                        '>=' => __('filament.addons.operator_greater_than_equal'),
+                                        '<=' => __('filament.addons.operator_less_than_equal'),
+                                        'is_null' => __('filament.addons.operator_is_null'),
+                                        'is_not_null' => __('filament.addons.operator_is_not_null'),
+                                        'contains' => __('filament.addons.operator_contains'),
+                                        'not_contains' => __('filament.addons.operator_not_contains'),
+                                    ]),
+
+                                TextInput::make('value')
+                                    ->label(__('filament.addons.condition_value'))
+                                    ->required()
+                                    ->helperText(__('filament.addons.condition_value_helper')),
+                            ])
+                            ->columns(4)
+                            ->collapsible()
+                            ->itemLabel(function (array $state): ?string {
+                                if (empty($state['model']) || empty($state['field'])) {
+                                    return null;
+                                }
+
+                                return "{$state['model']}.{$state['field']} {$state['operator']} {$state['value']}";
+                            })
+                            ->addActionLabel(__('filament.addons.disable_conditions_add'))
+                            ->helperText(__('filament.addons.disable_conditions_helper'))
+                            ->columnSpanFull(),
+
                         Select::make('disable_condition')
                             ->label(__('filament.addons.disable_condition'))
-                            ->required()
                             ->default('when_full')
                             ->options([
                                 'never' => __('filament.addons.disable_condition_never'),

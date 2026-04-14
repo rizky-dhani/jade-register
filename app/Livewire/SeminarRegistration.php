@@ -186,6 +186,11 @@ class SeminarRegistration extends Component
         }
     }
 
+    public function updatedSelectedSeminar(): void
+    {
+        $this->loadAvailableAddons();
+    }
+
     public function isIndonesia(): bool
     {
         if (! $this->country_id) {
@@ -520,7 +525,6 @@ class SeminarRegistration extends Component
     public function loadAvailableAddons(): void
     {
         $selectedPackage = Seminar::where('code', $this->selected_seminar)->first();
-        $packageIncludesLunch = $selectedPackage?->includes_lunch ?? false;
 
         // Check if seminar is globally full
         $isSeminarFull = SeminarRegistrationModel::isSeminarFull();
@@ -530,14 +534,9 @@ class SeminarRegistration extends Component
             ->orderBy('sort_order');
 
         $this->availableAddons = $query->get()
-            ->map(function ($addon) use ($packageIncludesLunch, $isSeminarFull) {
+            ->map(function ($addon) use ($selectedPackage, $isSeminarFull) {
                 // Skip if seminar is full
                 if ($isSeminarFull) {
-                    return null;
-                }
-
-                // Skip lunch addon if package already includes lunch
-                if ($packageIncludesLunch && $addon->code === 'LUNCH_ADDON') {
                     return null;
                 }
 
@@ -548,6 +547,11 @@ class SeminarRegistration extends Component
                         ->exists()
                     : false;
 
+                // Pass seminar context to isDisabled for condition evaluation
+                $isDisabled = $addon->isDisabled([
+                    'seminar' => $selectedPackage,
+                ]);
+
                 return [
                     'id' => $addon->id,
                     'code' => $addon->code,
@@ -557,7 +561,7 @@ class SeminarRegistration extends Component
                     'formatted_price' => $addon->formatted_price,
                     'remaining_stock' => $addon->remaining_stock,
                     'is_full' => $addon->isFull(),
-                    'is_disabled' => $addon->isDisabled(),
+                    'is_disabled' => $isDisabled,
                     'is_purchased' => $isPurchased,
                 ];
             })
