@@ -17,6 +17,7 @@ use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\HtmlString;
 
 class SeminarRegistrationsTable
 {
@@ -142,11 +143,11 @@ class SeminarRegistrationsTable
                     ->visible(fn (): bool => auth()->user()?->hasRole('Super Admin') ?? false),
                 TextColumn::make('addons')
                     ->label(__('seminar.available_addons'))
-                    ->state(function (SeminarRegistration $record): ?string {
+                    ->state(function (SeminarRegistration $record): ?HtmlString {
                         $addons = $record->addonRegistrations->loadMissing('addon');
 
                         if ($addons->isEmpty()) {
-                            return '-';
+                            return null;
                         }
 
                         $addonLabels = $addons->map(function ($addonRegistration): string {
@@ -160,9 +161,9 @@ class SeminarRegistrationsTable
                                 : 'Rp '.number_format($addon->price, 0, ',', '.');
 
                             return "{$addon->name} ({$price})";
-                        })->implode(', ');
+                        })->implode('<br>');
 
-                        return $addonLabels;
+                        return new HtmlString($addonLabels);
                     })
                     ->limit(100),
             ])
