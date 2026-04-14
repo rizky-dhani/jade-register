@@ -20,6 +20,14 @@ class AddonSeeder extends Seeder
             'currency' => 'IDR',
             'is_active' => true,
             'sort_order' => 1,
+            'disable_conditions' => [
+                [
+                    'model' => 'seminar',
+                    'field' => 'includes_lunch',
+                    'operator' => '=',
+                    'value' => true,
+                ],
+            ],
         ]);
     }
 }
