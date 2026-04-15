@@ -231,6 +231,7 @@ class SeminarRegistration extends Component
             return [
                 'value' => $package->code,
                 'label' => $package->name,
+                'description' => $package->description,
                 'price' => $package->formatted_price,
                 'current_price' => $package->current_price,
                 'original_price' => $package->formatted_original_price,

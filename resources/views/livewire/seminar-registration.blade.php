@@ -388,6 +388,11 @@
                                     <div class="flex-1">
                                         <div class="font-medium text-gray-800">{{ $tier['label'] }}</div>
                                         
+                                        {{-- Description --}}
+                                        @if(!empty($tier['description']))
+                                            <div class="text-sm text-gray-600 mt-1">{{ $tier['description'] }}</div>
+                                        @endif
+                                        
                                         {{-- Lunch indicator --}}
                                         @if($tier['includes_lunch'])
                                             <div class="text-xs text-green-600 mt-1">
