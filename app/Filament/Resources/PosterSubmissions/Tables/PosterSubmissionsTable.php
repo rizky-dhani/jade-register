@@ -56,11 +56,13 @@ class PosterSubmissionsTable
                 //
             ])
             ->recordActions([
-                EditAction::make(),
+                EditAction::make()
+                    ->visible(fn (): bool => auth()->user()?->can('update poster submissions') ?? false),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->visible(fn (): bool => auth()->user()?->can('delete poster submissions') ?? false),
                 ]),
             ]);
     }

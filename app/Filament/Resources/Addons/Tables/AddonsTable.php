@@ -106,11 +106,13 @@ class AddonsTable
                     ]),
             ])
             ->recordActions([
-                EditAction::make(),
+                EditAction::make()
+                    ->visible(fn (): bool => auth()->user()?->can('update addons') ?? false),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->visible(fn (): bool => auth()->user()?->can('delete addons') ?? false),
                 ]),
             ]);
     }

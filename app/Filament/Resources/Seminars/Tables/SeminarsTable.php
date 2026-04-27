@@ -111,11 +111,13 @@ class SeminarsTable
                     ->query(fn (Builder $query) => $query->where('includes_lunch', true)),
             ])
             ->recordActions([
-                EditAction::make(),
+                EditAction::make()
+                    ->visible(fn (): bool => auth()->user()?->can('update seminars') ?? false),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->visible(fn (): bool => auth()->user()?->can('delete seminars') ?? false),
                 ]),
             ])
             ->defaultSort('sort_order');

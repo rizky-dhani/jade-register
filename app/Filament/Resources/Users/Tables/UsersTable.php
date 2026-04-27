@@ -24,11 +24,13 @@ class UsersTable
                 //
             ])
             ->recordActions([
-                EditAction::make(),
+                EditAction::make()
+                    ->visible(fn (): bool => auth()->user()?->can('update users') ?? false),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->visible(fn (): bool => auth()->user()?->can('delete users') ?? false),
                 ]),
             ]);
     }

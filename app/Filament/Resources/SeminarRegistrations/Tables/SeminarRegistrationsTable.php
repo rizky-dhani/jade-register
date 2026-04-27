@@ -202,7 +202,8 @@ class SeminarRegistrationsTable
             ])
             ->recordActions([
                 ViewAction::make(),
-                EditAction::make(),
+                EditAction::make()
+                    ->visible(fn (): bool => auth()->user()?->can('update seminar registrations') ?? false),
                 Action::make('uploadPaymentProof')
                     ->label(__('seminar.upload_payment_proof'))
                     ->icon('heroicon-o-arrow-up-tray')
@@ -292,7 +293,8 @@ class SeminarRegistrationsTable
                                 }
                             }
                         }),
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->visible(fn (): bool => auth()->user()?->can('delete seminar registrations') ?? false),
                 ]),
             ]);
     }

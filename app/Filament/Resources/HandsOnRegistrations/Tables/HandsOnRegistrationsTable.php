@@ -112,11 +112,13 @@ class HandsOnRegistrationsTable
 
                         return [];
                     }),
-                EditAction::make(),
+                EditAction::make()
+                    ->visible(fn (): bool => auth()->user()?->can('update hands on registrations') ?? false),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->visible(fn (): bool => auth()->user()?->can('delete hands on registrations') ?? false),
                 ]),
             ])
             ->defaultSort('created_at', 'desc');

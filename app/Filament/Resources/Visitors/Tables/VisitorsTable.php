@@ -48,8 +48,10 @@ class VisitorsTable
                 //
             ])
             ->recordActions([
-                EditAction::make(),
-                DeleteAction::make(),
+                EditAction::make()
+                    ->visible(fn (): bool => auth()->user()?->can('update visitors') ?? false),
+                DeleteAction::make()
+                    ->visible(fn (): bool => auth()->user()?->can('delete visitors') ?? false),
                 Action::make('qrCode')
                     ->label(__('filament.visitors.view_qr'))
                     ->icon(Heroicon::QrCode)
@@ -74,7 +76,8 @@ class VisitorsTable
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->visible(fn (): bool => auth()->user()?->can('delete visitors') ?? false),
                 ]),
             ]);
     }
