@@ -13,7 +13,11 @@ class HandsOn extends Model
 
     protected $fillable = [
         'name',
+        'ho_code',
+        'doctor_name',
         'description',
+        'flyer_path',
+        'skp_path',
         'event_date',
         'max_seats',
         'price',

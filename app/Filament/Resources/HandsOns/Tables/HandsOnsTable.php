@@ -22,6 +22,11 @@ class HandsOnsTable
                     ->searchable()
                     ->sortable(),
 
+                TextColumn::make('ho_code')
+                    ->label('HO Code')
+                    ->searchable()
+                    ->sortable(),
+
                 TextColumn::make('event_date')
                     ->date('F j, Y')
                     ->sortable(),

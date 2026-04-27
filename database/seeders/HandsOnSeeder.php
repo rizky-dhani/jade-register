@@ -19,6 +19,7 @@ class HandsOnSeeder extends Seeder
             // November 13, 2026
             [
                 'name' => 'Dental Implant Workshop',
+                'ho_code' => 'HO-DIW-001',
                 'description' => 'Hands-on training on basic dental implant procedures and techniques.',
                 'event_date' => '2026-11-13',
                 'max_seats' => 30,
@@ -28,6 +29,7 @@ class HandsOnSeeder extends Seeder
             ],
             [
                 'name' => 'Endodontic Microscopy',
+                'ho_code' => 'HO-EM-002',
                 'description' => 'Practical training using dental microscopes for endodontic procedures.',
                 'event_date' => '2026-11-13',
                 'max_seats' => 30,
@@ -37,6 +39,7 @@ class HandsOnSeeder extends Seeder
             ],
             [
                 'name' => 'Digital Smile Design',
+                'ho_code' => 'HO-DSD-003',
                 'description' => 'Learn digital smile design concepts and hands-on software training.',
                 'event_date' => '2026-11-13',
                 'max_seats' => 30,
@@ -48,6 +51,7 @@ class HandsOnSeeder extends Seeder
             // November 14, 2026
             [
                 'name' => 'Orthodontic Aligner Workshop',
+                'ho_code' => 'HO-OAW-004',
                 'description' => 'Hands-on training for clear aligner treatment planning and fabrication.',
                 'event_date' => '2026-11-14',
                 'max_seats' => 30,
@@ -57,6 +61,7 @@ class HandsOnSeeder extends Seeder
             ],
             [
                 'name' => 'Periodontal Surgery Techniques',
+                'ho_code' => 'HO-PST-005',
                 'description' => 'Practical training on periodontal surgical procedures.',
                 'event_date' => '2026-11-14',
                 'max_seats' => 30,
@@ -66,6 +71,7 @@ class HandsOnSeeder extends Seeder
             ],
             [
                 'name' => 'CAD/CAM Restoration',
+                'ho_code' => 'HO-CCR-006',
                 'description' => 'Hands-on training for digital impression and CAD/CAM restoration design.',
                 'event_date' => '2026-11-14',
                 'max_seats' => 30,
@@ -77,6 +83,7 @@ class HandsOnSeeder extends Seeder
             // November 15, 2026
             [
                 'name' => 'Oral Surgery Basics',
+                'ho_code' => 'HO-OSB-007',
                 'description' => 'Fundamental oral surgery techniques and hands-on practice.',
                 'event_date' => '2026-11-15',
                 'max_seats' => 30,
@@ -86,6 +93,7 @@ class HandsOnSeeder extends Seeder
             ],
             [
                 'name' => 'Pediatric Dentistry Workshop',
+                'ho_code' => 'HO-PDW-008',
                 'description' => 'Practical approach to pediatric dental procedures and behavior management.',
                 'event_date' => '2026-11-15',
                 'max_seats' => 30,
@@ -95,6 +103,7 @@ class HandsOnSeeder extends Seeder
             ],
             [
                 'name' => 'Aesthetic Composite Restoration',
+                'ho_code' => 'HO-ACR-009',
                 'description' => 'Advanced techniques for aesthetic anterior composite restorations.',
                 'event_date' => '2026-11-15',
                 'max_seats' => 30,

@@ -14,6 +14,7 @@ use App\Services\RegistrationService;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -481,7 +482,9 @@ class SeminarRegistration extends Component
 
             $this->availableHandsOn[$date][] = [
                 'id' => $event->id,
+                'ho_code' => $event->ho_code,
                 'name' => $event->name,
+                'doctor_name' => $event->doctor_name,
                 'description' => $event->description,
                 'price' => $event->current_price,
                 'original_price' => $event->formatted_original_price,
@@ -492,6 +495,8 @@ class SeminarRegistration extends Component
                 'remaining_stock' => $event->remaining_stock,
                 'is_full' => $event->isFull(),
                 'has_price' => $event->current_price !== null && $event->current_price > 0,
+                'flyer_url' => $event->flyer_path ? Storage::url($event->flyer_path) : null,
+                'skp_url' => $event->skp_path ? Storage::url($event->skp_path) : null,
             ];
         }
     }

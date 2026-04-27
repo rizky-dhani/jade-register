@@ -10,6 +10,8 @@ class HandsOnFactory extends Factory
     {
         return [
             'name' => fake()->sentence(3),
+            'ho_code' => 'HO-'.strtoupper(fake()->bothify('??###')),
+            'doctor_name' => fake()->name('male'),
             'description' => fake()->paragraph(),
             'event_date' => fake()->dateTimeBetween('2026-11-13', '2026-11-15')->format('Y-m-d'),
             'max_seats' => fake()->numberBetween(10, 100),
