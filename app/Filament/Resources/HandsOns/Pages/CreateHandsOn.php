@@ -8,4 +8,9 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateHandsOn extends CreateRecord
 {
     protected static string $resource = HandsOnResource::class;
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }
