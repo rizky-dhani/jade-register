@@ -25,7 +25,7 @@ class ListSeminarRegistrations extends ListRecords
                 ->label('Export Excel')
                 ->icon('heroicon-o-arrow-down-tray')
                 ->action(function () {
-                    return Excel::download(new SeminarRegistrationExport, 'seminar-registrations.xlsx');
+                    return Excel::download(new SeminarRegistrationExport, 'seminar-registrations_'.now()->format('d-m-Y').'.xlsx');
                 }),
             CreateAction::make(),
         ];
