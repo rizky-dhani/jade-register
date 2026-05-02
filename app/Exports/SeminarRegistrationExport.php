@@ -9,21 +9,38 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
+use Maatwebsite\Excel\Concerns\WithStyles;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class SeminarRegistrationExport implements WithMultipleSheets
 {
+    public function __construct(
+        protected ?string $paymentMethod = null,
+    ) {}
+
     public function sheets(): array
     {
         return [
-            new LocalParticipantsSheet,
-            new InternationalParticipantsSheet,
+            new LocalParticipantsSheet($this->paymentMethod),
+            new InternationalParticipantsSheet($this->paymentMethod),
         ];
     }
 }
 
-abstract class BaseParticipantsSheet implements FromCollection, ShouldAutoSize, WithHeadings, WithMapping
+abstract class BaseParticipantsSheet implements FromCollection, ShouldAutoSize, WithHeadings, WithMapping, WithStyles
 {
     use Exportable;
+
+    public function __construct(
+        protected ?string $paymentMethod = null,
+    ) {}
+
+    public function styles(Worksheet $sheet): array
+    {
+        return [
+            1 => ['font' => ['bold' => true]],
+        ];
+    }
 
     protected function getSelectedPrice(SeminarRegistration $registration): string
     {
@@ -57,10 +74,13 @@ class LocalParticipantsSheet extends BaseParticipantsSheet
     public function collection()
     {
         return SeminarRegistration::with('country', 'seminarPackage')
-            ->whereHas('country', function ($query) {
-                $query->where('name', 'Indonesia');
+            ->where(function ($query) {
+                $query->whereHas('country', function ($q) {
+                    $q->where('name', 'Indonesia');
+                })
+                    ->orWhereNull('country_id');
             })
-            ->orWhereNull('country_id')
+            ->when($this->paymentMethod, fn ($query, $method) => $query->where('payment_method', $method))
             ->get();
     }
 
@@ -107,6 +127,7 @@ class InternationalParticipantsSheet extends BaseParticipantsSheet
             ->whereHas('country', function ($query) {
                 $query->where('name', '!=', 'Indonesia');
             })
+            ->when($this->paymentMethod, fn ($query, $method) => $query->where('payment_method', $method))
             ->get();
     }
 
