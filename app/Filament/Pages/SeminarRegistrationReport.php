@@ -4,6 +4,7 @@ namespace App\Filament\Pages;
 
 use App\Filament\Resources\SeminarRegistrations\Widgets\SeminarPackageChartWidget;
 use App\Filament\Resources\SeminarRegistrations\Widgets\SeminarPackageStatsWidget;
+use App\Filament\Resources\SeminarRegistrations\Widgets\SeminarPaymentMethodChartWidget;
 use Filament\Pages\Page;
 use Filament\Support\Icons\Heroicon;
 
@@ -44,6 +45,7 @@ class SeminarRegistrationReport extends Page
         return [
             SeminarPackageStatsWidget::class,
             SeminarPackageChartWidget::class,
+            SeminarPaymentMethodChartWidget::class,
         ];
     }
 }

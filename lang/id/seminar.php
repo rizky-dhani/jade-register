@@ -221,6 +221,12 @@ return [
     'email_attendance_confirmation_qr_scan_instruction' => 'Pindai kode QR di atas untuk verifikasi kehadiran',
     'email_attendance_confirmation_event_details' => 'Detail Acara',
     'email_attendance_confirmation_registered_message' => 'Dengan jadwal sebagai berikut:',
+    'email_hands_on_sessions_title' => 'Sesi Hands On',
+    'email_hands_on_doctor_label' => 'Dokter',
+    'email_hands_on_date_label' => 'Tanggal',
+    'email_hands_on_description_label' => 'Deskripsi',
+    'email_hands_on_price_label' => 'Harga',
+
     'email_attendance_confirmation_date' => 'Hari/Tanggal',
     'email_attendance_confirmation_date_value' => 'Jum\'at – Minggu / 13-15 November 2026',
     'email_attendance_confirmation_venue' => 'Tempat',

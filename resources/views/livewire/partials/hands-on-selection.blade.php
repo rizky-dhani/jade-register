@@ -1,5 +1,5 @@
 {{-- Hands On Selection Partial --}}
-<div class="space-y-6">
+<div class="space-y-6 px-3 sm:px-0">
     @foreach($availableHandsOn as $date => $events)
         <div>
             <h4 class="font-semibold text-gray-800 mb-3">
@@ -20,28 +20,29 @@
                         {{ $event['is_full'] || !$event['has_price'] ? 'bg-gray-100 border-gray-200 opacity-60' : '' }}
                         {{ $isSelected ? 'border-blue-500 bg-blue-50' : 'border-gray-200' }}">
                         
-                        <label class="flex items-center justify-between p-3 cursor-pointer">
-                            <div class="flex items-center gap-3">
+                        <label class="flex-col sm:flex-row p-3 cursor-pointer">
+                            
+                            {{-- Flyer thumbnail - full width on mobile, side on desktop --}}
+                            @if($event['flyer_url'])
+                                <div class="mb-2 sm:mb-0 sm:mr-3 sm:flex-shrink-0">
+                                    <a href="{{ $event['flyer_url'] }}"
+                                        data-glightbox="title: {{ $event['ho_code'] ?? '' }} - {{ $event['name'] }}"
+                                        class="glightbox block">
+                                        <img src="{{ $event['flyer_url'] }}" alt="Flyer"
+                                            class="w-full sm:w-36 h-auto rounded-lg shadow-sm border border-gray-200 object-contain">
+                                    </a>
+                                </div>
+                            @endif
+                            
+                            <div class="flex items-center gap-3 flex-1 min-w-0">
                                 <input type="radio" 
                                     name="hands_on_{{ $date }}"
                                     wire:model.live="selectedHandsOn.{{ $date }}"
                                     value="{{ $event['id'] }}"
                                     {{ $event['is_full'] || !$event['has_price'] ? 'disabled' : '' }}
-                                    class="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500">
+                                    class="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500 flex-shrink-0">
                                 
-                                {{-- Flyer thumbnail --}}
-                                @if($event['flyer_url'])
-                                    <div class="flex-shrink-0">
-                                        <a href="{{ $event['flyer_url'] }}"
-                                            data-glightbox="title: {{ $event['ho_code'] ?? '' }} - {{ $event['name'] }}"
-                                            class="glightbox">
-                                            <img src="{{ $event['flyer_url'] }}" alt="Flyer"
-                                                class="w-20 sm:w-24 h-auto rounded-lg shadow-sm border border-gray-200 object-contain">
-                                        </a>
-                                    </div>
-                                @endif
-                                
-                                <div class="min-w-0">
+                                <div class="min-w-0 flex-1">
                                     <p class="font-medium text-gray-800">
                                         {{ $event['ho_code'] ?? '' }} - {{ $event['name'] }}
                                     </p>
@@ -72,27 +73,27 @@
                                         </span>
                                     @endif
                                 </div>
-                            </div>
-                            
-                            <div class="text-right">
-                                {{-- Pricing with slash format --}}
-                                @if(!$event['has_price'])
-                                    <div class="text-sm text-gray-500">
-                                        {{ __('seminar.coming_soon') }}
-                                    </div>
-                                @elseif($event['is_early_bird'] && $event['discounted_price'])
-                                    <div class="text-lg">
-                                        <span class="text-gray-400 line-through text-sm">{{ $event['original_price'] }}</span>
-                                        <span class="font-bold text-green-600">{{ $event['discounted_price'] }}</span>
-                                    </div>
-                                    <div class="text-xs text-green-600">
-                                        {{ __('seminar.save_amount', ['amount' => $event['savings']]) }}
-                                    </div>
-                                @else
-                                    <div class="font-semibold text-gray-700">
-                                        {{ $event['original_price'] }}
-                                    </div>
-                                @endif
+                                
+                                <div class="text-right flex-shrink-0">
+                                    {{-- Pricing with slash format --}}
+                                    @if(!$event['has_price'])
+                                        <div class="text-sm text-gray-500">
+                                            {{ __('seminar.coming_soon') }}
+                                        </div>
+                                    @elseif($event['is_early_bird'] && $event['discounted_price'])
+                                        <div class="text-lg">
+                                            <span class="text-gray-400 line-through text-sm">{{ $event['original_price'] }}</span>
+                                            <span class="font-bold text-green-600">{{ $event['discounted_price'] }}</span>
+                                        </div>
+                                        <div class="text-xs text-green-600">
+                                            {{ __('seminar.save_amount', ['amount' => $event['savings']]) }}
+                                        </div>
+                                    @else
+                                        <div class="font-semibold text-gray-700">
+                                            {{ $event['original_price'] }}
+                                        </div>
+                                    @endif
+                                </div>
                             </div>
                         </label>
 

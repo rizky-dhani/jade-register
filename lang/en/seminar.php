@@ -221,6 +221,12 @@ return [
     'email_attendance_confirmation_qr_scan_instruction' => 'Scan the QR code above to verify attendance',
     'email_attendance_confirmation_event_details' => 'Event Details',
     'email_attendance_confirmation_registered_message' => 'With the following schedule:',
+    'email_hands_on_sessions_title' => 'Hands On Sessions',
+    'email_hands_on_doctor_label' => 'Doctor',
+    'email_hands_on_date_label' => 'Date',
+    'email_hands_on_description_label' => 'Description',
+    'email_hands_on_price_label' => 'Price',
+
     'email_attendance_confirmation_date' => 'Day/Date',
     'email_attendance_confirmation_date_value' => 'Friday – Sunday / 13-15 November 2026',
     'email_attendance_confirmation_venue' => 'Venue',

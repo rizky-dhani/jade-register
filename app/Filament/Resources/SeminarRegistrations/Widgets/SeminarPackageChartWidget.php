@@ -11,6 +11,8 @@ class SeminarPackageChartWidget extends ChartWidget
 
     protected static ?int $sort = 2;
 
+    protected int|string|array $columnSpan = 1;
+
     public function getHeading(): string
     {
         return __('seminar.participants_per_package');

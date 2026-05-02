@@ -67,9 +67,6 @@
                 @else
                     <li>{{ $registration->selected_seminar_label }}</li>
                 @endif
-                @foreach($registration->handsOnRegistrations as $hoReg)
-                    <li>Day {{ $hoReg->handsOn->date->format('j') }}: {{ $hoReg->handsOn->name }} ({{ $hoReg->handsOn->formatted_price }})</li>
-                @endforeach
             </ul>
         </div>
 
@@ -124,6 +121,43 @@
                 </div>
             @endif
         </div>
+
+        {{-- Hands On Sessions --}}
+        @if($registration->wants_hands_on && $registration->handsOnRegistrations->isNotEmpty())
+            <div class="details">
+                <h3>{{ trans('seminar.email_hands_on_sessions_title') }}</h3>
+                @foreach($registration->handsOnRegistrations as $hoReg)
+                    <div style="padding: 10px 0; {{ ! $loop->last ? 'border-bottom: 1px solid #eee;' : '' }}">
+                        <p style="margin: 0 0 8px 0;"><strong>{{ $hoReg->handsOn->name }}</strong></p>
+                        <div class="detail-row">
+                            <span class="detail-label">{{ trans('seminar.email_hands_on_doctor_label') }}</span>
+                            <span class="detail-value">{{ $hoReg->handsOn->doctor_name ?? '-' }}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">{{ trans('seminar.email_hands_on_date_label') }}</span>
+                            <span class="detail-value">{{ $hoReg->handsOn->event_date->format('d F Y') }}</span>
+                        </div>
+                        @if($hoReg->handsOn->description)
+                            <div class="detail-row">
+                                <span class="detail-label">{{ trans('seminar.email_hands_on_description_label') }}</span>
+                                <span class="detail-value">{{ $hoReg->handsOn->description }}</span>
+                            </div>
+                        @endif
+                        <div class="detail-row">
+                            <span class="detail-label">{{ trans('seminar.email_hands_on_price_label') }}</span>
+                            <span class="detail-value">
+                                @if($hoReg->handsOn->isEarlyBirdActive() && $hoReg->handsOn->discounted_price)
+                                    <span style="text-decoration: line-through; color: #999;">{{ $hoReg->handsOn->formatted_original_price }}</span>
+                                    <strong>{{ $hoReg->handsOn->formatted_discounted_price }}</strong>
+                                @else
+                                    <strong>{{ $hoReg->handsOn->formatted_original_price }}</strong>
+                                @endif
+                            </span>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        @endif
 
         {{-- Event Schedule and Venue Info --}}
         <h2 style="text-align: center; color: #4E397C; margin: 30px 0 20px 0;">
