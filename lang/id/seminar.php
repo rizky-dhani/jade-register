@@ -168,6 +168,7 @@ return [
     'unavailable' => 'Tidak Tersedia',
     'seats_left' => 'kursi tersisa',
     'coming_soon' => 'Segera Hadir',
+    'unlimited' => 'Tidak Terbatas',
     'includes_lunch' => 'Termasuk Makan Siang',
 
     // Summaries

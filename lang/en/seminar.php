@@ -168,6 +168,7 @@ return [
     'unavailable' => 'Unavailable',
     'seats_left' => 'seats left',
     'coming_soon' => 'Coming Soon',
+    'unlimited' => 'Unlimited',
     'includes_lunch' => 'Includes Lunch',
 
     // Summaries

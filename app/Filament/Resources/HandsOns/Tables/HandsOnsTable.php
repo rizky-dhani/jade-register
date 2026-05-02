@@ -66,7 +66,13 @@ class HandsOnsTable
                         return 'success';
                     }),
 
-                TextColumn::make('price')
+                TextColumn::make('original_price')
+                    ->label(__('filament.hands_on.original_price'))
+                    ->money('IDR')
+                    ->sortable(),
+
+                TextColumn::make('discounted_price')
+                    ->label(__('filament.hands_on.discounted_price'))
                     ->money('IDR')
                     ->sortable(),
 

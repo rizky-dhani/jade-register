@@ -7,8 +7,38 @@
         <title>{{ $title ?? config('app.name') }}</title>
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css" />
     </head>
     <body>
         {{ $slot }}
+
+        <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
+        <script>
+            function initGLightbox() {
+                if (typeof GLightbox === 'undefined') return;
+                if (window.__gl) window.__gl.destroy();
+                window.__gl = GLightbox({
+                    selector: '.glightbox',
+                    touchNavigation: true,
+                    loop: false,
+                    zoomable: true,
+                    draggable: true,
+                });
+            }
+
+            initGLightbox();
+            document.addEventListener('livewire:navigated', initGLightbox);
+
+            document.addEventListener('livewire:initialized', () => {
+                if (window.Livewire && Livewire.hook) {
+                    Livewire.hook('morph.added', ({ el }) => {
+                        if (el.matches?.('.glightbox') || el.querySelector?.('.glightbox')) {
+                            initGLightbox();
+                        }
+                    });
+                }
+            });
+        </script>
     </body>
 </html>

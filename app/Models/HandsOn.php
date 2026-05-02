@@ -61,6 +61,10 @@ class HandsOn extends Model
 
     public function getAvailableSeats(): int
     {
+        if ($this->max_seats === null) {
+            return PHP_INT_MAX;
+        }
+
         return max(0, $this->max_seats - $this->getRegisteredCount());
     }
 
@@ -90,7 +94,7 @@ class HandsOn extends Model
     public function getRemainingStockAttribute(): int
     {
         if ($this->max_seats === null) {
-            return $this->getAvailableSeats();
+            return PHP_INT_MAX;
         }
 
         return max(0, $this->max_seats - $this->getRegisteredCount());

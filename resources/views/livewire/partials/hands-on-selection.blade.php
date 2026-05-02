@@ -1,9 +1,13 @@
 {{-- Hands On Selection Partial --}}
 <div class="space-y-6">
     @foreach($availableHandsOn as $date => $events)
-        <div class="border border-gray-200 rounded-lg p-4">
+        <div>
             <h4 class="font-semibold text-gray-800 mb-3">
-                {{ __('seminar.day_number', ['day' => \Carbon\Carbon::parse($date)->format('j')]) }}
+                @php
+                    $dayMap = ['2026-11-13' => 1, '2026-11-14' => 2, '2026-11-15' => 3];
+                    $dayNumber = $dayMap[$date] ?? \Carbon\Carbon::parse($date)->format('j');
+                @endphp
+                {{ __('seminar.day_number', ['day' => 'ke-' . $dayNumber]) }}
             </h4>
             
             <div class="space-y-2">
@@ -25,7 +29,19 @@
                                     {{ $event['is_full'] || !$event['has_price'] ? 'disabled' : '' }}
                                     class="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500">
                                 
-                                <div>
+                                {{-- Flyer thumbnail --}}
+                                @if($event['flyer_url'])
+                                    <div class="flex-shrink-0">
+                                        <a href="{{ $event['flyer_url'] }}"
+                                            data-glightbox="title: {{ $event['ho_code'] ?? '' }} - {{ $event['name'] }}"
+                                            class="glightbox">
+                                            <img src="{{ $event['flyer_url'] }}" alt="Flyer"
+                                                class="w-20 sm:w-24 h-auto rounded-lg shadow-sm border border-gray-200 object-contain">
+                                        </a>
+                                    </div>
+                                @endif
+                                
+                                <div class="min-w-0">
                                     <p class="font-medium text-gray-800">
                                         {{ $event['ho_code'] ?? '' }} - {{ $event['name'] }}
                                     </p>
@@ -41,6 +57,10 @@
                                     @elseif($event['is_full'])
                                         <span class="inline-flex items-center px-2 py-0.5 mt-1 text-xs font-medium text-red-700 bg-red-100 rounded">
                                             {{ __('seminar.sold_out') }}
+                                        </span>
+                                    @elseif($event['max_seats'] === null)
+                                        <span class="inline-flex items-center px-2 py-0.5 mt-1 text-xs font-medium text-green-700 bg-green-100 rounded">
+                                            {{ __('seminar.unlimited') }}
                                         </span>
                                     @elseif($event['remaining_stock'] <= 5)
                                         <span class="inline-flex items-center px-2 py-0.5 mt-1 text-xs font-medium text-orange-700 bg-orange-100 rounded">
@@ -76,24 +96,28 @@
                             </div>
                         </label>
 
-                        {{-- Show flyer & SKP images when selected --}}
-                        @if($isSelected && ($event['flyer_url'] || $event['skp_url']))
+                        {{-- Show SKP image when selected --}}
+                        @if($isSelected && $event['skp_url'])
                             <div class="px-3 pb-3 pt-1 border-t border-blue-200 mt-1">
-                                <div class="flex flex-wrap gap-4">
-                                    @if($event['flyer_url'])
-                                        <div class="flex-1 min-w-0">
-                                            <p class="text-xs font-medium text-gray-500 mb-1">Flyer</p>
-                                            <img src="{{ $event['flyer_url'] }}" alt="Flyer"
-                                                class="w-full h-auto max-w-xs rounded-lg shadow-sm object-contain">
-                                        </div>
-                                    @endif
-                                    @if($event['skp_url'])
-                                        <div class="flex-1 min-w-0">
-                                            <p class="text-xs font-medium text-gray-500 mb-1">SKP</p>
+                                <div class="flex">
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-xs font-medium text-gray-500 mb-1">SKP</p>
+                                        <a href="{{ $event['skp_url'] }}"
+                                            data-glightbox="title: SKP - {{ $event['ho_code'] ?? '' }} - {{ $event['name'] }}"
+                                            class="glightbox block">
                                             <img src="{{ $event['skp_url'] }}" alt="SKP"
                                                 class="w-full h-auto max-w-xs rounded-lg shadow-sm object-contain">
-                                        </div>
-                                    @endif
+                                        </a>
+                                        <a href="{{ $event['skp_url'] }}"
+                                            data-glightbox="title: SKP - {{ $event['ho_code'] ?? '' }} - {{ $event['name'] }}"
+                                            class="inline-flex items-center mt-2 px-3 py-1.5 text-xs font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
+                                            <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                            </svg>
+                                            Lihat
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         @endif

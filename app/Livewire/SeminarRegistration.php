@@ -467,7 +467,8 @@ class SeminarRegistration extends Component
         }
 
         $events = HandsOn::where('is_active', true)
-            ->whereIn('event_date', ['2026-11-13', '2026-11-14', '2026-11-15'])
+            ->whereDate('event_date', '>=', '2026-11-13')
+            ->whereDate('event_date', '<=', '2026-11-15')
             ->orderBy('event_date')
             ->orderBy('name')
             ->get();
