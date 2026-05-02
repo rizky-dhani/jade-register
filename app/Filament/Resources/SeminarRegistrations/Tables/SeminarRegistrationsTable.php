@@ -105,6 +105,20 @@ class SeminarRegistrationsTable
                         default => 'gray',
                     })
                     ->searchable(),
+                TextColumn::make('payment_method')
+                    ->label(__('seminar.payment_method'))
+                    ->badge()
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'bank_transfer' => __('seminar.bank_transfer'),
+                        'qris' => __('seminar.qris'),
+                        default => $state,
+                    })
+                    ->color(fn (string $state): string => match ($state) {
+                        'bank_transfer' => 'info',
+                        'qris' => 'primary',
+                        default => 'gray',
+                    })
+                    ->sortable(),
                 TextColumn::make('phone')
                     ->searchable(),
                 TextColumn::make('email')
