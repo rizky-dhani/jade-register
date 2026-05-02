@@ -11,7 +11,7 @@ class SeminarPaymentMethodChartWidget extends ChartWidget
 
     protected int|string|array $columnSpan = 1;
 
-    protected function getHeading(): string
+    public function getHeading(): string
     {
         return __('seminar.payment_method');
     }
