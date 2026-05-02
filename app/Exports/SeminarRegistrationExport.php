@@ -8,8 +8,10 @@ use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
+use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use Maatwebsite\Excel\Concerns\WithStyles;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class SeminarRegistrationExport implements WithMultipleSheets
@@ -69,7 +71,7 @@ abstract class BaseParticipantsSheet implements FromCollection, ShouldAutoSize, 
     }
 }
 
-class LocalParticipantsSheet extends BaseParticipantsSheet
+class LocalParticipantsSheet extends BaseParticipantsSheet implements WithColumnFormatting
 {
     public function collection()
     {
@@ -98,6 +100,13 @@ class LocalParticipantsSheet extends BaseParticipantsSheet
             'Kompetensi',
             'Metode Pembayaran',
             'Ingin Ikut Hands On?',
+        ];
+    }
+
+    public function columnFormats(): array
+    {
+        return [
+            'D' => NumberFormat::FORMAT_TEXT,
         ];
     }
 
