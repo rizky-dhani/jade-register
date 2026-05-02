@@ -186,6 +186,12 @@ class SeminarRegistrationsTable
                         'pending' => __('seminar.pending'),
                         'verified' => __('seminar.verified'),
                     ]),
+                SelectFilter::make('payment_method')
+                    ->label(__('seminar.payment_method'))
+                    ->options([
+                        'bank_transfer' => __('seminar.bank_transfer'),
+                        'qris' => __('seminar.qris'),
+                    ]),
                 SelectFilter::make('participant_type')
                     ->label(__('seminar.participant_type'))
                     ->options([
