@@ -6,11 +6,16 @@ use App\Models\SeminarRegistration;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use Maatwebsite\Excel\Concerns\WithColumnFormatting;
+use Maatwebsite\Excel\Concerns\WithCustomValueBinder;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
-use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use Maatwebsite\Excel\Concerns\WithStyles;
+use PhpOffice\PhpSpreadsheet\Cell\Cell;
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
+use PhpOffice\PhpSpreadsheet\Cell\DefaultValueBinder;
+use PhpOffice\PhpSpreadsheet\Cell\IValueBinder;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
@@ -71,7 +76,7 @@ abstract class BaseParticipantsSheet implements FromCollection, ShouldAutoSize, 
     }
 }
 
-class LocalParticipantsSheet extends BaseParticipantsSheet implements WithColumnFormatting
+class LocalParticipantsSheet extends BaseParticipantsSheet implements IValueBinder, WithColumnFormatting, WithCustomValueBinder
 {
     public function collection()
     {
@@ -108,6 +113,17 @@ class LocalParticipantsSheet extends BaseParticipantsSheet implements WithColumn
         return [
             'D' => NumberFormat::FORMAT_TEXT,
         ];
+    }
+
+    public function bindValue(Cell $cell, mixed $value): bool
+    {
+        if ($cell->getColumn() === 'D') {
+            $cell->setValueExplicit($value, DataType::TYPE_STRING);
+
+            return true;
+        }
+
+        return DefaultValueBinder::bindValue($cell, $value);
     }
 
     public function map($registration): array
