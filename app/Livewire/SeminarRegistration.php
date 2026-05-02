@@ -51,6 +51,10 @@ class SeminarRegistration extends Component
 
     public $payment_proof = null;
 
+    public ?string $payment_proof_path = null;
+
+    public bool $payment_proof_uploaded = false;
+
     public bool $wants_poster_competition = false;
 
     #[Url(as: 'lang', keep: true)]
@@ -90,6 +94,10 @@ class SeminarRegistration extends Component
 
     protected function rules(): array
     {
+        $paymentProofRule = $this->payment_proof_uploaded
+            ? 'nullable'
+            : 'required|file|mimes:jpeg,png,pdf|max:5120';
+
         if (! $this->is_local) {
             return [
                 'name' => 'required|string|max:255',
@@ -99,7 +107,7 @@ class SeminarRegistration extends Component
                 'country_id' => 'required|integer|min:1|exists:countries,id',
                 'selected_seminar' => 'required|string',
                 'payment_method' => 'required|string|in:bank_transfer,qris',
-                'payment_proof' => 'required|file|mimes:jpeg,png,pdf|max:5120',
+                'payment_proof' => $paymentProofRule,
             ];
         }
 
@@ -114,7 +122,7 @@ class SeminarRegistration extends Component
             'country_id' => 'required|integer|min:1|exists:countries,id',
             'selected_seminar' => 'required|string',
             'payment_method' => 'required|string|in:bank_transfer,qris',
-            'payment_proof' => 'required|file|mimes:jpeg,png,pdf|max:5120',
+            'payment_proof' => $paymentProofRule,
             'selectedHandsOn' => 'array',
             'selectedHandsOn.*' => 'nullable|integer|exists:hands_ons,id',
         ];
@@ -190,6 +198,16 @@ class SeminarRegistration extends Component
     public function updatedSelectedSeminar(): void
     {
         $this->loadAvailableAddons();
+    }
+
+    public function updatedPaymentProof(): void
+    {
+        $this->validateOnly('payment_proof');
+
+        if ($this->payment_proof) {
+            $this->payment_proof_path = $this->payment_proof->store('payment-proofs', 'public');
+            $this->payment_proof_uploaded = true;
+        }
     }
 
     public function isIndonesia(): bool
@@ -304,7 +322,7 @@ class SeminarRegistration extends Component
             return;
         }
 
-        $path = $this->payment_proof->store('payment-proofs', 'public');
+        $path = $this->payment_proof_path ?? $this->payment_proof->store('payment-proofs', 'public');
 
         $userId = auth()->id() ?: null;
 
