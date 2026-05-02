@@ -8,12 +8,12 @@
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css" />
+        <link rel="stylesheet" href="{{ asset('assets/vendor/glightbox/glightbox.min.css') }}" />
     </head>
     <body>
         {{ $slot }}
 
-        <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
+        <script src="{{ asset('assets/vendor/glightbox/glightbox.min.js') }}"></script>
         <script>
             function initGLightbox() {
                 if (typeof GLightbox === 'undefined') return;
