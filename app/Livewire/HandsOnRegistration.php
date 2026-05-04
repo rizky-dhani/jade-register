@@ -410,6 +410,11 @@ class HandsOnRegistration extends Component
 
     public static function isRegistrationOpen(): bool
     {
+        // Super Admin and Admin bypass the registration toggle
+        if (auth()->check() && auth()->user()->hasRole(['Super Admin', 'Admin'])) {
+            return true;
+        }
+
         $opensAt = Setting::get('hands_on_registration_opens_at');
 
         if ($opensAt) {
