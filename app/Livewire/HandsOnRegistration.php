@@ -5,7 +5,7 @@ namespace App\Livewire;
 use App\Enums\HandsOnStatus;
 use App\Models\Country;
 use App\Models\HandsOn;
-use App\Models\HandsOnRegistration;
+use App\Models\HandsOnRegistration as HandsOnRegistrationModel;
 use App\Models\Seminar;
 use App\Models\SeminarRegistration as SeminarRegistrationModel;
 use App\Models\Setting;
@@ -307,7 +307,7 @@ class HandsOnRegistration extends Component
         $language = $country?->is_indonesia ? 'id' : 'en';
 
         $registrationData = [
-            'registration_code' => HandsOnRegistration::generateRegistrationCode(),
+            'registration_code' => HandsOnRegistrationModel::generateRegistrationCode(),
             'email' => $this->email,
             'name' => $this->name,
             'phone' => $this->phone,
@@ -345,7 +345,7 @@ class HandsOnRegistration extends Component
                 // Create Hands On registrations
                 foreach ($this->selectedHandsOn as $date => $eventId) {
                     if ($eventId) {
-                        HandsOnRegistration::create([
+                        HandsOnRegistrationModel::create([
                             'seminar_registration_id' => $reg->id,
                             'hands_on_id' => $eventId,
                             'registration_type' => 'combined',
