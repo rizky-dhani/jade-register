@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Enums\HandsOnStatus;
 use App\Models\Addon;
 use App\Models\AddonRegistration;
 use App\Models\Country;
@@ -485,6 +486,7 @@ class SeminarRegistration extends Component
         }
 
         $events = HandsOn::where('is_active', true)
+            ->where('status', HandsOnStatus::PUBLISHED)
             ->whereDate('event_date', '>=', '2026-11-13')
             ->whereDate('event_date', '<=', '2026-11-15')
             ->orderBy('event_date')
