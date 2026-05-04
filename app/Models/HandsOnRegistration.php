@@ -19,6 +19,11 @@ class HandsOnRegistration extends Model
         'verified_at',
     ];
 
+    public static function generateRegistrationCode(): string
+    {
+        return SeminarRegistration::generateRegistrationCode('JADE-HO-2026-');
+    }
+
     protected $casts = [
         'verified_at' => 'datetime',
     ];

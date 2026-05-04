@@ -56,10 +56,8 @@ class SeminarRegistration extends Model
         'addons_total_amount' => 'integer',
     ];
 
-    public static function generateRegistrationCode(): string
+    public static function generateRegistrationCode(string $prefix = 'JADE-SEM-2026-'): string
     {
-        $prefix = 'JADE-SEM-2026-';
-
         $lastCode = self::where('registration_code', 'like', $prefix.'%')
             ->orderByRaw('CAST(SUBSTRING(registration_code, -6) AS UNSIGNED) DESC')
             ->value('registration_code');

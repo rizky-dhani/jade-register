@@ -581,6 +581,11 @@ class SeminarRegistration extends Component
     {
         $selectedPackage = Seminar::where('code', $this->selected_seminar)->first();
 
+        // For already-registered flow, resolve seminar from existing registration
+        if (! $selectedPackage && $this->existingRegistration) {
+            $selectedPackage = $this->existingRegistration->seminarPackage;
+        }
+
         // Check if seminar is globally full
         $isSeminarFull = SeminarRegistrationModel::isSeminarFull();
 
