@@ -211,7 +211,7 @@ class HandsOnRegistration extends Component
             ->whereDate('event_date', '>=', '2026-11-13')
             ->whereDate('event_date', '<=', '2026-11-15')
             ->orderBy('event_date')
-            ->orderBy('name')
+            ->orderBy('ho_code')
             ->get();
 
         $this->availableHandsOn = [];
