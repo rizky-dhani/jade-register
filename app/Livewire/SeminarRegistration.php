@@ -10,6 +10,7 @@ use App\Models\HandsOn;
 use App\Models\HandsOnRegistration;
 use App\Models\Seminar;
 use App\Models\SeminarRegistration as SeminarRegistrationModel;
+use App\Models\Setting;
 use App\Services\QrTokenService;
 use App\Services\RegistrationService;
 use Illuminate\Database\QueryException;
@@ -272,6 +273,14 @@ class SeminarRegistration extends Component
             return;
         }
 
+        // Check if registration is manually closed
+        if (! static::isRegistrationOpen()) {
+            session()->flash('error', __('seminar.registration_closed'));
+            $this->redirectRoute('register.seminar', ['locale' => $this->locale], navigate: true);
+
+            return;
+        }
+
         // Initial check (outside transaction) - quick fail if already full
         if (SeminarRegistrationModel::isSeminarFull()) {
             session()->flash('error', __('seminar.seminar_just_filled'));
@@ -476,8 +485,20 @@ class SeminarRegistration extends Component
         }
     }
 
+    public static function isRegistrationOpen(): bool
+    {
+        return Setting::get('registration_open', true);
+    }
+
     public function loadAvailableHandsOn(): void
     {
+        // If registration is manually closed, don't load hands-on
+        if (! static::isRegistrationOpen()) {
+            $this->availableHandsOn = [];
+
+            return;
+        }
+
         // If seminar is full, don't load hands-on
         if (SeminarRegistrationModel::isSeminarFull()) {
             $this->availableHandsOn = [];

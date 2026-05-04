@@ -458,6 +458,7 @@ return [
 
     // Seminar Full Banner
     'registration_closed' => 'Pendaftaran Sementara Ditutup',
+    'registration_closed_manually' => 'Pendaftaran sedang ditutup oleh penyelenggara. Silakan periksa kembali nanti!',
     'seminar_is_full' => 'Kami telah mencapai kapasitas maksimum saat ini. Pendaftaran dapat dibuka kembali jika tersedia lebih banyak tempat. Silakan periksa kembali nanti!',
     'seminar_just_filled' => 'Seminar baru saja mencapai kapasitas saat ini. Pendaftaran dapat dibuka kembali jika tersedia lebih banyak tempat.',
     'spots_remaining' => 'Tersisa :count tempat - segera daftar!',

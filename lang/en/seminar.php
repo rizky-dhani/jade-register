@@ -459,6 +459,7 @@ return [
 
     // Seminar Full Banner
     'registration_closed' => 'Registration Temporarily Closed',
+    'registration_closed_manually' => 'Registration is currently closed by the organizer. Please check back later!',
     'seminar_is_full' => 'We have reached our current maximum capacity. Registration may reopen if more spots become available. Please check back later!',
     'seminar_just_filled' => 'The seminar just reached its current capacity. Registration may reopen if more spots become available.',
     'spots_remaining' => ':count spots remaining - register now!',
