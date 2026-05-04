@@ -101,6 +101,7 @@ class HandsOnForm
 
                 Section::make('Schedule & Capacity')
                     ->columnSpan(1)
+                    ->columns(2)
                     ->schema([
                         DatePicker::make('event_date')
                             ->required()
@@ -108,6 +109,14 @@ class HandsOnForm
                             ->displayFormat('F j, Y')
                             ->minDate('2026-11-13')
                             ->maxDate('2026-11-15'),
+
+                        TextInput::make('max_seats')
+                            ->numeric()
+                            ->integer()
+                            ->minValue(1)
+                            ->label(__('filament.hands_on.max_seats'))
+                            ->placeholder('e.g., 30')
+                            ->helperText('Maximum number of registrations allowed (leave empty for unlimited)'),
 
                         Select::make('status')
                             ->label(__('filament.hands_on.status'))
@@ -120,14 +129,6 @@ class HandsOnForm
                         Toggle::make('is_active')
                             ->label(__('filament.hands_on.active'))
                             ->default(true),
-
-                        TextInput::make('max_seats')
-                            ->numeric()
-                            ->integer()
-                            ->minValue(1)
-                            ->label(__('filament.hands_on.max_seats'))
-                            ->placeholder('e.g., 30')
-                            ->helperText('Maximum number of registrations allowed (leave empty for unlimited)'),
                     ]),
             ]);
     }
