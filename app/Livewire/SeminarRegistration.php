@@ -13,6 +13,7 @@ use App\Models\SeminarRegistration as SeminarRegistrationModel;
 use App\Models\Setting;
 use App\Services\QrTokenService;
 use App\Services\RegistrationService;
+use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
@@ -487,6 +488,12 @@ class SeminarRegistration extends Component
 
     public static function isRegistrationOpen(): bool
     {
+        $opensAt = Setting::get('registration_opens_at');
+
+        if ($opensAt) {
+            return now()->gte(Carbon::parse($opensAt));
+        }
+
         return Setting::get('registration_open', true);
     }
 
