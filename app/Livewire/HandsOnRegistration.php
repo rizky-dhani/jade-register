@@ -410,12 +410,12 @@ class HandsOnRegistration extends Component
 
     public static function isRegistrationOpen(): bool
     {
-        $opensAt = Setting::get('registration_opens_at');
+        $opensAt = Setting::get('hands_on_registration_opens_at');
 
         if ($opensAt) {
             return now()->gte(Carbon::parse($opensAt));
         }
 
-        return Setting::get('registration_open', true);
+        return Setting::get('hands_on_registration_open', true);
     }
 }
