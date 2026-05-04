@@ -2,15 +2,20 @@
 
 namespace App\Filament\Resources\HandsOns\Tables;
 
+use App\Enums\HandsOnStatus;
+use Filament\Actions\Action;
+use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Notifications\Notification;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 
 class HandsOnsTable
 {
@@ -76,6 +81,13 @@ class HandsOnsTable
                     ->money('IDR')
                     ->sortable(),
 
+                TextColumn::make('status')
+                    ->label(__('filament.hands_on.status'))
+                    ->badge()
+                    ->color(fn (HandsOnStatus $state): string => $state->getColor())
+                    ->formatStateUsing(fn (HandsOnStatus $state): string => $state->getLabel())
+                    ->sortable(),
+
                 IconColumn::make('is_active')
                     ->boolean()
                     ->label(__('filament.hands_on.active')),
@@ -103,11 +115,38 @@ class HandsOnsTable
             ->recordActions([
                 EditAction::make()
                     ->visible(fn (): bool => auth()->user()?->can('update hands ons') ?? false),
+
+                Action::make('publish')
+                    ->label('Publish')
+                    ->icon('heroicon-o-check-circle')
+                    ->color('success')
+                    ->visible(fn ($record): bool => $record?->status === HandsOnStatus::DRAFT
+                        && (auth()->user()?->can('update hands ons') ?? false))
+                    ->action(function ($record) {
+                        $record->update(['status' => HandsOnStatus::PUBLISHED]);
+                        Notification::make()
+                            ->success()
+                            ->title('Hands-On published successfully')
+                            ->send();
+                    }),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
                         ->visible(fn (): bool => auth()->user()?->can('delete hands ons') ?? false),
+
+                    BulkAction::make('publish')
+                        ->label('Publish')
+                        ->icon('heroicon-o-check-circle')
+                        ->color('success')
+                        ->visible(fn (): bool => auth()->user()?->can('update hands ons') ?? false)
+                        ->action(function (Collection $records) {
+                            $records->each->update(['status' => HandsOnStatus::PUBLISHED]);
+                            Notification::make()
+                                ->success()
+                                ->title('Selected Hands-On entries published successfully')
+                                ->send();
+                        }),
                 ]),
             ])
             ->defaultSort('event_date');

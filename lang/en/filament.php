@@ -108,6 +108,7 @@ return [
     'hands_on.lunch' => 'Lunch',
     'hands_on.early_bird' => 'Early Bird',
     'hands_on.early_bird_only' => 'Early Bird Only',
+    'hands_on.status' => 'Status',
 
     // Hands On Registrations
     'hands_on_registrations.registration_code' => 'Registration Code',

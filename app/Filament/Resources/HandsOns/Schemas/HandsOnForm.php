@@ -2,8 +2,10 @@
 
 namespace App\Filament\Resources\HandsOns\Schemas;
 
+use App\Enums\HandsOnStatus;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -106,6 +108,14 @@ class HandsOnForm
                             ->displayFormat('F j, Y')
                             ->minDate('2026-11-13')
                             ->maxDate('2026-11-15'),
+
+                        Select::make('status')
+                            ->label(__('filament.hands_on.status'))
+                            ->options(collect(HandsOnStatus::cases())
+                                ->mapWithKeys(fn (HandsOnStatus $s) => [$s->value => $s->getLabel()])
+                                ->toArray())
+                            ->default(HandsOnStatus::DRAFT->value)
+                            ->required(),
 
                         Toggle::make('is_active')
                             ->label(__('filament.hands_on.active'))

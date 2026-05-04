@@ -108,6 +108,7 @@ return [
     'hands_on.lunch' => 'Makan Siang',
     'hands_on.early_bird' => 'Early Bird',
     'hands_on.early_bird_only' => 'Hanya Early Bird',
+    'hands_on.status' => 'Status',
 
     // Hands On Registrations
     'hands_on_registrations.registration_code' => 'Kode Pendaftaran',

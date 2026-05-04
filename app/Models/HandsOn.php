@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\HandsOnStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -27,6 +28,7 @@ class HandsOn extends Model
         'early_bird_deadline',
         'currency',
         'is_active',
+        'status',
     ];
 
     protected $casts = [
@@ -38,6 +40,7 @@ class HandsOn extends Model
         'max_seats' => 'integer',
         'early_bird_deadline' => 'datetime',
         'is_active' => 'boolean',
+        'status' => HandsOnStatus::class,
     ];
 
     public function handsOnRegistrations(): HasMany
