@@ -431,7 +431,6 @@
                 <span wire:loading wire:target="payment_proof">{{ __('seminar.uploading') }}...</span>
                 <span wire:loading wire:target="submit">{{ __('seminar.processing') }}...</span>
             </button>
-            @endif
         </form>
     @endif
 </div>
