@@ -5,6 +5,8 @@ namespace App\Filament\Resources\Settings\Schemas;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 
 class SettingForm
@@ -21,7 +23,28 @@ class SettingForm
                     ->helperText(__('filament.settings.form.key_helper')),
                 TextInput::make('value')
                     ->label(__('filament.settings.form.value'))
-                    ->required(),
+                    ->required()
+                    ->visible(fn (Get $get): bool => $get('type') === 'string'),
+                TextInput::make('value')
+                    ->label(__('filament.settings.form.value'))
+                    ->required()
+                    ->numeric()
+                    ->visible(fn (Get $get): bool => $get('type') === 'integer'),
+                TextInput::make('value')
+                    ->label(__('filament.settings.form.value'))
+                    ->required()
+                    ->numeric()
+                    ->step(0.01)
+                    ->visible(fn (Get $get): bool => $get('type') === 'float'),
+                Toggle::make('value')
+                    ->label(__('filament.settings.form.value'))
+                    ->required()
+                    ->visible(fn (Get $get): bool => $get('type') === 'boolean'),
+                Textarea::make('value')
+                    ->label(__('filament.settings.form.value'))
+                    ->required()
+                    ->json()
+                    ->visible(fn (Get $get): bool => $get('type') === 'array'),
                 Select::make('type')
                     ->label(__('filament.settings.form.type'))
                     ->options([
