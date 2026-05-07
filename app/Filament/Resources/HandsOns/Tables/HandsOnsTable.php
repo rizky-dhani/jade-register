@@ -27,7 +27,7 @@ class HandsOnsTable
                 ImageColumn::make('flyer_path')
                     ->disk('public')
                     ->label('Flyer')
-                    ->imageSize(60)
+                    ->imageSize(100)
                     ->square(),
 
                 TextColumn::make('name')
