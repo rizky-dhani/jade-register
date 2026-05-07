@@ -598,23 +598,25 @@
                 </div>
 
                 {{-- Total Amount Display --}}
-                @if($wants_hands_on && $handsOnTotalPrice > 0 && $selected_seminar)
+                @if($selected_seminar)
+                @php
+                    $package = \App\Models\Seminar::where('code', $selected_seminar)->first();
+                    $seminarAmount = $package ? $package->current_price : 0;
+                    $isIdr = $package && $package->currency === 'IDR';
+                @endphp
                 <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
                     <div class="flex justify-between items-center mb-2">
                         <span class="text-gray-700">{{ __('seminar.seminar_fee') }}</span>
                         <span class="font-medium">
-                            @php
-                                $package = \App\Models\Seminar::where('code', $selected_seminar)->first();
-                                $seminarAmount = $package ? $package->amount : 0;
-                                $isIdr = $package && $package->currency === 'IDR';
-                            @endphp
                             {{ $isIdr ? 'Rp ' . number_format($seminarAmount, 0, ',', '.') : '$' . $seminarAmount }}
                         </span>
                     </div>
+                    @if($wants_hands_on && $handsOnTotalPrice > 0)
                     <div class="flex justify-between items-center mb-2">
                         <span class="text-gray-700">{{ __('seminar.hands_on_fee') }}</span>
                         <span class="font-medium">Rp {{ number_format($handsOnTotalPrice, 0, ',', '.') }}</span>
                     </div>
+                    @endif
                     <div class="border-t border-blue-200 pt-2 mt-2">
                         <div class="flex justify-between items-center">
                             <span class="font-semibold text-gray-800">{{ __('seminar.total_amount') }}</span>
