@@ -342,9 +342,20 @@ class HandsOnRegistration extends Component
             $registration = DB::transaction(function () use ($registrationData, $path) {
                 $reg = SeminarRegistrationModel::create($registrationData);
 
-                // Create Hands On registrations
+                // Lock and re-check seat availability for each selected HandsOn event
                 foreach ($this->selectedHandsOn as $date => $eventId) {
                     if ($eventId) {
+                        // Pessimistic lock — prevents race condition on the last seat
+                        $event = HandsOn::where('id', $eventId)->lockForUpdate()->first();
+
+                        if (! $event) {
+                            throw new \RuntimeException("Hands-on event not found for {$date}");
+                        }
+
+                        if ($event->isFull()) {
+                            throw new \RuntimeException("Hands-on session {$date} is full");
+                        }
+
                         HandsOnRegistrationModel::create([
                             'seminar_registration_id' => $reg->id,
                             'hands_on_id' => $eventId,
