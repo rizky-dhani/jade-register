@@ -394,7 +394,24 @@
                                     {{ $tier['is_full'] ? 'disabled' : '' }}
                                 >
                                     <div class="flex-1 w-full sm:w-auto">
-                                        <div class="font-medium text-gray-800">{{ $tier['label'] }}</div>
+                                        <div class="flex items-center gap-2 flex-wrap">
+                                            <span class="font-medium text-gray-800">{{ $tier['label'] }}</span>
+
+                                            {{-- Stock indicator --}}
+                                            @if($tier['is_full'])
+                                                <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium text-red-700 bg-red-100 rounded">
+                                                    {{ __('seminar.sold_out') }}
+                                                </span>
+                                            @elseif($tier['remaining_stock'] <= 10)
+                                                <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium text-orange-700 bg-orange-100 rounded">
+                                                    {{ __('seminar.limited_seats', ['count' => $tier['remaining_stock']]) }}
+                                                </span>
+                                            @else
+                                                <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium text-green-700 bg-green-100 rounded">
+                                                    {{ __('seminar.available') }}
+                                                </span>
+                                            @endif
+                                        </div>
                                         
                                         {{-- Description --}}
                                         @if(!empty($tier['description']))
@@ -409,21 +426,6 @@
                                                 </svg>
                                                 {{ __('seminar.includes_lunch') }}
                                             </div>
-                                        @endif
-
-                                        {{-- Stock indicator --}}
-                                        @if($tier['is_full'])
-                                            <span class="inline-flex items-center px-2 py-1 mt-1 text-xs font-medium text-red-700 bg-red-100 rounded">
-                                                {{ __('seminar.sold_out') }}
-                                            </span>
-                                        @elseif($tier['remaining_stock'] <= 10)
-                                            <span class="inline-flex items-center px-2 py-1 mt-1 text-xs font-medium text-orange-700 bg-orange-100 rounded">
-                                                {{ __('seminar.limited_seats', ['count' => $tier['remaining_stock']]) }}
-                                            </span>
-                                        @else
-                                            <span class="inline-flex items-center px-2 py-1 mt-1 text-xs font-medium text-green-700 bg-green-100 rounded">
-                                                {{ __('seminar.available') }}
-                                            </span>
                                         @endif
                                     </div>
 
