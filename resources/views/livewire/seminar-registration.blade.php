@@ -167,15 +167,22 @@
                         <div class="space-y-3">
                             @foreach($availableAddons as $addon)
                                 @if(!$addon['is_purchased'])
-                                <label class="flex items-start p-4 bg-gray-50 rounded-lg border border-gray-200 cursor-pointer hover:border-purple-400 transition-colors">
+                                <label class="flex items-start p-4 rounded-lg border transition-colors
+                                    {{ $addon['is_disabled'] ? 'bg-gray-50 border-gray-200 opacity-60 cursor-not-allowed' : 'bg-gray-50 border-gray-200 cursor-pointer hover:border-purple-400' }}">
                                     <input type="checkbox"
                                         wire:model.live="selectedAddons.{{ $addon['code'] }}"
+                                        {{ $addon['is_disabled'] ? 'disabled' : '' }}
                                         class="w-5 h-5 text-purple-600 border-gray-300 rounded focus:ring-purple-500 mt-0.5">
                                     <div class="ml-3 flex-1">
                                         <div class="flex justify-between items-start">
                                             <div>
                                                 <p class="font-medium text-gray-800">{{ $addon['name'] }}</p>
                                                 <p class="text-sm text-gray-600">{{ $addon['description'] }}</p>
+                                                @if($addon['is_disabled'])
+                                                    <span class="inline-flex items-center px-2 py-0.5 mt-1 text-xs font-medium text-red-700 bg-red-100 rounded">
+                                                        {{ __('seminar.unavailable') }}
+                                                    </span>
+                                                @endif
                                             </div>
                                             <p class="font-semibold text-purple-700">{{ $addon['formatted_price'] }}</p>
                                         </div>
