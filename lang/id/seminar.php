@@ -102,6 +102,8 @@ return [
     'transfer_instructions' => 'Silakan transfer sesuai jumlah yang tepat dan unggah bukti pembayaran Anda.',
     'payment_proof' => 'Bukti Pembayaran',
     'accepted_formats' => 'Format yang diterima: JPG, PNG, PDF. Ukuran maksimal: 5MB',
+    'uploaded_successfully' => 'Berhasil diunggah',
+    'replace' => 'Ganti',
     'disclaimer_1' => 'Kami hanya menerima transfer dari rekening bank, yang menampilkan nama pengirim pada mutasi untuk mempermudah verifikasi bukti transfer.',
     'disclaimer_2' => 'Dana yang sudah masuk ke rekening diatas tidak bisa dikembalikan dengan alasan apapun.',
     'payment_status' => 'Status Pembayaran',

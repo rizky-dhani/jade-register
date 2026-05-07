@@ -102,6 +102,8 @@ return [
     'transfer_instructions' => 'Please transfer the exact amount and upload your payment proof.',
     'payment_proof' => 'Payment Proof',
     'accepted_formats' => 'Accepted formats: JPG, PNG, PDF. Max size: 5MB',
+    'uploaded_successfully' => 'Uploaded successfully',
+    'replace' => 'Replace',
     'disclaimer_1' => 'We only accept transfers from bank accounts that display the sender name in the transaction history to facilitate transfer proof verification.',
     'disclaimer_2' => 'Funds that have entered the above account cannot be returned for any reason.',
     'payment_status' => 'Payment Status',

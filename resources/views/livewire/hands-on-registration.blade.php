@@ -417,8 +417,31 @@
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('seminar.payment_proof') }} *</label>
-                    <input type="file" wire:model="payment_proof" accept="image/jpeg,image/png,application/pdf" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                    <p class="text-xs text-gray-500 mt-1">{{ __('seminar.accepted_formats') }}</p>
+
+                    @if($payment_proof_uploaded && $payment_proof_path)
+                        <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-12 bg-blue-100 rounded flex items-center justify-center shrink-0">
+                                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                    </svg>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-medium text-gray-800 truncate">{{ basename($payment_proof_path) }}</p>
+                                    <p class="text-xs text-green-600">{{ __('seminar.uploaded_successfully') }}</p>
+                                </div>
+                                <button type="button" wire:click="resetPaymentProof"
+                                    class="shrink-0 px-3 py-1.5 text-xs font-medium text-red-600 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 transition-colors">
+                                    {{ __('seminar.replace') }}
+                                </button>
+                            </div>
+                        </div>
+                    @else
+                        <input type="file" wire:model="payment_proof" accept="image/jpeg,image/png,application/pdf"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <p class="text-xs text-gray-500 mt-1">{{ __('seminar.accepted_formats') }}</p>
+                    @endif
+
                     @error('payment_proof') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
                 </div>
             </div>

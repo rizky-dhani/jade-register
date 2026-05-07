@@ -81,7 +81,7 @@ class HandsOnRegistration extends Component
     protected function rules(): array
     {
         $paymentProofRule = $this->payment_proof_uploaded
-            ? 'nullable'
+            ? 'nullable|string'
             : 'required|file|mimes:jpeg,png,pdf|max:5120';
 
         if (! $this->is_local) {
@@ -184,6 +184,17 @@ class HandsOnRegistration extends Component
             $this->payment_proof_path = $this->payment_proof->store('payment-proofs', 'public');
             $this->payment_proof_uploaded = true;
         }
+    }
+
+    public function resetPaymentProof(): void
+    {
+        if ($this->payment_proof_path) {
+            Storage::disk('public')->delete($this->payment_proof_path);
+        }
+
+        $this->payment_proof = null;
+        $this->payment_proof_path = null;
+        $this->payment_proof_uploaded = false;
     }
 
     public function isIndonesia(): bool
