@@ -16,11 +16,11 @@
                         $isSelected = isset($selectedHandsOn[$date]) && $selectedHandsOn[$date] == $event['id'];
                     @endphp
                     
-                    <div class="border rounded-lg transition-colors
+                    <div class="border rounded-lg transition-colors px-3
                         {{ $event['is_full'] || !$event['has_price'] ? 'bg-gray-100 border-gray-200 opacity-60' : '' }}
                         {{ $isSelected ? 'border-blue-500 bg-blue-50' : 'border-gray-200' }}">
                         
-                        <label class="flex-col sm:flex-row p-3 cursor-pointer">
+                        <label class="flex-col sm:flex-row py-3 cursor-pointer">
                             
                             {{-- Flyer thumbnail - full width on mobile, side on desktop --}}
                             @if($event['flyer_url'])
