@@ -75,6 +75,8 @@ class HandsOnRegistration extends Component
 
     public int $handsOnTotalPrice = 0;
 
+    public bool $isChecking = false;
+
     // Submission lock to prevent duplicate submissions
     public bool $isSubmitting = false;
 
@@ -98,7 +100,6 @@ class HandsOnRegistration extends Component
 
         return [
             'email' => 'required|email',
-            'name' => 'nullable|string|max:255',
             'name_license' => 'required|string|max:255',
             'nik' => 'required|string|max:20',
             'pdgi_branch' => 'required|string|max:255',
@@ -429,6 +430,7 @@ class HandsOnRegistration extends Component
             'verification_email' => 'required|email',
         ]);
 
+        $this->isChecking = true;
         $this->showVerificationError = false;
         $this->existingRegistration = null;
 
@@ -437,11 +439,13 @@ class HandsOnRegistration extends Component
 
         if (! $registration) {
             $this->showVerificationError = true;
+            $this->isChecking = false;
 
             return;
         }
 
         $this->existingRegistration = $registration;
+        $this->isChecking = false;
     }
 
     public static function isRegistrationOpen(): bool

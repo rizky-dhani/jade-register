@@ -105,11 +105,16 @@
                         class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                     <button type="button" wire:click="checkExistingRegistration"
                         wire:loading.attr="disabled"
-                        class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50">
+                        @disabled($isChecking)
+                        class="inline-flex items-center px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
                         <span wire:loading.remove wire:target="checkExistingRegistration">
                             {{ __('seminar.check') }}
                         </span>
-                        <span wire:loading wire:target="checkExistingRegistration">
+                        <span wire:loading wire:target="checkExistingRegistration" class="inline-flex items-center gap-2">
+                            <svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                            </svg>
                             {{ __('seminar.checking') }}...
                         </span>
                     </button>
@@ -213,12 +218,6 @@
                 <h2 class="text-xl font-semibold text-gray-800 mb-4">{{ __('seminar.local_participant') }}</h2>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="hidden">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('seminar.name_str') }}</label>
-                        <input type="text" wire:model="name" wire:key="name-str-ho" autocomplete="name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                        @error('name') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
-                    </div>
-
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('seminar.name_plataran') }} *</label>
                         <input type="text" wire:model="name_license" wire:key="name-license-ho" autocomplete="name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
@@ -452,7 +451,13 @@
                 class="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                 <span wire:loading.remove wire:target="submit,payment_proof">{{ __('seminar.submit_registration') }}</span>
                 <span wire:loading wire:target="payment_proof">{{ __('seminar.uploading') }}...</span>
-                <span wire:loading wire:target="submit">{{ __('seminar.processing') }}...</span>
+                <span wire:loading wire:target="submit" class="inline-flex items-center gap-2">
+                    <svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                        <circle class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                    </svg>
+                    {{ __('seminar.processing') }}...
+                </span>
             </button>
         </form>
     @endif
