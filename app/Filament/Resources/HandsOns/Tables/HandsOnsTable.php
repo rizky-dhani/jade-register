@@ -151,6 +151,9 @@ class HandsOnsTable
                         ->icon('heroicon-o-check-circle')
                         ->color('success')
                         ->visible(fn (): bool => auth()->user()?->can('update hands ons') ?? false)
+                        ->requiresConfirmation()
+                        ->modalHeading('Publish Hands-On entries')
+                        ->modalDescription('Are you sure you want to publish the selected Hands-On entries?')
                         ->action(function (Collection $records) {
                             $records->each->update(['status' => HandsOnStatus::PUBLISHED]);
                             Notification::make()
