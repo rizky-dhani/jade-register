@@ -31,7 +31,7 @@
                                 </a>
                             @endif
                             
-                            <div class="flex items-start sm:items-center gap-3 flex-1 min-w-0 w-full">
+                            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-1 sm:gap-3 flex-1 min-w-0 w-full">
                                 <input type="radio" 
                                     name="hands_on_{{ $date }}"
                                     wire:model.live="selectedHandsOn.{{ $date }}"
@@ -76,7 +76,7 @@
                                     @endif
                                 </div>
                                 
-                                <div class="text-right flex-shrink-0">
+                                <div class="text-left sm:text-right flex-shrink-0">
                                     {{-- Pricing with slash format --}}
                                     @if(!$event['has_price'])
                                         <div class="text-sm text-gray-500">
