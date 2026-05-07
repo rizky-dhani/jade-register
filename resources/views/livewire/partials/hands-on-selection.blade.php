@@ -20,30 +20,27 @@
                         {{ $event['is_full'] || !$event['has_price'] ? 'bg-gray-100 border-gray-200 opacity-60' : '' }}
                         {{ $isSelected ? 'border-blue-500 bg-blue-50' : 'border-gray-200' }}">
                         
-                        <label class="flex-col sm:flex-row p-3 cursor-pointer">
-                            
-                            {{-- Flyer thumbnail - full width on mobile, side on desktop --}}
+                        <label class="flex items-start sm:items-center gap-3 p-3 cursor-pointer">
+
                             @if($event['flyer_url'])
-                                <div class="mb-2 sm:mb-0 sm:mr-3 sm:flex-shrink-0">
-                                    <a href="{{ $event['flyer_url'] }}"
-                                        data-glightbox="title: {{ $event['ho_code'] ?? '' }} - {{ $event['name'] }}"
-                                        class="glightbox block">
-                                        <img src="{{ $event['flyer_url'] }}" alt="Flyer"
-                                            class="w-full sm:w-36 h-auto rounded-lg shadow-sm border border-gray-200 object-contain">
-                                    </a>
-                                </div>
+                                <a href="{{ $event['flyer_url'] }}"
+                                    data-glightbox="title: {{ $event['ho_code'] ?? '' }} - {{ $event['name'] }}"
+                                    class="shrink-0 glightbox">
+                                    <img src="{{ $event['flyer_url'] }}" alt="Flyer"
+                                        class="w-16 h-16 sm:w-20 sm:h-20 rounded-lg object-cover border border-gray-200">
+                                </a>
                             @endif
                             
-                            <div class="flex items-center gap-3 flex-1 min-w-0">
+                            <div class="flex items-start sm:items-center gap-3 flex-1 min-w-0">
                                 <input type="radio" 
                                     name="hands_on_{{ $date }}"
                                     wire:model.live="selectedHandsOn.{{ $date }}"
                                     value="{{ $event['id'] }}"
                                     {{ $event['is_full'] || !$event['has_price'] ? 'disabled' : '' }}
-                                    class="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500 flex-shrink-0">
-                                
+                                    class="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500 flex-shrink-0 mt-0.5 sm:mt-0">
+
                                 <div class="min-w-0 flex-1">
-                                    <p class="font-medium text-gray-800">
+                                    <p class="font-medium text-gray-800 leading-tight">
                                         {{ $event['ho_code'] ?? '' }} - {{ $event['name'] }}
                                     </p>
                                     @if($event['doctor_name'])
