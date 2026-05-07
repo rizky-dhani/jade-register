@@ -76,7 +76,7 @@
                                     @endif
                                 </div>
                                 
-                                <div class="text-left sm:text-right flex-shrink-0">
+                                <div class="text-center sm:text-right flex-shrink-0">
                                     {{-- Pricing with slash format --}}
                                     @if(!$event['has_price'])
                                         <div class="text-sm text-gray-500">
