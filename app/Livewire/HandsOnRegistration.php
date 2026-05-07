@@ -375,6 +375,14 @@ class HandsOnRegistration extends Component
                 'trace' => $e->getTraceAsString(),
             ]);
 
+            // Handle race condition when last seat is taken between pre-check and transaction
+            if ($e instanceof \RuntimeException) {
+                session()->flash('error', __('seminar.session_full'));
+                $this->redirectRoute('register.hands-on', ['locale' => $this->locale], navigate: true);
+
+                return;
+            }
+
             // Handle duplicate entry error (MySQL error code 1062)
             if ($e instanceof QueryException && $e->getCode() === '23000') {
                 $existingRegistration = SeminarRegistrationModel::whereRaw('LOWER(email) = ?', [strtolower($this->email)])->first();
