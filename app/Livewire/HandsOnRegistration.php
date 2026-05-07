@@ -183,6 +183,7 @@ class HandsOnRegistration extends Component
         if ($this->payment_proof) {
             $this->payment_proof_path = $this->payment_proof->store('payment-proofs', 'public');
             $this->payment_proof_uploaded = true;
+            $this->payment_proof = null; // Clear temporary file so validation uses the stored path
         }
     }
 
