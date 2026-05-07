@@ -148,6 +148,8 @@ return [
 
     // Hands On
     'hands_on_sessions' => 'Hands On Sessions',
+    'hands_on_success_title' => 'Hands-On Registration Submitted!',
+    'hands_on_success_thank_you' => 'Thank you for registering for Hands-On sessions, ',
     'want_to_join_hands_on' => 'I want to join Hands On sessions',
     'hands_on_description' => 'Hands On sessions will be held during November 13-15, 2026. You can select one session per day.',
     'select_hands_on' => 'Select Hands On Sessions',

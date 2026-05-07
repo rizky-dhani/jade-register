@@ -421,7 +421,7 @@ class HandsOnRegistration extends Component
         $registrationService = app(RegistrationService::class);
         $registrationService->sendSeminarSubmissionConfirmation($registration);
 
-        $this->redirectRoute('register.seminar.success', ['id' => $registration->id], navigate: true);
+        $this->redirectRoute('register.hands-on.success', ['id' => $registration->id], navigate: true);
     }
 
     public function checkExistingRegistration(): void

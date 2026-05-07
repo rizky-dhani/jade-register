@@ -5,6 +5,7 @@ use App\Http\Controllers\PaymentProofController;
 use App\Livewire\AttendanceQrCode;
 use App\Livewire\AttendanceVerify;
 use App\Livewire\HandsOnRegistration;
+use App\Livewire\HandsOnRegistrationSuccess;
 use App\Livewire\PosterSubmission;
 use App\Livewire\SeminarRegistration;
 use App\Livewire\SeminarRegistrationSuccess;
@@ -26,6 +27,7 @@ Route::livewire('/seminar/register', SeminarRegistration::class)->name('register
 Route::livewire('/seminar/success/{id}', SeminarRegistrationSuccess::class)->name('register.seminar.success');
 
 Route::livewire('/hands-on/register', HandsOnRegistration::class)->name('register.hands-on');
+Route::livewire('/hands-on/success/{id}', HandsOnRegistrationSuccess::class)->name('register.hands-on.success');
 
 Route::livewire('/visitor/qr-code/{token}', VisitorQrCode::class)->name('visitor.qr-code');
 
