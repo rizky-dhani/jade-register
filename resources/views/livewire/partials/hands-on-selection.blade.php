@@ -20,18 +20,18 @@
                         {{ $event['is_full'] || !$event['has_price'] ? 'bg-gray-100 border-gray-200 opacity-60' : '' }}
                         {{ $isSelected ? 'border-blue-500 bg-blue-50' : 'border-gray-200' }}">
                         
-                        <label class="flex items-start sm:items-center gap-3 p-3 cursor-pointer">
+                        <label class="flex flex-col sm:flex-row items-start gap-3 p-3 cursor-pointer">
 
                             @if($event['flyer_url'])
                                 <a href="{{ $event['flyer_url'] }}"
                                     data-glightbox="title: {{ $event['ho_code'] ?? '' }} - {{ $event['name'] }}"
-                                    class="shrink-0 glightbox">
+                                    class="w-full sm:w-auto shrink-0 glightbox">
                                     <img src="{{ $event['flyer_url'] }}" alt="Flyer"
-                                        class="w-24 h-24 sm:w-32 sm:h-32 rounded-lg object-cover border border-gray-200">
+                                        class="w-full sm:w-32 h-auto sm:h-32 rounded-lg object-cover border border-gray-200">
                                 </a>
                             @endif
                             
-                            <div class="flex items-start sm:items-center gap-3 flex-1 min-w-0">
+                            <div class="flex items-start sm:items-center gap-3 flex-1 min-w-0 w-full">
                                 <input type="radio" 
                                     name="hands_on_{{ $date }}"
                                     wire:model.live="selectedHandsOn.{{ $date }}"
