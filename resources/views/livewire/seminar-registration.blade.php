@@ -390,10 +390,10 @@
                                 <button
                                     type="button"
                                     wire:click="$set('selected_seminar', '{{ $tier['value'] }}')"
-                                    class="p-4 rounded-lg border-2 text-left transition-all flex justify-between items-center {{ $selected_seminar === $tier['value'] ? 'border-blue-500 bg-blue-50' : ($tier['is_full'] ? 'border-gray-300 bg-gray-50 opacity-60' : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50') }}"
+                                    class="p-4 rounded-lg border-2 text-left transition-all flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 {{ $selected_seminar === $tier['value'] ? 'border-blue-500 bg-blue-50' : ($tier['is_full'] ? 'border-gray-300 bg-gray-50 opacity-60' : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50') }}"
                                     {{ $tier['is_full'] ? 'disabled' : '' }}
                                 >
-                                    <div class="flex-1">
+                                    <div class="flex-1 w-full sm:w-auto">
                                         <div class="font-medium text-gray-800">{{ $tier['label'] }}</div>
                                         
                                         {{-- Description --}}
@@ -427,7 +427,7 @@
                                         @endif
                                     </div>
 
-                                    <div class="text-right ml-4">
+                                    <div class="text-center sm:text-right w-full sm:w-auto">
                                         {{-- Pricing with slash format --}}
                                         @if($tier['is_early_bird'] && $tier['discounted_price'])
                                             <div class="text-lg">
