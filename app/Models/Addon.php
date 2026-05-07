@@ -118,6 +118,12 @@ class Addon extends Model
             return false;
         }
 
+        // If the referenced model is not provided in context, disable the addon
+        // (e.g., no seminar selected yet but the addon depends on seminar context)
+        if (! isset($context[$model])) {
+            return true;
+        }
+
         $modelValue = $this->resolveModelValue($model, $field, $context);
 
         return $this->compareValues($modelValue, $value, $operator);
