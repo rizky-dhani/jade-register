@@ -633,6 +633,13 @@ class SeminarRegistration extends Component
             ->filter()
             ->values()
             ->toArray();
+
+        // Unselect any addons that are now disabled (e.g., Lunch Addon when seminar includes lunch)
+        foreach ($this->availableAddons as $addon) {
+            if ($addon['is_disabled'] && isset($this->selectedAddons[$addon['code']])) {
+                unset($this->selectedAddons[$addon['code']]);
+            }
+        }
     }
 
     public function updatedSelectedAddons(): void
