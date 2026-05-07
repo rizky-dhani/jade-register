@@ -27,7 +27,7 @@
                                     data-glightbox="title: {{ $event['ho_code'] ?? '' }} - {{ $event['name'] }}"
                                     class="shrink-0 glightbox">
                                     <img src="{{ $event['flyer_url'] }}" alt="Flyer"
-                                        class="w-20 h-20 sm:w-28 sm:h-28 rounded-lg object-cover border border-gray-200">
+                                        class="w-24 h-24 sm:w-32 sm:h-32 rounded-lg object-cover border border-gray-200">
                                 </a>
                             @endif
                             
