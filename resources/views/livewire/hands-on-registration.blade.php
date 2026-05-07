@@ -448,13 +448,13 @@
             <button type="submit"
                 wire:loading.attr="disabled"
                 wire:target="submit,payment_proof"
-                class="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                class="w-full inline-flex items-center justify-center gap-2 bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                 <span wire:loading.remove wire:target="submit,payment_proof">{{ __('seminar.submit_registration') }}</span>
                 <span wire:loading wire:target="payment_proof">{{ __('seminar.uploading') }}...</span>
-                <span wire:loading wire:target="submit" class="inline-flex items-center gap-2">
+                <span wire:loading wire:target="submit">
                     <svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
-                        <circle class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
                     </svg>
                     {{ __('seminar.processing') }}...
                 </span>
