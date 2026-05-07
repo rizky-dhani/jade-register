@@ -132,7 +132,7 @@
     
     @if($handsOnTotalPrice > 0)
         <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
-            <div class="flex justify-between items-center">
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-1">
                 <span class="font-semibold text-gray-800">{{ __('seminar.hands_on_total') }}</span>
                 <span class="text-xl font-bold text-gray-800">Rp {{ number_format($handsOnTotalPrice, 0, ',', '.') }}</span>
             </div>
