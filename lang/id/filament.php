@@ -122,6 +122,7 @@ return [
     'hands_on_registrations.view_payment_proof' => 'Lihat Bukti Pembayaran',
     'hands_on_registrations.registration_type' => 'Tipe Pendaftaran',
     'hands_on_registrations.payment_proof' => 'Bukti Pembayaran',
+    'hands_on_registrations.total_amount' => 'Total Jumlah',
 
     // Poster Evaluations
     'poster_evaluations.poster' => 'Poster',

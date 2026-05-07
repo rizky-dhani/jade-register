@@ -122,6 +122,7 @@ return [
     'hands_on_registrations.view_payment_proof' => 'View Payment Proof',
     'hands_on_registrations.registration_type' => 'Registration Type',
     'hands_on_registrations.payment_proof' => 'Payment Proof',
+    'hands_on_registrations.total_amount' => 'Total Amount',
 
     // Poster Evaluations
     'poster_evaluations.poster' => 'Poster',

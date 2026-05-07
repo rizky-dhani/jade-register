@@ -7,16 +7,17 @@ use App\Filament\Resources\HandsOnRegistrations\Pages\EditHandsOnRegistration;
 use App\Filament\Resources\HandsOnRegistrations\Pages\ListHandsOnRegistrations;
 use App\Filament\Resources\HandsOnRegistrations\Schemas\HandsOnRegistrationForm;
 use App\Filament\Resources\HandsOnRegistrations\Tables\HandsOnRegistrationsTable;
-use App\Models\HandsOnRegistration;
+use App\Models\SeminarRegistration;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class HandsOnRegistrationResource extends Resource
 {
-    protected static ?string $model = HandsOnRegistration::class;
+    protected static ?string $model = SeminarRegistration::class;
 
     protected static \UnitEnum|string|null $navigationGroup = 'Data';
 
@@ -25,6 +26,11 @@ class HandsOnRegistrationResource extends Resource
     protected static ?string $navigationLabel = 'Hands On Registrations';
 
     protected static ?int $navigationSort = 3;
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->where('wants_hands_on', true);
+    }
 
     public static function getModelLabel(): string
     {

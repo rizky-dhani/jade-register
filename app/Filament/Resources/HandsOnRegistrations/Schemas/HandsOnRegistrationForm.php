@@ -3,8 +3,9 @@
 namespace App\Filament\Resources\HandsOnRegistrations\Schemas;
 
 use Filament\Forms\Components\DateTimePicker;
-use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
 class HandsOnRegistrationForm
@@ -13,47 +14,51 @@ class HandsOnRegistrationForm
     {
         return $schema
             ->components([
-                Select::make('seminar_registration_id')
-                    ->label(__('filament.hands_on_registrations.seminar_registration'))
-                    ->relationship('seminarRegistration', 'registration_code')
-                    ->searchable()
-                    ->preload()
-                    ->required(),
+                TextInput::make('registration_code')
+                    ->label(__('filament.hands_on_registrations.registration_code'))
+                    ->disabled()
+                    ->dehydrated(false),
 
-                Select::make('hands_on_id')
-                    ->label(__('filament.hands_on_registrations.hands_on_event'))
-                    ->relationship('handsOn', 'name')
-                    ->searchable()
-                    ->preload()
-                    ->required(),
+                Fieldset::make(__('seminar.registrant_information'))
+                    ->columns(2)
+                    ->schema([
+                        TextInput::make('name_license')
+                            ->label(__('seminar.name_plataran')),
+                        TextInput::make('email')
+                            ->label(__('seminar.email')),
+                        TextInput::make('phone')
+                            ->label(__('seminar.whatsapp_number')),
+                        TextInput::make('nik')
+                            ->label(__('seminar.nik')),
+                        TextInput::make('pdgi_branch')
+                            ->label(__('seminar.pdgi_branch')),
+                        TextInput::make('kompetensi')
+                            ->label(__('seminar.competency')),
+                    ]),
 
-                Select::make('registration_type')
-                    ->label(__('filament.hands_on_registrations.registration_type'))
-                    ->options([
-                        'combined' => 'Combined',
-                        'standalone' => 'Standalone',
-                    ])
-                    ->default('combined')
-                    ->required(),
-
-                Select::make('payment_status')
-                    ->label(__('filament.hands_on_registrations.payment_status'))
-                    ->options([
-                        'pending' => 'Pending',
-                        'verified' => 'Verified',
-                        'rejected' => 'Rejected',
-                    ])
-                    ->default('pending')
-                    ->required(),
-
-                FileUpload::make('payment_proof_path')
-                    ->label(__('filament.hands_on_registrations.payment_proof'))
-                    ->image()
-                    ->directory('payment-proofs')
-                    ->visibility('public'),
-
-                DateTimePicker::make('verified_at')
-                    ->label(__('filament.hands_on_registrations.verified_at')),
+                Fieldset::make(__('seminar.payment_information'))
+                    ->columns(2)
+                    ->schema([
+                        Select::make('payment_method')
+                            ->label(__('seminar.payment_method'))
+                            ->options([
+                                'bank_transfer' => __('seminar.bank_transfer'),
+                                'qris' => 'QRIS',
+                            ]),
+                        Select::make('payment_status')
+                            ->label(__('filament.hands_on_registrations.payment_status'))
+                            ->options([
+                                'pending' => 'Pending',
+                                'verified' => 'Verified',
+                                'rejected' => 'Rejected',
+                            ]),
+                        TextInput::make('hands_on_total_amount')
+                            ->label(__('filament.hands_on_registrations.total_amount'))
+                            ->numeric()
+                            ->prefix('Rp'),
+                        DateTimePicker::make('verified_at')
+                            ->label(__('filament.hands_on_registrations.verified_at')),
+                    ]),
             ]);
     }
 }
