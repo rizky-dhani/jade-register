@@ -27,7 +27,7 @@
                                     data-glightbox="title: {{ $event['ho_code'] ?? '' }} - {{ $event['name'] }}"
                                     class="shrink-0 glightbox">
                                     <img src="{{ $event['flyer_url'] }}" alt="Flyer"
-                                        class="w-16 h-16 sm:w-20 sm:h-20 rounded-lg object-cover border border-gray-200">
+                                        class="w-20 h-20 sm:w-28 sm:h-28 rounded-lg object-cover border border-gray-200">
                                 </a>
                             @endif
                             
@@ -40,8 +40,13 @@
                                     class="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500 flex-shrink-0 mt-0.5 sm:mt-0">
 
                                 <div class="min-w-0 flex-1">
-                                    <p class="font-medium text-gray-800 leading-tight">
-                                        {{ $event['ho_code'] ?? '' }} - {{ $event['name'] }}
+                                    @if($event['ho_code'])
+                                        <span class="inline-flex items-center px-1.5 py-0.5 mb-0.5 text-[10px] font-semibold text-gray-600 bg-gray-200 rounded">
+                                            {{ $event['ho_code'] }}
+                                        </span>
+                                    @endif
+                                    <p class="text-xs font-medium text-gray-800 leading-tight">
+                                        {{ $event['name'] }}
                                     </p>
                                     @if($event['doctor_name'])
                                         <p class="text-sm text-gray-500">{{ $event['doctor_name'] }}</p>
