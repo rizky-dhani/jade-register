@@ -209,6 +209,7 @@ return [
 
     // Email - Unified Registration Confirmation
     'email_registration_confirmation_subject' => 'Konfirmasi Pendaftaran - :code',
+    'email_hands_on_registration_confirmation_subject' => 'Konfirmasi Pendaftaran Hands-On - :code',
     'email_attendance_confirmation_subject' => 'Konfirmasi Kehadiran - :code',
     'email_attendance_confirmation_title' => 'Konfirmasi Peserta Seminar Jakarta Dental Exhibition International (JADE) 2026',
     'email_attendance_confirmation_greeting' => 'Yth Para Peserta Seminar JADE 2026,',
@@ -269,6 +270,7 @@ return [
     'email_registration_submitted_subject' => 'Pendaftaran Seminar Diterima - :code',
     'email_thank_you_title' => 'Terima kasih telah mendaftar, :name!',
     'email_registration_received' => 'Registrasi seminar Anda telah diterima. Berikut adalah detail pendaftaran Anda.',
+    'email_hands_on_registration_received' => 'Pendaftaran Hands-On Anda telah diterima. Berikut adalah sesi Hands-On yang Anda daftarkan.',
     'email_your_qr_code' => 'Kode QR Anda',
     'email_qr_code_description' => 'Klik tombol di bawah untuk melihat kode QR Anda. Tunjukkan kode QR ini saat check-in di acara.',
     'email_view_qr_code' => 'Lihat Kode QR',

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Mail\HandsOnRegistrationConfirmation;
 use App\Mail\SeminarPaymentRejected;
 use App\Mail\SeminarPaymentVerified;
 use App\Mail\SeminarRegistrationConfirmation;
@@ -36,6 +37,28 @@ class RegistrationService
         Mail::to($registration->email)
             ->locale($locale)
             ->send(new SeminarRegistrationConfirmation($registration));
+
+        // Mark as sent to prevent duplicates
+        $registration->update(['confirmation_email_sent_at' => now()]);
+    }
+
+    public function sendHandsOnSubmissionConfirmation(SeminarRegistration $registration): void
+    {
+        // Prevent duplicate emails
+        if ($registration->confirmation_email_sent_at) {
+            Log::warning('Skipping duplicate hands-on email send', [
+                'registration_code' => $registration->registration_code,
+                'email' => $registration->email,
+            ]);
+
+            return;
+        }
+
+        $locale = $registration->language ?? 'en';
+
+        Mail::to($registration->email)
+            ->locale($locale)
+            ->send(new HandsOnRegistrationConfirmation($registration));
 
         // Mark as sent to prevent duplicates
         $registration->update(['confirmation_email_sent_at' => now()]);

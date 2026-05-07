@@ -419,7 +419,7 @@ class HandsOnRegistration extends Component
         $qrTokenService->generate($registration);
 
         $registrationService = app(RegistrationService::class);
-        $registrationService->sendSeminarSubmissionConfirmation($registration);
+        $registrationService->sendHandsOnSubmissionConfirmation($registration);
 
         $this->redirectRoute('register.hands-on.success', ['id' => $registration->id], navigate: true);
     }
