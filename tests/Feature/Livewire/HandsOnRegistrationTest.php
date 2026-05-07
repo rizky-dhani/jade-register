@@ -42,7 +42,12 @@ beforeEach(function () {
     ]);
 });
 
-it('prevents overselling the last seat with concurrent submissions', function () {
+it('prevents overselling the last seat with sequential submissions', function () {
+    // NOTE: This test is sequential (PHPUnit single-threaded) so it doesn't
+    // validate the lockForUpdate() concurrency mechanism directly.
+    // However, it provides regression coverage: the first submission takes
+    // the last seat, and the second correctly gets redirected with an error.
+    // True concurrency testing would require separate DB connections.
     $handsOn = HandsOn::first();
 
     $component1 = livewire(HandsOnRegistration::class);
