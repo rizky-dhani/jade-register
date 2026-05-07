@@ -10,6 +10,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Notifications\Notification;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
@@ -23,6 +24,12 @@ class HandsOnsTable
     {
         return $table
             ->columns([
+                ImageColumn::make('flyer_path')
+                    ->disk('public')
+                    ->label('Flyer')
+                    ->imageSize(40)
+                    ->square(),
+
                 TextColumn::make('name')
                     ->searchable()
                     ->sortable(),
@@ -104,6 +111,10 @@ class HandsOnsTable
                     ->label(__('filament.hands_on.active_only'))
                     ->query(fn (Builder $query) => $query->where('is_active', true)),
 
+                SelectFilter::make('status')
+                    ->label(__('filament.hands_on.status'))
+                    ->options(HandsOnStatus::class),
+
                 Filter::make('has_available_seats')
                     ->label(__('filament.hands_on.has_available_seats'))
                     ->query(function (Builder $query) {
@@ -149,6 +160,6 @@ class HandsOnsTable
                         }),
                 ]),
             ])
-            ->defaultSort('event_date');
+            ->defaultSort('ho_code', 'desc');
     }
 }
