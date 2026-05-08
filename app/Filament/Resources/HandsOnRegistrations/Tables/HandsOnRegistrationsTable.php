@@ -71,6 +71,17 @@ class HandsOnRegistrationsTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
+                SelectFilter::make('event_date')
+                    ->label(__('filament.hands_on_registrations.event_date'))
+                    ->options([
+                        '2026-11-13' => '13 Nov 2026',
+                        '2026-11-14' => '14 Nov 2026',
+                        '2026-11-15' => '15 Nov 2026',
+                    ])
+                    ->query(fn (Builder $query, array $data) => $query->when(
+                        $data['value'],
+                        fn (Builder $query, string $value) => $query->where('hands_ons.event_date', $value),
+                    )),
                 SelectFilter::make('payment_status')
                     ->label(__('filament.hands_on_registrations.payment_status'))
                     ->options([
