@@ -7,7 +7,7 @@ use App\Filament\Resources\HandsOnRegistrations\Pages\EditHandsOnRegistration;
 use App\Filament\Resources\HandsOnRegistrations\Pages\ListHandsOnRegistrations;
 use App\Filament\Resources\HandsOnRegistrations\Schemas\HandsOnRegistrationForm;
 use App\Filament\Resources\HandsOnRegistrations\Tables\HandsOnRegistrationsTable;
-use App\Models\SeminarRegistration;
+use App\Models\HandsOnRegistration;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 class HandsOnRegistrationResource extends Resource
 {
-    protected static ?string $model = SeminarRegistration::class;
+    protected static ?string $model = HandsOnRegistration::class;
 
     protected static \UnitEnum|string|null $navigationGroup = 'Data';
 
@@ -29,7 +29,8 @@ class HandsOnRegistrationResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->where('wants_hands_on', true);
+        return parent::getEloquentQuery()
+            ->with(['seminarRegistration', 'handsOn']);
     }
 
     public static function getModelLabel(): string

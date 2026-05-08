@@ -14,7 +14,7 @@ class HandsOnRegistrationForm
     {
         return $schema
             ->components([
-                TextInput::make('registration_code')
+                TextInput::make('seminarRegistration.registration_code')
                     ->label(__('filament.hands_on_registrations.registration_code'))
                     ->disabled()
                     ->dehydrated(false),
@@ -22,29 +22,39 @@ class HandsOnRegistrationForm
                 Fieldset::make(__('seminar.registrant_information'))
                     ->columns(2)
                     ->schema([
-                        TextInput::make('name_license')
-                            ->label(__('seminar.name_plataran')),
-                        TextInput::make('email')
-                            ->label(__('seminar.email')),
-                        TextInput::make('phone')
-                            ->label(__('seminar.whatsapp_number')),
-                        TextInput::make('nik')
-                            ->label(__('seminar.nik')),
-                        TextInput::make('pdgi_branch')
-                            ->label(__('seminar.pdgi_branch')),
-                        TextInput::make('kompetensi')
-                            ->label(__('seminar.competency')),
+                        TextInput::make('seminarRegistration.name_license')
+                            ->label(__('seminar.name_plataran'))
+                            ->disabled()
+                            ->dehydrated(false),
+                        TextInput::make('seminarRegistration.email')
+                            ->label(__('seminar.email'))
+                            ->disabled()
+                            ->dehydrated(false),
+                        TextInput::make('seminarRegistration.phone')
+                            ->label(__('seminar.whatsapp_number'))
+                            ->disabled()
+                            ->dehydrated(false),
+                        TextInput::make('seminarRegistration.nik')
+                            ->label(__('seminar.nik'))
+                            ->disabled()
+                            ->dehydrated(false),
+                        TextInput::make('seminarRegistration.pdgi_branch')
+                            ->label(__('seminar.pdgi_branch'))
+                            ->disabled()
+                            ->dehydrated(false),
+                        TextInput::make('seminarRegistration.kompetensi')
+                            ->label(__('seminar.competency'))
+                            ->disabled()
+                            ->dehydrated(false),
                     ]),
 
                 Fieldset::make(__('seminar.payment_information'))
                     ->columns(2)
                     ->schema([
-                        Select::make('payment_method')
+                        TextInput::make('seminarRegistration.payment_method')
                             ->label(__('seminar.payment_method'))
-                            ->options([
-                                'bank_transfer' => __('seminar.bank_transfer'),
-                                'qris' => 'QRIS',
-                            ]),
+                            ->disabled()
+                            ->dehydrated(false),
                         Select::make('payment_status')
                             ->label(__('filament.hands_on_registrations.payment_status'))
                             ->options([
@@ -52,10 +62,6 @@ class HandsOnRegistrationForm
                                 'verified' => 'Verified',
                                 'rejected' => 'Rejected',
                             ]),
-                        TextInput::make('hands_on_total_amount')
-                            ->label(__('filament.hands_on_registrations.total_amount'))
-                            ->numeric()
-                            ->prefix('Rp'),
                         DateTimePicker::make('verified_at')
                             ->label(__('filament.hands_on_registrations.verified_at')),
                     ]),

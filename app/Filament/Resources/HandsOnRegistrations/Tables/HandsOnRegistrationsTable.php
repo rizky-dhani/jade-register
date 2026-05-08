@@ -2,56 +2,53 @@
 
 namespace App\Filament\Resources\HandsOnRegistrations\Tables;
 
-use App\Models\SeminarRegistration;
+use App\Models\HandsOnRegistration;
 use Filament\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Builder;
 
 class HandsOnRegistrationsTable
 {
     public static function configure(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn (Builder $query) => $query
+                ->join('seminar_registrations', 'hands_on_registrations.seminar_registration_id', '=', 'seminar_registrations.id')
+                ->join('hands_ons', 'hands_on_registrations.hands_on_id', '=', 'hands_ons.id')
+                ->orderBy('seminar_registrations.name_license')
+                ->orderBy('hands_ons.event_date')
+                ->select('hands_on_registrations.*'))
             ->columns([
-                TextColumn::make('registration_code')
+                TextColumn::make('seminarRegistration.registration_code')
                     ->label(__('filament.hands_on_registrations.registration_code'))
                     ->searchable()
-                    ->sortable(),
+                    ->sortable(query: fn (Builder $query, string $direction) => $query->orderBy('seminar_registrations.registration_code', $direction)),
 
-                TextColumn::make('name_license')
+                TextColumn::make('seminarRegistration.name_license')
                     ->label(__('filament.hands_on_registrations.participant'))
                     ->searchable()
-                    ->sortable(),
+                    ->sortable(query: fn (Builder $query, string $direction) => $query->orderBy('seminar_registrations.name_license', $direction)),
 
-                TextColumn::make('email')
+                TextColumn::make('seminarRegistration.email')
                     ->label(__('seminar.email'))
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                TextColumn::make('handsOnRegistrations')
+                TextColumn::make('handsOn.ho_code')
                     ->label(__('filament.hands_on_registrations.hands_on_event'))
-                    ->formatStateUsing(fn (SeminarRegistration $record): string => $record->handsOnRegistrations
-                        ->filter(fn ($reg) => $reg->handsOn)
-                        ->map(fn ($reg) => $reg->handsOn->ho_code
-                            ? "[{$reg->handsOn->ho_code}] {$reg->handsOn->name}"
-                            : $reg->handsOn->name)
-                        ->implode('<br>'))
-                    ->html(),
+                    ->searchable()
+                    ->sortable(query: fn (Builder $query, string $direction) => $query->orderBy('hands_ons.ho_code', $direction))
+                    ->formatStateUsing(fn (HandsOnRegistration $record): string => $record->handsOn
+                        ? "[{$record->handsOn->ho_code}] {$record->handsOn->name}"
+                        : ''),
 
-                TextColumn::make('handsOnRegistrations')
+                TextColumn::make('handsOn.event_date')
                     ->label(__('filament.hands_on_registrations.event_date'))
-                    ->formatStateUsing(fn (SeminarRegistration $record): string => $record->handsOnRegistrations
-                        ->filter(fn ($reg) => $reg->handsOn && $reg->handsOn->event_date)
-                        ->map(fn ($reg) => $reg->handsOn->event_date->format('F j, Y'))
-                        ->implode('<br>'))
-                    ->html(),
-
-                TextColumn::make('hands_on_total_amount')
-                    ->label(__('filament.hands_on_registrations.total_amount'))
-                    ->money('IDR')
-                    ->sortable(),
+                    ->date()
+                    ->sortable(query: fn (Builder $query, string $direction) => $query->orderBy('hands_ons.event_date', $direction)),
 
                 TextColumn::make('payment_status')
                     ->label(__('filament.hands_on_registrations.payment_status'))
@@ -82,13 +79,13 @@ class HandsOnRegistrationsTable
                 Action::make('viewPaymentProof')
                     ->label(__('filament.hands_on_registrations.view_payment_proof'))
                     ->icon('heroicon-o-photo')
-                    ->visible(fn (SeminarRegistration $record): bool => $record->payment_proof_path !== null)
+                    ->visible(fn (HandsOnRegistration $record): bool => $record->payment_proof_path !== null)
                     ->modalHeading(__('filament.hands_on_registrations.view_payment_proof'))
-                    ->modalContent(fn (SeminarRegistration $record): View => view(
+                    ->modalContent(fn (HandsOnRegistration $record): View => view(
                         'filament.modals.payment-proof',
                         ['record' => $record]
                     ))
-                    ->extraModalFooterActions(function (SeminarRegistration $record): array {
+                    ->extraModalFooterActions(function (HandsOnRegistration $record): array {
                         if ($record->payment_status === 'pending') {
                             return [
                                 Action::make('verifyPayment')
@@ -96,14 +93,8 @@ class HandsOnRegistrationsTable
                                     ->icon('heroicon-o-check-circle')
                                     ->color('warning')
                                     ->requiresConfirmation()
-                                    ->action(function (SeminarRegistration $record): void {
+                                    ->action(function (HandsOnRegistration $record): void {
                                         $record->update([
-                                            'payment_status' => 'verified',
-                                            'verified_at' => now(),
-                                        ]);
-
-                                        // Verify all associated pivot records
-                                        $record->handsOnRegistrations()->update([
                                             'payment_status' => 'verified',
                                             'verified_at' => now(),
                                         ]);
@@ -113,7 +104,6 @@ class HandsOnRegistrationsTable
 
                         return [];
                     }),
-            ])
-            ->defaultSort('created_at', 'desc');
+            ]);
     }
 }
