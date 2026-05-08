@@ -6,6 +6,7 @@ use App\Filament\Pages\Auth\AuthLogin;
 use App\Filament\Pages\Auth\EmailVerification\EmailVerificationPrompt;
 use App\Filament\Pages\Auth\Register;
 use App\Filament\Resources\Attendances\AttendanceResource;
+use App\Filament\Widgets\HandsOnParticipantCount;
 use App\Filament\Widgets\RegistrationActions;
 use App\Filament\Widgets\SeminarParticipantCount;
 use App\Filament\Widgets\VisitorCount;
@@ -53,6 +54,7 @@ class AdminPanelProvider extends PanelProvider
                 RegistrationActions::class,
                 VisitorCount::class,
                 SeminarParticipantCount::class,
+                HandsOnParticipantCount::class,
             ])
             ->navigationItems([
                 NavigationItem::make('Seminar Registration')
