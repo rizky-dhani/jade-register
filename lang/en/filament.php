@@ -248,7 +248,12 @@ return [
     'widgets.seminar_participant_count.total' => 'Total',
     'widgets.seminar_participant_count.all_registrations' => 'All registrations',
     'widgets.hands_on_participant_count' => 'Hands-On Participants',
+    'widgets.hands_on_participant_count.pending' => 'Pending',
+    'widgets.hands_on_participant_count.verified' => 'Verified',
     'widgets.visitor_count' => 'Visitors',
+    'widgets.visitor_count.day' => 'Day :day',
+    'widgets.visitor_count.not_checked_in' => 'Not checked in',
+    'widgets.visitor_count.checked_in' => 'Checked in',
 
     // Settings Form Labels
     'settings.form.key' => 'Setting Key',

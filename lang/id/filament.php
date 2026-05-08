@@ -247,7 +247,12 @@ return [
     'widgets.seminar_participant_count.total' => 'Total',
     'widgets.seminar_participant_count.all_registrations' => 'Semua pendaftaran',
     'widgets.hands_on_participant_count' => 'Peserta Hands On',
+    'widgets.hands_on_participant_count.pending' => 'Menunggu',
+    'widgets.hands_on_participant_count.verified' => 'Terverifikasi',
     'widgets.visitor_count' => 'Pengunjung',
+    'widgets.visitor_count.day' => 'Hari :day',
+    'widgets.visitor_count.not_checked_in' => 'Belum check-in',
+    'widgets.visitor_count.checked_in' => 'Sudah check-in',
 
     // Settings Form Labels
     'settings.form.key' => 'Kunci Pengaturan',

@@ -36,23 +36,23 @@ class VisitorCount extends StatsOverviewWidget
         $attendedDay3 = Visitor::whereDate('scanned_at', '2025-11-15')->count();
 
         return [
-            Stat::make('Day 1', (string) $unattendedDay1)
-                ->description('Not checked in')
+            Stat::make(__('filament.widgets.visitor_count.day', ['day' => 1]), (string) $unattendedDay1)
+                ->description(__('filament.widgets.visitor_count.not_checked_in'))
                 ->color('danger'),
-            Stat::make('Day 2', (string) $unattendedDay2)
-                ->description('Not checked in')
+            Stat::make(__('filament.widgets.visitor_count.day', ['day' => 2]), (string) $unattendedDay2)
+                ->description(__('filament.widgets.visitor_count.not_checked_in'))
                 ->color('danger'),
-            Stat::make('Day 3', (string) $unattendedDay3)
-                ->description('Not checked in')
+            Stat::make(__('filament.widgets.visitor_count.day', ['day' => 3]), (string) $unattendedDay3)
+                ->description(__('filament.widgets.visitor_count.not_checked_in'))
                 ->color('danger'),
-            Stat::make('Day 1', (string) $attendedDay1)
-                ->description('Checked in')
+            Stat::make(__('filament.widgets.visitor_count.day', ['day' => 1]), (string) $attendedDay1)
+                ->description(__('filament.widgets.visitor_count.checked_in'))
                 ->color('success'),
-            Stat::make('Day 2', (string) $attendedDay2)
-                ->description('Checked in')
+            Stat::make(__('filament.widgets.visitor_count.day', ['day' => 2]), (string) $attendedDay2)
+                ->description(__('filament.widgets.visitor_count.checked_in'))
                 ->color('success'),
-            Stat::make('Day 3', (string) $attendedDay3)
-                ->description('Checked in')
+            Stat::make(__('filament.widgets.visitor_count.day', ['day' => 3]), (string) $attendedDay3)
+                ->description(__('filament.widgets.visitor_count.checked_in'))
                 ->color('success'),
         ];
     }

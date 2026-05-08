@@ -50,7 +50,7 @@ class HandsOnParticipantCount extends StatsOverviewWidget
             $pendingTotal = $group->sum('pending_count');
 
             $stats[] = Stat::make($dateLabel, (string) $pendingTotal)
-                ->description('Pending')
+                ->description(__('filament.widgets.hands_on_participant_count.pending'))
                 ->color('warning')
                 ->url(HandsOnRegistrationResource::getUrl('index', [
                     'filters' => [
@@ -67,7 +67,7 @@ class HandsOnParticipantCount extends StatsOverviewWidget
             $verifiedTotal = $group->sum('verified_count');
 
             $stats[] = Stat::make($dateLabel, (string) $verifiedTotal)
-                ->description('Verified')
+                ->description(__('filament.widgets.hands_on_participant_count.verified'))
                 ->color('success')
                 ->url(HandsOnRegistrationResource::getUrl('index', [
                     'filters' => [
