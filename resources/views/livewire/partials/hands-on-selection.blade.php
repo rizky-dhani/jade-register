@@ -2,7 +2,7 @@
 <div class="space-y-6 px-3 sm:px-0">
     @foreach($availableHandsOn as $date => $events)
         <div>
-            <h4 class="font-semibold text-gray-800 mb-3">
+            <h4 class="text-lg font-semibold text-gray-800 mb-3">
                 @php
                     $dayMap = ['2026-11-13' => 1, '2026-11-14' => 2, '2026-11-15' => 3];
                     $dayNumber = $dayMap[$date] ?? \Carbon\Carbon::parse($date)->format('j');
