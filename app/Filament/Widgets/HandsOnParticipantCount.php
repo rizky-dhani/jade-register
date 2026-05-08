@@ -2,6 +2,7 @@
 
 namespace App\Filament\Widgets;
 
+use App\Filament\Resources\HandsOnRegistrations\HandsOnRegistrationResource;
 use App\Models\HandsOn;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
@@ -40,19 +41,35 @@ class HandsOnParticipantCount extends StatsOverviewWidget
         $stats = [];
 
         foreach ($handsOns as $group) {
-            $dateLabel = $group->first()->event_date->format('M j, Y');
+            $handsOn = $group->first();
+            $dateLabel = $handsOn->event_date->format('M j, Y');
+            $filterDate = $handsOn->event_date->format('Y-m-d');
             $pendingTotal = $group->sum('pending_count');
 
             $stats[] = Stat::make("Pending — {$dateLabel}", (string) $pendingTotal)
-                ->color('warning');
+                ->color('warning')
+                ->url(HandsOnRegistrationResource::getUrl('index', [
+                    'filters' => [
+                        'event_date' => ['value' => $filterDate],
+                        'payment_status' => ['value' => 'pending'],
+                    ],
+                ]));
         }
 
         foreach ($handsOns as $group) {
-            $dateLabel = $group->first()->event_date->format('M j, Y');
+            $handsOn = $group->first();
+            $dateLabel = $handsOn->event_date->format('M j, Y');
+            $filterDate = $handsOn->event_date->format('Y-m-d');
             $verifiedTotal = $group->sum('verified_count');
 
             $stats[] = Stat::make("Verified — {$dateLabel}", (string) $verifiedTotal)
-                ->color('success');
+                ->color('success')
+                ->url(HandsOnRegistrationResource::getUrl('index', [
+                    'filters' => [
+                        'event_date' => ['value' => $filterDate],
+                        'payment_status' => ['value' => 'verified'],
+                    ],
+                ]));
         }
 
         return $stats;
