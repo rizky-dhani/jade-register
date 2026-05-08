@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Visitor extends Model
 {
@@ -31,5 +32,10 @@ class Visitor extends Model
     public function markAsScanned(): void
     {
         $this->update(['scanned_at' => now()]);
+    }
+
+    public function visitorAttendances(): HasMany
+    {
+        return $this->hasMany(VisitorAttendance::class);
     }
 }

@@ -7,6 +7,7 @@ use App\Filament\Resources\Attendances\Pages\EditAttendance;
 use App\Filament\Resources\Attendances\Pages\ListAttendances;
 use App\Filament\Resources\Attendances\Pages\ListHandsOnAttendances;
 use App\Filament\Resources\Attendances\Pages\ListSeminarAttendances;
+use App\Filament\Resources\Attendances\Pages\ListVisitorAttendances;
 use App\Filament\Resources\Attendances\Schemas\AttendanceForm;
 use App\Filament\Resources\Attendances\Tables\AttendancesTable;
 use App\Models\Attendance;
@@ -66,6 +67,7 @@ class AttendanceResource extends Resource
             'index' => ListAttendances::route('/'),
             'seminar' => ListSeminarAttendances::route('/seminar'),
             'hands-on' => ListHandsOnAttendances::route('/hands-on'),
+            'visitor' => ListVisitorAttendances::route('/visitor'),
             'create' => CreateAttendance::route('/create'),
             'edit' => EditAttendance::route('/{record}/edit'),
         ];

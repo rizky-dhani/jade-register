@@ -10,7 +10,6 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Support\Icons\Heroicon;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
@@ -31,18 +30,6 @@ class VisitorsTable
                     ->searchable(),
                 TextColumn::make('affiliation')
                     ->searchable(),
-                IconColumn::make('scanned_at')
-                    ->label(__('filament.visitors.checked_in'))
-                    ->icon(fn (?Visitor $record): string => $record && $record->isScanned() ? Heroicon::SolidCheckCircle : Heroicon::OutlineXCircle)
-                    ->color(fn (?Visitor $record): string => $record && $record->isScanned() ? 'success' : 'danger'),
-                TextColumn::make('scanned_at')
-                    ->label(__('filament.visitors.checked_in_at'))
-                    ->dateTime()
-                    ->sortable()
-                    ->placeholder('Not checked in'),
-                TextColumn::make('created_at')
-                    ->sortable()
-                    ->dateTime(),
             ])
             ->filters([
                 //

@@ -72,7 +72,7 @@ class AdminPanelProvider extends PanelProvider
                     ->visible(fn () => auth()->user()?->hasRole('Participant') && auth()->user()?->seminarRegistrations()->where('payment_status', 'verified')->exists()),
                 NavigationItem::make('Seminar')
                     ->url(fn () => AttendanceResource::getUrl('seminar'))
-                    ->icon('heroicon-o-rectangle-stack')
+                    ->icon('heroicon-o-book-open')
                     ->group('Attendance')
                     ->isActiveWhen(fn (): bool => request()->routeIs('filament.dashboard.resources.attendances.seminar')),
                 NavigationItem::make('Hands On')
@@ -80,6 +80,11 @@ class AdminPanelProvider extends PanelProvider
                     ->icon('heroicon-o-wrench-screwdriver')
                     ->group('Attendance')
                     ->isActiveWhen(fn (): bool => request()->routeIs('filament.dashboard.resources.attendances.hands-on')),
+                NavigationItem::make('Visitor')
+                    ->url(fn () => AttendanceResource::getUrl('visitor'))
+                    ->icon('heroicon-o-users')
+                    ->group('Attendance')
+                    ->isActiveWhen(fn (): bool => request()->routeIs('filament.dashboard.resources.attendances.visitor')),
             ])
             ->navigationGroups([
                 'Attendance',
