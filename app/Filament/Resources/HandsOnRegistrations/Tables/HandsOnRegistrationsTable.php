@@ -4,11 +4,15 @@ namespace App\Filament\Resources\HandsOnRegistrations\Tables;
 
 use App\Models\HandsOnRegistration;
 use Filament\Actions\Action;
+use Filament\Actions\BulkAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 
 class HandsOnRegistrationsTable
 {
@@ -104,6 +108,21 @@ class HandsOnRegistrationsTable
 
                         return [];
                     }),
+            ])
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    BulkAction::make('verifyPayment')
+                        ->label(__('seminar.verify_payment'))
+                        ->icon('heroicon-o-check-circle')
+                        ->color('success')
+                        ->requiresConfirmation()
+                        ->deselectRecordsAfterCompletion()
+                        ->action(fn (Collection $records) => $records->each->update([
+                            'payment_status' => 'verified',
+                            'verified_at' => now(),
+                        ])),
+                    DeleteBulkAction::make(),
+                ]),
             ]);
     }
 }
