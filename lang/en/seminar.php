@@ -456,6 +456,11 @@ return [
     'seminar_registration_report' => 'Seminar Registration Report',
     'seminar_registration_navigation' => 'Seminar Registration',
     'seminar_registration_description' => 'Overview of seminar registrations and package distribution',
+
+    // Hands-On Report
+    'hands_on_registration_report' => 'Hands On Registration Report',
+    'hands_on_registration_navigation' => 'Hands On Registration',
+    'hands_on_registration_description' => 'Overview of hands-on registrations and payment status',
     'total_participants_description' => 'Total registered participants',
     'verified_payments_description' => 'Payments verified',
     'pending_payments_description' => 'Awaiting payment verification',

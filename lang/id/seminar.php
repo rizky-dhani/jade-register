@@ -455,6 +455,11 @@ return [
     'seminar_registration_report' => 'Laporan Pendaftaran Seminar',
     'seminar_registration_navigation' => 'Pendaftaran Seminar',
     'seminar_registration_description' => 'Ringkasan pendaftaran seminar dan distribusi paket',
+
+    // Hands-On Report
+    'hands_on_registration_report' => 'Laporan Pendaftaran Hands On',
+    'hands_on_registration_navigation' => 'Pendaftaran Hands On',
+    'hands_on_registration_description' => 'Ringkasan pendaftaran hands-on dan status pembayaran',
     'total_participants_description' => 'Total peserta terdaftar',
     'verified_payments_description' => 'Pembayaran terverifikasi',
     'pending_payments_description' => 'Menunggu verifikasi pembayaran',

@@ -42,11 +42,12 @@ class HandsOnParticipantCount extends StatsOverviewWidget
 
         foreach ($handsOns as $group) {
             $handsOn = $group->first();
-            $dateLabel = $handsOn->event_date->format('M j, Y');
+            $dateLabel = $handsOn->event_date->format('d M Y');
             $filterDate = $handsOn->event_date->format('Y-m-d');
             $pendingTotal = $group->sum('pending_count');
 
-            $stats[] = Stat::make("Pending — {$dateLabel}", (string) $pendingTotal)
+            $stats[] = Stat::make($dateLabel, (string) $pendingTotal)
+                ->description('Pending')
                 ->color('warning')
                 ->url(HandsOnRegistrationResource::getUrl('index', [
                     'filters' => [
@@ -58,11 +59,12 @@ class HandsOnParticipantCount extends StatsOverviewWidget
 
         foreach ($handsOns as $group) {
             $handsOn = $group->first();
-            $dateLabel = $handsOn->event_date->format('M j, Y');
+            $dateLabel = $handsOn->event_date->format('d M Y');
             $filterDate = $handsOn->event_date->format('Y-m-d');
             $verifiedTotal = $group->sum('verified_count');
 
-            $stats[] = Stat::make("Verified — {$dateLabel}", (string) $verifiedTotal)
+            $stats[] = Stat::make($dateLabel, (string) $verifiedTotal)
+                ->description('Verified')
                 ->color('success')
                 ->url(HandsOnRegistrationResource::getUrl('index', [
                     'filters' => [

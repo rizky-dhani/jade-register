@@ -17,18 +17,40 @@ class VisitorCount extends StatsOverviewWidget
         return ! auth()->user()?->hasRole('Participant');
     }
 
+    protected function getColumns(): int
+    {
+        return 3;
+    }
+
     protected function getStats(): array
     {
-        $day1 = Visitor::whereDate('created_at', '2025-11-13')->count();
-        $day2 = Visitor::whereDate('created_at', '2025-11-14')->count();
-        $day3 = Visitor::whereDate('created_at', '2025-11-15')->count();
-        $total = Visitor::count();
+        $unattendedDay1 = Visitor::whereDate('created_at', '2025-11-13')->whereNull('scanned_at')->count();
+        $unattendedDay2 = Visitor::whereDate('created_at', '2025-11-14')->whereNull('scanned_at')->count();
+        $unattendedDay3 = Visitor::whereDate('created_at', '2025-11-15')->whereNull('scanned_at')->count();
+
+        $attendedDay1 = Visitor::whereDate('scanned_at', '2025-11-13')->count();
+        $attendedDay2 = Visitor::whereDate('scanned_at', '2025-11-14')->count();
+        $attendedDay3 = Visitor::whereDate('scanned_at', '2025-11-15')->count();
 
         return [
-            Stat::make('Day 1', (string) $day1),
-            Stat::make('Day 2', (string) $day2),
-            Stat::make('Day 3', (string) $day3),
-            Stat::make('Total', (string) $total),
+            Stat::make('Day 1', (string) $unattendedDay1)
+                ->description('Not checked in')
+                ->color('danger'),
+            Stat::make('Day 2', (string) $unattendedDay2)
+                ->description('Not checked in')
+                ->color('danger'),
+            Stat::make('Day 3', (string) $unattendedDay3)
+                ->description('Not checked in')
+                ->color('danger'),
+            Stat::make('Day 1', (string) $attendedDay1)
+                ->description('Checked in')
+                ->color('success'),
+            Stat::make('Day 2', (string) $attendedDay2)
+                ->description('Checked in')
+                ->color('success'),
+            Stat::make('Day 3', (string) $attendedDay3)
+                ->description('Checked in')
+                ->color('success'),
         ];
     }
 }
