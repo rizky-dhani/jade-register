@@ -302,6 +302,7 @@ class SeminarRegistrationsTable
                         ->color('warning')
                         ->requiresConfirmation()
                         ->deselectRecordsAfterCompletion()
+                        ->successNotificationTitle(__('seminar.bulk_payment_verified'))
                         ->action(function (Collection $records): void {
                             foreach ($records as $record) {
                                 if ($record instanceof SeminarRegistration && $record->payment_status === 'pending') {
