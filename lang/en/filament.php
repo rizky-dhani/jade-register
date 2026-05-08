@@ -237,6 +237,19 @@ return [
     'notifications.setting_deleted_title' => 'Setting Deleted',
     'notifications.setting_deleted_body' => 'The setting has been deleted successfully.',
 
+    // Widgets
+    'widgets.seminar_participant_count' => 'Seminar Participants',
+    'widgets.seminar_participant_count.pending' => 'Pending',
+    'widgets.seminar_participant_count.no_payment_proof' => 'No payment proof',
+    'widgets.seminar_participant_count.need_to_be_checked' => 'Need to be Checked',
+    'widgets.seminar_participant_count.awaiting_verification' => 'Awaiting verification',
+    'widgets.seminar_participant_count.verified' => 'Verified',
+    'widgets.seminar_participant_count.payments_verified' => 'Payments verified',
+    'widgets.seminar_participant_count.total' => 'Total',
+    'widgets.seminar_participant_count.all_registrations' => 'All registrations',
+    'widgets.hands_on_participant_count' => 'Hands-On Participants',
+    'widgets.visitor_count' => 'Visitors',
+
     // Settings Form Labels
     'settings.form.key' => 'Setting Key',
     'settings.form.key_helper' => 'Unique identifier for this setting (e.g., max_participants)',

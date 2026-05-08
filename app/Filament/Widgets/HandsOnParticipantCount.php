@@ -9,9 +9,12 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class HandsOnParticipantCount extends StatsOverviewWidget
 {
-    protected ?string $heading = 'Hands-On Participants';
+    protected static ?int $sort = 2;
 
-    protected static ?int $sort = 3;
+    public function getHeading(): string
+    {
+        return __('filament.widgets.hands_on_participant_count');
+    }
 
     public static function canView(): bool
     {

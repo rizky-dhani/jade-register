@@ -236,6 +236,19 @@ return [
     'notifications.setting_deleted_title' => 'Pengaturan Dihapus',
     'notifications.setting_deleted_body' => 'Pengaturan berhasil dihapus.',
 
+    // Widgets
+    'widgets.seminar_participant_count' => 'Peserta Seminar',
+    'widgets.seminar_participant_count.pending' => 'Menunggu',
+    'widgets.seminar_participant_count.no_payment_proof' => 'Belum ada bukti bayar',
+    'widgets.seminar_participant_count.need_to_be_checked' => 'Perlu Diperiksa',
+    'widgets.seminar_participant_count.awaiting_verification' => 'Menunggu verifikasi',
+    'widgets.seminar_participant_count.verified' => 'Terverifikasi',
+    'widgets.seminar_participant_count.payments_verified' => 'Pembayaran terverifikasi',
+    'widgets.seminar_participant_count.total' => 'Total',
+    'widgets.seminar_participant_count.all_registrations' => 'Semua pendaftaran',
+    'widgets.hands_on_participant_count' => 'Peserta Hands On',
+    'widgets.visitor_count' => 'Pengunjung',
+
     // Settings Form Labels
     'settings.form.key' => 'Kunci Pengaturan',
     'settings.form.key_helper' => 'Pengenal unik untuk pengaturan ini (misalnya, max_participants)',

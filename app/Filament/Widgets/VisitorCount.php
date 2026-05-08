@@ -8,9 +8,12 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class VisitorCount extends StatsOverviewWidget
 {
-    protected ?string $heading = 'Visitors';
+    protected static ?int $sort = 3;
 
-    protected static ?int $sort = 1;
+    public function getHeading(): string
+    {
+        return __('filament.widgets.visitor_count');
+    }
 
     public static function canView(): bool
     {
