@@ -117,11 +117,13 @@ class HandsOnRegistrationsTable
                         ->color('success')
                         ->requiresConfirmation()
                         ->deselectRecordsAfterCompletion()
+                        ->visible(fn (): bool => auth()->user()?->hasRole('Super Admin') ?? false)
                         ->action(fn (Collection $records) => $records->each->update([
                             'payment_status' => 'verified',
                             'verified_at' => now(),
                         ])),
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->visible(fn (): bool => auth()->user()?->hasRole('Super Admin') ?? false),
                 ]),
             ]);
     }
