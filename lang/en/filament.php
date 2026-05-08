@@ -79,6 +79,8 @@ return [
     'attendance.check_in_status' => 'Check-in Status',
     'attendance.hands_on_session' => 'Hands On Session',
     'attendance.not_checked_in' => 'Not Checked In',
+    'attendance.visitor' => 'Visitor',
+    'attendance.title_visitor' => 'Visitor Attendance',
 
     // Countries
     'countries.code' => 'Code',

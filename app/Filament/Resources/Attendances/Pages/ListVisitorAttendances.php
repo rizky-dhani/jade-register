@@ -13,8 +13,6 @@ class ListVisitorAttendances extends ListRecords
 {
     protected static string $resource = AttendanceResource::class;
 
-    protected static ?string $title = 'Visitor Attendance';
-
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static string|\BackedEnum|null $activeNavigationIcon = 'heroicon-s-rectangle-stack';
@@ -22,6 +20,11 @@ class ListVisitorAttendances extends ListRecords
     protected static string|\UnitEnum|null $navigationGroup = 'Attendance';
 
     protected static ?int $navigationSort = 3;
+
+    public function getTitle(): string
+    {
+        return __('filament.attendance.title_visitor');
+    }
 
     protected function getTableQuery(): Builder
     {

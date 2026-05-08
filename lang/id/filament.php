@@ -79,6 +79,8 @@ return [
     'attendance.check_in_status' => 'Status Check-in',
     'attendance.hands_on_session' => 'Sesi Hands On',
     'attendance.not_checked_in' => 'Belum Check-in',
+    'attendance.visitor' => 'Pengunjung',
+    'attendance.title_visitor' => 'Kehadiran Pengunjung',
 
     // Countries
     'countries.code' => 'Kode',

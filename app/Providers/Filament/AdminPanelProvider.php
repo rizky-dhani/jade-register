@@ -80,7 +80,7 @@ class AdminPanelProvider extends PanelProvider
                     ->icon('heroicon-o-wrench-screwdriver')
                     ->group('Attendance')
                     ->isActiveWhen(fn (): bool => request()->routeIs('filament.dashboard.resources.attendances.hands-on')),
-                NavigationItem::make('Visitor')
+                NavigationItem::make(__('filament.attendance.visitor'))
                     ->url(fn () => AttendanceResource::getUrl('visitor'))
                     ->icon('heroicon-o-users')
                     ->group('Attendance')
