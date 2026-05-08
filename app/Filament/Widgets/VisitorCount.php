@@ -36,22 +36,22 @@ class VisitorCount extends StatsOverviewWidget
         $attendedDay3 = Visitor::whereDate('scanned_at', '2025-11-15')->count();
 
         return [
-            Stat::make(__('filament.widgets.visitor_count.day', ['day' => 1]), (string) $unattendedDay1)
+            Stat::make(__('filament.widgets.visitor_count.day_1'), (string) $unattendedDay1)
                 ->description(__('filament.widgets.visitor_count.not_checked_in'))
                 ->color('danger'),
-            Stat::make(__('filament.widgets.visitor_count.day', ['day' => 2]), (string) $unattendedDay2)
+            Stat::make(__('filament.widgets.visitor_count.day_2'), (string) $unattendedDay2)
                 ->description(__('filament.widgets.visitor_count.not_checked_in'))
                 ->color('danger'),
-            Stat::make(__('filament.widgets.visitor_count.day', ['day' => 3]), (string) $unattendedDay3)
+            Stat::make(__('filament.widgets.visitor_count.day_3'), (string) $unattendedDay3)
                 ->description(__('filament.widgets.visitor_count.not_checked_in'))
                 ->color('danger'),
-            Stat::make(__('filament.widgets.visitor_count.day', ['day' => 1]), (string) $attendedDay1)
+            Stat::make(__('filament.widgets.visitor_count.day_1'), (string) $attendedDay1)
                 ->description(__('filament.widgets.visitor_count.checked_in'))
                 ->color('success'),
-            Stat::make(__('filament.widgets.visitor_count.day', ['day' => 2]), (string) $attendedDay2)
+            Stat::make(__('filament.widgets.visitor_count.day_2'), (string) $attendedDay2)
                 ->description(__('filament.widgets.visitor_count.checked_in'))
                 ->color('success'),
-            Stat::make(__('filament.widgets.visitor_count.day', ['day' => 3]), (string) $attendedDay3)
+            Stat::make(__('filament.widgets.visitor_count.day_3'), (string) $attendedDay3)
                 ->description(__('filament.widgets.visitor_count.checked_in'))
                 ->color('success'),
         ];

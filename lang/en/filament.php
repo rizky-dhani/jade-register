@@ -251,7 +251,9 @@ return [
     'widgets.hands_on_participant_count.pending' => 'Pending',
     'widgets.hands_on_participant_count.verified' => 'Verified',
     'widgets.visitor_count' => 'Visitors',
-    'widgets.visitor_count.day' => 'Day :day',
+    'widgets.visitor_count.day_1' => 'Day 1',
+    'widgets.visitor_count.day_2' => 'Day 2',
+    'widgets.visitor_count.day_3' => 'Day 3',
     'widgets.visitor_count.not_checked_in' => 'Not checked in',
     'widgets.visitor_count.checked_in' => 'Checked in',
 

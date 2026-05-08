@@ -250,7 +250,9 @@ return [
     'widgets.hands_on_participant_count.pending' => 'Menunggu',
     'widgets.hands_on_participant_count.verified' => 'Terverifikasi',
     'widgets.visitor_count' => 'Pengunjung',
-    'widgets.visitor_count.day' => 'Hari :day',
+    'widgets.visitor_count.day_1' => 'Hari Pertama',
+    'widgets.visitor_count.day_2' => 'Hari Kedua',
+    'widgets.visitor_count.day_3' => 'Hari Ketiga',
     'widgets.visitor_count.not_checked_in' => 'Belum check-in',
     'widgets.visitor_count.checked_in' => 'Sudah check-in',
 
