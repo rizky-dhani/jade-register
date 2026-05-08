@@ -39,16 +39,16 @@ class HandsOnParticipantCount extends StatsOverviewWidget
 
         $stats = [];
 
-        foreach ($handsOns as $date => $group) {
-            $dateLabel = $date->format('M j, Y');
+        foreach ($handsOns as $group) {
+            $dateLabel = $group->first()->event_date->format('M j, Y');
             $pendingTotal = $group->sum('pending_count');
 
             $stats[] = Stat::make("Pending — {$dateLabel}", (string) $pendingTotal)
                 ->color('warning');
         }
 
-        foreach ($handsOns as $date => $group) {
-            $dateLabel = $date->format('M j, Y');
+        foreach ($handsOns as $group) {
+            $dateLabel = $group->first()->event_date->format('M j, Y');
             $verifiedTotal = $group->sum('verified_count');
 
             $stats[] = Stat::make("Verified — {$dateLabel}", (string) $verifiedTotal)
