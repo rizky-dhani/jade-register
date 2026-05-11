@@ -90,7 +90,7 @@ class HandsOnRegistrationsTable
                     ])
                     ->query(fn (Builder $query, array $data) => $query->when(
                         $data['value'],
-                        fn (Builder $query, string $value) => $query->where('hands_ons.event_date', $value),
+                        fn (Builder $query, string $value) => $query->whereDate('hands_ons.event_date', $value),
                     )),
                 SelectFilter::make('payment_status')
                     ->label(__('filament.hands_on_registrations.payment_status'))
