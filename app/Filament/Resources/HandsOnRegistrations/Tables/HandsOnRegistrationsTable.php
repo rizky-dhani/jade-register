@@ -61,7 +61,28 @@ class HandsOnRegistrationsTable
 
                 TextColumn::make('seminar_price')
                     ->label(__('filament.hands_on_registrations.seminar_price'))
-                    ->state(fn (HandsOnRegistration $record): ?string => $record->seminarRegistration?->formatted_amount)
+                    ->state(fn (HandsOnRegistration $record): ?string => $record->seminarRegistration?->seminarPackage?->formatted_current_price)
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('hands_on_price')
+                    ->label(__('filament.hands_on_registrations.hands_on_price'))
+                    ->state(fn (HandsOnRegistration $record): ?string => $record->handsOn?->formatted_original_price)
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('total_price')
+                    ->label(__('filament.hands_on_registrations.total_price'))
+                    ->state(function (HandsOnRegistration $record): ?string {
+                        $seminarAmount = $record->seminarRegistration?->amount ?? 0;
+                        $handsOnPrice = $record->handsOn?->current_price ?? 0;
+                        $total = $seminarAmount + $handsOnPrice;
+                        $currency = $record->seminarRegistration?->currency ?? 'IDR';
+
+                        if ($currency === 'USD') {
+                            return '$'.number_format($total, 2);
+                        }
+
+                        return 'Rp '.number_format($total, 0, ',', '.');
+                    })
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('payment_status')

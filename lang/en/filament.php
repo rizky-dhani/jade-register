@@ -127,6 +127,8 @@ return [
     'hands_on_registrations.total_amount' => 'Total Amount',
     'hands_on_registrations.seminar_name' => 'Seminar Name',
     'hands_on_registrations.seminar_price' => 'Seminar Price',
+    'hands_on_registrations.hands_on_price' => 'Hands On Price',
+    'hands_on_registrations.total_price' => 'Total Price',
 
     // Poster Evaluations
     'poster_evaluations.poster' => 'Poster',

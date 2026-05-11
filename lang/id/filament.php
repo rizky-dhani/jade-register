@@ -127,6 +127,8 @@ return [
     'hands_on_registrations.total_amount' => 'Total Jumlah',
     'hands_on_registrations.seminar_name' => 'Nama Seminar',
     'hands_on_registrations.seminar_price' => 'Harga Seminar',
+    'hands_on_registrations.hands_on_price' => 'Harga Hands On',
+    'hands_on_registrations.total_price' => 'Harga Total',
 
     // Poster Evaluations
     'poster_evaluations.poster' => 'Poster',
