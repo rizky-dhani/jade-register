@@ -350,6 +350,7 @@ return [
     'verified_by' => 'Diverifikasi Oleh',
     'verified_at' => 'Tanggal Verifikasi',
     'hands_on_registrations' => 'Pendaftaran Hands On',
+    'registered_hands_on' => 'Hands On Terdaftar',
     'hands_on_total_amount' => 'Total Hands On',
     'wants_hands_on' => 'Ingin Mengikuti Hands On',
     'payment_pending' => 'Pembayaran Menunggu',

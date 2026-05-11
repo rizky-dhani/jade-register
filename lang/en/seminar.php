@@ -351,6 +351,7 @@ return [
     'verified_by' => 'Verified By',
     'verified_at' => 'Verified At',
     'hands_on_registrations' => 'Hands On Registrations',
+    'registered_hands_on' => 'Registered Hands-On',
     'hands_on_total_amount' => 'Hands On Total Amount',
     'wants_hands_on' => 'Wants Hands On',
     'payment_pending' => 'Payment Pending',

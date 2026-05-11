@@ -24,7 +24,7 @@ class SeminarRegistrationsTable
     {
         return $table
             ->modifyQueryUsing(fn (Builder $query) => $query
-                ->with(['country', 'seminarPackage', 'addonRegistrations.addon']))
+                ->with(['country', 'seminarPackage', 'addonRegistrations.addon', 'handsOnRegistrations.handsOn']))
             ->defaultSort('registration_code', 'desc')
             ->columns([
                 TextColumn::make('registration_code')
@@ -154,6 +154,15 @@ class SeminarRegistrationsTable
                         ? 'success'
                         : 'gray')
                     ->visible(fn (): bool => auth()->user()?->hasRole('Super Admin') ?? false),
+                TextColumn::make('registered_hands_on')
+                    ->label(__('seminar.registered_hands_on'))
+                    ->badge()
+                    ->color('primary')
+                    ->state(fn (SeminarRegistration $record): array => $record->handsOnRegistrations
+                        ->map(fn ($reg): ?string => $reg->handsOn?->ho_code)
+                        ->filter()
+                        ->values()
+                        ->toArray()),
                 TextColumn::make('addons')
                     ->label(__('seminar.available_addons'))
                     ->badge()
