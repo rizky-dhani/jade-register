@@ -145,6 +145,11 @@ return [
     'register_here' => 'Register here',
     'not_registered_yet' => 'Not registered yet?',
     'register_new' => 'Register here',
+    'save_selections' => 'Save Selections',
+    'saving_selections' => 'Saving...',
+    'no_new_selections' => 'No new selections were made. Please select at least one add-on or Hands On session.',
+    'submission_error' => 'An error occurred while saving your selections. Please try again.',
+    'selections_saved' => 'Your selections have been saved successfully!',
 
     // Hands On
     'hands_on_sessions' => 'Hands On Sessions',

@@ -145,6 +145,11 @@ return [
     'register_here' => 'Daftar di sini',
     'not_registered_yet' => 'Belum terdaftar?',
     'register_new' => 'Daftar di sini',
+    'save_selections' => 'Simpan Pilihan',
+    'saving_selections' => 'Menyimpan...',
+    'no_new_selections' => 'Tidak ada pilihan baru yang dibuat. Silakan pilih setidaknya satu add-on atau sesi Hands On.',
+    'submission_error' => 'Terjadi kesalahan saat menyimpan pilihan Anda. Silakan coba lagi.',
+    'selections_saved' => 'Pilihan Anda berhasil disimpan!',
 
     // Hands On
     'hands_on_sessions' => 'Sesi Hands On',

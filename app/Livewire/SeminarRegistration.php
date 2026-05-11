@@ -486,6 +486,130 @@ class SeminarRegistration extends Component
         }
     }
 
+    public function submitExistingRegistration(): void
+    {
+        // Prevent duplicate submissions
+        if ($this->isSubmitting) {
+            return;
+        }
+
+        if (! $this->existingRegistration) {
+            return;
+        }
+
+        $registration = $this->existingRegistration;
+
+        // Only allow selections for verified registrations
+        if ($registration->payment_status !== 'verified') {
+            return;
+        }
+
+        // Validate hands-on availability
+        if ($this->wants_hands_on && ! empty($this->selectedHandsOn)) {
+            foreach ($this->selectedHandsOn as $date => $eventId) {
+                if ($eventId) {
+                    $event = HandsOn::find($eventId);
+                    if ($event) {
+                        if ($event->isFull()) {
+                            $this->addError('selectedHandsOn.'.$date, __('seminar.session_full'));
+
+                            return;
+                        }
+                        if ($event->remaining_stock <= 0) {
+                            $this->addError('selectedHandsOn.'.$date, __('seminar.session_stock_limit'));
+
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+
+        $this->isSubmitting = true;
+
+        try {
+            DB::transaction(function () use ($registration) {
+                $hasNewSelections = false;
+
+                // Create Hands On registrations for newly selected sessions
+                if (! empty($this->selectedHandsOn)) {
+                    foreach ($this->selectedHandsOn as $date => $eventId) {
+                        if ($eventId) {
+                            $alreadyRegistered = HandsOnRegistration::where('seminar_registration_id', $registration->id)
+                                ->where('hands_on_id', $eventId)
+                                ->exists();
+
+                            if (! $alreadyRegistered) {
+                                HandsOnRegistration::create([
+                                    'seminar_registration_id' => $registration->id,
+                                    'hands_on_id' => $eventId,
+                                    'registration_type' => 'combined',
+                                    'payment_status' => 'pending',
+                                    'payment_proof_path' => $registration->payment_proof_path,
+                                ]);
+                                $hasNewSelections = true;
+                            }
+                        }
+                    }
+                }
+
+                // Create Addon registrations for newly selected add-ons
+                if (! empty($this->selectedAddons)) {
+                    foreach ($this->selectedAddons as $addonCode => $selected) {
+                        if ($selected) {
+                            $addon = Addon::where('code', $addonCode)->first();
+                            if ($addon) {
+                                $alreadyPurchased = $registration->addonRegistrations()
+                                    ->whereHas('addon', fn ($q) => $q->where('code', $addonCode))
+                                    ->where('payment_status', 'verified')
+                                    ->exists();
+
+                                if (! $alreadyPurchased) {
+                                    AddonRegistration::create([
+                                        'seminar_registration_id' => $registration->id,
+                                        'addon_id' => $addon->id,
+                                        'amount' => $addon->price,
+                                        'currency' => $addon->currency,
+                                        'payment_proof_path' => $registration->payment_proof_path,
+                                        'payment_status' => 'pending',
+                                    ]);
+                                    $hasNewSelections = true;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (! $hasNewSelections) {
+                    throw new \Exception(__('seminar.no_new_selections'));
+                }
+            });
+        } catch (\Exception $e) {
+            $this->isSubmitting = false;
+
+            if ($e->getMessage() === __('seminar.no_new_selections')) {
+                $this->addError('existing', __('seminar.no_new_selections'));
+
+                return;
+            }
+
+            \Log::error('Existing registration submission failed', [
+                'error' => $e->getMessage(),
+                'registration_id' => $registration->id,
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            session()->flash('error', __('seminar.submission_error'));
+
+            return;
+        }
+
+        $this->isSubmitting = false;
+
+        session()->flash('success', __('seminar.selections_saved'));
+        $this->redirectRoute('register.seminar.success', ['id' => $registration->id], navigate: true);
+    }
+
     public static function isRegistrationOpen(): bool
     {
         // Super Admin and Admin bypass the registration toggle

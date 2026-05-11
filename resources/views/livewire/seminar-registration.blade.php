@@ -212,6 +212,24 @@
 
                         @include('livewire.partials.hands-on-selection', ['isSeparate' => true])
                     </div>
+
+                    {{-- Error message for no selections --}}
+                    @error('existing')
+                        <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
+                    @enderror
+
+                    {{-- Submit button for existing registration selections --}}
+                    <button type="button" wire:click="submitExistingRegistration"
+                        wire:loading.attr="disabled"
+                        wire:target="submitExistingRegistration"
+                        class="w-full bg-green-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                        <span wire:loading.remove wire:target="submitExistingRegistration">
+                            {{ __('seminar.save_selections') }}
+                        </span>
+                        <span wire:loading wire:target="submitExistingRegistration">
+                            {{ __('seminar.saving_selections') }}
+                        </span>
+                    </button>
                 @else
                     <p class="text-yellow-700">{{ __('seminar.complete_payment_first') }}</p>
                 @endif
