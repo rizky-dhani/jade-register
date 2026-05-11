@@ -3,9 +3,9 @@
 namespace App\Filament\Resources\HandsOnRegistrations\Schemas;
 
 use Filament\Forms\Components\DateTimePicker;
-use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Schema;
 
 class HandsOnRegistrationForm
