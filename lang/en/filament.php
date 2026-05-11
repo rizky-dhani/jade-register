@@ -125,6 +125,8 @@ return [
     'hands_on_registrations.registration_type' => 'Registration Type',
     'hands_on_registrations.payment_proof' => 'Payment Proof',
     'hands_on_registrations.total_amount' => 'Total Amount',
+    'hands_on_registrations.seminar_name' => 'Seminar Name',
+    'hands_on_registrations.seminar_price' => 'Seminar Price',
 
     // Poster Evaluations
     'poster_evaluations.poster' => 'Poster',

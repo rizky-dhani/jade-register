@@ -54,6 +54,16 @@ class HandsOnRegistrationsTable
                     ->date()
                     ->sortable(query: fn (Builder $query, string $direction) => $query->orderBy('hands_ons.event_date', $direction)),
 
+                TextColumn::make('seminar_name')
+                    ->label(__('filament.hands_on_registrations.seminar_name'))
+                    ->state(fn (HandsOnRegistration $record): ?string => $record->seminarRegistration?->selected_seminar_label)
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('seminar_price')
+                    ->label(__('filament.hands_on_registrations.seminar_price'))
+                    ->state(fn (HandsOnRegistration $record): ?string => $record->seminarRegistration?->formatted_amount)
+                    ->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('payment_status')
                     ->label(__('filament.hands_on_registrations.payment_status'))
                     ->badge()
