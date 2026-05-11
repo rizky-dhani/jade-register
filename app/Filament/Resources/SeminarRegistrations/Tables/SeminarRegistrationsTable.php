@@ -81,6 +81,22 @@ class SeminarRegistrationsTable
                     ->searchable(),
                 TextColumn::make('selected_seminar_label')
                     ->label(__('seminar.seminar_package'))
+                    ->state(function (SeminarRegistration $record): string {
+                        $seminar = $record->seminarPackage;
+                        if (! $seminar) {
+                            return $record->selected_seminar ?? 'N/A';
+                        }
+
+                        // Check if early bird was active at the time of registration
+                        $wasEarlyBirdActive = $seminar->early_bird_deadline !== null
+                            && $record->created_at < $seminar->early_bird_deadline;
+
+                        $price = $wasEarlyBirdActive && $seminar->discounted_price
+                            ? $seminar->formatted_discounted_price.' (Early Bird)'
+                            : $seminar->formatted_original_price;
+
+                        return "{$seminar->name} ({$price})";
+                    })
                     ->searchable(query: function (Builder $query, string $search): Builder {
                         return $query->where(function (Builder $q) use ($search) {
                             $q->whereHas('seminarPackage', function (Builder $sq) use ($search) {
@@ -95,6 +111,30 @@ class SeminarRegistrationsTable
                             $sq->orderBy('name', $isAscending ? 'asc' : 'desc');
                         });
                     }),
+                TextColumn::make('registered_hands_on')
+                    ->label(__('seminar.registered_hands_on'))
+                    ->badge()
+                    ->color('primary')
+                    ->state(fn (SeminarRegistration $record): array => $record->handsOnRegistrations
+                        ->map(function ($reg) use ($record): ?string {
+                            $handsOn = $reg->handsOn;
+                            if (! $handsOn) {
+                                return null;
+                            }
+
+                            // Check if early bird was active at the time of registration
+                            $wasEarlyBirdActive = $handsOn->early_bird_deadline !== null
+                                && $record->created_at < $handsOn->early_bird_deadline;
+
+                            $price = $wasEarlyBirdActive && $handsOn->discounted_price
+                                ? $handsOn->formatted_discounted_price.' (Early Bird)'
+                                : $handsOn->formatted_original_price;
+
+                            return "{$handsOn->ho_code} ({$price})";
+                        })
+                        ->filter()
+                        ->values()
+                        ->toArray()),
                 TextColumn::make('payment_status')
                     ->label(__('seminar.payment_status'))
                     ->badge()
@@ -130,39 +170,6 @@ class SeminarRegistrationsTable
                     ->label(__('seminar.pdgi_branch'))
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('seminar_price')
-                    ->label(__('seminar.package_price'))
-                    ->state(function (SeminarRegistration $record): ?string {
-                        $seminar = $record->seminarPackage;
-                        if (! $seminar) {
-                            return null;
-                        }
-
-                        // Check if early bird was active at the time of registration
-                        $wasEarlyBirdActive = $seminar->early_bird_deadline !== null
-                            && $record->created_at < $seminar->early_bird_deadline;
-
-                        if ($wasEarlyBirdActive && $seminar->discounted_price) {
-                            return "{$seminar->formatted_discounted_price} (Early Bird)";
-                        }
-
-                        return $seminar->formatted_original_price;
-                    })
-                    ->badge()
-                    ->color(fn (SeminarRegistration $record): string => $record->seminarPackage?->early_bird_deadline !== null
-                        && $record->created_at < $record->seminarPackage->early_bird_deadline
-                        ? 'success'
-                        : 'gray')
-                    ->visible(fn (): bool => auth()->user()?->hasRole('Super Admin') ?? false),
-                TextColumn::make('registered_hands_on')
-                    ->label(__('seminar.registered_hands_on'))
-                    ->badge()
-                    ->color('primary')
-                    ->state(fn (SeminarRegistration $record): array => $record->handsOnRegistrations
-                        ->map(fn ($reg): ?string => $reg->handsOn?->ho_code)
-                        ->filter()
-                        ->values()
-                        ->toArray()),
                 TextColumn::make('addons')
                     ->label(__('seminar.available_addons'))
                     ->badge()
