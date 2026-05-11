@@ -296,7 +296,8 @@ return [
     // Table Actions
     'pending' => 'Pending',
     'verified' => 'Verified',
-    'view_payment_proof' => 'View Payment Proof',
+    'view_payment_proof_seminar' => 'View Payment Proof (Seminar)',
+    'view_payment_proof_hands_on' => 'View Payment Proof (Hands On)',
     'upload_payment_proof' => 'Upload Payment Proof',
     'verify_payment' => 'Verify Payment',
     'bulk_verify_payment' => 'Verify Selected Payments',

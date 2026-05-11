@@ -262,11 +262,11 @@ class SeminarRegistrationsTable
                         ]);
                     }),
                 Action::make('viewPaymentProof')
-                    ->label(__('seminar.view_payment_proof'))
+                    ->label(__('seminar.view_payment_proof_seminar'))
                     ->icon('heroicon-o-photo')
                     ->color('info')
                     ->visible(fn (SeminarRegistration $record): bool => $record->payment_proof_path !== null)
-                    ->modalHeading(__('seminar.view_payment_proof'))
+                    ->modalHeading(__('seminar.view_payment_proof_seminar'))
                     ->slideOver()
                     ->modalContent(function (SeminarRegistration $record) {
                         $url = asset('storage/'.$record->payment_proof_path);
@@ -296,6 +296,55 @@ class SeminarRegistrationsTable
                         }
 
                         return [];
+                    }),
+                Action::make('viewHandsOnPaymentProof')
+                    ->label(__('seminar.view_payment_proof_hands_on'))
+                    ->icon('heroicon-o-photo')
+                    ->color('info')
+                    ->visible(function (SeminarRegistration $record): bool {
+                        return $record->handsOnRegistrations->contains(
+                            fn ($reg) => $reg->payment_proof_path !== null
+                        );
+                    })
+                    ->modalHeading(__('seminar.view_payment_proof_hands_on'))
+                    ->slideOver()
+                    ->modalContent(function (SeminarRegistration $record) {
+                        $handsOnReg = $record->handsOnRegistrations
+                            ->first(fn ($reg) => $reg->payment_proof_path !== null);
+
+                        if (! $handsOnReg) {
+                            return '';
+                        }
+
+                        $url = asset('storage/'.$handsOnReg->payment_proof_path);
+                        $extension = pathinfo($handsOnReg->payment_proof_path, PATHINFO_EXTENSION);
+
+                        return view('components.payment-proof-modal', [
+                            'url' => $url,
+                            'extension' => strtolower($extension),
+                        ]);
+                    })
+                    ->extraModalFooterActions(function (SeminarRegistration $record): array {
+                        $handsOnReg = $record->handsOnRegistrations
+                            ->first(fn ($reg) => $reg->payment_status === 'pending' && $reg->payment_proof_path !== null);
+
+                        if (! $handsOnReg) {
+                            return [];
+                        }
+
+                        return [
+                            Action::make('verifyHandsOnPayment')
+                                ->label(__('seminar.verify_payment'))
+                                ->icon('heroicon-o-check-circle')
+                                ->color('warning')
+                                ->requiresConfirmation()
+                                ->action(function () use ($handsOnReg): void {
+                                    $handsOnReg->update([
+                                        'payment_status' => 'verified',
+                                        'verified_at' => now(),
+                                    ]);
+                                }),
+                        ];
                     }),
                 Action::make('resendEmailConfirmation')
                     ->label(__('seminar.resend_email_confirmation'))

@@ -10,7 +10,6 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
-use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -127,10 +126,16 @@ class HandsOnRegistrationsTable
                     ->icon('heroicon-o-photo')
                     ->visible(fn (HandsOnRegistration $record): bool => $record->payment_proof_path !== null)
                     ->modalHeading(__('filament.hands_on_registrations.view_payment_proof'))
-                    ->modalContent(fn (HandsOnRegistration $record): View => view(
-                        'filament.modals.payment-proof',
-                        ['record' => $record]
-                    ))
+                    ->slideOver()
+                    ->modalContent(function (HandsOnRegistration $record) {
+                        $url = asset('storage/'.$record->payment_proof_path);
+                        $extension = pathinfo($record->payment_proof_path, PATHINFO_EXTENSION);
+
+                        return view('components.payment-proof-modal', [
+                            'url' => $url,
+                            'extension' => strtolower($extension),
+                        ]);
+                    })
                     ->extraModalFooterActions(function (HandsOnRegistration $record): array {
                         if ($record->payment_status === 'pending') {
                             return [

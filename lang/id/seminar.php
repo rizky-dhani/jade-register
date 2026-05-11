@@ -295,7 +295,8 @@ return [
     // Table Actions
     'pending' => 'Menunggu',
     'verified' => 'Terverifikasi',
-    'view_payment_proof' => 'Lihat Bukti Pembayaran',
+    'view_payment_proof_seminar' => 'Lihat Bukti Bayar (Seminar)',
+    'view_payment_proof_hands_on' => 'Lihat Bukti Bayar (Hands On)',
     'upload_payment_proof' => 'Unggah Bukti Pembayaran',
     'verify_payment' => 'Verifikasi Pembayaran',
     'bulk_verify_payment' => 'Verifikasi Pembayaran yang Dipilih',
