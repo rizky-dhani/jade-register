@@ -482,4 +482,13 @@ return [
     'seminar_just_filled' => 'Seminar baru saja mencapai kapasitas saat ini. Pendaftaran dapat dibuka kembali jika tersedia lebih banyak tempat.',
     'spots_remaining' => 'Tersisa :count tempat - segera daftar!',
     'total_registered' => ':count / :max peserta terdaftar',
+
+    // Poster Submission (Verification)
+    'poster_not_registered' => 'Data tidak ditemukan. Pastikan email/NIK yang Anda masukkan sesuai dengan data registrasi seminar.',
+    'poster_pending_verification' => 'Pembayaran Anda masih menunggu verifikasi. Silakan tunggu konfirmasi dari admin.',
+    'poster_verified_info' => 'Anda terdaftar sebagai :name (:email)',
+    'email_or_nik' => 'Email atau NIK',
+    'verify_continue' => 'Verifikasi & Lanjutkan',
+    'abstract_max_chars' => 'Abstrak maksimal 1500 karakter.',
+    'poster_file_max_size' => 'File poster maksimal 10MB.',
 ];

@@ -483,4 +483,13 @@ return [
     'seminar_just_filled' => 'The seminar just reached its current capacity. Registration may reopen if more spots become available.',
     'spots_remaining' => ':count spots remaining - register now!',
     'total_registered' => ':count / :max participants registered',
+
+    // Poster Submission (Verification)
+    'poster_not_registered' => 'Data not found. Make sure your email/NIK matches your seminar registration data.',
+    'poster_pending_verification' => 'Your payment is still pending verification. Please wait for admin confirmation.',
+    'poster_verified_info' => 'You are registered as :name (:email)',
+    'email_or_nik' => 'Email or NIK',
+    'verify_continue' => 'Verify & Continue',
+    'abstract_max_chars' => 'Abstract must not exceed 1500 characters.',
+    'poster_file_max_size' => 'Poster file must not exceed 10MB.',
 ];

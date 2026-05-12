@@ -52,8 +52,9 @@ Route::middleware('auth')->group(function () {
     })->middleware('throttle:6,1')->name('verification.send');
 });
 
+Route::livewire('/poster/submit', PosterSubmission::class)->name('poster.submit');
+
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::livewire('/poster/submit', PosterSubmission::class)->name('poster.submit');
     Route::livewire('/attendance/verify/{token}', AttendanceVerify::class)->name('attendance.verify');
     Route::livewire('/visitor/verify/{token}', VisitorVerify::class)->name('visitor.verify');
 
