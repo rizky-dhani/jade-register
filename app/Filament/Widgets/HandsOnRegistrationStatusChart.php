@@ -18,7 +18,7 @@ class HandsOnRegistrationStatusChart extends ChartWidget
 
     public static function canView(): bool
     {
-        return ! auth()->user()?->hasRole('Participant');
+        return request()->route()?->getName() === 'filament.dashboard.pages.hands-on-registration-report';
     }
 
     protected function getData(): array
