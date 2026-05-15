@@ -19,11 +19,13 @@ use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Enums\Width;
+use Filament\View\PanelsRenderHook;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class AdminPanelProvider extends PanelProvider
@@ -44,6 +46,23 @@ class AdminPanelProvider extends PanelProvider
             ->colors([
                 'primary' => '#4E397C',
             ])
+            ->renderHook(
+                PanelsRenderHook::FOOTER,
+                fn (): string => Blade::render(<<<'HTML'
+                    <div class="flex justify-center mt-6">
+                        <img
+                            src="{{ asset('assets/images/WKCI_COLOR.webp') }}"
+                            alt="WKCI"
+                            class="h-10 dark:hidden"
+                        />
+                        <img
+                            src="{{ asset('assets/images/WKCI_COLORWHITE.webp') }}"
+                            alt="WKCI"
+                            class="h-10 hidden dark:block"
+                        />
+                    </div>
+                HTML),
+            )
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([
