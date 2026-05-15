@@ -3,6 +3,8 @@
 namespace App\Filament\Pages;
 
 use App\Filament\Widgets\HandsOnParticipantCount;
+use App\Filament\Widgets\HandsOnRegistrationStatusChart;
+use App\Filament\Widgets\HandsOnRegistrationTotals;
 use Filament\Pages\Page;
 use Filament\Support\Icons\Heroicon;
 
@@ -41,7 +43,9 @@ class HandsOnRegistrationReport extends Page
     protected function getHeaderWidgets(): array
     {
         return [
+            HandsOnRegistrationTotals::class,
             HandsOnParticipantCount::class,
+            HandsOnRegistrationStatusChart::class,
         ];
     }
 }
