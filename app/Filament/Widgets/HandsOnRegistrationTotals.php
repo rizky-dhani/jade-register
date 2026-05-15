@@ -44,8 +44,12 @@ class HandsOnRegistrationTotals extends StatsOverviewWidget
             $pendingLabel = __('filament.widgets.hands_on_participant_count.pending');
             $verifiedLabel = __('filament.widgets.hands_on_participant_count.verified');
 
+            $slots = $handsOn->max_seats !== null
+                ? " • Slots {$total}/{$handsOn->max_seats}"
+                : '';
+
             $stats[] = Stat::make($handsOn->ho_code, (string) $total)
-                ->description("{$pendingLabel} {$handsOn->pending_count} • {$verifiedLabel} {$handsOn->verified_count}")
+                ->description("{$pendingLabel} {$handsOn->pending_count} • {$verifiedLabel} {$handsOn->verified_count}{$slots}")
                 ->color(match (true) {
                     $handsOn->pending_count > 0 => 'warning',
                     $handsOn->verified_count > 0 => 'success',
