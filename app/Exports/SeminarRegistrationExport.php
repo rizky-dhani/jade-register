@@ -123,7 +123,7 @@ class LocalParticipantsSheet extends BaseParticipantsSheet implements IValueBind
             return true;
         }
 
-        return DefaultValueBinder::bindValue($cell, $value);
+        return (new DefaultValueBinder)->bindValue($cell, $value);
     }
 
     public function map($registration): array
