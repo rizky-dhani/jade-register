@@ -27,7 +27,7 @@ class HandsOnRegistrationStatusChart extends ChartWidget
             'handsOnRegistrations as pending_count' => fn ($q) => $q->where('payment_status', 'pending'),
             'handsOnRegistrations as verified_count' => fn ($q) => $q->where('payment_status', 'verified'),
         ])
-            ->orderBy('event_date')
+            ->orderBy('ho_code')
             ->get();
 
         $labels = [];
