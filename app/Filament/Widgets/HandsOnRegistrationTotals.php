@@ -9,7 +9,7 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class HandsOnRegistrationTotals extends StatsOverviewWidget
 {
-    protected ?int $columns = 5;
+    protected array|int|null $columns = 5;
 
     protected static ?int $sort = 1;
 
