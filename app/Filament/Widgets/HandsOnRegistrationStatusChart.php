@@ -35,7 +35,7 @@ class HandsOnRegistrationStatusChart extends ChartWidget
         $verifiedData = [];
 
         foreach ($handsOns as $handsOn) {
-            $labels[] = $handsOn->name;
+            $labels[] = $handsOn->ho_code;
             $pendingData[] = (int) $handsOn->pending_count;
             $verifiedData[] = (int) $handsOn->verified_count;
         }
