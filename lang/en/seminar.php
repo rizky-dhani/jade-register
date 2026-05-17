@@ -299,6 +299,7 @@ return [
     'view_payment_proof_seminar' => 'View Payment Proof (Seminar)',
     'view_payment_proof_hands_on' => 'View Payment Proof (Hands On)',
     'upload_payment_proof' => 'Upload Payment Proof',
+    'payment_proof_for_new_selections' => 'Please upload proof of payment for your new selections (hands-on sessions and/or addons).',
     'verify_payment' => 'Verify Payment',
     'bulk_verify_payment' => 'Verify Selected Payments',
     'resend_email_confirmation' => 'Resend Email Confirmation',

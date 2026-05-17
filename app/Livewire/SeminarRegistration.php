@@ -95,9 +95,20 @@ class SeminarRegistration extends Component
     // Submission lock to prevent duplicate submissions
     public bool $isSubmitting = false;
 
+    // Existing registration payment proof
+    public $existing_payment_proof = null;
+
+    public ?string $existing_payment_proof_path = null;
+
+    public bool $existing_payment_proof_uploaded = false;
+
     protected function rules(): array
     {
         $paymentProofRule = $this->payment_proof_uploaded
+            ? 'nullable'
+            : 'required|file|mimes:jpeg,png,pdf|max:5120';
+
+        $existingPaymentProofRule = $this->existing_payment_proof_uploaded
             ? 'nullable'
             : 'required|file|mimes:jpeg,png,pdf|max:5120';
 
@@ -128,6 +139,7 @@ class SeminarRegistration extends Component
             'payment_proof' => $paymentProofRule,
             'selectedHandsOn' => 'array',
             'selectedHandsOn.*' => 'nullable|integer|exists:hands_ons,id',
+            'existing_payment_proof' => $existingPaymentProofRule,
         ];
     }
 
@@ -211,6 +223,24 @@ class SeminarRegistration extends Component
             $this->payment_proof_path = $this->payment_proof->store('payment-proofs', 'public');
             $this->payment_proof_uploaded = true;
         }
+    }
+
+    public function updatedExistingPaymentProof(): void
+    {
+        $this->validateOnly('existing_payment_proof');
+
+        if ($this->existing_payment_proof) {
+            $filename = 'existing-'.time().'-'.$this->existing_payment_proof->getClientOriginalName();
+            $this->existing_payment_proof_path = $this->existing_payment_proof->storeAs('payment-proofs', $filename, 'public');
+            $this->existing_payment_proof_uploaded = true;
+        }
+    }
+
+    public function resetExistingPaymentProof(): void
+    {
+        $this->existing_payment_proof = null;
+        $this->existing_payment_proof_path = null;
+        $this->existing_payment_proof_uploaded = false;
     }
 
     public function isIndonesia(): bool
@@ -504,6 +534,13 @@ class SeminarRegistration extends Component
             return;
         }
 
+        // Validate payment proof for new selections
+        $this->validate([
+            'existing_payment_proof' => $this->existing_payment_proof_uploaded
+                ? 'nullable'
+                : 'required|file|mimes:jpeg,png,pdf|max:5120',
+        ]);
+
         // Validate hands-on availability
         if ($this->wants_hands_on && ! empty($this->selectedHandsOn)) {
             foreach ($this->selectedHandsOn as $date => $eventId) {
@@ -527,8 +564,14 @@ class SeminarRegistration extends Component
 
         $this->isSubmitting = true;
 
+        $paymentProofPath = $this->existing_payment_proof_path ?? tap($this->existing_payment_proof, function ($file) {
+            $filename = 'existing-'.time().'-'.$file->getClientOriginalName();
+
+            return $file->storeAs('payment-proofs', $filename, 'public');
+        });
+
         try {
-            DB::transaction(function () use ($registration) {
+            DB::transaction(function () use ($registration, $paymentProofPath) {
                 $hasNewSelections = false;
 
                 // Create Hands On registrations for newly selected sessions
@@ -545,7 +588,7 @@ class SeminarRegistration extends Component
                                     'hands_on_id' => $eventId,
                                     'registration_type' => 'combined',
                                     'payment_status' => 'pending',
-                                    'payment_proof_path' => $registration->payment_proof_path,
+                                    'payment_proof_path' => $paymentProofPath,
                                 ]);
                                 $hasNewSelections = true;
                             }
@@ -570,7 +613,7 @@ class SeminarRegistration extends Component
                                         'addon_id' => $addon->id,
                                         'amount' => $addon->price,
                                         'currency' => $addon->currency,
-                                        'payment_proof_path' => $registration->payment_proof_path,
+                                        'payment_proof_path' => $paymentProofPath,
                                         'payment_status' => 'pending',
                                     ]);
                                     $hasNewSelections = true;

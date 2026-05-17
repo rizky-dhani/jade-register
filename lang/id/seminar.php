@@ -298,6 +298,7 @@ return [
     'view_payment_proof_seminar' => 'Lihat Bukti Bayar (Seminar)',
     'view_payment_proof_hands_on' => 'Lihat Bukti Bayar (Hands On)',
     'upload_payment_proof' => 'Unggah Bukti Pembayaran',
+    'payment_proof_for_new_selections' => 'Silakan unggah bukti pembayaran untuk pilihan baru Anda (sesi hands-on dan/atau addon).',
     'verify_payment' => 'Verifikasi Pembayaran',
     'bulk_verify_payment' => 'Verifikasi Pembayaran yang Dipilih',
     'resend_email_confirmation' => 'Kirim Ulang Email Konfirmasi',
