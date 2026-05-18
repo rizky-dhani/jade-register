@@ -385,6 +385,7 @@ class HandsOnRegistration extends Component
                 foreach ($this->selectedHandsOn as $date => $eventId) {
                     if ($eventId) {
                         HandsOnRegistrationModel::create([
+                            'registration_code' => HandsOnRegistrationModel::generateRegistrationCode(),
                             'seminar_registration_id' => $reg->id,
                             'hands_on_id' => $eventId,
                             'registration_type' => 'combined',

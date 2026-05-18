@@ -23,11 +23,14 @@ class CreateHandsOnRegistration extends CreateRecord
         // Map the first selected session to the main record's hands_on_id
         $data['hands_on_id'] = $this->handsOnSelections->first();
 
+        // Generate a unique registration code
+        $data['registration_code'] = HandsOnRegistration::generateRegistrationCode();
+
         // Standalone registration (not linked to an existing seminar)
         if (empty($data['seminar_registration_id'])) {
             $country = Country::find($data['country_id'] ?? null);
             $data['language'] = $country?->is_indonesia ? 'id' : 'en';
-            // registration_type stays as 'hands_on' (form default)
+            $data['registration_type'] = 'hands_on';
         } else {
             // Linked to an existing seminar registration
             $data['registration_type'] = 'combined';
@@ -52,6 +55,7 @@ class CreateHandsOnRegistration extends CreateRecord
             }
 
             HandsOnRegistration::create([
+                'registration_code' => HandsOnRegistration::generateRegistrationCode(),
                 'seminar_registration_id' => $record->seminar_registration_id,
                 'hands_on_id' => $handsOnId,
                 'registration_type' => $record->registration_type,
