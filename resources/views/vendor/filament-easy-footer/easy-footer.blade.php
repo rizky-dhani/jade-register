@@ -65,8 +65,6 @@
         />
     @endif
 
-    @include('components.wkci-footer')
-
     @if($loadTime)
         @if($footerPosition === 'sidebar' || $footerPosition === 'sidebar.footer')
             <span class="w-full">{{ $loadTimePrefix ?? '' }} {{ $loadTime }}s</span>
