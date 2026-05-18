@@ -42,6 +42,7 @@ class AdminPanelProvider extends PanelProvider
             ->brandLogo(fn () => asset('assets/images/JADE_PDGI_Light.webp'))
             ->darkModeBrandLogo(fn () => asset('assets/images/JADE_PDGI_Dark.webp'))
             ->brandLogoHeight('8rem')
+            ->viteTheme('resources/css/filament/dashboard/theme.css')
             ->colors([
                 'primary' => '#4E397C',
             ])
