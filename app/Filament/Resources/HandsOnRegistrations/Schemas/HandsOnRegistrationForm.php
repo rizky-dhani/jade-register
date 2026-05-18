@@ -6,7 +6,6 @@ use App\Enums\HandsOnStatus;
 use App\Models\Country;
 use App\Models\HandsOn;
 use Carbon\Carbon;
-use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Select;
@@ -150,6 +149,13 @@ class HandsOnRegistrationForm
                                 'bank_transfer' => __('seminar.bank_transfer'),
                                 'qris' => 'QRIS',
                             ]),
+                        Select::make('payment_status')
+                            ->label(__('filament.hands_on_registrations.payment_status'))
+                            ->options([
+                                'pending' => 'Pending',
+                                'verified' => 'Verified',
+                                'rejected' => 'Rejected',
+                            ]),
                         FileUpload::make('seminarRegistration.payment_proof_path')
                             ->label(__('seminar.payment_proof'))
                             ->image()
@@ -162,16 +168,8 @@ class HandsOnRegistrationForm
                             ->helperText(__('filament.seminar_registration.form.payment_proof_helper'))
                             ->preserveFilenames()
                             ->dehydrateStateUsing(fn ($state, $record) => $state ?? $record?->seminarRegistration?->payment_proof_path ?? null)
-                            ->nullable(),
-                        Select::make('payment_status')
-                            ->label(__('filament.hands_on_registrations.payment_status'))
-                            ->options([
-                                'pending' => 'Pending',
-                                'verified' => 'Verified',
-                                'rejected' => 'Rejected',
-                            ]),
-                        DateTimePicker::make('verified_at')
-                            ->label(__('filament.hands_on_registrations.verified_at')),
+                            ->nullable()
+                            ->columnSpanFull(),
                     ])
                     ->columns(2)
                     ->columnSpanFull(),

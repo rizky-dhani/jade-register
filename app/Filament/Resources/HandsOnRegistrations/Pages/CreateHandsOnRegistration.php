@@ -29,6 +29,11 @@ class CreateHandsOnRegistration extends CreateRecord
         // Set default registration type
         $data['registration_type'] = 'combined';
 
+        // Auto-fill verified_at when status is verified
+        if (($data['payment_status'] ?? '') === 'verified') {
+            $data['verified_at'] = now();
+        }
+
         return $data;
     }
 
