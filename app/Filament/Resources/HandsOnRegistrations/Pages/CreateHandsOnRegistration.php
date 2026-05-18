@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\HandsOnRegistrations\Pages;
 
 use App\Filament\Resources\HandsOnRegistrations\HandsOnRegistrationResource;
+use App\Models\Country;
 use App\Models\HandsOnRegistration;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Support\Collection;
@@ -17,17 +18,20 @@ class CreateHandsOnRegistration extends CreateRecord
     {
         // Extract per-date hands-on selections from radio groups
         $this->handsOnSelections = collect($data['selectedHandsOn'] ?? [])->filter();
-
         unset($data['selectedHandsOn']);
-
-        // Remove seminarRegistration relationship data (not a model attribute)
-        unset($data['seminarRegistration']);
 
         // Map the first selected session to the main record's hands_on_id
         $data['hands_on_id'] = $this->handsOnSelections->first();
 
-        // Set default registration type
-        $data['registration_type'] = 'combined';
+        // Standalone registration (not linked to an existing seminar)
+        if (empty($data['seminar_registration_id'])) {
+            $country = Country::find($data['country_id'] ?? null);
+            $data['language'] = $country?->is_indonesia ? 'id' : 'en';
+            // registration_type stays as 'hands_on' (form default)
+        } else {
+            // Linked to an existing seminar registration
+            $data['registration_type'] = 'combined';
+        }
 
         // Auto-fill verified_at when status is verified
         if (($data['payment_status'] ?? '') === 'verified') {

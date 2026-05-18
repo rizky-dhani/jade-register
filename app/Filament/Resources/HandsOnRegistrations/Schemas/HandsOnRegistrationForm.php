@@ -20,55 +20,65 @@ class HandsOnRegistrationForm
     {
         return $schema
             ->components([
-                Select::make('seminarRegistration.country_id')
+                // Link to existing seminar registration (optional)
+                Select::make('seminar_registration_id')
+                    ->label(__('filament.hands_on_registrations.seminar_registration'))
+                    ->relationship('seminarRegistration', 'registration_code')
+                    ->searchable()
+                    ->preload()
+                    ->nullable()
+                    ->columnSpanFull(),
+
+                // Country — determines which participant section is shown
+                Select::make('country_id')
                     ->label(__('seminar.country'))
                     ->options(Country::orderBy('name')->pluck('name', 'id'))
                     ->searchable()
                     ->preload()
                     ->live()
-                    ->required()
+                    ->nullable()
                     ->default(fn (): ?int => Country::where('is_indonesia', true)->value('id'))
                     ->columnSpanFull(),
 
                 // Local (Indonesia) Participant Information
                 Section::make(__('seminar.local_participant'))
                     ->schema([
-                        TextInput::make('seminarRegistration.name')
+                        TextInput::make('name')
                             ->label(__('filament.seminar_registration.form.name_str'))
                             ->nullable()
                             ->maxLength(255)
                             ->autocomplete('name')
                             ->hidden(),
-                        TextInput::make('seminarRegistration.name_license')
+                        TextInput::make('name_license')
                             ->label(__('filament.seminar_registration.form.name_plataran'))
-                            ->required()
+                            ->nullable()
                             ->maxLength(255)
                             ->autocomplete('name'),
-                        TextInput::make('seminarRegistration.email')
-                            ->label(__('filament.seminar_registration.form.email_plataran'))
-                            ->required()
+                        TextInput::make('email')
+                            ->label(__('filament.hands_on_registrations.email'))
+                            ->nullable()
                             ->email()
                             ->maxLength(255)
                             ->autocomplete('email'),
-                        TextInput::make('seminarRegistration.phone')
-                            ->label(__('filament.seminar_registration.form.whatsapp_number'))
-                            ->required()
+                        TextInput::make('phone')
+                            ->label(__('filament.hands_on_registrations.phone'))
+                            ->nullable()
                             ->maxLength(20)
                             ->autocomplete('tel'),
-                        TextInput::make('seminarRegistration.nik')
+                        TextInput::make('nik')
                             ->label(__('filament.seminar_registration.form.nik'))
-                            ->required()
+                            ->nullable()
                             ->maxLength(16)
                             ->autocomplete('off')
                             ->helperText(__('seminar.nik_helper')),
-                        TextInput::make('seminarRegistration.pdgi_branch')
+                        TextInput::make('pdgi_branch')
                             ->label(__('filament.seminar_registration.form.pdgi_branch'))
-                            ->required()
+                            ->nullable()
                             ->maxLength(255)
                             ->autocomplete('organization'),
-                        Select::make('seminarRegistration.kompetensi')
+                        Select::make('kompetensi')
                             ->label(__('filament.seminar_registration.form.competency'))
-                            ->required()
+                            ->nullable()
                             ->options([
                                 'Dokter Gigi Umum' => __('seminar.competency_gp'),
                                 'Sp.KG' => __('seminar.competency_sp_kg'),
@@ -90,30 +100,30 @@ class HandsOnRegistrationForm
                     ])
                     ->columns(3)
                     ->columnSpanFull()
-                    ->visible(fn (Get $get): bool => self::isIndonesia($get('seminarRegistration.country_id'))),
+                    ->visible(fn (Get $get): bool => self::isIndonesia($get('country_id'))),
 
                 // International Participant Information
                 Section::make(__('seminar.international_participant'))
                     ->schema([
-                        TextInput::make('seminarRegistration.name')
+                        TextInput::make('name')
                             ->label(__('seminar.name'))
-                            ->required()
+                            ->nullable()
                             ->maxLength(255)
                             ->autocomplete('name'),
-                        TextInput::make('seminarRegistration.email')
+                        TextInput::make('email')
                             ->label(__('seminar.email'))
-                            ->required()
+                            ->nullable()
                             ->email()
                             ->maxLength(255)
                             ->autocomplete('email'),
-                        TextInput::make('seminarRegistration.phone')
+                        TextInput::make('phone')
                             ->label(__('seminar.whatsapp_number'))
-                            ->required()
+                            ->nullable()
                             ->maxLength(20)
                             ->autocomplete('tel'),
-                        Select::make('seminarRegistration.status')
+                        Select::make('status')
                             ->label(__('seminar.status'))
-                            ->required()
+                            ->nullable()
                             ->options([
                                 'Dentist' => __('seminar.dentist'),
                                 'Student' => __('seminar.student'),
@@ -122,7 +132,7 @@ class HandsOnRegistrationForm
                     ])
                     ->columns(2)
                     ->columnSpanFull()
-                    ->visible(fn (Get $get): bool => ! self::isIndonesia($get('seminarRegistration.country_id'))),
+                    ->visible(fn (Get $get): bool => ! self::isIndonesia($get('country_id'))),
 
                 // Hands-On Session Selection (per date, max 1 per day)
                 ...self::buildHandsOnRadioGroups(),
@@ -133,18 +143,18 @@ class HandsOnRegistrationForm
                     ->dehydrated()
                     ->default(null),
 
-                // Registration Type (hidden, default to 'combined')
+                // Registration Type (hidden — set by Create page logic)
                 TextInput::make('registration_type')
-                    ->default('combined')
+                    ->default('hands_on')
                     ->hidden()
                     ->dehydrated(),
 
                 // Payment Information
                 Section::make(__('seminar.payment_information'))
                     ->schema([
-                        Select::make('seminarRegistration.payment_method')
+                        Select::make('payment_method')
                             ->label(__('seminar.payment_method'))
-                            ->required()
+                            ->nullable()
                             ->options([
                                 'bank_transfer' => __('seminar.bank_transfer'),
                                 'qris' => 'QRIS',
@@ -156,7 +166,7 @@ class HandsOnRegistrationForm
                                 'verified' => 'Verified',
                                 'rejected' => 'Rejected',
                             ]),
-                        FileUpload::make('seminarRegistration.payment_proof_path')
+                        FileUpload::make('payment_proof_path')
                             ->label(__('seminar.payment_proof'))
                             ->image()
                             ->previewable()
@@ -167,7 +177,6 @@ class HandsOnRegistrationForm
                             ->visibility('public')
                             ->helperText(__('filament.seminar_registration.form.payment_proof_helper'))
                             ->preserveFilenames()
-                            ->dehydrateStateUsing(fn ($state, $record) => $state ?? $record?->seminarRegistration?->payment_proof_path ?? null)
                             ->nullable()
                             ->columnSpanFull(),
                     ])

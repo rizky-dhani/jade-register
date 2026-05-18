@@ -17,6 +17,17 @@ class HandsOnRegistration extends Model
         'payment_status',
         'payment_proof_path',
         'verified_at',
+        'name',
+        'name_license',
+        'email',
+        'phone',
+        'nik',
+        'pdgi_branch',
+        'kompetensi',
+        'status',
+        'country_id',
+        'payment_method',
+        'language',
     ];
 
     public static function generateRegistrationCode(): string
@@ -26,6 +37,7 @@ class HandsOnRegistration extends Model
 
     protected $casts = [
         'verified_at' => 'datetime',
+        'nik' => 'string',
     ];
 
     public function seminarRegistration(): BelongsTo
@@ -36,6 +48,11 @@ class HandsOnRegistration extends Model
     public function handsOn(): BelongsTo
     {
         return $this->belongsTo(HandsOn::class);
+    }
+
+    public function country(): BelongsTo
+    {
+        return $this->belongsTo(Country::class);
     }
 
     public function isPending(): bool
