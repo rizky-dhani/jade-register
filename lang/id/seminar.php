@@ -152,6 +152,8 @@ return [
     'selections_saved' => 'Pilihan Anda berhasil disimpan!',
 
     // Hands On
+    'session_full' => 'Sesi ini sudah penuh. Silakan pilih sesi lain.',
+    'session_stock_limit' => 'Sesi ini sudah tidak tersedia.',
     'hands_on_sessions' => 'Sesi Hands On',
     'hands_on_success_title' => 'Pendaftaran Hands On Berhasil Dikirim!',
     'hands_on_success_thank_you' => 'Terima kasih telah mendaftar sesi Hands On, ',

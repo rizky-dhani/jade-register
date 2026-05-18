@@ -289,6 +289,14 @@ class HandsOnRegistration extends Component
 
         $this->validate();
 
+        // Prevent duplicate registration by email
+        $existingRegistration = SeminarRegistrationModel::whereRaw('LOWER(email) = ?', [strtolower($this->email)])->first();
+        if ($existingRegistration) {
+            $this->addError('email', __('seminar.email_already_registered'));
+
+            return;
+        }
+
         // Set submission lock
         $this->isSubmitting = true;
 
@@ -299,11 +307,13 @@ class HandsOnRegistration extends Component
                 if ($event) {
                     if ($event->isFull()) {
                         $this->addError('selectedHandsOn.'.$date, __('seminar.session_full'));
+                        $this->isSubmitting = false;
 
                         return;
                     }
                     if ($event->remaining_stock <= 0) {
                         $this->addError('selectedHandsOn.'.$date, __('seminar.session_stock_limit'));
+                        $this->isSubmitting = false;
 
                         return;
                     }

@@ -152,6 +152,8 @@ return [
     'selections_saved' => 'Your selections have been saved successfully!',
 
     // Hands On
+    'session_full' => 'This session is fully booked. Please select another session.',
+    'session_stock_limit' => 'This session is no longer available.',
     'hands_on_sessions' => 'Hands On Sessions',
     'hands_on_success_title' => 'Hands-On Registration Submitted!',
     'hands_on_success_thank_you' => 'Thank you for registering for Hands-On sessions, ',
