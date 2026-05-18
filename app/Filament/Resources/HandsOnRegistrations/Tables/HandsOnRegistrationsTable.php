@@ -26,11 +26,17 @@ class HandsOnRegistrationsTable
                 ->orderBy('hands_ons.event_date')
                 ->select('hands_on_registrations.*'))
             ->columns([
-                TextColumn::make('seminarRegistration.registration_code')
+                TextColumn::make('registration_code')
                     ->label(__('filament.hands_on_registrations.registration_code'))
-                    ->state(fn (HandsOnRegistration $record): string => $record->seminarRegistration?->registration_code ?? '-')
-                    ->searchable(query: fn (Builder $query, string $value) => $query->where('seminar_registrations.registration_code', 'like', "%{$value}%"))
-                    ->sortable(query: fn (Builder $query, string $direction) => $query->orderBy('seminar_registrations.registration_code', $direction)),
+                    ->state(fn (HandsOnRegistration $record): string => $record->registration_code ?? $record->seminarRegistration?->registration_code ?? '-')
+                    ->searchable(query: fn (Builder $query, string $value) => $query->where(function (Builder $q) use ($value) {
+                        $q->where('hands_on_registrations.registration_code', 'like', "%{$value}%")
+                            ->orWhere('seminar_registrations.registration_code', 'like', "%{$value}%");
+                    }))
+                    ->sortable(query: fn (Builder $query, string $direction) => $query->orderBy('hands_on_registrations.registration_code', $direction)->orderBy('seminar_registrations.registration_code', $direction))
+                    ->copyable()
+                    ->copyMessage('Code copied')
+                    ->copyMessageDuration(1500),
 
                 TextColumn::make('seminarRegistration.name_license')
                     ->label(__('filament.hands_on_registrations.participant'))
