@@ -25,7 +25,6 @@ use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
-use Illuminate\Support\Facades\Blade;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class AdminPanelProvider extends PanelProvider
@@ -48,20 +47,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->renderHook(
                 PanelsRenderHook::FOOTER,
-                fn (): string => Blade::render(<<<'HTML'
-                    <div class="flex justify-center mt-6">
-                        <img
-                            src="{{ asset('assets/images/WKCI_COLOR.webp') }}"
-                            alt="WKCI"
-                            class="h-10 dark:hidden"
-                        />
-                        <img
-                            src="{{ asset('assets/images/WKCI_COLORWHITE.webp') }}"
-                            alt="WKCI"
-                            class="h-10 hidden dark:block"
-                        />
-                    </div>
-                HTML),
+                fn () => view('components.wkci-footer'),
             )
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
