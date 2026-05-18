@@ -125,7 +125,7 @@ class SeminarRegistration extends Component
             ];
         }
 
-        return [
+        $rules = [
             'email' => 'required|email',
             'name' => 'nullable|string|max:255',
             'name_license' => 'required|string|max:255',
@@ -139,8 +139,14 @@ class SeminarRegistration extends Component
             'payment_proof' => $paymentProofRule,
             'selectedHandsOn' => 'array',
             'selectedHandsOn.*' => 'nullable|integer|exists:hands_ons,id',
-            'existing_payment_proof' => $existingPaymentProofRule,
         ];
+
+        // Only require existing_payment_proof when in the existing registration flow
+        if ($this->existingRegistration) {
+            $rules['existing_payment_proof'] = $existingPaymentProofRule;
+        }
+
+        return $rules;
     }
 
     public function mount(): void
