@@ -71,6 +71,14 @@
                 ? asset(config('filament-easy-footer.dark_logo'))
                 : null;
         @endphp
+        @if($darkLogoPath)
+            <style>
+                .fi-footer-logo-light { display: inline-block; }
+                .fi-footer-logo-dark { display: none; }
+                .dark .fi-footer-logo-light { display: none; }
+                .dark .fi-footer-logo-dark { display: inline-block; }
+            </style>
+        @endif
         <span class="flex items-center gap-2">
             @if($logoText)
                 <span>{{ $logoText }}</span>
@@ -81,17 +89,14 @@
                     <img
                         src="{{ $logoPath }}"
                         alt="Logo"
-                        @class([
-                            'w-auto object-contain',
-                            'dark:hidden' => $darkLogoPath,
-                        ])
+                        class="fi-footer-logo-light w-auto object-contain"
                         style="height: {{ $logoHeight }}px;"
                     >
                     @if($darkLogoPath)
                         <img
                             src="{{ $darkLogoPath }}"
                             alt="Logo"
-                            class="w-auto object-contain hidden dark:block"
+                            class="fi-footer-logo-dark w-auto object-contain"
                             style="height: {{ $logoHeight }}px;"
                         >
                     @endif
