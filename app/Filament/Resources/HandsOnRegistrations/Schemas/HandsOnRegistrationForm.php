@@ -2,10 +2,13 @@
 
 namespace App\Filament\Resources\HandsOnRegistrations\Schemas;
 
+use App\Enums\HandsOnStatus;
 use App\Models\Country;
 use App\Models\HandsOn;
+use Carbon\Carbon;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
@@ -122,32 +125,14 @@ class HandsOnRegistrationForm
                     ->columnSpanFull()
                     ->visible(fn (Get $get): bool => ! self::isIndonesia($get('seminarRegistration.country_id'))),
 
-                // Hands-On Session Selection
-                Section::make(__('seminar.hands_on_sessions'))
-                    ->schema([
-                        Select::make('hands_on_id')
-                            ->label(__('seminar.select_hands_on'))
-                            ->required()
-                            ->options(function (): array {
-                                return HandsOn::where('is_active', true)
-                                    ->orderBy('event_date')
-                                    ->orderBy('ho_code')
-                                    ->get()
-                                    ->mapWithKeys(function (HandsOn $handsOn) {
-                                        $label = "{$handsOn->ho_code} - {$handsOn->name} - {$handsOn->event_date?->format('d M Y')} - {$handsOn->formatted_original_price}";
-                                        if ($handsOn->isFull()) {
-                                            $label .= ' ('.__('seminar.sold_out').')';
-                                        }
+                // Hands-On Session Selection (per date, max 1 per day)
+                ...self::buildHandsOnRadioGroups(),
 
-                                        return [$handsOn->id => $label];
-                                    })
-                                    ->toArray();
-                            })
-                            ->searchable()
-                            ->preload()
-                            ->columnSpanFull(),
-                    ])
-                    ->columnSpanFull(),
+                // Hidden hands_on_id for model binding
+                TextInput::make('hands_on_id')
+                    ->hidden()
+                    ->dehydrated()
+                    ->default(null),
 
                 // Registration Type (hidden, default to 'combined')
                 TextInput::make('registration_type')
@@ -191,6 +176,78 @@ class HandsOnRegistrationForm
                     ->columns(2)
                     ->columnSpanFull(),
             ]);
+    }
+
+    private static function buildHandsOnRadioGroups(): array
+    {
+        $dayMap = [
+            '2026-11-13' => 1,
+            '2026-11-14' => 2,
+            '2026-11-15' => 3,
+        ];
+
+        $eventsByDate = HandsOn::where('is_active', true)
+            ->where('status', HandsOnStatus::PUBLISHED)
+            ->whereDate('event_date', '>=', '2026-11-13')
+            ->whereDate('event_date', '<=', '2026-11-15')
+            ->orderBy('event_date')
+            ->orderBy('ho_code')
+            ->get()
+            ->groupBy(fn (HandsOn $handsOn): string => $handsOn->event_date->format('Y-m-d'));
+
+        $components = [];
+
+        $sections = [];
+        foreach ($eventsByDate as $date => $events) {
+            $dayNumber = $dayMap[$date] ?? Carbon::parse($date)->format('j');
+
+            $options = $events->mapWithKeys(fn (HandsOn $ho): array => [
+                $ho->id => collect([
+                    $ho->ho_code,
+                    $ho->name,
+                    $ho->doctor_name,
+                ])->filter()->implode(' - '),
+            ]);
+
+            $descriptions = $events->mapWithKeys(fn (HandsOn $ho): array => [
+                $ho->id => collect([
+                    $ho->formatted_original_price,
+                    $ho->isFull()
+                        ? __('seminar.sold_out')
+                        : ($ho->max_seats
+                            ? trans_choice('seminar.limited_seats', $ho->remaining_stock, ['count' => $ho->remaining_stock])
+                            : __('seminar.unlimited')),
+                    $ho->description,
+                ])->filter()->implode(' | '),
+            ]);
+
+            $disabledOptions = $events->filter(fn (HandsOn $ho): bool => $ho->isFull() || $ho->current_price === null || $ho->current_price <= 0)
+                ->pluck('id')
+                ->map(fn (int $id): string => (string) $id)
+                ->values()
+                ->toArray();
+
+            $sections[] = Section::make(__('seminar.day_number', ['day' => 'ke-'.$dayNumber]))
+                ->schema([
+                    Radio::make("selectedHandsOn.{$date}")
+                        ->hiddenLabel()
+                        ->options($options)
+                        ->descriptions($descriptions)
+                        ->disableOptionWhen(fn (string $value): bool => in_array($value, $disabledOptions))
+                        ->columnSpanFull(),
+                ])
+                ->columnSpanFull()
+                ->columns(1);
+        }
+
+        // Wrap in a parent section if we have events, or show a message
+        if (! empty($sections)) {
+            $components[] = Section::make(__('seminar.hands_on_sessions'))
+                ->schema($sections)
+                ->columnSpanFull();
+        }
+
+        return $components;
     }
 
     private static function isIndonesia(?int $countryId): bool
