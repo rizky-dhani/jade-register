@@ -46,7 +46,13 @@ class AdminPanelProvider extends PanelProvider
                 'primary' => '#4E397C',
             ])
             ->plugins([
-                EasyFooterPlugin::make(),
+                EasyFooterPlugin::make()
+                    ->withLogo(
+                        asset('assets/images/WKCI_COLOR.webp'),
+                        null,
+                        null,
+                        48
+                    ),
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')

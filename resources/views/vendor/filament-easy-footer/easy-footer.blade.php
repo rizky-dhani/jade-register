@@ -65,6 +65,26 @@
         />
     @endif
 
+    @if($logoPath)
+        <span class="flex items-center gap-2">
+            @if($logoText)
+                <span>{{ $logoText }}</span>
+            @endif
+            @if($logoUrl)
+                <a href="{{ $logoUrl }}" class="inline-flex" target="_blank">
+                    @endif
+                    <img
+                        src="{{ $logoPath }}"
+                        alt="Logo"
+                        class="w-auto object-contain"
+                        style="height: {{ $logoHeight }}px;"
+                    >
+                    @if($logoUrl)
+                </a>
+            @endif
+        </span>
+    @endif
+
     @if($loadTime)
         @if($footerPosition === 'sidebar' || $footerPosition === 'sidebar.footer')
             <span class="w-full">{{ $loadTimePrefix ?? '' }} {{ $loadTime }}s</span>
