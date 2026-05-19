@@ -56,6 +56,18 @@ class SeminarRegistration extends Model
         'addons_total_amount' => 'integer',
     ];
 
+    protected static function booted(): void
+    {
+        static::created(function ($registration) {
+            $maxParticipants = Setting::get('max_participants', PHP_INT_MAX);
+            if (self::getTotalRegistrations() >= $maxParticipants) {
+                Setting::where('key', 'registration_open')
+                    ->where('value', 'true')
+                    ->update(['value' => 'false']);
+            }
+        });
+    }
+
     public static function generateRegistrationCode(string $prefix = 'JADE-SEM-2026-'): string
     {
         $lastCode = self::where('registration_code', 'like', $prefix.'%')
