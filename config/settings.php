@@ -1,15 +1,34 @@
 <?php
 
 return [
-    'venue_name' => env('VENUE_NAME', 'Jakarta International Expo'),
-    'venue_address' => env('VENUE_ADDRESS', 'Jl. Expo Kemayoran, Jakarta Pusat'),
-    'venue_latitude' => (float) env('VENUE_LATITUDE', -6.2147245),
-    'venue_longitude' => (float) env('VENUE_LONGITUDE', 106.8073332),
-    'venue_detection_radius' => (int) env('VENUE_DETECTION_RADIUS', 500),
-    'bank_name' => env('BANK_NAME', 'Bank Central Asia (BCA)'),
-    'bank_account_name' => env('BANK_ACCOUNT_NAME', 'PT Jakarta Dental Exhibition'),
-    'bank_account_number' => env('BANK_ACCOUNT_NUMBER', '1234567890'),
-    'bank_swift_code' => env('BANK_SWIFT_CODE', 'CENAIDJA'),
-    'payment_instructions' => env('PAYMENT_INSTRUCTIONS', 'Please transfer the exact amount to the bank account above.'),
-    'event_terms_conditions' => '',
+    'registration_open' => [
+        'label' => 'Seminar Registration Open/Close',
+        'type' => 'boolean',
+        'default' => true,
+        'description' => 'Controls whether seminar registration is open to participants. Auto-closes when max participants is reached.',
+    ],
+    'max_participants' => [
+        'label' => 'Seminar Max Participants',
+        'type' => 'integer',
+        'default' => 500,
+        'description' => 'Maximum number of seminar registrations allowed. Automatically closes registration when this limit is reached.',
+    ],
+    'hands_on_registration_open' => [
+        'label' => 'Hands On Registration Open/Close',
+        'type' => 'boolean',
+        'default' => true,
+        'description' => 'Controls whether hands-on registration is open to participants.',
+    ],
+    'seminar_registration_opens_at' => [
+        'label' => 'Seminar Registration Opens At',
+        'type' => 'string',
+        'default' => null,
+        'description' => 'Optional date/time when seminar registration automatically opens. Leave null for no date restriction.',
+    ],
+    'hands_on_registration_opens_at' => [
+        'label' => 'Hands On Registration Opens At',
+        'type' => 'string',
+        'default' => null,
+        'description' => 'Optional date/time when hands-on registration automatically opens. Leave null for no date restriction.',
+    ],
 ];
