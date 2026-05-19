@@ -9,11 +9,16 @@ class SettingSeeder extends Seeder
 {
     public function run(): void
     {
-        Setting::create([
-            'key' => 'max_participants',
-            'value' => '500',
-            'type' => 'integer',
-            'description' => 'Maximum number of seminar participants across all packages',
-        ]);
+        foreach (Setting::defined() as $key => $definition) {
+            Setting::updateOrCreate(
+                ['key' => $key],
+                [
+                    'label' => $definition['label'],
+                    'value' => $definition['default'] ?? '',
+                    'type' => $definition['type'],
+                    'description' => $definition['description'] ?? '',
+                ]
+            );
+        }
     }
 }
