@@ -3,8 +3,10 @@
 namespace App\Livewire;
 
 use App\Models\Attendance;
+use App\Models\HandsOnRegistration;
 use App\Models\SeminarRegistration;
 use App\Services\QrTokenService;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
@@ -12,7 +14,7 @@ class AttendanceVerify extends Component
 {
     public string $token;
 
-    public ?SeminarRegistration $registration = null;
+    public SeminarRegistration|HandsOnRegistration|null $registration = null;
 
     public bool $isValid = true;
 
@@ -51,6 +53,18 @@ class AttendanceVerify extends Component
 
     public function loadCheckInStatus(): void
     {
+        if ($this->registration instanceof HandsOnRegistration) {
+            $attendance = Attendance::where('hands_on_registration_id', $this->registration->id)
+                ->where('activity_type', 'hands_on')
+                ->first();
+
+            if ($attendance) {
+                $this->handsOnCheckedIn[$this->registration->id] = $attendance->checked_in_at->format('d M Y H:i');
+            }
+
+            return;
+        }
+
         $seminarAttendance = Attendance::where('seminar_registration_id', $this->registration->id)
             ->where('activity_type', 'seminar')
             ->first();
@@ -71,6 +85,10 @@ class AttendanceVerify extends Component
 
     public function checkInSeminar(): void
     {
+        if (! $this->registration instanceof SeminarRegistration) {
+            return;
+        }
+
         if ($this->seminarCheckedInAt) {
             return;
         }
@@ -98,7 +116,9 @@ class AttendanceVerify extends Component
             return;
         }
 
-        $handsOnReg = $this->registration->handsOnRegistrations()->find($handsOnRegistrationId);
+        $handsOnReg = $this->registration instanceof HandsOnRegistration
+            ? $this->registration
+            : $this->registration->handsOnRegistrations()->find($handsOnRegistrationId);
 
         if (! $handsOnReg || $handsOnReg->payment_status !== 'verified') {
             $this->addError('hands_on_'.$handsOnRegistrationId, __('seminar.hands_on_payment_not_verified'));
@@ -107,14 +127,14 @@ class AttendanceVerify extends Component
         }
 
         Attendance::create([
-            'seminar_registration_id' => $this->registration->id,
-            'hands_on_registration_id' => $handsOnRegistrationId,
+            'seminar_registration_id' => $this->registration instanceof SeminarRegistration ? $this->registration->id : null,
+            'hands_on_registration_id' => $handsOnReg->id,
             'activity_type' => 'hands_on',
             'checked_in_at' => now(),
             'checked_in_by' => Auth::id(),
         ]);
 
-        $this->handsOnCheckedIn[$handsOnRegistrationId] = now()->format('d M Y H:i');
+        $this->handsOnCheckedIn[$handsOnReg->id] = now()->format('d M Y H:i');
         $this->showSuccess = true;
     }
 
@@ -138,8 +158,26 @@ class AttendanceVerify extends Component
         };
     }
 
-    public function getHandsOnSessionsProperty()
+    public function getHandsOnSessionsProperty(): Collection
     {
+        if ($this->registration instanceof HandsOnRegistration) {
+            $handsOn = $this->registration->handsOn;
+
+            if (! $handsOn) {
+                return collect();
+            }
+
+            return collect([
+                [
+                    'id' => $this->registration->id,
+                    'name' => $handsOn->name,
+                    'date' => $handsOn->event_date->format('d M Y'),
+                    'payment_status' => $this->registration->payment_status,
+                    'checked_in' => $this->handsOnCheckedIn[$this->registration->id] ?? null,
+                ],
+            ]);
+        }
+
         return $this->registration->handsOnRegistrations()
             ->with('handsOn')
             ->get()

@@ -2,15 +2,17 @@
 
 namespace App\Livewire;
 
+use App\Models\HandsOnRegistration;
 use App\Models\SeminarRegistration;
 use App\Services\QrTokenService;
+use Illuminate\Support\Collection;
 use Livewire\Component;
 
 class AttendanceQrCode extends Component
 {
     public string $token;
 
-    public ?SeminarRegistration $registration = null;
+    public SeminarRegistration|HandsOnRegistration|null $registration = null;
 
     public bool $isValid = true;
 
@@ -62,8 +64,24 @@ class AttendanceQrCode extends Component
         };
     }
 
-    public function getHandsOnSessionsProperty()
+    public function getHandsOnSessionsProperty(): Collection
     {
+        if ($this->registration instanceof HandsOnRegistration) {
+            $handsOn = $this->registration->handsOn;
+
+            if (! $handsOn) {
+                return collect();
+            }
+
+            return collect([
+                [
+                    'name' => $handsOn->name,
+                    'date' => $handsOn->event_date->format('d M Y'),
+                    'time' => $handsOn->event_date->format('H:i'),
+                ],
+            ]);
+        }
+
         return $this->registration->handsOnRegistrations()
             ->with('handsOn')
             ->get()

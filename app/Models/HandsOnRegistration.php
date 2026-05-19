@@ -12,12 +12,15 @@ class HandsOnRegistration extends Model
 
     protected $fillable = [
         'registration_code',
+        'qr_token',
+        'qr_expires_at',
         'seminar_registration_id',
         'hands_on_id',
         'registration_type',
         'payment_status',
         'payment_proof_path',
         'verified_at',
+        'confirmation_email_sent_at',
         'name',
         'name_license',
         'email',
@@ -49,6 +52,8 @@ class HandsOnRegistration extends Model
 
     protected $casts = [
         'verified_at' => 'datetime',
+        'confirmation_email_sent_at' => 'datetime',
+        'qr_expires_at' => 'datetime',
         'nik' => 'string',
     ];
 

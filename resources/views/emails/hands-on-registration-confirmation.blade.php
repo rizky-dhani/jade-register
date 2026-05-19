@@ -15,7 +15,6 @@
         .detail-label { font-weight: bold; width: 220px; flex-shrink: 0; }
         .detail-value { flex: 1; }
         .session-card { padding: 12px 0; }
-        .session-card:not(:last-child) { border-bottom: 1px solid #eee; margin-bottom: 8px; }
         .schedule-box { background: #f0f8ff; padding: 15px; border-radius: 5px; margin: 15px 0; border: 1px solid #b3d9ff; }
         .schedule-box p { margin: 8px 0; }
         .notes { background: #fff8e1; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #ff9800; }
@@ -29,7 +28,6 @@
         .contact-info ul { list-style: none; padding-left: 0; }
         .contact-info li { margin-bottom: 5px; }
         .contact-info a { color: #2e7d32; text-decoration: none; }
-        .total-row { display: flex; justify-content: space-between; padding: 12px 0; border-top: 2px solid #4E397C; margin-top: 8px; font-size: 16px; }
         .payment-badge { display: inline-block; padding: 4px 12px; background: #fff8e1; border-radius: 4px; font-size: 13px; font-weight: bold; color: #e65100; }
     </style>
 </head>
@@ -114,70 +112,68 @@
             </div>
         </div>
 
-        {{-- Selected Hands-On Sessions --}}
-        @if($registration->handsOnRegistrations->isNotEmpty())
+        {{-- Selected Hands-On Session --}}
+        @if($registration->handsOn)
             <div class="details">
                 <h3>{{ trans('seminar.email_hands_on_sessions_title') }}</h3>
-                @foreach($registration->handsOnRegistrations as $hoReg)
-                    <div class="session-card">
-                        @if($hoReg->handsOn->ho_code)
-                            <span style="display: inline-block; padding: 2px 8px; background: #e0e0e0; border-radius: 3px; font-size: 11px; font-weight: bold; color: #555; margin-bottom: 6px;">
-                                {{ $hoReg->handsOn->ho_code }}
-                            </span>
-                        @endif
-                        <p style="margin: 0 0 8px 0; font-size: 16px;"><strong>{{ $hoReg->handsOn->name }}</strong></p>
-                        <div class="detail-row">
-                            <span class="detail-label">{{ trans('seminar.email_hands_on_doctor_label') }}</span>
-                            <span class="detail-value">{{ $hoReg->handsOn->doctor_name ?? '-' }}</span>
-                        </div>
-                        <div class="detail-row">
-                            <span class="detail-label">{{ trans('seminar.email_hands_on_date_label') }}</span>
-                            <span class="detail-value">{{ $hoReg->handsOn->event_date->format('d F Y') }}</span>
-                        </div>
-                        @if($hoReg->handsOn->description)
-                            <div class="detail-row">
-                                <span class="detail-label">{{ trans('seminar.email_hands_on_description_label') }}</span>
-                                <span class="detail-value">{{ $hoReg->handsOn->description }}</span>
-                            </div>
-                        @endif
-                        <div class="detail-row">
-                            <span class="detail-label">{{ trans('seminar.email_hands_on_price_label') }}</span>
-                            <span class="detail-value">
-                                @if($hoReg->handsOn->isEarlyBirdActive() && $hoReg->handsOn->discounted_price)
-                                    <span style="text-decoration: line-through; color: #999;">{{ $hoReg->handsOn->formatted_original_price }}</span>
-                                    <strong>{{ $hoReg->handsOn->formatted_discounted_price }}</strong>
-                                @else
-                                    <strong>{{ $hoReg->handsOn->formatted_original_price }}</strong>
-                                @endif
-                            </span>
-                        </div>
+                <div class="session-card">
+                    @if($registration->handsOn->ho_code)
+                        <span style="display: inline-block; padding: 2px 8px; background: #e0e0e0; border-radius: 3px; font-size: 11px; font-weight: bold; color: #555; margin-bottom: 6px;">
+                            {{ $registration->handsOn->ho_code }}
+                        </span>
+                    @endif
+                    <p style="margin: 0 0 8px 0; font-size: 16px;"><strong>{{ $registration->handsOn->name }}</strong></p>
+                    <div class="detail-row">
+                        <span class="detail-label">{{ trans('seminar.email_hands_on_doctor_label') }}</span>
+                        <span class="detail-value">{{ $registration->handsOn->doctor_name ?? '-' }}</span>
                     </div>
-                @endforeach
-
-                {{-- Total Amount --}}
-                <div class="total-row">
-                    <strong>{{ trans('seminar.hands_on_total_amount') }}</strong>
-                    <strong>Rp {{ number_format($registration->hands_on_total_amount, 0, ',', '.') }}</strong>
+                    <div class="detail-row">
+                        <span class="detail-label">{{ trans('seminar.email_hands_on_date_label') }}</span>
+                        <span class="detail-value">{{ $registration->handsOn->event_date->format('d F Y') }}</span>
+                    </div>
+                    @if($registration->handsOn->description)
+                        <div class="detail-row">
+                            <span class="detail-label">{{ trans('seminar.email_hands_on_description_label') }}</span>
+                            <span class="detail-value">{{ $registration->handsOn->description }}</span>
+                        </div>
+                    @endif
+                    <div class="detail-row">
+                        <span class="detail-label">{{ trans('seminar.email_hands_on_price_label') }}</span>
+                        <span class="detail-value">
+                            @if($registration->handsOn->isEarlyBirdActive() && $registration->handsOn->discounted_price)
+                                <span style="text-decoration: line-through; color: #999;">{{ $registration->handsOn->formatted_original_price }}</span>
+                                <strong>{{ $registration->handsOn->formatted_discounted_price }}</strong>
+                            @else
+                                <strong>{{ $registration->handsOn->formatted_original_price }}</strong>
+                            @endif
+                        </span>
+                    </div>
                 </div>
             </div>
         @endif
 
-        {{-- QR Code Section --}}
+        {{-- QR Code Section — uses HO's own QR if standalone, falls back to parent seminar QR --}}
         @php
             $qrTokenService = app(\App\Services\QrTokenService::class);
-            $qrUrl = $qrTokenService->getQrUrl($registration);
+            if ($registration->qr_token) {
+                $qrUrl = $qrTokenService->getQrUrl($registration);
+            } elseif ($registration->seminarRegistration) {
+                $qrUrl = $qrTokenService->getQrUrl($registration->seminarRegistration);
+            } else {
+                $qrUrl = null;
+            }
         @endphp
 
         @if($qrUrl)
-        <div style="text-align: center; margin: 20px 0; padding: 20px; background: #f0f4ff; border-radius: 8px;">
-            <h3 style="margin: 0 0 10px 0; color: #4E397C;">{{ trans('seminar.email_attendance_confirmation_qr_title') }}</h3>
-            <p style="margin: 0 0 15px 0; color: #666;">{{ trans('seminar.email_attendance_confirmation_qr_description') }}</p>
-            <a href="{{ $qrUrl }}" style="display: inline-block; padding: 12px 24px; background-color: #4E397C; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 14px; font-weight: 600;" target="_blank">{{ trans('seminar.email_attendance_confirmation_view_qr') }}</a>
-            <p style="margin: 15px 0 0 0; font-size: 12px; color: #888;">
-                {{ trans('seminar.email_attendance_confirmation_or_copy') }}<br>
-                <code style="font-size: 11px; word-break: break-all;">{{ $qrUrl }}</code>
-            </p>
-        </div>
+            <div style="text-align: center; margin: 20px 0; padding: 20px; background: #f0f4ff; border-radius: 8px;">
+                <h3 style="margin: 0 0 10px 0; color: #4E397C;">{{ trans('seminar.email_attendance_confirmation_qr_title') }}</h3>
+                <p style="margin: 0 0 15px 0; color: #666;">{{ trans('seminar.email_attendance_confirmation_qr_description') }}</p>
+                <a href="{{ $qrUrl }}" style="display: inline-block; padding: 12px 24px; background-color: #4E397C; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 14px; font-weight: 600;" target="_blank">{{ trans('seminar.email_attendance_confirmation_view_qr') }}</a>
+                <p style="margin: 15px 0 0 0; font-size: 12px; color: #888;">
+                    {{ trans('seminar.email_attendance_confirmation_or_copy') }}<br>
+                    <code style="font-size: 11px; word-break: break-all;">{{ $qrUrl }}</code>
+                </p>
+            </div>
         @endif
 
         {{-- WhatsApp Group Section for Indonesian Participants --}}

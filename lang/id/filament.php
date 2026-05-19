@@ -114,6 +114,7 @@ return [
 
     // Hands On Registrations
     'hands_on_registrations.registration_code' => 'Kode Pendaftaran',
+    'hands_on_registrations.seminar_registration' => 'Pendaftaran Seminar',
     'hands_on_registrations.participant' => 'Peserta',
     'hands_on_registrations.hands_on_event' => 'Acara Hands On',
     'hands_on_registrations.event_date' => 'Tanggal Acara',
@@ -121,6 +122,8 @@ return [
     'hands_on_registrations.payment_status' => 'Status Pembayaran',
     'hands_on_registrations.verified_at' => 'Diverifikasi Pada',
     'hands_on_registrations.created_at' => 'Dibuat Pada',
+    'hands_on_registrations.email' => 'Email',
+    'hands_on_registrations.phone' => 'Telepon',
     'hands_on_registrations.view_payment_proof' => 'Lihat Bukti Pembayaran',
     'hands_on_registrations.registration_type' => 'Tipe Pendaftaran',
     'hands_on_registrations.payment_proof' => 'Bukti Pembayaran',

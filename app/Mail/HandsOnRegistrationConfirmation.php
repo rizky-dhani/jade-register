@@ -2,7 +2,7 @@
 
 namespace App\Mail;
 
-use App\Models\SeminarRegistration;
+use App\Models\HandsOnRegistration;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
@@ -13,7 +13,7 @@ class HandsOnRegistrationConfirmation extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public function __construct(public SeminarRegistration $registration) {}
+    public function __construct(public HandsOnRegistration $registration) {}
 
     public function envelope(): Envelope
     {

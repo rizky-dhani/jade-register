@@ -7,6 +7,7 @@ use App\Mail\SeminarPaymentRejected;
 use App\Mail\SeminarPaymentVerified;
 use App\Mail\SeminarRegistrationConfirmation;
 use App\Mail\VisitorRegistrationConfirmation;
+use App\Models\HandsOnRegistration;
 use App\Models\SeminarRegistration;
 use App\Models\Visitor;
 use Illuminate\Support\Facades\Log;
@@ -21,7 +22,6 @@ class RegistrationService
 
     public function sendSeminarSubmissionConfirmation(SeminarRegistration $registration): void
     {
-        // Prevent duplicate emails
         if ($registration->confirmation_email_sent_at) {
             Log::warning('Skipping duplicate email send', [
                 'registration_code' => $registration->registration_code,
@@ -33,18 +33,15 @@ class RegistrationService
 
         $locale = $registration->language ?? 'en';
 
-        // Send unified registration confirmation (includes package details, registrant info, schedule, QR code, notes, SKP)
         Mail::to($registration->email)
             ->locale($locale)
             ->send(new SeminarRegistrationConfirmation($registration));
 
-        // Mark as sent to prevent duplicates
         $registration->update(['confirmation_email_sent_at' => now()]);
     }
 
-    public function sendHandsOnSubmissionConfirmation(SeminarRegistration $registration): void
+    public function sendHandsOnSubmissionConfirmation(HandsOnRegistration $registration): void
     {
-        // Prevent duplicate emails
         if ($registration->confirmation_email_sent_at) {
             Log::warning('Skipping duplicate hands-on email send', [
                 'registration_code' => $registration->registration_code,
@@ -60,7 +57,26 @@ class RegistrationService
             ->locale($locale)
             ->send(new HandsOnRegistrationConfirmation($registration));
 
-        // Mark as sent to prevent duplicates
+        $registration->update(['confirmation_email_sent_at' => now()]);
+    }
+
+    public function sendHandsOnAttendanceConfirmation(HandsOnRegistration $registration): void
+    {
+        if ($registration->confirmation_email_sent_at) {
+            Log::warning('Skipping duplicate hands-on attendance email send', [
+                'registration_code' => $registration->registration_code,
+                'email' => $registration->email,
+            ]);
+
+            return;
+        }
+
+        $locale = $registration->language ?? 'en';
+
+        Mail::to($registration->email)
+            ->locale($locale)
+            ->send(new HandsOnRegistrationConfirmation($registration));
+
         $registration->update(['confirmation_email_sent_at' => now()]);
     }
 

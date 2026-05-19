@@ -33,7 +33,7 @@
                     <div class="space-y-3 mb-6">
                         <div>
                             <p class="text-sm text-gray-500">{{ __('seminar.name') }}</p>
-                            <p class="font-semibold text-gray-900">{{ $registration->name }}</p>
+                            <p class="font-semibold text-gray-900">{{ $registration->name ?? $registration->name_license ?? '-' }}</p>
                         </div>
                         <div>
                             <p class="text-sm text-gray-500">{{ __('seminar.email') }}</p>

@@ -360,9 +360,10 @@ class HandsOnRegistration extends Component
         }
 
         $registration = null;
+        $handsOnRegistrations = [];
 
         try {
-            $registration = DB::transaction(function () use ($registrationData, $path) {
+            $registration = DB::transaction(function () use ($registrationData, $path, &$handsOnRegistrations) {
                 // Step 1: Lock all HandsOn rows and verify capacity FIRST
                 foreach ($this->selectedHandsOn as $date => $eventId) {
                     if ($eventId) {
@@ -384,14 +385,27 @@ class HandsOnRegistration extends Component
                 // Step 3: Create HandsOnRegistration records
                 foreach ($this->selectedHandsOn as $date => $eventId) {
                     if ($eventId) {
-                        HandsOnRegistrationModel::create([
+                        $hoReg = HandsOnRegistrationModel::create([
                             'registration_code' => HandsOnRegistrationModel::generateRegistrationCode(),
                             'seminar_registration_id' => $reg->id,
                             'hands_on_id' => $eventId,
                             'registration_type' => 'combined',
                             'payment_status' => 'pending',
                             'payment_proof_path' => $path,
+                            'name' => $reg->name,
+                            'name_license' => $reg->name_license,
+                            'email' => $reg->email,
+                            'phone' => $reg->phone,
+                            'nik' => $reg->nik,
+                            'pdgi_branch' => $reg->pdgi_branch,
+                            'kompetensi' => $reg->kompetensi,
+                            'status' => $reg->status,
+                            'country_id' => $reg->country_id,
+                            'payment_method' => $reg->payment_method,
+                            'language' => $reg->language,
                         ]);
+
+                        $handsOnRegistrations[] = $hoReg;
                     }
                 }
 
@@ -430,7 +444,10 @@ class HandsOnRegistration extends Component
         $qrTokenService->generate($registration);
 
         $registrationService = app(RegistrationService::class);
-        $registrationService->sendHandsOnSubmissionConfirmation($registration);
+        foreach ($handsOnRegistrations as $hoReg) {
+            $qrTokenService->generateForHandsOn($hoReg);
+            $registrationService->sendHandsOnSubmissionConfirmation($hoReg);
+        }
 
         $this->redirectRoute('register.hands-on.success', ['id' => $registration->id], navigate: true);
     }

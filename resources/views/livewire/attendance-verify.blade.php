@@ -45,7 +45,7 @@
                     <div class="space-y-3 mb-6">
                         <div>
                             <p class="text-sm text-gray-500">{{ __('seminar.name_label') }}</p>
-                            <p class="font-semibold text-gray-900">{{ $registration->name }}</p>
+                            <p class="font-semibold text-gray-900">{{ $registration->name ?? $registration->name_license ?? '-' }}</p>
                         </div>
                         <div>
                             <p class="text-sm text-gray-500">{{ __('seminar.email_label') }}</p>
@@ -74,6 +74,7 @@
                         </div>
                     @endif
 
+                    @if($registration instanceof \App\Models\SeminarRegistration)
                     <div class="border-t pt-4">
                         <h3 class="font-semibold text-gray-900 mb-3">{{ __('seminar.seminar_attendance_title') }}</h3>
                         @if($seminarCheckedInAt)
@@ -91,6 +92,7 @@
                             </button>
                         @endif
                     </div>
+                    @endif
 
                     @if($this->handsOnSessions->isNotEmpty())
                         <div class="border-t pt-4 mt-4">

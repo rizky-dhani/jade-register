@@ -114,6 +114,7 @@ return [
 
     // Hands On Registrations
     'hands_on_registrations.registration_code' => 'Registration Code',
+    'hands_on_registrations.seminar_registration' => 'Seminar Registration',
     'hands_on_registrations.participant' => 'Participant',
     'hands_on_registrations.hands_on_event' => 'Hands On Event',
     'hands_on_registrations.event_date' => 'Event Date',
@@ -121,6 +122,8 @@ return [
     'hands_on_registrations.payment_status' => 'Payment Status',
     'hands_on_registrations.verified_at' => 'Verified At',
     'hands_on_registrations.created_at' => 'Created At',
+    'hands_on_registrations.email' => 'Email',
+    'hands_on_registrations.phone' => 'Phone',
     'hands_on_registrations.view_payment_proof' => 'View Payment Proof',
     'hands_on_registrations.registration_type' => 'Registration Type',
     'hands_on_registrations.payment_proof' => 'Payment Proof',
