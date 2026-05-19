@@ -3,11 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 class Setting extends Model
 {
     protected $fillable = [
         'key',
+        'label',
         'value',
         'type',
         'description',
@@ -16,6 +18,11 @@ class Setting extends Model
     protected $casts = [
         'type' => 'string',
     ];
+
+    public static function defined(): Collection
+    {
+        return collect(config('settings', []));
+    }
 
     public static function get(string $key, mixed $default = null): mixed
     {
