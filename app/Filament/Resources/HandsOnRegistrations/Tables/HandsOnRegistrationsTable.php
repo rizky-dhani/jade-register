@@ -22,6 +22,7 @@ class HandsOnRegistrationsTable
             ->modifyQueryUsing(fn (Builder $query) => $query
                 ->leftJoin('seminar_registrations', 'hands_on_registrations.seminar_registration_id', '=', 'seminar_registrations.id')
                 ->join('hands_ons', 'hands_on_registrations.hands_on_id', '=', 'hands_ons.id')
+                ->orderBy('hands_on_registrations.created_at', 'desc')
                 ->orderBy('seminar_registrations.name_license')
                 ->orderBy('hands_on_registrations.name_license')
                 ->orderBy('hands_ons.event_date')
