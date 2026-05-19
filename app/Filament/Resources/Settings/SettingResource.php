@@ -26,13 +26,18 @@ class SettingResource extends Resource
 
     protected static ?string $modelLabel = 'Setting';
 
-    protected static ?string $recordTitleAttribute = 'key';
+    protected static ?string $recordTitleAttribute = 'label';
 
     protected static ?int $navigationSort = 99;
 
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count() > 0 ? (string) static::getModel()::count() : null;
+    }
+
+    public static function canCreate(): bool
+    {
+        return false;
     }
 
     public static function form(Schema $schema): Schema

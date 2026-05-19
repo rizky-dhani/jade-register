@@ -18,12 +18,17 @@ class SettingForm
             ->components([
                 Grid::make(2)
                     ->schema([
+                        TextInput::make('label')
+                            ->label(__('filament.settings.form.label'))
+                            ->required()
+                            ->maxLength(255),
                         TextInput::make('key')
                             ->label(__('filament.settings.form.key'))
                             ->required()
                             ->unique(ignoreRecord: true)
                             ->alphaDash()
-                            ->helperText(__('filament.settings.form.key_helper')),
+                            ->helperText(__('filament.settings.form.key_helper'))
+                            ->disabled(fn (?string $operation): bool => $operation === 'edit'),
                         Select::make('type')
                             ->label(__('filament.settings.form.type'))
                             ->options([
@@ -36,7 +41,8 @@ class SettingForm
                             ->required()
                             ->default('string')
                             ->live()
-                            ->helperText(__('filament.settings.form.type_helper')),
+                            ->helperText(__('filament.settings.form.type_helper'))
+                            ->disabled(fn (?string $operation): bool => $operation === 'edit'),
                     ]),
                 TextInput::make('value')
                     ->label(__('filament.settings.form.value'))

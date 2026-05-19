@@ -2,8 +2,6 @@
 
 namespace App\Filament\Resources\Settings\Tables;
 
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -14,11 +12,16 @@ class SettingsTable
     {
         return $table
             ->columns([
+                TextColumn::make('label')
+                    ->label(__('filament.settings.table.label'))
+                    ->searchable()
+                    ->sortable()
+                    ->weight('bold'),
                 TextColumn::make('key')
                     ->label(__('filament.settings.table.key'))
                     ->searchable()
                     ->sortable()
-                    ->weight('bold'),
+                    ->color('gray'),
                 TextColumn::make('value')
                     ->label(__('filament.settings.table.value'))
                     ->limit(50)
@@ -54,10 +57,6 @@ class SettingsTable
             ->recordActions([
                 EditAction::make(),
             ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
-            ]);
+            ->toolbarActions([]);
     }
 }
