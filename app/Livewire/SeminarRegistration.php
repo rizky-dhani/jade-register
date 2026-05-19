@@ -666,7 +666,7 @@ class SeminarRegistration extends Component
             return true;
         }
 
-        $opensAt = Setting::get('registration_opens_at');
+        $opensAt = Setting::get('seminar_registration_opens_at');
 
         if ($opensAt) {
             return now()->gte(Carbon::parse($opensAt));
