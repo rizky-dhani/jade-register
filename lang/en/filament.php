@@ -265,6 +265,7 @@ return [
     'widgets.visitor_count.checked_in' => 'Checked in',
 
     // Settings Form Labels
+    'settings.form.label' => 'Label',
     'settings.form.key' => 'Setting Key',
     'settings.form.key_helper' => 'Unique identifier for this setting (e.g., max_participants)',
     'settings.form.value' => 'Value',
@@ -274,6 +275,7 @@ return [
     'settings.form.description_helper' => 'Optional description to explain what this setting does',
 
     // Settings Table Columns
+    'settings.table.label' => 'Label',
     'settings.table.key' => 'Key',
     'settings.table.value' => 'Value',
     'settings.table.type' => 'Type',

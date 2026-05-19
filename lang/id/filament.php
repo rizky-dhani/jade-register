@@ -264,6 +264,7 @@ return [
     'widgets.visitor_count.checked_in' => 'Sudah check-in',
 
     // Settings Form Labels
+    'settings.form.label' => 'Label',
     'settings.form.key' => 'Kunci Pengaturan',
     'settings.form.key_helper' => 'Pengenal unik untuk pengaturan ini (misalnya, max_participants)',
     'settings.form.value' => 'Nilai',
@@ -273,6 +274,7 @@ return [
     'settings.form.description_helper' => 'Deskripsi opsional untuk menjelaskan fungsi pengaturan ini',
 
     // Settings Table Columns
+    'settings.table.label' => 'Label',
     'settings.table.key' => 'Kunci',
     'settings.table.value' => 'Nilai',
     'settings.table.type' => 'Tipe',
