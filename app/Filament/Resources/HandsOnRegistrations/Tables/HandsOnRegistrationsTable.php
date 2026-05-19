@@ -176,7 +176,7 @@ class HandsOnRegistrationsTable
                 Action::make('resendEmailConfirmation')
                     ->label(__('seminar.resend_email_confirmation'))
                     ->icon('heroicon-o-envelope')
-                    ->color('primary')
+                    ->color('success')
                     ->requiresConfirmation()
                     ->modalHeading(__('seminar.resend_email_confirmation'))
                     ->modalDescription(__('seminar.resend_email_confirmation_description'))
