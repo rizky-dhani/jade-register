@@ -272,6 +272,15 @@ return [
     'settings.form.type_helper' => 'Tipe menentukan bagaimana nilai akan diparsed saat diambil',
     'settings.form.description' => 'Deskripsi',
     'settings.form.description_helper' => 'Deskripsi opsional untuk menjelaskan fungsi pengaturan ini',
+    'settings.form.json_helper' => 'Masukkan JSON array atau objek yang valid',
+
+    // Settings Form Sections
+    'settings.section.basic' => 'Informasi Dasar',
+    'settings.section.basic_description' => 'Tentukan identitas dan tipe data dari pengaturan ini.',
+    'settings.section.value' => 'Nilai',
+    'settings.section.value_description' => 'Tetapkan nilai yang akan digunakan saat runtime.',
+    'settings.section.notes' => 'Catatan',
+    'settings.section.notes_description' => 'Catatan opsional dan dokumentasi untuk pengaturan ini.',
 
     // Settings Table Columns
     'settings.table.label' => 'Label',

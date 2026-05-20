@@ -273,6 +273,15 @@ return [
     'settings.form.type_helper' => 'The type determines how the value will be parsed when retrieved',
     'settings.form.description' => 'Description',
     'settings.form.description_helper' => 'Optional description to explain what this setting does',
+    'settings.form.json_helper' => 'Enter valid JSON array or object',
+
+    // Settings Form Sections
+    'settings.section.basic' => 'Basic Information',
+    'settings.section.basic_description' => 'Define the identity and data type of this setting.',
+    'settings.section.value' => 'Value',
+    'settings.section.value_description' => 'Set the value that will be used at runtime.',
+    'settings.section.notes' => 'Notes',
+    'settings.section.notes_description' => 'Optional notes and documentation for this setting.',
 
     // Settings Table Columns
     'settings.table.label' => 'Label',
