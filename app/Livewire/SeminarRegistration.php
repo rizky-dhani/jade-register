@@ -573,10 +573,14 @@ class SeminarRegistration extends Component
                 : 'required|file|mimes:jpeg,png,pdf|max:5120',
         ]);
 
-        // Validate hands-on availability
+        // Validate hands-on availability (skip already-registered sessions)
         if ($this->wants_hands_on && ! empty($this->selectedHandsOn)) {
             foreach ($this->selectedHandsOn as $date => $eventId) {
                 if ($eventId) {
+                    // Skip validation for already-registered sessions
+                    if (in_array($eventId, $this->alreadyRegisteredHandsOnIds)) {
+                        continue;
+                    }
                     $event = HandsOn::find($eventId);
                     if ($event) {
                         if ($event->isFull()) {
