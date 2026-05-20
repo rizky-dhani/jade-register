@@ -83,6 +83,8 @@ class SeminarRegistration extends Component
 
     public int $handsOnTotalPrice = 0;
 
+    public array $alreadyRegisteredHandsOnIds = [];
+
     // Add-On properties
     public bool $wantsAddons = true;
 
@@ -502,8 +504,10 @@ class SeminarRegistration extends Component
 
         $this->showVerificationError = false;
         $this->existingRegistration = null;
+        $this->alreadyRegisteredHandsOnIds = [];
 
-        $registration = SeminarRegistrationModel::whereRaw('LOWER(email) = ?', [strtolower($this->verification_email)])
+        $registration = SeminarRegistrationModel::with('handsOnRegistrations')
+            ->whereRaw('LOWER(email) = ?', [strtolower($this->verification_email)])
             ->first();
 
         if (! $registration) {
@@ -514,11 +518,33 @@ class SeminarRegistration extends Component
 
         $this->existingRegistration = $registration;
 
+        // Load existing hands-on registrations linked to this seminar registration
+        $existingHandsOnRegs = $registration->handsOnRegistrations;
+
+        // Track which hands-on event IDs are already registered
+        $this->alreadyRegisteredHandsOnIds = $existingHandsOnRegs
+            ->pluck('hands_on_id')
+            ->unique()
+            ->values()
+            ->toArray();
+
         // Reload addons with purchased status for existing registration
         $this->loadAvailableAddons();
 
         if ($registration->payment_status === 'verified') {
             $this->loadAvailableHandsOn();
+
+            // Pre-populate selectedHandsOn with already-registered events
+            foreach ($this->availableHandsOn as $date => $events) {
+                foreach ($events as $event) {
+                    if (in_array($event['id'], $this->alreadyRegisteredHandsOnIds)) {
+                        $this->selectedHandsOn[$date] = $event['id'];
+                        break;
+                    }
+                }
+            }
+
+            $this->updatedSelectedHandsOn();
         }
     }
 
@@ -724,7 +750,7 @@ class SeminarRegistration extends Component
                 'has_price' => $event->current_price !== null && $event->current_price > 0,
                 'flyer_url' => $event->flyer_path ? Storage::url($event->flyer_path) : null,
                 'skp_url' => $event->skp_path ? Storage::url($event->skp_path) : null,
-                'is_already_registered' => false,
+                'is_already_registered' => in_array($event->id, $this->alreadyRegisteredHandsOnIds),
             ];
         }
     }
