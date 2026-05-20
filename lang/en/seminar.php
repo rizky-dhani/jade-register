@@ -132,6 +132,7 @@ return [
     // Already registered check
     'already_registered' => 'Are you already registered for the seminar?',
     'already_registered_help' => 'If you have already registered, you can add Hands On sessions without re-registering.',
+    'already_registered_ho' => 'Already Registered',
     'email_already_registered' => 'This email is already registered. Please check your inbox for a confirmation email.',
     'yes' => 'Yes',
     'no' => 'No',

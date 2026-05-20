@@ -17,7 +17,7 @@
                     @endphp
                     
                     <div class="border rounded-lg transition-colors
-                        {{ $event['is_full'] || !$event['has_price'] ? 'bg-gray-100 border-gray-200 opacity-60' : '' }}
+                        {{ $event['is_full'] || !$event['has_price'] || $event['is_already_registered'] ? 'bg-gray-100 border-gray-200 opacity-60' : '' }}
                         {{ $isSelected ? 'border-blue-500 bg-blue-50' : 'border-gray-200' }}">
                         
                         <label class="flex flex-col sm:flex-row items-start gap-3 p-3 cursor-pointer">
@@ -32,12 +32,20 @@
                             @endif
                             
                             <div class="flex flex-col sm:flex-row items-start sm:items-center gap-1 sm:gap-3 flex-1 min-w-0 w-full">
+                                @if($event['is_already_registered'])
+                                    <div class="w-4 h-4 flex-shrink-0 mt-0.5 sm:mt-0">
+                                        <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                                        </svg>
+                                    </div>
+                                @else
                                 <input type="radio" 
                                     name="hands_on_{{ $date }}"
                                     wire:model.live="selectedHandsOn.{{ $date }}"
                                     value="{{ $event['id'] }}"
                                     {{ $event['is_full'] || !$event['has_price'] ? 'disabled' : '' }}
                                     class="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500 flex-shrink-0 mt-0.5 sm:mt-0">
+                                @endif
 
                                 <div class="min-w-0 flex-1">
                                     @if($event['ho_code'])
@@ -52,6 +60,12 @@
                                         <p class="text-sm text-gray-500">{{ $event['doctor_name'] }}</p>
                                     @endif
                                     
+                                    {{-- Already registered indicator --}}
+                                    @if($event['is_already_registered'])
+                                        <span class="inline-flex items-center px-2 py-0.5 mt-1 text-xs font-medium text-green-700 bg-green-100 rounded">
+                                            {{ __('seminar.already_registered_ho') }}
+                                        </span>
+                                    @else
                                     {{-- Stock indicator --}}
                                     @if(!$event['has_price'])
                                         <span class="inline-flex items-center px-2 py-0.5 mt-1 text-xs font-medium text-gray-600 bg-gray-200 rounded">
@@ -73,6 +87,7 @@
                                         <span class="inline-flex items-center px-2 py-0.5 mt-1 text-xs font-medium text-green-700 bg-green-100 rounded">
                                             {{ $event['remaining_stock'] }} {{ __('seminar.seats_left') }}
                                         </span>
+                                    @endif
                                     @endif
                                 </div>
                                 

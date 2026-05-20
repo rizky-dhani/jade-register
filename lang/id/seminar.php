@@ -132,6 +132,7 @@ return [
     // Already registered check
     'already_registered' => 'Apakah Anda sudah terdaftar untuk seminar?',
     'already_registered_help' => 'Jika Anda sudah terdaftar, Anda dapat menambahkan sesi Hands On tanpa mendaftar ulang.',
+    'already_registered_ho' => 'Sudah Terdaftar',
     'email_already_registered' => 'Email ini sudah terdaftar. Silakan periksa kotak masuk Anda untuk email konfirmasi.',
     'yes' => 'Ya',
     'no' => 'Tidak',

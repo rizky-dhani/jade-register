@@ -77,6 +77,9 @@ class HandsOnRegistration extends Component
 
     public bool $isChecking = false;
 
+    // Track hands-on events already registered via seminar registration
+    public array $alreadyRegisteredHandsOnIds = [];
+
     // Submission lock to prevent duplicate submissions
     public bool $isSubmitting = false;
 
@@ -252,6 +255,7 @@ class HandsOnRegistration extends Component
                 'has_price' => $event->current_price !== null && $event->current_price > 0,
                 'flyer_url' => $event->flyer_path ? Storage::url($event->flyer_path) : null,
                 'skp_url' => $event->skp_path ? Storage::url($event->skp_path) : null,
+                'is_already_registered' => in_array($event->id, $this->alreadyRegisteredHandsOnIds),
             ];
         }
     }
@@ -287,9 +291,16 @@ class HandsOnRegistration extends Component
             return;
         }
 
+        // Handle existing registration flow (adding more hands-on sessions)
+        if ($this->existingRegistration) {
+            $this->submitExistingRegistration();
+
+            return;
+        }
+
         $this->validate();
 
-        // Prevent duplicate registration by email
+        // Prevent duplicate registration by email for new registrations
         $existingRegistration = SeminarRegistrationModel::whereRaw('LOWER(email) = ?', [strtolower($this->email)])->first();
         if ($existingRegistration) {
             $this->addError('email', __('seminar.email_already_registered'));
@@ -452,6 +463,147 @@ class HandsOnRegistration extends Component
         $this->redirectRoute('register.hands-on.success', ['id' => $registration->id], navigate: true);
     }
 
+    public function submitExistingRegistration(): void
+    {
+        if ($this->isSubmitting) {
+            return;
+        }
+
+        $registration = $this->existingRegistration;
+
+        // Only allow selections for verified registrations
+        if ($registration->payment_status !== 'verified') {
+            return;
+        }
+
+        $this->isSubmitting = true;
+
+        // Validate hands-on availability and payment proof
+        if (! empty($this->selectedHandsOn)) {
+            foreach ($this->selectedHandsOn as $date => $eventId) {
+                if ($eventId) {
+                    // Skip validation for already-registered sessions
+                    if (in_array($eventId, $this->alreadyRegisteredHandsOnIds)) {
+                        continue;
+                    }
+
+                    $event = HandsOn::find($eventId);
+                    if ($event) {
+                        if ($event->isFull()) {
+                            $this->addError('selectedHandsOn.'.$date, __('seminar.session_full'));
+                            $this->isSubmitting = false;
+
+                            return;
+                        }
+                        if ($event->remaining_stock <= 0) {
+                            $this->addError('selectedHandsOn.'.$date, __('seminar.session_stock_limit'));
+                            $this->isSubmitting = false;
+
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+
+        $this->validate([
+            'payment_proof' => $this->payment_proof_uploaded
+                ? 'nullable'
+                : 'required|file|mimes:jpeg,png,pdf|max:5120',
+        ]);
+
+        $paymentProofPath = $this->payment_proof_path ?? $this->payment_proof->store('payment-proofs', 'public');
+
+        try {
+            DB::transaction(function () use ($registration, $paymentProofPath) {
+                $hasNewSelections = false;
+
+                foreach ($this->selectedHandsOn as $date => $eventId) {
+                    if (! $eventId) {
+                        continue;
+                    }
+
+                    // Skip if already registered for this session
+                    if (in_array($eventId, $this->alreadyRegisteredHandsOnIds)) {
+                        continue;
+                    }
+
+                    // Skip if already exists in database (extra safety)
+                    $alreadyExists = HandsOnRegistrationModel::where('seminar_registration_id', $registration->id)
+                        ->where('hands_on_id', $eventId)
+                        ->exists();
+
+                    if ($alreadyExists) {
+                        continue;
+                    }
+
+                    HandsOnRegistrationModel::create([
+                        'registration_code' => HandsOnRegistrationModel::generateRegistrationCode(),
+                        'seminar_registration_id' => $registration->id,
+                        'hands_on_id' => $eventId,
+                        'registration_type' => 'combined',
+                        'payment_status' => 'pending',
+                        'payment_proof_path' => $paymentProofPath,
+                        'name' => $registration->name,
+                        'name_license' => $registration->name_license,
+                        'email' => $registration->email,
+                        'phone' => $registration->phone,
+                        'nik' => $registration->nik,
+                        'pdgi_branch' => $registration->pdgi_branch,
+                        'kompetensi' => $registration->kompetensi,
+                        'status' => $registration->status,
+                        'country_id' => $registration->country_id,
+                        'payment_method' => $registration->payment_method,
+                        'language' => $registration->language,
+                    ]);
+
+                    $hasNewSelections = true;
+                }
+
+                if (! $hasNewSelections) {
+                    throw new \RuntimeException(__('seminar.no_new_selections'));
+                }
+            });
+        } catch (\Exception $e) {
+            $this->isSubmitting = false;
+
+            if ($e->getMessage() === __('seminar.no_new_selections')) {
+                $this->addError('selectedHandsOn', __('seminar.no_new_selections'));
+
+                return;
+            }
+
+            \Log::error('Existing hands-on registration submission failed', [
+                'error' => $e->getMessage(),
+                'registration_id' => $registration->id,
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            session()->flash('error', __('seminar.submission_error'));
+
+            return;
+        }
+
+        // Generate QR and send confirmation for each new hands-on registration
+        $qrTokenService = app(QrTokenService::class);
+        $registrationService = app(RegistrationService::class);
+
+        $newRegistrations = HandsOnRegistrationModel::where('seminar_registration_id', $registration->id)
+            ->where('payment_status', 'pending')
+            ->where('payment_proof_path', $paymentProofPath)
+            ->get();
+
+        foreach ($newRegistrations as $hoReg) {
+            $qrTokenService->generateForHandsOn($hoReg);
+            $registrationService->sendHandsOnSubmissionConfirmation($hoReg);
+        }
+
+        $this->isSubmitting = false;
+
+        session()->flash('success', __('seminar.selections_saved'));
+        $this->redirectRoute('register.hands-on.success', ['id' => $registration->id], navigate: true);
+    }
+
     public function checkExistingRegistration(): void
     {
         $this->validate([
@@ -461,8 +613,9 @@ class HandsOnRegistration extends Component
         $this->isChecking = true;
         $this->showVerificationError = false;
         $this->existingRegistration = null;
+        $this->alreadyRegisteredHandsOnIds = [];
 
-        $registration = SeminarRegistrationModel::whereRaw('LOWER(email) = ?', [strtolower($this->verification_email)])
+        $registration = SeminarRegistrationModel::with('handsOnRegistrations')->whereRaw('LOWER(email) = ?', [strtolower($this->verification_email)])
             ->first();
 
         if (! $registration) {
@@ -473,6 +626,33 @@ class HandsOnRegistration extends Component
         }
 
         $this->existingRegistration = $registration;
+
+        // Load existing hands-on registrations linked to this seminar registration
+        $existingHandsOnRegs = $registration->handsOnRegistrations;
+
+        // Track which hands-on event IDs are already registered
+        $this->alreadyRegisteredHandsOnIds = $existingHandsOnRegs
+            ->pluck('hands_on_id')
+            ->unique()
+            ->values()
+            ->toArray();
+
+        // Pre-populate selectedHandsOn with already-registered events
+        $this->selectedHandsOn = [];
+        $this->loadAvailableHandsOn();
+
+        if ($registration->payment_status === 'verified') {
+            foreach ($this->availableHandsOn as $date => $events) {
+                foreach ($events as $event) {
+                    if (in_array($event['id'], $this->alreadyRegisteredHandsOnIds)) {
+                        $this->selectedHandsOn[$date] = $event['id'];
+                        break;
+                    }
+                }
+            }
+        }
+
+        $this->updatedSelectedHandsOn();
         $this->isChecking = false;
     }
 

@@ -724,6 +724,7 @@ class SeminarRegistration extends Component
                 'has_price' => $event->current_price !== null && $event->current_price > 0,
                 'flyer_url' => $event->flyer_path ? Storage::url($event->flyer_path) : null,
                 'skp_url' => $event->skp_path ? Storage::url($event->skp_path) : null,
+                'is_already_registered' => false,
             ];
         }
     }
