@@ -369,14 +369,14 @@
                     <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
                         <h3 class="font-semibold text-yellow-800 mb-2">{{ __('seminar.bank_transfer_details') }}</h3>
                         @if($isIndonesia)
-                        <p class="text-sm text-yellow-700"><strong>{{ __('seminar.bank') }}:</strong> {{ config('settings.bank_name') }}</p>
-                        <p class="text-sm text-yellow-700"><strong>{{ __('seminar.account_name') }}:</strong> {{ config('settings.bank_account_name') }}</p>
-                        <p class="text-sm text-yellow-700"><strong>{{ __('seminar.account_number') }}:</strong> {{ config('settings.bank_account_number') }}</p>
+                        <p class="text-sm text-yellow-700"><strong>{{ __('seminar.bank') }}:</strong> {{ \App\Models\Setting::get('bank_name') }}</p>
+                        <p class="text-sm text-yellow-700"><strong>{{ __('seminar.account_name') }}:</strong> {{ \App\Models\Setting::get('bank_account_name') }}</p>
+                        <p class="text-sm text-yellow-700"><strong>{{ __('seminar.account_number') }}:</strong> {{ \App\Models\Setting::get('bank_account_number') }}</p>
                         @else
-                        <p class="text-sm text-yellow-700"><strong>{{ __('seminar.bank') }}:</strong> {{ config('settings.bank_name') }}</p>
-                        <p class="text-sm text-yellow-700"><strong>{{ __('seminar.account_name') }}:</strong> {{ config('settings.bank_account_name') }}</p>
-                        <p class="text-sm text-yellow-700"><strong>{{ __('seminar.account_number') }}:</strong> {{ config('settings.bank_account_number') }}</p>
-                        <p class="text-sm text-yellow-700"><strong>{{ __('seminar.swift_code') }}:</strong> {{ config('settings.bank_swift_code') }}</p>
+                        <p class="text-sm text-yellow-700"><strong>{{ __('seminar.bank') }}:</strong> {{ \App\Models\Setting::get('bank_name') }}</p>
+                        <p class="text-sm text-yellow-700"><strong>{{ __('seminar.account_name') }}:</strong> {{ \App\Models\Setting::get('bank_account_name') }}</p>
+                        <p class="text-sm text-yellow-700"><strong>{{ __('seminar.account_number') }}:</strong> {{ \App\Models\Setting::get('bank_account_number') }}</p>
+                        <p class="text-sm text-yellow-700"><strong>{{ __('seminar.swift_code') }}:</strong> {{ \App\Models\Setting::get('bank_swift_code') }}</p>
                         @endif
                         <p class="text-sm text-yellow-700 mt-2">{{ __('seminar.transfer_instructions') }}</p>
                         <div class="mt-4 pt-4 border-t border-yellow-300">

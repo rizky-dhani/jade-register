@@ -31,4 +31,29 @@ return [
         'default' => null,
         'description' => 'Optional date/time when hands-on registration automatically opens. Leave null for no date restriction.',
     ],
+
+    'bank_name' => [
+        'label' => 'Bank Name',
+        'type' => 'string',
+        'default' => env('BANK_NAME', 'Bank BNI'),
+        'description' => 'Bank name for bank transfer payments.',
+    ],
+    'bank_account_name' => [
+        'label' => 'Bank Account Name',
+        'type' => 'string',
+        'default' => env('BANK_ACCOUNT_NAME', ''),
+        'description' => 'Bank account holder name for bank transfer payments.',
+    ],
+    'bank_account_number' => [
+        'label' => 'Bank Account Number',
+        'type' => 'string',
+        'default' => env('BANK_ACCOUNT_NUMBER', ''),
+        'description' => 'Bank account number for bank transfer payments.',
+    ],
+    'bank_swift_code' => [
+        'label' => 'Bank SWIFT Code',
+        'type' => 'string',
+        'default' => env('BANK_SWIFT_CODE', ''),
+        'description' => 'SWIFT code for international bank transfer payments.',
+    ],
 ];
