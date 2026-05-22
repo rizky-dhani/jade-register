@@ -185,9 +185,7 @@ class HandsOnRegistration extends Component
         $this->validateOnly('payment_proof');
 
         if ($this->payment_proof) {
-            $this->payment_proof_path = $this->payment_proof->store('payment-proofs', 'public');
             $this->payment_proof_uploaded = true;
-            $this->payment_proof = null; // Clear temporary file so validation uses the stored path
         }
     }
 
@@ -332,7 +330,25 @@ class HandsOnRegistration extends Component
             }
         }
 
-        $path = $this->payment_proof_path ?? $this->payment_proof->store('payment-proofs', 'public');
+        // Generate registration code early for file naming
+        $code = HandsOnRegistrationModel::generateRegistrationCode();
+        $codeNumber = substr($code, -6);
+
+        // Store payment proof with the 6-digit code as filename
+        if ($this->payment_proof) {
+            $extension = $this->payment_proof->getClientOriginalExtension();
+            $path = $this->payment_proof->storeAs('payment-proofs', $codeNumber.'.'.$extension, 'public');
+        } elseif ($this->payment_proof_path) {
+            // Backward compat: rename existing file
+            $extension = pathinfo($this->payment_proof_path, PATHINFO_EXTENSION);
+            $newPath = 'payment-proofs/'.$codeNumber.'.'.$extension;
+            if (Storage::disk('public')->exists($this->payment_proof_path)) {
+                Storage::disk('public')->move($this->payment_proof_path, $newPath);
+            }
+            $path = $newPath;
+        } else {
+            $path = null;
+        }
 
         $userId = auth()->id() ?: null;
 
@@ -514,7 +530,12 @@ class HandsOnRegistration extends Component
                 : 'required|file|mimes:jpeg,png,pdf|max:5120',
         ]);
 
-        $paymentProofPath = $this->payment_proof_path ?? $this->payment_proof->store('payment-proofs', 'public');
+        $paymentProofPath = $this->payment_proof_path;
+        if (! $paymentProofPath && $this->payment_proof) {
+            $codeNumber = substr($registration->registration_code, -6);
+            $extension = $this->payment_proof->getClientOriginalExtension();
+            $paymentProofPath = $this->payment_proof->storeAs('payment-proofs', $codeNumber.'.'.$extension, 'public');
+        }
 
         try {
             DB::transaction(function () use ($registration, $paymentProofPath) {

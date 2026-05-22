@@ -228,7 +228,6 @@ class SeminarRegistration extends Component
         $this->validateOnly('payment_proof');
 
         if ($this->payment_proof) {
-            $this->payment_proof_path = $this->payment_proof->store('payment-proofs', 'public');
             $this->payment_proof_uploaded = true;
         }
     }
@@ -237,9 +236,10 @@ class SeminarRegistration extends Component
     {
         $this->validateOnly('existing_payment_proof');
 
-        if ($this->existing_payment_proof) {
-            $filename = 'existing-'.time().'-'.$this->existing_payment_proof->getClientOriginalName();
-            $this->existing_payment_proof_path = $this->existing_payment_proof->storeAs('payment-proofs', $filename, 'public');
+        if ($this->existing_payment_proof && $this->existingRegistration) {
+            $codeNumber = substr($this->existingRegistration->registration_code, -6);
+            $extension = $this->existing_payment_proof->getClientOriginalExtension();
+            $this->existing_payment_proof_path = $this->existing_payment_proof->storeAs('payment-proofs', $codeNumber.'.'.$extension, 'public');
             $this->existing_payment_proof_uploaded = true;
         }
     }
@@ -370,7 +370,25 @@ class SeminarRegistration extends Component
             return;
         }
 
-        $path = $this->payment_proof_path ?? $this->payment_proof->store('payment-proofs', 'public');
+        // Generate registration code early for file naming
+        $code = SeminarRegistrationModel::generateRegistrationCode();
+        $codeNumber = substr($code, -6);
+
+        // Store payment proof with the 6-digit code as filename
+        if ($this->payment_proof) {
+            $extension = $this->payment_proof->getClientOriginalExtension();
+            $path = $this->payment_proof->storeAs('payment-proofs', $codeNumber.'.'.$extension, 'public');
+        } elseif ($this->payment_proof_path) {
+            // Backward compat: file was stored with old naming (from previous code path)
+            $extension = pathinfo($this->payment_proof_path, PATHINFO_EXTENSION);
+            $newPath = 'payment-proofs/'.$codeNumber.'.'.$extension;
+            if (Storage::disk('public')->exists($this->payment_proof_path)) {
+                Storage::disk('public')->move($this->payment_proof_path, $newPath);
+            }
+            $path = $newPath;
+        } else {
+            $path = null;
+        }
 
         $userId = auth()->id() ?: null;
 
@@ -379,7 +397,7 @@ class SeminarRegistration extends Component
         $language = $country?->is_indonesia ? 'id' : 'en';
 
         $registrationData = [
-            'registration_code' => SeminarRegistrationModel::generateRegistrationCode(),
+            'registration_code' => $code,
             'email' => $this->email,
             'name' => $this->name,
             'phone' => $this->phone,
@@ -652,8 +670,9 @@ class SeminarRegistration extends Component
 
         $paymentProofPath = $this->existing_payment_proof_path;
         if (! $paymentProofPath && $this->existing_payment_proof) {
-            $filename = 'existing-'.time().'-'.$this->existing_payment_proof->getClientOriginalName();
-            $paymentProofPath = $this->existing_payment_proof->storeAs('payment-proofs', $filename, 'public');
+            $codeNumber = substr($registration->registration_code, -6);
+            $extension = $this->existing_payment_proof->getClientOriginalExtension();
+            $paymentProofPath = $this->existing_payment_proof->storeAs('payment-proofs', $codeNumber.'.'.$extension, 'public');
         }
 
         try {

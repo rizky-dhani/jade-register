@@ -9,6 +9,7 @@ use App\Services\QrTokenService;
 use App\Services\RegistrationService;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
+use Illuminate\Support\Facades\Storage;
 
 class CreateSeminarRegistration extends CreateRecord
 {
@@ -38,6 +39,17 @@ class CreateSeminarRegistration extends CreateRecord
     {
         /** @var SeminarRegistration $registration */
         $registration = $this->record;
+
+        // Rename payment proof to use 6-digit registration code
+        if ($registration->payment_proof_path) {
+            $codeNumber = substr($registration->registration_code, -6);
+            $newName = $codeNumber.'.'.pathinfo($registration->payment_proof_path, PATHINFO_EXTENSION);
+            $newPath = 'payment-proofs/'.$newName;
+            if (Storage::disk('public')->exists($registration->payment_proof_path)) {
+                Storage::disk('public')->move($registration->payment_proof_path, $newPath);
+                $registration->update(['payment_proof_path' => $newPath]);
+            }
+        }
 
         // Generate QR token for attendance check-in
         $qrTokenService = app(QrTokenService::class);

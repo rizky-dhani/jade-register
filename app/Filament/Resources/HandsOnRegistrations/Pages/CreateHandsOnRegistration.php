@@ -7,6 +7,7 @@ use App\Models\Country;
 use App\Models\HandsOnRegistration;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Storage;
 
 class CreateHandsOnRegistration extends CreateRecord
 {
@@ -47,6 +48,17 @@ class CreateHandsOnRegistration extends CreateRecord
     protected function afterCreate(): void
     {
         $record = $this->record;
+
+        // Rename payment proof to use 6-digit registration code (before copies share the path)
+        if ($record->payment_proof_path) {
+            $codeNumber = substr($record->registration_code, -6);
+            $newName = $codeNumber.'.'.pathinfo($record->payment_proof_path, PATHINFO_EXTENSION);
+            $newPath = 'payment-proofs/'.$newName;
+            if (Storage::disk('public')->exists($record->payment_proof_path)) {
+                Storage::disk('public')->move($record->payment_proof_path, $newPath);
+                $record->update(['payment_proof_path' => $newPath]);
+            }
+        }
 
         // Create additional HandsOnRegistration records for remaining selections
         foreach ($this->handsOnSelections as $handsOnId) {
