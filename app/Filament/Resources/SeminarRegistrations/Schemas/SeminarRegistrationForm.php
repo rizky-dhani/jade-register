@@ -183,7 +183,6 @@ class SeminarRegistrationForm
                     ->columns(1),
                 FileUpload::make('payment_proof_path')
                     ->label(__('seminar.payment_proof'))
-                    ->image()
                     ->previewable()
                     ->downloadable()
                     ->acceptedFileTypes(['image/jpeg', 'image/png', 'application/pdf'])
@@ -191,8 +190,6 @@ class SeminarRegistrationForm
                     ->directory('payment-proofs')
                     ->visibility('public')
                     ->helperText(__('filament.seminar_registration.form.payment_proof_helper'))
-                    ->preserveFilenames()
-                    ->dehydrateStateUsing(fn ($state, $record) => $state ?? $record->payment_proof_path ?? null)
                     ->nullable(),
             ]);
     }

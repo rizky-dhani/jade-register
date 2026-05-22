@@ -168,7 +168,6 @@ class HandsOnRegistrationForm
                             ]),
                         FileUpload::make('payment_proof_path')
                             ->label(__('seminar.payment_proof'))
-                            ->image()
                             ->previewable()
                             ->downloadable()
                             ->acceptedFileTypes(['image/jpeg', 'image/png', 'application/pdf'])
@@ -176,7 +175,6 @@ class HandsOnRegistrationForm
                             ->directory('payment-proofs')
                             ->visibility('public')
                             ->helperText(__('filament.seminar_registration.form.payment_proof_helper'))
-                            ->preserveFilenames()
                             ->nullable()
                             ->columnSpanFull(),
                     ])
