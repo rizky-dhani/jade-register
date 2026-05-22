@@ -473,6 +473,8 @@ class HandsOnRegistration extends Component
 
         // Only allow selections for verified registrations
         if ($registration->payment_status !== 'verified') {
+            session()->flash('error', __('seminar.complete_payment_first'));
+
             return;
         }
 
@@ -517,6 +519,20 @@ class HandsOnRegistration extends Component
         try {
             DB::transaction(function () use ($registration, $paymentProofPath) {
                 $hasNewSelections = false;
+
+                // CRITICAL: Lock HandsOn rows with pessimistic locking for NEW selections
+                // Prevents over-booking when multiple users add the same hands-on session
+                foreach ($this->selectedHandsOn as $date => $eventId) {
+                    if ($eventId && ! in_array($eventId, $this->alreadyRegisteredHandsOnIds)) {
+                        $event = HandsOn::where('id', $eventId)->lockForUpdate()->first();
+                        if (! $event) {
+                            throw new \RuntimeException("Hands-on event not found for {$date}");
+                        }
+                        if ($event->isFull()) {
+                            throw new \RuntimeException("Hands-on session {$date} is full");
+                        }
+                    }
+                }
 
                 foreach ($this->selectedHandsOn as $date => $eventId) {
                     if (! $eventId) {
@@ -569,6 +585,13 @@ class HandsOnRegistration extends Component
 
             if ($e->getMessage() === __('seminar.no_new_selections')) {
                 $this->addError('selectedHandsOn', __('seminar.no_new_selections'));
+
+                return;
+            }
+
+            // Handle hands-on session full detected via lockForUpdate inside transaction
+            if ($e instanceof \RuntimeException) {
+                session()->flash('error', __('seminar.session_full'));
 
                 return;
             }
