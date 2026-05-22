@@ -419,6 +419,22 @@ class SeminarRegistration extends Component
                     throw new \Exception(__('seminar.seminar_just_filled'));
                 }
 
+                // CRITICAL: Lock HandsOn rows with pessimistic locking BEFORE creating registrations
+                // Prevents over-booking when multiple users register for the same hands-on session
+                if ($this->wants_hands_on && ! empty($this->selectedHandsOn)) {
+                    foreach ($this->selectedHandsOn as $date => $eventId) {
+                        if ($eventId) {
+                            $event = HandsOn::where('id', $eventId)->lockForUpdate()->first();
+                            if (! $event) {
+                                throw new \RuntimeException("Hands-on event not found for {$date}");
+                            }
+                            if ($event->isFull()) {
+                                throw new \RuntimeException("Hands-on session {$date} is full");
+                            }
+                        }
+                    }
+                }
+
                 $reg = SeminarRegistrationModel::create($registrationData);
 
                 // Create Hands On registrations
@@ -464,6 +480,14 @@ class SeminarRegistration extends Component
                 'email' => $this->email,
                 'trace' => $e->getTraceAsString(),
             ]);
+
+            // Handle hands-on session full race condition (detected inside transaction with lockForUpdate)
+            if ($e instanceof \RuntimeException) {
+                session()->flash('error', __('seminar.session_full'));
+                $this->redirectRoute('register.seminar', ['locale' => $this->locale], navigate: true);
+
+                return;
+            }
 
             // Handle capacity check exception
             if ($e->getMessage() === __('seminar.seminar_just_filled')) {
