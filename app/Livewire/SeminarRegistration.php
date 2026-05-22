@@ -584,6 +584,11 @@ class SeminarRegistration extends Component
 
         $registration = $this->existingRegistration;
 
+        // Only allow for verified registrations
+        if ($registration->payment_status !== 'verified') {
+            return;
+        }
+
         // Determine if user is trying to add new hands-on selections
         $hasNewHandsOnSelections = false;
         if (! empty($this->selectedHandsOn)) {
@@ -614,13 +619,6 @@ class SeminarRegistration extends Component
         }
 
         $hasNewSelections = $hasNewHandsOnSelections || $hasNewAddonSelections;
-
-        // If trying to add new selections, payment must be verified
-        if ($hasNewSelections && $registration->payment_status !== 'verified') {
-            $this->addError('existing', __('seminar.complete_payment_first'));
-
-            return;
-        }
 
         // Validate payment proof (required unless already uploaded)
         $this->validate([
@@ -727,10 +725,16 @@ class SeminarRegistration extends Component
                     }
                 }
 
-                // Update main registration's payment_proof_path if a new proof was uploaded
-                if ($paymentProofPath && $paymentProofPath !== $registration->payment_proof_path) {
-                    $registration->update(['payment_proof_path' => $paymentProofPath]);
-                    $hasChanges = true;
+                // Update payment proof on pending HandsOn registrations if a new proof was uploaded
+                if ($paymentProofPath) {
+                    $updatedCount = $registration->handsOnRegistrations()
+                        ->where('payment_status', 'pending')
+                        ->whereNull('payment_proof_path')
+                        ->update(['payment_proof_path' => $paymentProofPath]);
+
+                    if ($updatedCount > 0) {
+                        $hasChanges = true;
+                    }
                 }
 
                 if (! $hasChanges) {

@@ -212,66 +212,63 @@
 
                         @include('livewire.partials.hands-on-selection', ['isSeparate' => true])
                     </div>
-                @else
-                    {{-- Info for unverified/pending registrations --}}
-                    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
-                        <p class="text-yellow-800 text-sm">{{ __('seminar.pending_payment_upload_info') }}</p>
-                    </div>
-                @endif
 
-                {{-- Error message for no selections --}}
-                @error('existing')
-                    <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
-                @enderror
+                    {{-- Error message for no selections --}}
+                    @error('existing')
+                        <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
+                    @enderror
 
-                {{-- Payment Proof Upload for Existing Registration --}}
-                <div class="bg-white rounded-lg p-4 border border-green-200 mt-4">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-2">{{ __('seminar.upload_payment_proof') }}</h3>
-                    <p class="text-gray-600 mb-4 text-sm">{{ __('seminar.payment_proof_for_new_selections') }}</p>
+                    {{-- Payment Proof Upload for Existing Registration --}}
+                    <div class="bg-white rounded-lg p-4 border border-green-200 mt-4">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-2">{{ __('seminar.upload_payment_proof') }}</h3>
+                        <p class="text-gray-600 mb-4 text-sm">{{ __('seminar.payment_proof_for_new_selections') }}</p>
 
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('seminar.payment_proof') }} *</label>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('seminar.payment_proof') }} *</label>
 
-                        @if($existing_payment_proof_uploaded && $existing_payment_proof_path)
-                            <div class="bg-green-50 border border-green-200 rounded-lg p-4">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-12 bg-blue-100 rounded flex items-center justify-center shrink-0">
-                                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                                        </svg>
+                            @if($existing_payment_proof_uploaded && $existing_payment_proof_path)
+                                <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-12 bg-blue-100 rounded flex items-center justify-center shrink-0">
+                                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                            </svg>
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <p class="text-sm font-medium text-gray-800 truncate">{{ basename($existing_payment_proof_path) }}</p>
+                                            <p class="text-xs text-green-600">{{ __('seminar.uploaded_successfully') }}</p>
+                                        </div>
+                                        <button type="button" wire:click="resetExistingPaymentProof"
+                                            class="shrink-0 px-3 py-1.5 text-xs font-medium text-red-600 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 transition-colors">
+                                            {{ __('seminar.replace') }}
+                                        </button>
                                     </div>
-                                    <div class="flex-1 min-w-0">
-                                        <p class="text-sm font-medium text-gray-800 truncate">{{ basename($existing_payment_proof_path) }}</p>
-                                        <p class="text-xs text-green-600">{{ __('seminar.uploaded_successfully') }}</p>
-                                    </div>
-                                    <button type="button" wire:click="resetExistingPaymentProof"
-                                        class="shrink-0 px-3 py-1.5 text-xs font-medium text-red-600 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 transition-colors">
-                                        {{ __('seminar.replace') }}
-                                    </button>
                                 </div>
-                            </div>
-                        @else
-                            <input type="file" wire:model="existing_payment_proof" accept="image/jpeg,image/png,application/pdf"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                            <p class="text-xs text-gray-500 mt-1">{{ __('seminar.accepted_formats') }}</p>
-                        @endif
+                            @else
+                                <input type="file" wire:model="existing_payment_proof" accept="image/jpeg,image/png,application/pdf"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <p class="text-xs text-gray-500 mt-1">{{ __('seminar.accepted_formats') }}</p>
+                            @endif
 
-                        @error('existing_payment_proof') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+                            @error('existing_payment_proof') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+                        </div>
                     </div>
-                </div>
 
-                {{-- Submit button for existing registration selections --}}
-                <button type="button" wire:click="submitExistingRegistration"
-                    wire:loading.attr="disabled"
-                    wire:target="submitExistingRegistration"
-                    class="w-full bg-green-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-                    <span wire:loading.remove wire:target="submitExistingRegistration">
-                        {{ __('seminar.save_selections') }}
-                    </span>
-                    <span wire:loading wire:target="submitExistingRegistration">
-                        {{ __('seminar.saving_selections') }}
-                    </span>
-                </button>
+                    {{-- Submit button for existing registration selections --}}
+                    <button type="button" wire:click="submitExistingRegistration"
+                        wire:loading.attr="disabled"
+                        wire:target="submitExistingRegistration"
+                        class="w-full bg-green-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                        <span wire:loading.remove wire:target="submitExistingRegistration">
+                            {{ __('seminar.save_selections') }}
+                        </span>
+                        <span wire:loading wire:target="submitExistingRegistration">
+                            {{ __('seminar.saving_selections') }}
+                        </span>
+                    </button>
+                @else
+                    <p class="text-yellow-700">{{ __('seminar.complete_payment_first') }}</p>
+                @endif
             </div>
             @endif
 

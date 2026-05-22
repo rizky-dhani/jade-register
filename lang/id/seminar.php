@@ -143,7 +143,6 @@ return [
     'registration_not_found' => 'Tidak ditemukan pendaftaran dengan email ini. Silakan daftar terlebih dahulu.',
     'registration_found' => 'Pendaftaran Ditemukan!',
     'complete_payment_first' => 'Silakan lengkapi pembayaran seminar Anda sebelum menambahkan sesi Hands On.',
-    'pending_payment_upload_info' => 'Pembayaran Anda masih menunggu verifikasi. Anda dapat mengunggah atau memperbarui bukti pembayaran di bawah ini.',
     'register_here' => 'Daftar di sini',
     'not_registered_yet' => 'Belum terdaftar?',
     'register_new' => 'Daftar di sini',
