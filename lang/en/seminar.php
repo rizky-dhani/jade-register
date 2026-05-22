@@ -143,6 +143,7 @@ return [
     'registration_not_found' => 'No registration found with this email. Please register first.',
     'registration_found' => 'Registration Found!',
     'complete_payment_first' => 'Please complete your seminar payment before adding Hands On sessions.',
+    'pending_payment_upload_info' => 'Your payment is still pending verification. You can upload or update your payment proof below.',
     'register_here' => 'Register here',
     'not_registered_yet' => 'Not registered yet?',
     'register_new' => 'Register here',

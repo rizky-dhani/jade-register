@@ -584,26 +584,55 @@ class SeminarRegistration extends Component
 
         $registration = $this->existingRegistration;
 
-        // Only allow selections for verified registrations
-        if ($registration->payment_status !== 'verified') {
+        // Determine if user is trying to add new hands-on selections
+        $hasNewHandsOnSelections = false;
+        if (! empty($this->selectedHandsOn)) {
+            foreach ($this->selectedHandsOn as $eventId) {
+                if ($eventId && ! in_array($eventId, $this->alreadyRegisteredHandsOnIds)) {
+                    $hasNewHandsOnSelections = true;
+                    break;
+                }
+            }
+        }
+
+        // Determine if user is trying to add new addon selections
+        $hasNewAddonSelections = false;
+        if (! empty($this->selectedAddons)) {
+            foreach ($this->selectedAddons as $addonCode => $selected) {
+                if ($selected) {
+                    $alreadyPurchased = $registration->addonRegistrations()
+                        ->whereHas('addon', fn ($q) => $q->where('code', $addonCode))
+                        ->where('payment_status', 'verified')
+                        ->exists();
+
+                    if (! $alreadyPurchased) {
+                        $hasNewAddonSelections = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        $hasNewSelections = $hasNewHandsOnSelections || $hasNewAddonSelections;
+
+        // If trying to add new selections, payment must be verified
+        if ($hasNewSelections && $registration->payment_status !== 'verified') {
+            $this->addError('existing', __('seminar.complete_payment_first'));
+
             return;
         }
 
-        // Validate payment proof for new selections
+        // Validate payment proof (required unless already uploaded)
         $this->validate([
             'existing_payment_proof' => $this->existing_payment_proof_uploaded
                 ? 'nullable'
                 : 'required|file|mimes:jpeg,png,pdf|max:5120',
         ]);
 
-        // Validate hands-on availability (skip already-registered sessions)
-        if (! empty($this->selectedHandsOn)) {
+        // Validate hands-on availability for new selections (skip already-registered)
+        if ($hasNewHandsOnSelections) {
             foreach ($this->selectedHandsOn as $date => $eventId) {
-                if ($eventId) {
-                    // Skip validation for already-registered sessions
-                    if (in_array($eventId, $this->alreadyRegisteredHandsOnIds)) {
-                        continue;
-                    }
+                if ($eventId && ! in_array($eventId, $this->alreadyRegisteredHandsOnIds)) {
                     $event = HandsOn::find($eventId);
                     if ($event) {
                         if ($event->isFull()) {
@@ -623,19 +652,19 @@ class SeminarRegistration extends Component
 
         $this->isSubmitting = true;
 
-        $paymentProofPath = $this->existing_payment_proof_path ?? tap($this->existing_payment_proof, function ($file) {
-            $filename = 'existing-'.time().'-'.$file->getClientOriginalName();
-
-            return $file->storeAs('payment-proofs', $filename, 'public');
-        });
+        $paymentProofPath = $this->existing_payment_proof_path;
+        if (! $paymentProofPath && $this->existing_payment_proof) {
+            $filename = 'existing-'.time().'-'.$this->existing_payment_proof->getClientOriginalName();
+            $paymentProofPath = $this->existing_payment_proof->storeAs('payment-proofs', $filename, 'public');
+        }
 
         try {
-            DB::transaction(function () use ($registration, $paymentProofPath) {
-                $hasNewSelections = false;
+            DB::transaction(function () use ($registration, $paymentProofPath, $hasNewHandsOnSelections, $hasNewAddonSelections) {
+                $hasChanges = false;
 
                 // CRITICAL: Lock HandsOn rows with pessimistic locking for NEW selections
                 // Prevents over-booking when multiple users add the same hands-on session
-                if (! empty($this->selectedHandsOn)) {
+                if ($hasNewHandsOnSelections) {
                     foreach ($this->selectedHandsOn as $date => $eventId) {
                         if ($eventId && ! in_array($eventId, $this->alreadyRegisteredHandsOnIds)) {
                             $event = HandsOn::where('id', $eventId)->lockForUpdate()->first();
@@ -650,9 +679,9 @@ class SeminarRegistration extends Component
                 }
 
                 // Create Hands On registrations for newly selected sessions
-                if (! empty($this->selectedHandsOn)) {
+                if ($hasNewHandsOnSelections) {
                     foreach ($this->selectedHandsOn as $date => $eventId) {
-                        if ($eventId) {
+                        if ($eventId && ! in_array($eventId, $this->alreadyRegisteredHandsOnIds)) {
                             $alreadyRegistered = HandsOnRegistration::where('seminar_registration_id', $registration->id)
                                 ->where('hands_on_id', $eventId)
                                 ->exists();
@@ -665,14 +694,14 @@ class SeminarRegistration extends Component
                                     'payment_status' => 'pending',
                                     'payment_proof_path' => $paymentProofPath,
                                 ]);
-                                $hasNewSelections = true;
+                                $hasChanges = true;
                             }
                         }
                     }
                 }
 
                 // Create Addon registrations for newly selected add-ons
-                if (! empty($this->selectedAddons)) {
+                if ($hasNewAddonSelections) {
                     foreach ($this->selectedAddons as $addonCode => $selected) {
                         if ($selected) {
                             $addon = Addon::where('code', $addonCode)->first();
@@ -691,14 +720,20 @@ class SeminarRegistration extends Component
                                         'payment_proof_path' => $paymentProofPath,
                                         'payment_status' => 'pending',
                                     ]);
-                                    $hasNewSelections = true;
+                                    $hasChanges = true;
                                 }
                             }
                         }
                     }
                 }
 
-                if (! $hasNewSelections) {
+                // Update main registration's payment_proof_path if a new proof was uploaded
+                if ($paymentProofPath && $paymentProofPath !== $registration->payment_proof_path) {
+                    $registration->update(['payment_proof_path' => $paymentProofPath]);
+                    $hasChanges = true;
+                }
+
+                if (! $hasChanges) {
                     throw new \Exception(__('seminar.no_new_selections'));
                 }
             });
