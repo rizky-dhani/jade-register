@@ -574,7 +574,7 @@ class SeminarRegistration extends Component
         ]);
 
         // Validate hands-on availability (skip already-registered sessions)
-        if ($this->wants_hands_on && ! empty($this->selectedHandsOn)) {
+        if (! empty($this->selectedHandsOn)) {
             foreach ($this->selectedHandsOn as $date => $eventId) {
                 if ($eventId) {
                     // Skip validation for already-registered sessions
