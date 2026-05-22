@@ -334,7 +334,6 @@ class SeminarRegistration extends Component
         $existingRegistration = SeminarRegistrationModel::whereRaw('LOWER(email) = ?', [strtolower($this->email)])->first();
         if ($existingRegistration) {
             $this->addError('email', __('seminar.email_already_registered'));
-            $this->redirectRoute('register.seminar.success', ['id' => $existingRegistration->id], navigate: true);
 
             return;
         }
