@@ -710,7 +710,17 @@ class HandsOnRegistration extends Component
         $opensAt = Setting::get('hands_on_registration_opens_at');
 
         if ($opensAt) {
-            return now()->gte(Carbon::parse($opensAt));
+            if (now()->lt(Carbon::parse($opensAt))) {
+                return false;
+            }
+        }
+
+        $closeAt = Setting::get('hands_on_registration_close_at');
+
+        if ($closeAt) {
+            if (now()->gte(Carbon::parse($closeAt))) {
+                return false;
+            }
         }
 
         return Setting::get('hands_on_registration_open', true);

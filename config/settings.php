@@ -25,11 +25,23 @@ return [
         'default' => null,
         'description' => 'Optional date/time when seminar registration automatically opens. Leave null for no date restriction.',
     ],
+    'seminar_registration_close_at' => [
+        'label' => 'Seminar Registration Close At',
+        'type' => 'string',
+        'default' => null,
+        'description' => 'Optional date/time when seminar registration automatically closes. Leave null for no date restriction.',
+    ],
     'hands_on_registration_opens_at' => [
         'label' => 'Hands On Registration Opens At',
         'type' => 'string',
         'default' => null,
         'description' => 'Optional date/time when hands-on registration automatically opens. Leave null for no date restriction.',
+    ],
+    'hands_on_registration_close_at' => [
+        'label' => 'Hands On Registration Close At',
+        'type' => 'string',
+        'default' => null,
+        'description' => 'Optional date/time when hands-on registration automatically closes. Leave null for no date restriction.',
     ],
 
     'bank_name' => [
