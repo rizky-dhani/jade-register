@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
@@ -41,6 +42,7 @@ class Setting extends Model
             'integer' => (int) $this->value,
             'boolean' => (bool) $this->value,
             'float' => (float) $this->value,
+            'datetime' => $this->value ? Carbon::parse($this->value) : null,
             'array' => json_decode($this->value, true),
             default => $this->value,
         };
