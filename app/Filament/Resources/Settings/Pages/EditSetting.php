@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Settings\Pages;
 
 use App\Filament\Resources\Settings\SettingResource;
+use Carbon\Carbon;
 use Filament\Actions\DeleteAction;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
@@ -37,5 +38,23 @@ class EditSetting extends EditRecord
             ->success()
             ->title(__('filament.notifications.setting_deleted_title'))
             ->body(__('filament.notifications.setting_deleted_body'));
+    }
+
+    protected function mutateFormDataBeforeFill(array $data): array
+    {
+        if ($data['type'] === 'datetime' && ! empty($data['value'])) {
+            $data['value'] = Carbon::parse($data['value']);
+        }
+
+        return $data;
+    }
+
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        if ($data['type'] === 'datetime' && ! empty($data['value'])) {
+            $data['value'] = Carbon::parse($data['value'])->toDateTimeString();
+        }
+
+        return $data;
     }
 }
