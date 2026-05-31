@@ -40,15 +40,6 @@ class EditSetting extends EditRecord
             ->body(__('filament.notifications.setting_deleted_body'));
     }
 
-    protected function mutateFormDataBeforeFill(array $data): array
-    {
-        if ($data['type'] === 'datetime' && ! empty($data['value'])) {
-            $data['value'] = Carbon::parse($data['value']);
-        }
-
-        return $data;
-    }
-
     protected function mutateFormDataBeforeSave(array $data): array
     {
         if ($data['type'] === 'datetime' && ! empty($data['value'])) {
