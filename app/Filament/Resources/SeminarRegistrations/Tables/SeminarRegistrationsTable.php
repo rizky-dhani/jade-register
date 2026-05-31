@@ -234,7 +234,12 @@ class SeminarRegistrationsTable
                     ->label(__('seminar.payment_proof'))
                     ->trueLabel(__('seminar.yes'))
                     ->falseLabel(__('seminar.no'))
-                    ->nullable(),
+                    ->nullable()
+                    ->queries(
+                        true: fn (Builder $query) => $query->whereNotNull('payment_proof_path'),
+                        false: fn (Builder $query) => $query->whereNull('payment_proof_path'),
+                        blank: fn (Builder $query) => $query,
+                    ),
             ])
             ->recordActions([
                 ViewAction::make(),
