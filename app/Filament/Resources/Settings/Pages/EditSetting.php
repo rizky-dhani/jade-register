@@ -42,7 +42,7 @@ class EditSetting extends EditRecord
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
-        if ($data['type'] === 'datetime' && ! empty($data['value'])) {
+        if (($data['type'] ?? null) === 'datetime' && ! empty($data['value'])) {
             $data['value'] = Carbon::parse($data['value'])->toDateTimeString();
         }
 
