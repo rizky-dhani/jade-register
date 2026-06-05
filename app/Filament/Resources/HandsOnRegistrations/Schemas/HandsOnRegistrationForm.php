@@ -168,6 +168,7 @@ class HandsOnRegistrationForm
                             ]),
                         FileUpload::make('payment_proof_path')
                             ->label(__('seminar.payment_proof'))
+                            ->disk('public')
                             ->previewable()
                             ->downloadable()
                             ->acceptedFileTypes(['image/jpeg', 'image/png', 'application/pdf'])

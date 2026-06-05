@@ -254,6 +254,7 @@ class SeminarRegistrationsTable
                     ->schema([
                         FileUpload::make('payment_proof_path')
                             ->label(__('seminar.payment_proof'))
+                            ->disk('public')
                             ->previewable()
                             ->acceptedFileTypes(['image/jpeg', 'image/png', 'application/pdf'])
                             ->maxSize(5120)
