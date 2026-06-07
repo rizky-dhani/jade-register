@@ -85,7 +85,7 @@ class HandsOnRegistration extends Component
     protected function rules(): array
     {
         $paymentProofRule = $this->payment_proof_uploaded
-            ? 'nullable|string'
+            ? 'nullable'
             : 'required|file|mimes:jpeg,png,pdf|max:5120';
 
         if (! $this->is_local) {
