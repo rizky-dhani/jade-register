@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\SeminarRegistrations\Schemas;
 
+use App\Models\Addon;
 use App\Models\Country;
 use App\Models\HandsOn;
 use App\Models\Seminar;
@@ -178,6 +179,39 @@ class SeminarRegistrationForm
                                     ->nullable(),
                             ])
                             ->visible(fn (Get $get): bool => $get('wants_hands_on') === true)
+                            ->columnSpanFull(),
+
+                        CheckboxList::make('addon_ids')
+                            ->label(__('seminar.available_addons'))
+                            ->helperText(__('seminar.addon_description'))
+                            ->options(function (): array {
+                                return Addon::active()
+                                    ->available()
+                                    ->orderBy('sort_order')
+                                    ->get()
+                                    ->mapWithKeys(function (Addon $addon) {
+                                        return [$addon->id => "{$addon->name} - {$addon->formatted_price}"];
+                                    })
+                                    ->toArray();
+                            })
+                            ->descriptions(function (): array {
+                                return Addon::active()
+                                    ->available()
+                                    ->orderBy('sort_order')
+                                    ->get()
+                                    ->mapWithKeys(function (Addon $addon) {
+                                        $description = $addon->description;
+                                        $remaining = $addon->remaining_stock;
+                                        if ($remaining !== null && $remaining < PHP_INT_MAX) {
+                                            $description .= ' - '.trans_choice('seminar.limited_seats', $remaining, ['count' => $remaining]);
+                                        }
+
+                                        return [$addon->id => $description];
+                                    })
+                                    ->toArray();
+                            })
+                            ->bulkToggleable()
+                            ->nullable()
                             ->columnSpanFull(),
                     ])
                     ->columns(1),

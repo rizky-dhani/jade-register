@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\SeminarRegistrations\Pages;
 
 use App\Filament\Resources\SeminarRegistrations\SeminarRegistrationResource;
+use App\Models\Addon;
 use App\Models\Country;
 use App\Models\SeminarRegistration;
 use App\Services\QrTokenService;
@@ -32,6 +33,9 @@ class CreateSeminarRegistration extends CreateRecord
         $country = Country::find($data['country_id'] ?? null);
         $data['language'] = $country?->is_indonesia ? 'id' : 'en';
 
+        // Remove virtual fields not present on the model
+        unset($data['addon_ids']);
+
         return $data;
     }
 
@@ -49,6 +53,23 @@ class CreateSeminarRegistration extends CreateRecord
                 Storage::disk('public')->move($registration->payment_proof_path, $newPath);
                 $registration->update(['payment_proof_path' => $newPath]);
             }
+        }
+
+        // Save add-on registrations
+        $addonIds = $this->form->getState()['addon_ids'] ?? [];
+        if (! empty($addonIds)) {
+            $addons = Addon::whereIn('id', $addonIds)->get();
+            $totalAmount = 0;
+            foreach ($addons as $addon) {
+                $registration->addonRegistrations()->create([
+                    'addon_id' => $addon->id,
+                    'amount' => $addon->price,
+                    'currency' => $addon->currency,
+                    'payment_status' => 'pending',
+                ]);
+                $totalAmount += $addon->price;
+            }
+            $registration->update(['addons_total_amount' => $totalAmount]);
         }
 
         // Generate QR token for attendance check-in
