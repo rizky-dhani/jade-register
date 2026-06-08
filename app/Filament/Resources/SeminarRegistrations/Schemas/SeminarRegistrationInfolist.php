@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\SeminarRegistrations\Schemas;
 
 use App\Models\SeminarRegistration;
+use Filament\Actions\Action;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\ViewEntry;
 use Filament\Schemas\Components\Section;
@@ -139,7 +140,19 @@ class SeminarRegistrationInfolist
                             ->color('primary')
                             ->icon('heroicon-o-eye')
                             ->formatStateUsing(fn () => __('filament.actions.view'))
-                            ->action('viewSeminarPaymentProof')
+                            ->action(
+                                Action::make('viewSeminarPaymentProof')
+                                    ->label(__('seminar.view_payment_proof_seminar'))
+                                    ->slideOver()
+                                    ->modalContent(function (SeminarRegistration $record) {
+                                        $path = $record->payment_proof_path;
+                                        $url = asset('storage/'.$path);
+                                        $extension = pathinfo($path, PATHINFO_EXTENSION);
+
+                                        return view('components.payment-proof-modal', compact('url', 'extension'));
+                                    })
+                                    ->modalCancelAction(false),
+                            )
                             ->visible(fn (SeminarRegistration $record): bool => $record->payment_proof_path !== null),
 
                         TextEntry::make('addonRegistrations')
@@ -148,7 +161,17 @@ class SeminarRegistrationInfolist
                             ->color('primary')
                             ->icon('heroicon-o-photo')
                             ->formatStateUsing(fn (SeminarRegistration $record): string => (string) $record->addonRegistrations->whereNotNull('payment_proof_path')->count())
-                            ->action('viewAddonPaymentProofs')
+                            ->action(
+                                Action::make('viewAddonPaymentProofs')
+                                    ->label(__('seminar.addon_payment_proofs'))
+                                    ->slideOver()
+                                    ->modalContent(function (SeminarRegistration $record) {
+                                        return view('filament.infolists.addon-payment-proofs', [
+                                            'record' => $record,
+                                        ]);
+                                    })
+                                    ->modalCancelAction(false),
+                            )
                             ->visible(fn (SeminarRegistration $record): bool => $record->addonRegistrations->whereNotNull('payment_proof_path')->isNotEmpty()),
 
                         TextEntry::make('verified_at')

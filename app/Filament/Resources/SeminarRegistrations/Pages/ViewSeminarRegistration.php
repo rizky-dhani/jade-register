@@ -59,31 +59,4 @@ class ViewSeminarRegistration extends ViewRecord
                 ->icon('heroicon-m-pencil-square'),
         ];
     }
-
-    protected function getActions(): array
-    {
-        return [
-            Action::make('viewSeminarPaymentProof')
-                ->label(__('seminar.view_payment_proof_seminar'))
-                ->slideOver()
-                ->modalContent(function () {
-                    $path = $this->record->payment_proof_path;
-                    $url = asset('storage/'.$path);
-                    $extension = pathinfo($path, PATHINFO_EXTENSION);
-
-                    return view('components.payment-proof-modal', compact('url', 'extension'));
-                })
-                ->modalCancelAction(false),
-
-            Action::make('viewAddonPaymentProofs')
-                ->label(__('seminar.addon_payment_proofs'))
-                ->slideOver()
-                ->modalContent(function () {
-                    return view('filament.infolists.addon-payment-proofs', [
-                        'record' => $this->record,
-                    ]);
-                })
-                ->modalCancelAction(false),
-        ];
-    }
 }
