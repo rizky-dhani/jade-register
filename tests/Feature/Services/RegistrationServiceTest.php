@@ -56,7 +56,7 @@ describe('sendHandsOnSubmissionConfirmation', function () {
         expect($registration->confirmation_email_sent_at)->not->toBeNull();
     });
 
-    it('skips sending if already sent', function () {
+    it('resends if already sent', function () {
         Mail::fake();
 
         $registration = HandsOnRegistration::factory()->create([
@@ -66,7 +66,7 @@ describe('sendHandsOnSubmissionConfirmation', function () {
         $service = app(RegistrationService::class);
         $service->sendHandsOnSubmissionConfirmation($registration);
 
-        Mail::assertNothingSent();
+        Mail::assertSent(HandsOnRegistrationConfirmation::class);
     });
 
     it('sends with correct locale', function () {
@@ -113,7 +113,7 @@ describe('sendHandsOnAttendanceConfirmation', function () {
         expect($registration->confirmation_email_sent_at)->not->toBeNull();
     });
 
-    it('skips attendance confirmation if already sent', function () {
+    it('resends attendance confirmation if already sent', function () {
         Mail::fake();
 
         $registration = HandsOnRegistration::factory()->create([
@@ -123,6 +123,6 @@ describe('sendHandsOnAttendanceConfirmation', function () {
         $service = app(RegistrationService::class);
         $service->sendHandsOnAttendanceConfirmation($registration);
 
-        Mail::assertNothingSent();
+        Mail::assertSent(HandsOnRegistrationConfirmation::class);
     });
 });

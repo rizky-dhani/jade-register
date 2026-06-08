@@ -10,7 +10,6 @@ use App\Mail\VisitorRegistrationConfirmation;
 use App\Models\HandsOnRegistration;
 use App\Models\SeminarRegistration;
 use App\Models\Visitor;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class RegistrationService
@@ -22,15 +21,6 @@ class RegistrationService
 
     public function sendSeminarSubmissionConfirmation(SeminarRegistration $registration): void
     {
-        if ($registration->confirmation_email_sent_at) {
-            Log::warning('Skipping duplicate email send', [
-                'registration_code' => $registration->registration_code,
-                'email' => $registration->email,
-            ]);
-
-            return;
-        }
-
         $locale = $registration->language ?? 'en';
 
         Mail::to($registration->email)
@@ -42,15 +32,6 @@ class RegistrationService
 
     public function sendHandsOnSubmissionConfirmation(HandsOnRegistration $registration): void
     {
-        if ($registration->confirmation_email_sent_at) {
-            Log::warning('Skipping duplicate hands-on email send', [
-                'registration_code' => $registration->registration_code,
-                'email' => $registration->email,
-            ]);
-
-            return;
-        }
-
         $locale = $registration->language ?? 'en';
 
         Mail::to($registration->email)
@@ -62,15 +43,6 @@ class RegistrationService
 
     public function sendHandsOnAttendanceConfirmation(HandsOnRegistration $registration): void
     {
-        if ($registration->confirmation_email_sent_at) {
-            Log::warning('Skipping duplicate hands-on attendance email send', [
-                'registration_code' => $registration->registration_code,
-                'email' => $registration->email,
-            ]);
-
-            return;
-        }
-
         $locale = $registration->language ?? 'en';
 
         Mail::to($registration->email)
