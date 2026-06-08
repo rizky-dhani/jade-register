@@ -75,24 +75,13 @@ class ViewSeminarRegistration extends ViewRecord
                 })
                 ->modalCancelAction(false),
 
-            Action::make('viewAddonPaymentProof')
+            Action::make('viewAddonPaymentProofs')
                 ->label(__('seminar.addon_payment_proofs'))
                 ->slideOver()
-                ->modalHeading(fn (): string => __('seminar.addon_payment_proofs'))
                 ->modalContent(function () {
-                    $arguments = $this->mountedActionArguments;
-                    $addonRegId = $arguments['addonRegistrationId'] ?? null;
-
-                    if (! $addonRegId) {
-                        return null;
-                    }
-
-                    $addonReg = AddonRegistration::findOrFail($addonRegId);
-                    $path = $addonReg->payment_proof_path;
-                    $url = asset('storage/'.$path);
-                    $extension = pathinfo($path, PATHINFO_EXTENSION);
-
-                    return view('components.payment-proof-modal', compact('url', 'extension'));
+                    return view('filament.infolists.addon-payment-proofs', [
+                        'record' => $this->record,
+                    ]);
                 })
                 ->modalCancelAction(false),
         ];

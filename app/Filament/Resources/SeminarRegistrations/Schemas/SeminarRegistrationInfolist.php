@@ -133,14 +133,22 @@ class SeminarRegistrationInfolist
                 Section::make(__('seminar.payment_proof'))
                     ->columnSpan(6)
                     ->schema([
-                        ViewEntry::make('payment_proof_path')
+                        TextEntry::make('payment_proof_path')
                             ->label(__('seminar.payment_proof'))
-                            ->view('filament.infolists.payment-proof-button')
+                            ->badge()
+                            ->color('primary')
+                            ->icon('heroicon-o-eye')
+                            ->formatStateUsing(fn () => __('filament.actions.view'))
+                            ->action('viewSeminarPaymentProof')
                             ->visible(fn (SeminarRegistration $record): bool => $record->payment_proof_path !== null),
 
-                        ViewEntry::make('addonRegistrations')
+                        TextEntry::make('addonRegistrations')
                             ->label(__('seminar.addon_payment_proofs'))
-                            ->view('filament.infolists.addon-payment-proofs')
+                            ->badge()
+                            ->color('primary')
+                            ->icon('heroicon-o-photo')
+                            ->formatStateUsing(fn (SeminarRegistration $record): string => (string) $record->addonRegistrations->whereNotNull('payment_proof_path')->count())
+                            ->action('viewAddonPaymentProofs')
                             ->visible(fn (SeminarRegistration $record): bool => $record->addonRegistrations->whereNotNull('payment_proof_path')->isNotEmpty()),
 
                         TextEntry::make('verified_at')
