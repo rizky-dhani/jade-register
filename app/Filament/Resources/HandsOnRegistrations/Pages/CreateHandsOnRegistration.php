@@ -5,6 +5,7 @@ namespace App\Filament\Resources\HandsOnRegistrations\Pages;
 use App\Filament\Resources\HandsOnRegistrations\HandsOnRegistrationResource;
 use App\Models\Country;
 use App\Models\HandsOnRegistration;
+use App\Services\RegistrationService;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
@@ -76,5 +77,9 @@ class CreateHandsOnRegistration extends CreateRecord
                 'verified_at' => $record->verified_at,
             ]);
         }
+
+        // Send confirmation email
+        $registrationService = app(RegistrationService::class);
+        $registrationService->sendHandsOnSubmissionConfirmation($record);
     }
 }
