@@ -7,15 +7,6 @@
             </div>
 
             <div class="flex items-center gap-2 shrink-0">
-                @if($registration->payment_status === 'pending')
-                    <button type="button"
-                            wire:click="mountAction('verifyAddonPayment', {{ json_encode(['addonRegistrationId' => $registration->id]) }})"
-                            class="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-lg bg-warning-100 text-warning-700 hover:bg-warning-200 dark:bg-warning-500/10 dark:text-warning-400 dark:hover:bg-warning-500/20 transition-colors">
-                        <svg class="w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                        {{ __('seminar.verify_payment') }}
-                    </button>
-                @endif
-
                 <span class="px-2 py-1 text-xs font-medium rounded-full whitespace-nowrap
                     @if($registration->payment_status === 'verified') bg-green-100 text-green-700 dark:bg-green-500/10 dark:text-green-400
                     @elseif($registration->payment_status === 'rejected') bg-red-100 text-red-700 dark:bg-red-500/10 dark:text-red-400
