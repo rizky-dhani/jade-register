@@ -359,6 +359,7 @@ return [
     'hands_on_total_amount' => 'Total Hands On',
     'addons_total_amount' => 'Total Add-On',
     'selected_addons' => 'Add-On Terpilih',
+    'addon_payment_proofs' => 'Bukti Pembayaran Add-On',
     'wants_hands_on' => 'Ingin Mengikuti Hands On',
     'payment_pending' => 'Pembayaran Menunggu',
     'checked_in' => 'Sudah Check-in',

@@ -227,6 +227,8 @@ return [
     'notifications.updated_body' => 'Pendaftaran seminar berhasil diperbarui.',
     'notifications.deleted_title' => 'Pendaftaran Dihapus',
     'notifications.deleted_body' => 'Pendaftaran seminar berhasil dihapus.',
+    'notifications.payment_verified_title' => 'Pembayaran Terverifikasi',
+    'notifications.addon_payment_verified_body' => 'Pembayaran add-on berhasil diverifikasi.',
 
     // Seminar Notifications
     'notifications.seminar_created_title' => 'Seminar Dibuat',

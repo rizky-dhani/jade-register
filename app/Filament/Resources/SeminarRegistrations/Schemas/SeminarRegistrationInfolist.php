@@ -138,6 +138,11 @@ class SeminarRegistrationInfolist
                             ->view('filament.infolists.payment-proof-preview')
                             ->visible(fn (SeminarRegistration $record): bool => $record->payment_proof_path !== null),
 
+                        ViewEntry::make('addonRegistrations')
+                            ->label(__('seminar.addon_payment_proofs'))
+                            ->view('filament.infolists.addon-payment-proofs')
+                            ->visible(fn (SeminarRegistration $record): bool => $record->addonRegistrations->whereNotNull('payment_proof_path')->isNotEmpty()),
+
                         TextEntry::make('verified_at')
                             ->label(__('seminar.verified_at'))
                             ->dateTime('d M Y H:i')

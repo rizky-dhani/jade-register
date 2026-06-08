@@ -360,6 +360,7 @@ return [
     'hands_on_total_amount' => 'Hands On Total Amount',
     'addons_total_amount' => 'Total Add-Ons',
     'selected_addons' => 'Selected Add-Ons',
+    'addon_payment_proofs' => 'Add-On Payment Proofs',
     'wants_hands_on' => 'Wants Hands On',
     'payment_pending' => 'Payment Pending',
     'checked_in' => 'Checked In',

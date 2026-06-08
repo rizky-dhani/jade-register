@@ -228,6 +228,8 @@ return [
     'notifications.updated_body' => 'The seminar registration has been updated successfully.',
     'notifications.deleted_title' => 'Registration Deleted',
     'notifications.deleted_body' => 'The seminar registration has been deleted successfully.',
+    'notifications.payment_verified_title' => 'Payment Verified',
+    'notifications.addon_payment_verified_body' => 'The add-on payment has been verified successfully.',
 
     // Seminar Notifications
     'notifications.seminar_created_title' => 'Seminar Created',
