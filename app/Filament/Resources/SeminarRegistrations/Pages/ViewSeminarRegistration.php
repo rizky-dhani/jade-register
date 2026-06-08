@@ -59,4 +59,42 @@ class ViewSeminarRegistration extends ViewRecord
                 ->icon('heroicon-m-pencil-square'),
         ];
     }
+
+    protected function getActions(): array
+    {
+        return [
+            Action::make('viewSeminarPaymentProof')
+                ->label(__('seminar.view_payment_proof_seminar'))
+                ->slideOver()
+                ->modalContent(function () {
+                    $path = $this->record->payment_proof_path;
+                    $url = asset('storage/'.$path);
+                    $extension = pathinfo($path, PATHINFO_EXTENSION);
+
+                    return view('components.payment-proof-modal', compact('url', 'extension'));
+                })
+                ->modalCancelAction(false),
+
+            Action::make('viewAddonPaymentProof')
+                ->label(__('seminar.addon_payment_proofs'))
+                ->slideOver()
+                ->modalHeading(fn (): string => __('seminar.addon_payment_proofs'))
+                ->modalContent(function () {
+                    $arguments = $this->mountedActionArguments;
+                    $addonRegId = $arguments['addonRegistrationId'] ?? null;
+
+                    if (! $addonRegId) {
+                        return null;
+                    }
+
+                    $addonReg = AddonRegistration::findOrFail($addonRegId);
+                    $path = $addonReg->payment_proof_path;
+                    $url = asset('storage/'.$path);
+                    $extension = pathinfo($path, PATHINFO_EXTENSION);
+
+                    return view('components.payment-proof-modal', compact('url', 'extension'));
+                })
+                ->modalCancelAction(false),
+        ];
+    }
 }

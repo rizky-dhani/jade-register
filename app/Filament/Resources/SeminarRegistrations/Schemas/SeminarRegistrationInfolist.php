@@ -135,7 +135,7 @@ class SeminarRegistrationInfolist
                     ->schema([
                         ViewEntry::make('payment_proof_path')
                             ->label(__('seminar.payment_proof'))
-                            ->view('filament.infolists.payment-proof-preview')
+                            ->view('filament.infolists.payment-proof-button')
                             ->visible(fn (SeminarRegistration $record): bool => $record->payment_proof_path !== null),
 
                         ViewEntry::make('addonRegistrations')
