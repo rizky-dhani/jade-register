@@ -172,6 +172,7 @@ return [
     'seminar_registration.form.pdgi_branch' => 'PDGI Cabang',
     'seminar_registration.form.competency' => 'Kompetensi',
     'seminar_registration.form.payment_proof_helper' => 'Unggah foto bukti pembayaran yang jelas. Format yang diterima: JPG, PNG, PDF. Ukuran maksimal: 5MB.',
+    'seminar_registration.form.addon_payment_proof_helper' => 'Unggah bukti pembayaran untuk add-on yang dipilih. Format yang diterima: JPG, PNG, PDF. Ukuran maksimal: 5MB.',
 
     // Seminars
     'seminars.original_price' => 'Harga Asli',

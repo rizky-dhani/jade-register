@@ -210,9 +210,24 @@ class SeminarRegistrationForm
                                     })
                                     ->toArray();
                             })
+                            ->live()
                             ->bulkToggleable()
                             ->nullable()
                             ->columnSpanFull(),
+
+                        FileUpload::make('addon_payment_proof_path')
+                            ->label(__('seminar.payment_proof'))
+                            ->disk('public')
+                            ->previewable()
+                            ->downloadable()
+                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'application/pdf'])
+                            ->maxSize(5120)
+                            ->directory('payment-proofs/addons')
+                            ->visibility('public')
+                            ->helperText(__('filament.seminar_registration.form.addon_payment_proof_helper'))
+                            ->nullable()
+                            ->columnSpanFull()
+                            ->visible(fn (Get $get): bool => ! empty($get('addon_ids'))),
                     ])
                     ->columns(1),
                 FileUpload::make('payment_proof_path')

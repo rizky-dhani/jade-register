@@ -34,7 +34,7 @@ class CreateSeminarRegistration extends CreateRecord
         $data['language'] = $country?->is_indonesia ? 'id' : 'en';
 
         // Remove virtual fields not present on the model
-        unset($data['addon_ids']);
+        unset($data['addon_ids'], $data['addon_payment_proof_path']);
 
         return $data;
     }
@@ -58,6 +58,19 @@ class CreateSeminarRegistration extends CreateRecord
         // Save add-on registrations
         $addonIds = $this->form->getState()['addon_ids'] ?? [];
         if (! empty($addonIds)) {
+            $addonPaymentProofPath = $this->form->getState()['addon_payment_proof_path'] ?? null;
+
+            // Rename addon payment proof to use 6-digit registration code
+            if ($addonPaymentProofPath) {
+                $codeNumber = substr($registration->registration_code, -6);
+                $newName = $codeNumber.'-addon.'.pathinfo($addonPaymentProofPath, PATHINFO_EXTENSION);
+                $newPath = 'payment-proofs/'.$newName;
+                if (Storage::disk('public')->exists($addonPaymentProofPath)) {
+                    Storage::disk('public')->move($addonPaymentProofPath, $newPath);
+                    $addonPaymentProofPath = $newPath;
+                }
+            }
+
             $addons = Addon::whereIn('id', $addonIds)->get();
             $totalAmount = 0;
             foreach ($addons as $addon) {
@@ -66,6 +79,7 @@ class CreateSeminarRegistration extends CreateRecord
                     'amount' => $addon->price,
                     'currency' => $addon->currency,
                     'payment_status' => 'pending',
+                    'payment_proof_path' => $addonPaymentProofPath,
                 ]);
                 $totalAmount += $addon->price;
             }

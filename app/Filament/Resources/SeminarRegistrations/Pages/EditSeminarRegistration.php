@@ -41,6 +41,12 @@ class EditSeminarRegistration extends EditRecord
     {
         $data['addon_ids'] = $this->record->addonRegistrations->pluck('addon_id')->toArray();
 
+        // Pre-fill addon payment proof from first existing registration
+        $firstAddonReg = $this->record->addonRegistrations->first();
+        if ($firstAddonReg && $firstAddonReg->payment_proof_path) {
+            $data['addon_payment_proof_path'] = $firstAddonReg->payment_proof_path;
+        }
+
         return $data;
     }
 
@@ -49,7 +55,21 @@ class EditSeminarRegistration extends EditRecord
         /** @var SeminarRegistration $registration */
         $registration = $this->record;
 
-        // Sync add-on registrations
+        // --- Handle add-on payment proof ---
+        $addonPaymentProofPath = $this->form->getState()['addon_payment_proof_path'] ?? null;
+
+        // Rename newly uploaded addon payment proof to use 6-digit registration code
+        if ($addonPaymentProofPath) {
+            $codeNumber = substr($registration->registration_code, -6);
+            $newName = $codeNumber.'-addon.'.pathinfo($addonPaymentProofPath, PATHINFO_EXTENSION);
+            $newPath = 'payment-proofs/'.$newName;
+            if ($addonPaymentProofPath !== $newPath && Storage::disk('public')->exists($addonPaymentProofPath)) {
+                Storage::disk('public')->move($addonPaymentProofPath, $newPath);
+                $addonPaymentProofPath = $newPath;
+            }
+        }
+
+        // --- Sync add-on registrations ---
         $addonIds = $this->form->getState()['addon_ids'] ?? [];
 
         if (! empty($addonIds)) {
@@ -64,6 +84,15 @@ class EditSeminarRegistration extends EditRecord
             ->whereNotIn('addon_id', $addonIds)
             ->delete();
 
+        // Update payment proof on remaining existing addon registrations if a new file was uploaded
+        if ($addonPaymentProofPath) {
+            $registration->addonRegistrations()->update(['payment_proof_path' => $addonPaymentProofPath]);
+        }
+
+        // Get existing payment proof path for new addon registrations
+        $existingProofPath = $addonPaymentProofPath
+            ?? $registration->addonRegistrations()->value('payment_proof_path');
+
         // Add new add-ons
         $newIds = array_diff($addonIds, $existingIds);
         if (! empty($newIds)) {
@@ -74,6 +103,7 @@ class EditSeminarRegistration extends EditRecord
                     'amount' => $addon->price,
                     'currency' => $addon->currency,
                     'payment_status' => 'pending',
+                    'payment_proof_path' => $existingProofPath,
                 ]);
             }
         }
@@ -82,7 +112,7 @@ class EditSeminarRegistration extends EditRecord
         $totalAmount = $registration->addonRegistrations()->sum('amount');
         $registration->update(['addons_total_amount' => $totalAmount]);
 
-        // Rename newly uploaded payment proof to use 6-digit registration code
+        // Rename newly uploaded (main) payment proof to use 6-digit registration code
         if ($registration->payment_proof_path) {
             $codeNumber = substr($registration->registration_code, -6);
             $newName = $codeNumber.'.'.pathinfo($registration->payment_proof_path, PATHINFO_EXTENSION);
