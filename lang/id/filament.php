@@ -201,6 +201,7 @@ return [
     'visitors.confirm_attendance' => 'Konfirmasi Kehadiran',
 
     // Actions
+    'actions.view' => 'Lihat',
     'actions.edit' => 'Sunting',
     'actions.export_excel' => 'Ekspor Excel',
     'actions.generate_permissions' => 'Buat dari Izin',
