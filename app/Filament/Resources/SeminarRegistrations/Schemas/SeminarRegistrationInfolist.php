@@ -163,7 +163,7 @@ class SeminarRegistrationInfolist
                             ->formatStateUsing(fn (SeminarRegistration $record): string => (string) $record->addonRegistrations->whereNotNull('payment_proof_path')->count())
                             ->action(
                                 Action::make('viewAddonPaymentProofs')
-                                    ->label(__('seminar.addon_payment_proofs'))
+                                    ->label(__('filament.actions.view'))
                                     ->slideOver()
                                     ->modalContent(function (SeminarRegistration $record) {
                                         return view('filament.infolists.addon-payment-proofs', [
