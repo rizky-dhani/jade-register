@@ -357,6 +357,8 @@ return [
     'hands_on_registrations' => 'Pendaftaran Hands On',
     'registered_hands_on' => 'Hands On Terdaftar',
     'hands_on_total_amount' => 'Total Hands On',
+    'addons_total_amount' => 'Total Add-On',
+    'selected_addons' => 'Add-On Terpilih',
     'wants_hands_on' => 'Ingin Mengikuti Hands On',
     'payment_pending' => 'Pembayaran Menunggu',
     'checked_in' => 'Sudah Check-in',

@@ -95,6 +95,17 @@ class SeminarRegistrationInfolist
                             ->money('IDR')
                             ->default(0),
 
+                        TextEntry::make('addons_total_amount')
+                            ->label(__('seminar.addons_total_amount'))
+                            ->money('IDR')
+                            ->default(0)
+                            ->visible(fn (SeminarRegistration $record): bool => $record->addonRegistrations->isNotEmpty()),
+
+                        ViewEntry::make('addonRegistrations')
+                            ->label(__('seminar.selected_addons'))
+                            ->view('filament.infolists.addon-list')
+                            ->visible(fn (SeminarRegistration $record): bool => $record->addonRegistrations->isNotEmpty()),
+
                         TextEntry::make('payment_method')
                             ->label(__('seminar.payment_method'))
                             ->formatStateUsing(fn (string $state): string => match ($state) {
