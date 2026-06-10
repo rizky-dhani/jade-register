@@ -491,11 +491,17 @@ return [
     'spots_remaining' => ':count spots remaining - register now!',
     'total_registered' => ':count / :max participants registered',
 
+    // Poster Submission (Templates)
+    'poster_template_section_title' => 'Download Poster Template',
+    'poster_template_description' => 'Download the appropriate template for your poster category before submitting.',
+    'poster_template_case_report' => 'Case Report Template (.pptx)',
+    'poster_template_research' => 'Research Template (.pptx)',
+
     // Poster Submission (Verification)
-    'poster_not_registered' => 'Data not found. Make sure your email/NIK matches your seminar registration data.',
+    'poster_not_registered' => 'Data not found. Make sure your email matches your seminar registration data.',
     'poster_pending_verification' => 'Your payment is still pending verification. Please wait for admin confirmation.',
     'poster_verified_info' => 'You are registered as :name (:email)',
-    'email_or_nik' => 'Email or NIK',
+    'email_or_nik' => 'Email',
     'verify_continue' => 'Verify & Continue',
     'abstract_max_chars' => 'Abstract must not exceed 1500 characters.',
     'poster_file_max_size' => 'Poster file must not exceed 10MB.',

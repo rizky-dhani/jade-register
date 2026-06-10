@@ -490,11 +490,17 @@ return [
     'spots_remaining' => 'Tersisa :count tempat - segera daftar!',
     'total_registered' => ':count / :max peserta terdaftar',
 
+    // Poster Submission (Templates)
+    'poster_template_section_title' => 'Download Template Poster',
+    'poster_template_description' => 'Download template yang sesuai dengan kategori poster Anda sebelum mengirimkan.',
+    'poster_template_case_report' => 'Template Case Report (.pptx)',
+    'poster_template_research' => 'Template Research (.pptx)',
+
     // Poster Submission (Verification)
-    'poster_not_registered' => 'Data tidak ditemukan. Pastikan email/NIK yang Anda masukkan sesuai dengan data registrasi seminar.',
+    'poster_not_registered' => 'Data tidak ditemukan. Pastikan email Anda sesuai dengan data registrasi seminar.',
     'poster_pending_verification' => 'Pembayaran Anda masih menunggu verifikasi. Silakan tunggu konfirmasi dari admin.',
     'poster_verified_info' => 'Anda terdaftar sebagai :name (:email)',
-    'email_or_nik' => 'Email atau NIK',
+    'email_or_nik' => 'Email',
     'verify_continue' => 'Verifikasi & Lanjutkan',
     'abstract_max_chars' => 'Abstrak maksimal 1500 karakter.',
     'poster_file_max_size' => 'File poster maksimal 10MB.',
