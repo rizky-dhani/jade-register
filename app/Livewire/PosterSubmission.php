@@ -102,11 +102,7 @@ class PosterSubmission extends Component
             return;
         }
 
-        $registration = SeminarRegistration::where(function ($query) use ($input): void {
-            $query->where('email', $input)
-                ->orWhere('nik', $input);
-        })
-            ->where('wants_poster_competition', true)
+        $registration = SeminarRegistration::where('email', $input)
             ->latest()
             ->first();
 
