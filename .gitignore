@@ -29,3 +29,6 @@ boost.json
 .gemini
 .qwen
 .superpowers
+.commandcode/
+docs/
+public/backup.sqlite
