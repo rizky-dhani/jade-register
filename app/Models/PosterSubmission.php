@@ -25,17 +25,11 @@ class PosterSubmission extends Model
         'poster_file_path',
         'status',
         'rejection_reason',
-        'total_score',
-        'rank',
         'submitted_at',
-        'finalist_announced_at',
     ];
 
     protected $casts = [
         'submitted_at' => 'datetime',
-        'finalist_announced_at' => 'datetime',
-        'total_score' => 'integer',
-        'rank' => 'integer',
     ];
 
     public const STATUS_DRAFT = 'draft';
@@ -97,7 +91,6 @@ class PosterSubmission extends Model
 
     public function syncTotalScoreFromEvaluations(): void
     {
-        $this->total_score = $this->average_score;
         $this->autoUpdateStatus();
         $this->saveQuietly();
     }

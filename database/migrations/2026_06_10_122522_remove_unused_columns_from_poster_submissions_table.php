@@ -1,0 +1,30 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::table('poster_submissions', function (Blueprint $table) {
+            $table->dropColumn(['total_score', 'rank', 'finalist_announced_at']);
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::table('poster_submissions', function (Blueprint $table) {
+            $table->integer('total_score')->nullable();
+            $table->integer('rank')->nullable();
+            $table->timestamp('finalist_announced_at')->nullable();
+        });
+    }
+};

@@ -3,11 +3,13 @@
 namespace App\Services;
 
 use App\Mail\HandsOnRegistrationConfirmation;
+use App\Mail\PosterSubmissionConfirmation;
 use App\Mail\SeminarPaymentRejected;
 use App\Mail\SeminarPaymentVerified;
 use App\Mail\SeminarRegistrationConfirmation;
 use App\Mail\VisitorRegistrationConfirmation;
 use App\Models\HandsOnRegistration;
+use App\Models\PosterSubmission;
 use App\Models\SeminarRegistration;
 use App\Models\Visitor;
 use Illuminate\Support\Facades\Mail;
@@ -39,6 +41,17 @@ class RegistrationService
             ->send(new HandsOnRegistrationConfirmation($registration));
 
         $registration->update(['confirmation_email_sent_at' => now()]);
+    }
+
+    public function sendPosterSubmissionConfirmation(PosterSubmission $submission): void
+    {
+        $emails = array_map('trim', explode(',', $submission->author_emails));
+
+        foreach ($emails as $email) {
+            if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                Mail::to($email)->send(new PosterSubmissionConfirmation($submission));
+            }
+        }
     }
 
     public function sendHandsOnAttendanceConfirmation(HandsOnRegistration $registration): void

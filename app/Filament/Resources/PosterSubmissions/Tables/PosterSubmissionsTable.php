@@ -28,8 +28,7 @@ class PosterSubmissionsTable
                     ->label(__('filament.poster_submissions.topic')),
                 TextColumn::make('average_score')
                     ->label(__('filament.poster_submissions.score'))
-                    ->formatStateUsing(fn (?int $state): string => $state ? "{$state}/100" : '-')
-                    ->sortable(),
+                    ->formatStateUsing(fn (?int $state): string => $state ? "{$state}/100" : '-'),
                 BadgeColumn::make('status')
                     ->colors([
                         'gray' => PosterSubmission::STATUS_DRAFT,

@@ -6,6 +6,7 @@ use App\Models\PosterCategory;
 use App\Models\PosterSubmission as PosterSubmissionModel;
 use App\Models\PosterTopic;
 use App\Models\SeminarRegistration;
+use App\Services\RegistrationService;
 use Illuminate\Support\Facades\App;
 use Livewire\Attributes\Url;
 use Livewire\Component;
@@ -155,6 +156,8 @@ class PosterSubmission extends Component
             'status' => $posterFilePath ? 'submitted' : 'draft',
             'submitted_at' => $posterFilePath ? now() : null,
         ]);
+
+        app(RegistrationService::class)->sendPosterSubmissionConfirmation($submission);
 
         $this->submission = $submission;
         $this->isSuccess = true;

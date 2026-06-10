@@ -52,7 +52,6 @@ class PosterSubmissionFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'status' => PosterSubmission::STATUS_ACCEPTED,
             'submitted_at' => now()->subDays(3),
-            'total_score' => fake()->numberBetween(70, 95),
         ]);
     }
 
@@ -61,8 +60,6 @@ class PosterSubmissionFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'status' => PosterSubmission::STATUS_WINNER,
             'submitted_at' => now()->subDays(5),
-            'total_score' => fake()->numberBetween(85, 100),
-            'rank' => 1,
         ]);
     }
 }

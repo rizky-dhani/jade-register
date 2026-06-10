@@ -504,4 +504,10 @@ return [
     'verify_continue' => 'Verifikasi & Lanjutkan',
     'abstract_max_chars' => 'Abstrak maksimal 1500 karakter.',
     'poster_file_max_size' => 'File poster maksimal 10MB.',
+    'email_poster_submission_confirmation_subject' => 'Konfirmasi Pengumpulan Poster - JADE 2026',
+    'email_poster_submission_received' => 'Terima kasih telah mengirimkan poster Anda ke Kompetisi Poster Ilmiah JADE 2026. Kami telah menerima pengumpulan Anda dan akan ditinjau oleh panel kami.',
+    'email_poster_submission_closing' => 'Jika Anda memiliki pertanyaan mengenai pengumpulan Anda, silakan hubungi kami.',
+    'presenter_name' => 'Nama Presentator',
+    'affiliation' => 'Afiliasi',
+    'poster_authors' => 'Penulis',
 ];

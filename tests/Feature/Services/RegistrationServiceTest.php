@@ -1,9 +1,14 @@
 <?php
 
 use App\Mail\HandsOnRegistrationConfirmation;
+use App\Mail\PosterSubmissionConfirmation;
 use App\Models\Country;
 use App\Models\HandsOn;
 use App\Models\HandsOnRegistration;
+use App\Models\PosterCategory;
+use App\Models\PosterSubmission;
+use App\Models\PosterTopic;
+use App\Models\SeminarRegistration;
 use App\Services\RegistrationService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
@@ -124,5 +129,118 @@ describe('sendHandsOnAttendanceConfirmation', function () {
         $service->sendHandsOnAttendanceConfirmation($registration);
 
         Mail::assertSent(HandsOnRegistrationConfirmation::class);
+    });
+});
+
+describe('sendPosterSubmissionConfirmation', function () {
+    it('sends confirmation email to all author emails', function () {
+        Mail::fake();
+
+        $seminarRegistration = SeminarRegistration::factory()->verified()->create();
+
+        $posterCategory = PosterCategory::create([
+            'name' => 'Test Category',
+            'slug' => 'test-category',
+            'is_active' => true,
+        ]);
+
+        $posterTopic = PosterTopic::create([
+            'name' => 'Test Topic',
+            'slug' => 'test-topic',
+            'is_active' => true,
+        ]);
+
+        $submission = PosterSubmission::create([
+            'seminar_registration_id' => $seminarRegistration->id,
+            'poster_category_id' => $posterCategory->id,
+            'poster_topic_id' => $posterTopic->id,
+            'title' => 'Test Title',
+            'abstract_text' => 'Test abstract',
+            'author_names' => 'Author One, Author Two',
+            'author_emails' => 'author1@test.com, author2@test.com',
+            'affiliation' => 'Test University',
+            'presenter_name' => 'Author One',
+            'status' => PosterSubmission::STATUS_SUBMITTED,
+            'submitted_at' => now(),
+        ]);
+
+        $service = app(RegistrationService::class);
+        $service->sendPosterSubmissionConfirmation($submission);
+
+        Mail::assertSent(PosterSubmissionConfirmation::class, 2);
+    });
+
+    it('sends to single email when only one author', function () {
+        Mail::fake();
+
+        $seminarRegistration = SeminarRegistration::factory()->verified()->create();
+
+        $posterCategory = PosterCategory::create([
+            'name' => 'Test Category',
+            'slug' => 'test-category',
+            'is_active' => true,
+        ]);
+
+        $posterTopic = PosterTopic::create([
+            'name' => 'Test Topic',
+            'slug' => 'test-topic',
+            'is_active' => true,
+        ]);
+
+        $submission = PosterSubmission::create([
+            'seminar_registration_id' => $seminarRegistration->id,
+            'poster_category_id' => $posterCategory->id,
+            'poster_topic_id' => $posterTopic->id,
+            'title' => 'Test Title',
+            'abstract_text' => 'Test abstract',
+            'author_names' => 'Single Author',
+            'author_emails' => 'single@test.com',
+            'affiliation' => 'Test University',
+            'presenter_name' => 'Single Author',
+            'status' => PosterSubmission::STATUS_SUBMITTED,
+            'submitted_at' => now(),
+        ]);
+
+        $service = app(RegistrationService::class);
+        $service->sendPosterSubmissionConfirmation($submission);
+
+        Mail::assertSent(PosterSubmissionConfirmation::class, 1);
+    });
+
+    it('skips invalid email addresses', function () {
+        Mail::fake();
+
+        $seminarRegistration = SeminarRegistration::factory()->verified()->create();
+
+        $posterCategory = PosterCategory::create([
+            'name' => 'Test Category',
+            'slug' => 'test-category',
+            'is_active' => true,
+        ]);
+
+        $posterTopic = PosterTopic::create([
+            'name' => 'Test Topic',
+            'slug' => 'test-topic',
+            'is_active' => true,
+        ]);
+
+        $submission = PosterSubmission::create([
+            'seminar_registration_id' => $seminarRegistration->id,
+            'poster_category_id' => $posterCategory->id,
+            'poster_topic_id' => $posterTopic->id,
+            'title' => 'Test Title',
+            'abstract_text' => 'Test abstract',
+            'author_names' => 'Valid Author',
+            'author_emails' => 'valid@test.com, not-an-email',
+            'affiliation' => 'Test University',
+            'presenter_name' => 'Valid Author',
+            'status' => PosterSubmission::STATUS_SUBMITTED,
+            'submitted_at' => now(),
+        ]);
+
+        $service = app(RegistrationService::class);
+        $service->sendPosterSubmissionConfirmation($submission);
+
+        Mail::assertSent(PosterSubmissionConfirmation::class, 1);
     });
 });

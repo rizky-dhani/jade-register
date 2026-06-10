@@ -505,4 +505,10 @@ return [
     'verify_continue' => 'Verify & Continue',
     'abstract_max_chars' => 'Abstract must not exceed 1500 characters.',
     'poster_file_max_size' => 'Poster file must not exceed 10MB.',
+    'email_poster_submission_confirmation_subject' => 'Poster Submission Confirmation - JADE 2026',
+    'email_poster_submission_received' => 'Thank you for submitting your poster to JADE 2026 Scientific Poster Competition. We have received your submission and it will be reviewed by our panel.',
+    'email_poster_submission_closing' => 'If you have any questions regarding your submission, please contact us.',
+    'presenter_name' => 'Presenter Name',
+    'affiliation' => 'Affiliation',
+    'poster_authors' => 'Authors',
 ];
