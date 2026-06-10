@@ -4,10 +4,8 @@ namespace App\Filament\Resources\PosterEvaluations\Schemas;
 
 use App\Models\PosterEvaluation;
 use App\Models\PosterSubmission;
-use App\Models\User;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -16,30 +14,20 @@ class PosterEvaluationForm
 {
     public static function configure(Schema $schema): Schema
     {
-        $user = auth()->user();
-        $isSuperAdmin = $user?->hasRole('Super Admin') ?? false;
-
         return $schema
             ->components([
                 Section::make('Evaluation Details')
-                    ->columns(2)
                     ->schema([
                         Select::make('poster_submission_id')
                             ->label(__('filament.poster_evaluations.poster_submission'))
                             ->options(PosterSubmission::pluck('title', 'id'))
                             ->required()
                             ->searchable(),
-                        $isSuperAdmin
-                            ? Select::make('judge_id')
-                                ->label(__('filament.poster_evaluations.judge'))
-                                ->options(User::pluck('name', 'id'))
-                                ->required()
-                            : Hidden::make('judge_id')
-                                ->default($user?->getKey()),
+                        Hidden::make('judge_id')
+                            ->default(auth()->id()),
                     ]),
                 Section::make('Scores')
                     ->description('Score each criterion from 0 to the maximum value.')
-                    ->columns(2)
                     ->schema([
                         TextInput::make('content_score')
                             ->numeric()
@@ -70,12 +58,7 @@ class PosterEvaluationForm
                             ->helperText('Max: '.PosterEvaluation::MAX_PRESENTATION_SCORE.' points')
                             ->required(),
                     ]),
-                Section::make('Feedback')
-                    ->schema([
-                        Textarea::make('comments')
-                            ->label(__('filament.poster_evaluations.comments'))
-                            ->rows(4),
-                    ]),
             ]);
+
     }
 }

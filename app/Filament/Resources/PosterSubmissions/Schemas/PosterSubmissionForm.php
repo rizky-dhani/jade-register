@@ -5,6 +5,7 @@ namespace App\Filament\Resources\PosterSubmissions\Schemas;
 use App\Models\PosterCategory;
 use App\Models\PosterSubmission;
 use App\Models\PosterTopic;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -75,6 +76,8 @@ class PosterSubmissionForm
                             ->label(__('filament.poster_submissions.rejection_reason'))
                             ->rows(3),
                     ]),
+                Hidden::make('user_id')
+                    ->default(auth()->id()),
             ]);
     }
 }
