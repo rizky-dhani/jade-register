@@ -95,6 +95,6 @@ class AttendanceQrCode extends Component
 
     public function render()
     {
-        return view('livewire.attendance-qr-code');
+        return view('livewire.attendance-qr-code')->title(__('seminar.qr_code_title').' - '.config('app.name'));
     }
 }

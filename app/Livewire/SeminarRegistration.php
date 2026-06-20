@@ -205,7 +205,7 @@ class SeminarRegistration extends Component
             'isIndonesia' => $this->isIndonesia(),
             'availableHandsOn' => $this->availableHandsOn,
             'availableAddons' => $this->availableAddons,
-        ]);
+        ])->title(__('seminar.page_title').' - '.config('app.name'));
     }
 
     public function updatedCountryId(): void

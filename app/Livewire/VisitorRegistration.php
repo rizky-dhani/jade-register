@@ -58,7 +58,7 @@ class VisitorRegistration extends Component
 
     public function render()
     {
-        return view('livewire.visitor-registration');
+        return view('livewire.visitor-registration')->title(__('seminar.visitor_registration_title').' - '.config('app.name'));
     }
 
     public function submit()

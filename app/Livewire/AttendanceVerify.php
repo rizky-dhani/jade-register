@@ -192,6 +192,6 @@ class AttendanceVerify extends Component
 
     public function render()
     {
-        return view('livewire.attendance-verify');
+        return view('livewire.attendance-verify')->title(__('seminar.attendance_verification_title').' - '.config('app.name'));
     }
 }

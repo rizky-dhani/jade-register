@@ -129,7 +129,7 @@ class PosterSubmission extends Component
         return view('livewire.poster-submission', [
             'categories' => $categories,
             'topics' => $topics,
-        ]);
+        ])->title(__('seminar.scientific_poster_submission_title').' - '.config('app.name'));
     }
 
     public function submit(): void

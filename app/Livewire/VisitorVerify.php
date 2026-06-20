@@ -71,6 +71,6 @@ class VisitorVerify extends Component
 
     public function render()
     {
-        return view('livewire.visitor-verify');
+        return view('livewire.visitor-verify')->title(__('seminar.visitor_verification_title').' - '.config('app.name'));
     }
 }

@@ -49,6 +49,6 @@ class VisitorQrCode extends Component
 
     public function render()
     {
-        return view('livewire.visitor-qr-code');
+        return view('livewire.visitor-qr-code')->title(__('seminar.visitor_qr_code_title').' - '.config('app.name'));
     }
 }

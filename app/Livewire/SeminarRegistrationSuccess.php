@@ -33,6 +33,6 @@ class SeminarRegistrationSuccess extends Component
     {
         return view('livewire.seminar-registration-success', [
             'isInternational' => $this->isInternational(),
-        ]);
+        ])->title(__('seminar.success_title').' - '.config('app.name'));
     }
 }

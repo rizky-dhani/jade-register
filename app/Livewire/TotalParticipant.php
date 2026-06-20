@@ -53,6 +53,6 @@ class TotalParticipant extends Component
 
     public function render()
     {
-        return view('livewire.total-participant');
+        return view('livewire.total-participant')->title(__('seminar.total_participant_title').' - '.config('app.name'));
     }
 }

@@ -43,6 +43,6 @@ class HandsOnRegistrationSuccess extends Component
 
     public function render()
     {
-        return view('livewire.hands-on-registration-success');
+        return view('livewire.hands-on-registration-success')->title(__('seminar.hands_on_success_title').' - '.config('app.name'));
     }
 }

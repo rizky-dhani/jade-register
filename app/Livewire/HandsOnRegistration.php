@@ -168,7 +168,7 @@ class HandsOnRegistration extends Component
             'countries' => $countries,
             'isIndonesia' => $this->isIndonesia(),
             'availableHandsOn' => $this->availableHandsOn,
-        ]);
+        ])->title(__('seminar.hands_on_sessions').' - '.config('app.name'));
     }
 
     public function updatedCountryId(): void
