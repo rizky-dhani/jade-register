@@ -9,6 +9,7 @@ use App\Livewire\HandsOnRegistrationSuccess;
 use App\Livewire\PosterSubmission;
 use App\Livewire\SeminarRegistration;
 use App\Livewire\SeminarRegistrationSuccess;
+use App\Livewire\TotalParticipant;
 use App\Livewire\VisitorQrCode;
 use App\Livewire\VisitorRegistration;
 use App\Livewire\VisitorVerify;
@@ -54,6 +55,7 @@ Route::middleware('auth')->group(function () {
 
 Route::livewire('/poster/submit', PosterSubmission::class)->name('poster.submit');
 
+Route::livewire('/participants', TotalParticipant::class)->name('participants');
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::livewire('/attendance/verify/{token}', AttendanceVerify::class)->name('attendance.verify');
     Route::livewire('/visitor/verify/{token}', VisitorVerify::class)->name('visitor.verify');

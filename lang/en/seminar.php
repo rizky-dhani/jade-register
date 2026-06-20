@@ -511,4 +511,16 @@ return [
     'presenter_name' => 'Presenter Name',
     'affiliation' => 'Affiliation',
     'poster_authors' => 'Authors',
+
+    // Total Participant Page
+    'total_participant_title' => 'JADE 2026 Participants',
+    'total_participant_subtitle' => 'Live participant overview for Jakarta Dental Exhibition 2026',
+    'total_seminar_registrations' => 'Seminar Participants',
+    'total_hands_on_registrations' => 'Hands-On Participants',
+    'seminar_package_breakdown' => 'By Seminar Package',
+    'hands_on_session_breakdown' => 'By Hands-On Session',
+    'seats' => 'seats',
+    'of' => 'of',
+    'handson_price_label' => 'Price',
+    'no_data_available' => 'No data available yet.',
 ];
