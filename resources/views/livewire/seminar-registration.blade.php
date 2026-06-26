@@ -526,6 +526,9 @@
                         class="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-0.5">
                     <label for="wants_hands_on" class="ml-2 text-sm text-gray-700">
                         {{ __('seminar.want_to_join_hands_on') }}
+                        <span class="text-xs text-gray-500 ml-1">
+                            (<a href="{{ route('register.hands-on', ['locale' => $locale]) }}" class="text-blue-600 hover:text-blue-800 underline" wire:navigate>{{ __('seminar.register_hands_on_only') }}</a>)
+                        </span>
                     </label>
                 </div>
 

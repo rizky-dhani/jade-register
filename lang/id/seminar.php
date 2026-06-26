@@ -159,6 +159,7 @@ return [
     'hands_on_success_title' => 'Pendaftaran Hands On Berhasil Dikirim!',
     'hands_on_success_thank_you' => 'Terima kasih telah mendaftar sesi Hands On, ',
     'want_to_join_hands_on' => 'Saya ingin mengikuti sesi Hands On',
+    'register_hands_on_only' => 'Daftar hanya Hands-On',
     'hands_on_description' => 'Sesi Hands On akan diadakan pada 13-15 November 2026. Anda dapat memilih satu sesi per hari.',
     'select_hands_on' => 'Pilih Sesi Hands On',
     'hands_on_separate_payment' => 'Anda dapat memilih sesi Hands On di bawah ini. Pembayaran terpisah akan diperlukan.',
