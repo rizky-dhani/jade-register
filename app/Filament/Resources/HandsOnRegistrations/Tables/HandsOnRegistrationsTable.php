@@ -61,7 +61,7 @@ class HandsOnRegistrationsTable
 
                 TextColumn::make('handsOn.ho_code')
                     ->label(__('filament.hands_on_registrations.hands_on_event'))
-                    ->searchable()
+                    ->searchable(query: fn (Builder $query, string $value) => $query->where('hands_ons.ho_code', 'like', "%{$value}%"))
                     ->sortable(query: fn (Builder $query, string $direction) => $query->orderBy('hands_ons.ho_code', $direction))
                     ->formatStateUsing(fn (HandsOnRegistration $record): string => $record->handsOn
                         ? "[{$record->handsOn->ho_code}] {$record->handsOn->name}"
