@@ -31,9 +31,9 @@ class HandsOnRegistrationsTable
                 TextColumn::make('registration_code')
                     ->label(__('filament.hands_on_registrations.registration_code'))
                     ->state(fn (HandsOnRegistration $record): string => $record->registration_code ?? $record->seminarRegistration?->registration_code ?? '-')
-                    ->searchable(query: fn (Builder $query, string $value) => $query->where(function (Builder $q) use ($value) {
-                        $q->where('hands_on_registrations.registration_code', 'like', "%{$value}%")
-                            ->orWhere('seminar_registrations.registration_code', 'like', "%{$value}%");
+                    ->searchable(query: fn (Builder $query, string $search) => $query->where(function (Builder $q) use ($search) {
+                        $q->where('hands_on_registrations.registration_code', 'like', "%{$search}%")
+                            ->orWhere('seminar_registrations.registration_code', 'like', "%{$search}%");
                     }))
                     ->sortable(query: fn (Builder $query, string $direction) => $query->orderBy('hands_on_registrations.registration_code', $direction)->orderBy('seminar_registrations.registration_code', $direction))
                     ->copyable()
@@ -43,25 +43,25 @@ class HandsOnRegistrationsTable
                 TextColumn::make('seminarRegistration.name_license')
                     ->label(__('filament.hands_on_registrations.participant'))
                     ->state(fn (HandsOnRegistration $record): string => $record->seminarRegistration?->name_license ?? $record->name_license ?? $record->name ?? '-')
-                    ->searchable(query: fn (Builder $query, string $value) => $query->where(function (Builder $q) use ($value) {
-                        $q->where('seminar_registrations.name_license', 'like', "%{$value}%")
-                            ->orWhere('hands_on_registrations.name_license', 'like', "%{$value}%")
-                            ->orWhere('hands_on_registrations.name', 'like', "%{$value}%");
+                    ->searchable(query: fn (Builder $query, string $search) => $query->where(function (Builder $q) use ($search) {
+                        $q->where('seminar_registrations.name_license', 'like', "%{$search}%")
+                            ->orWhere('hands_on_registrations.name_license', 'like', "%{$search}%")
+                            ->orWhere('hands_on_registrations.name', 'like', "%{$search}%");
                     }))
                     ->sortable(query: fn (Builder $query, string $direction) => $query->orderBy('seminar_registrations.name_license', $direction)->orderBy('hands_on_registrations.name_license', $direction)),
 
                 TextColumn::make('seminarRegistration.email')
                     ->label(__('seminar.email'))
                     ->state(fn (HandsOnRegistration $record): string => $record->seminarRegistration?->email ?? $record->email ?? '-')
-                    ->searchable(query: fn (Builder $query, string $value) => $query->where(function (Builder $q) use ($value) {
-                        $q->where('seminar_registrations.email', 'like', "%{$value}%")
-                            ->orWhere('hands_on_registrations.email', 'like', "%{$value}%");
+                    ->searchable(query: fn (Builder $query, string $search) => $query->where(function (Builder $q) use ($search) {
+                        $q->where('seminar_registrations.email', 'like', "%{$search}%")
+                            ->orWhere('hands_on_registrations.email', 'like', "%{$search}%");
                     }))
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('handsOn.ho_code')
                     ->label(__('filament.hands_on_registrations.hands_on_event'))
-                    ->searchable(query: fn (Builder $query, string $value) => $query->where('hands_ons.ho_code', 'like', "%{$value}%"))
+                    ->searchable(query: fn (Builder $query, string $search) => $query->where('hands_ons.ho_code', 'like', "%{$search}%"))
                     ->sortable(query: fn (Builder $query, string $direction) => $query->orderBy('hands_ons.ho_code', $direction))
                     ->formatStateUsing(fn (HandsOnRegistration $record): string => $record->handsOn
                         ? "[{$record->handsOn->ho_code}] {$record->handsOn->name}"
