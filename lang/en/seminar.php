@@ -41,7 +41,7 @@ return [
     'lunch_addon_description' => 'Add full lunch to your seminar package (includes main course, drink, and dessert).',
     'contact_person' => 'Contact Person',
     'payment_information' => 'Payment Information',
-    'scientific_poster_competition' => 'Scientific Poster Competition (Optional)',
+    'scientific_poster_competition' => 'Scientific Poster Competition',
 
     // Form fields
     'country' => 'Country',
