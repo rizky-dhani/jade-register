@@ -119,7 +119,7 @@ return [
     'payment_status_unknown_label' => 'Tidak Diketahui',
 
     // Poster competition
-    'poster_description' => 'Bergabunglah dengan Kompetisi Poster Ilmiah kami! Presentasikan penelitian atau laporan kasus kedokteran gigi Anda dan bersaing dengan rekan-rekan. Pemenang akan diumumkan selama JADE 2026.',
+    'poster_description' => 'Bergabunglah dengan Kompetisi Poster Ilmiah kami! Presentasikan penelitian atau laporan kasus kedokteran gigi Anda dan bersaing dengan rekan sejawat lainnya. Pemenang akan diumumkan selama JADE 2026 berlangsung.',
     'learn_more' => 'Pelajari lebih lanjut tentang kompetisi',
     'want_to_participate' => 'Saya ingin berpartisipasi dalam Kompetisi Poster Ilmiah',
     'password_info' => 'Untuk mengirimkan poster Anda, Anda perlu membuat akun. Silakan atur kata sandi Anda di bawah ini.',
