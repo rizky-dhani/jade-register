@@ -164,6 +164,8 @@ return [
     'select_hands_on' => 'Pilih Sesi Hands On',
     'hands_on_separate_payment' => 'Anda dapat memilih sesi Hands On di bawah ini. Pembayaran terpisah akan diperlukan.',
     'hands_on_total' => 'Total Hands On',
+    'already_paid_hands_on' => 'Hands-On Sudah Dibayar',
+    'will_pay_hands_on' => 'Hands-On Akan Dibayar',
     'search_country' => 'Cari negara...',
 
     // Payment

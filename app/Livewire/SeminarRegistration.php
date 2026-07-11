@@ -82,6 +82,8 @@ class SeminarRegistration extends Component
 
     public int $handsOnTotalPrice = 0;
 
+    public int $alreadyPaidHandsOnTotal = 0;
+
     public array $alreadyRegisteredHandsOnIds = [];
 
     // Add-On properties
@@ -875,18 +877,24 @@ class SeminarRegistration extends Component
         } else {
             $this->selectedHandsOn = [];
             $this->handsOnTotalPrice = 0;
+            $this->alreadyPaidHandsOnTotal = 0;
         }
     }
 
     public function updatedSelectedHandsOn(): void
     {
         $this->handsOnTotalPrice = 0;
+        $this->alreadyPaidHandsOnTotal = 0;
 
         foreach ($this->selectedHandsOn as $date => $eventId) {
             if ($eventId) {
                 foreach ($this->availableHandsOn[$date] ?? [] as $event) {
                     if ($event['id'] == $eventId) {
-                        $this->handsOnTotalPrice += $event['price'];
+                        if ($event['is_already_registered']) {
+                            $this->alreadyPaidHandsOnTotal += $event['price'];
+                        } else {
+                            $this->handsOnTotalPrice += $event['price'];
+                        }
                         break;
                     }
                 }

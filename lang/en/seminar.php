@@ -164,6 +164,8 @@ return [
     'select_hands_on' => 'Select Hands On Sessions',
     'hands_on_separate_payment' => 'You can select Hands On sessions below. A separate payment will be required.',
     'hands_on_total' => 'Hands On Total',
+    'already_paid_hands_on' => 'Already Paid Hands-On',
+    'will_pay_hands_on' => 'Will Pay Hands-On',
     'search_country' => 'Search country...',
 
     // Payment
