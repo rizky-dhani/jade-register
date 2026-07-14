@@ -262,7 +262,7 @@ class HandsOnRegistration extends Component
         $this->handsOnTotalPrice = 0;
 
         foreach ($this->selectedHandsOn as $date => $eventId) {
-            if ($eventId) {
+            if ($eventId && ! in_array((int) $eventId, $this->alreadyRegisteredHandsOnIds, true)) {
                 foreach ($this->availableHandsOn[$date] ?? [] as $event) {
                     if ($event['id'] == $eventId) {
                         $this->handsOnTotalPrice += $event['price'];
