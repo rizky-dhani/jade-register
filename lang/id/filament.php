@@ -260,6 +260,8 @@ return [
     'widgets.hands_on_participant_count' => 'Peserta Hands On',
     'widgets.hands_on_participant_count.pending' => 'Menunggu',
     'widgets.hands_on_participant_count.verified' => 'Terverifikasi',
+    'widgets.total_pending' => 'Total Menunggu',
+    'widgets.total_verified' => 'Total Terverifikasi',
     'widgets.visitor_count' => 'Pengunjung',
     'widgets.visitor_count.day_1' => 'Hari Pertama',
     'widgets.visitor_count.day_2' => 'Hari Kedua',
