@@ -36,19 +36,7 @@ class HandsOnRegistrationTotals extends StatsOverviewWidget
             return [];
         }
 
-        $totalPending = $handsOns->sum('pending_count');
-        $totalVerified = $handsOns->sum('verified_count');
-
-        $stats = [
-            Stat::make(__('filament.widgets.total_pending'), (string) $totalPending)
-                ->description(__('filament.widgets.hands_on_participant_count.pending'))
-                ->descriptionIcon('heroicon-o-clock')
-                ->color('warning'),
-            Stat::make(__('filament.widgets.total_verified'), (string) $totalVerified)
-                ->description(__('filament.widgets.hands_on_participant_count.verified'))
-                ->descriptionIcon('heroicon-o-check-circle')
-                ->color('success'),
-        ];
+        $stats = [];
 
         foreach ($handsOns as $handsOn) {
             $total = $handsOn->pending_count + $handsOn->verified_count;
