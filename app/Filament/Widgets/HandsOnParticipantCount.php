@@ -9,6 +9,8 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class HandsOnParticipantCount extends StatsOverviewWidget
 {
+    protected array|int|null $columns = 4;
+
     protected static ?int $sort = 2;
 
     public function getHeading(): string
@@ -43,17 +45,7 @@ class HandsOnParticipantCount extends StatsOverviewWidget
 
         $totalPending = $handsOns->flatten()->sum('pending_count');
         $totalVerified = $handsOns->flatten()->sum('verified_count');
-
-        $stats = [
-            Stat::make(__('filament.widgets.total_pending'), (string) $totalPending)
-                ->description(__('filament.widgets.hands_on_participant_count.pending'))
-                ->descriptionIcon('heroicon-o-clock')
-                ->color('warning'),
-            Stat::make(__('filament.widgets.total_verified'), (string) $totalVerified)
-                ->description(__('filament.widgets.hands_on_participant_count.verified'))
-                ->descriptionIcon('heroicon-o-check-circle')
-                ->color('success'),
-        ];
+        $stats = [];
 
         foreach ($handsOns as $group) {
             $handsOn = $group->first();
@@ -72,6 +64,11 @@ class HandsOnParticipantCount extends StatsOverviewWidget
                 ]));
         }
 
+        $stats[] = Stat::make(__('filament.widgets.total_pending'), (string) $totalPending)
+            ->description(__('filament.widgets.hands_on_participant_count.pending'))
+            ->descriptionIcon('heroicon-o-clock')
+            ->color('warning');
+
         foreach ($handsOns as $group) {
             $handsOn = $group->first();
             $dateLabel = $handsOn->event_date->format('d M Y');
@@ -88,6 +85,11 @@ class HandsOnParticipantCount extends StatsOverviewWidget
                     ],
                 ]));
         }
+
+        $stats[] = Stat::make(__('filament.widgets.total_verified'), (string) $totalVerified)
+            ->description(__('filament.widgets.hands_on_participant_count.verified'))
+            ->descriptionIcon('heroicon-o-check-circle')
+            ->color('success');
 
         return $stats;
     }
