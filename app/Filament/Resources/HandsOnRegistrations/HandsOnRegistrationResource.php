@@ -45,7 +45,7 @@ class HandsOnRegistrationResource extends Resource
 
     public static function getNavigationLabel(): string
     {
-        return __('filament.navigation.hands_on_registrations');
+        return 'Hands On';
     }
 
     public static function form(Schema $schema): Schema

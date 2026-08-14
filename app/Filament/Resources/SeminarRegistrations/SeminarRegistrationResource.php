@@ -40,7 +40,7 @@ class SeminarRegistrationResource extends Resource
 
     public static function getNavigationLabel(): string
     {
-        return __('filament.navigation.seminar_registrations');
+        return 'Seminar';
     }
 
     public static function form(Schema $schema): Schema
