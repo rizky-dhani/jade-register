@@ -48,7 +48,7 @@ class HandsOnRegistrationTotals extends StatsOverviewWidget
                 ? " • Slots {$total}/{$handsOn->max_seats}"
                 : '';
 
-            $stats[] = Stat::make($handsOn->ho_code, (string) $total)
+            $stats[] = Stat::make($handsOn->doctor_name, (string) $total)
                 ->description("{$pendingLabel} {$handsOn->pending_count} • {$verifiedLabel} {$handsOn->verified_count}{$slots}")
                 ->color(match (true) {
                     $handsOn->pending_count > 0 => 'warning',
