@@ -33,7 +33,9 @@ class HandsOnsTable
                 TextColumn::make('doctor_name')
                     ->label('Doctor Name')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->limit(25)
+                    ->tooltip(fn ($record) => $record->doctor_name),
 
                 TextColumn::make('name')
                     ->searchable()
