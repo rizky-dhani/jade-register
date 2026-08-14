@@ -30,6 +30,11 @@ class HandsOnsTable
                     ->imageSize(100)
                     ->square(),
 
+                TextColumn::make('doctor_name')
+                    ->label('Doctor Name')
+                    ->searchable()
+                    ->sortable(),
+
                 TextColumn::make('name')
                     ->searchable()
                     ->sortable()
@@ -52,7 +57,9 @@ class HandsOnsTable
 
                 TextColumn::make('registrations_count')
                     ->label(__('filament.hands_on.registered'))
-                    ->counts('handsOnRegistrations')
+                    ->state(fn ($record) => $record->handsOnRegistrations()
+                        ->whereIn('payment_status', ['pending', 'verified'])
+                        ->count())
                     ->numeric(),
 
                 TextColumn::make('available_seats')
