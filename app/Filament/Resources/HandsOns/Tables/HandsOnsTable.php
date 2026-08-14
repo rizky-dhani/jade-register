@@ -44,7 +44,7 @@ class HandsOnsTable
                     ->tooltip(fn ($record) => $record->name),
 
                 TextColumn::make('ho_code')
-                    ->label('HO Code')
+                    ->label('Code')
                     ->searchable()
                     ->sortable(),
 
@@ -53,7 +53,7 @@ class HandsOnsTable
                     ->sortable(),
 
                 TextColumn::make('max_seats')
-                    ->label(__('filament.hands_on.max_seats'))
+                    ->label('Max')
                     ->numeric()
                     ->sortable(),
 
@@ -90,12 +90,12 @@ class HandsOnsTable
                     }),
 
                 TextColumn::make('original_price')
-                    ->label(__('filament.hands_on.original_price'))
+                    ->label('Harga')
                     ->money('IDR')
                     ->sortable(),
 
                 TextColumn::make('discounted_price')
-                    ->label(__('filament.hands_on.discounted_price'))
+                    ->label('Early Bird')
                     ->money('IDR')
                     ->sortable(),
 
