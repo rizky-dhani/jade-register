@@ -49,6 +49,7 @@ class HandsOnsTable
                     ->sortable(),
 
                 TextColumn::make('event_date')
+                    ->label('Date')
                     ->date('F j, Y')
                     ->sortable(),
 
@@ -91,11 +92,6 @@ class HandsOnsTable
 
                 TextColumn::make('original_price')
                     ->label('Harga')
-                    ->money('IDR')
-                    ->sortable(),
-
-                TextColumn::make('discounted_price')
-                    ->label('Early Bird')
                     ->money('IDR')
                     ->sortable(),
 
