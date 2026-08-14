@@ -32,7 +32,9 @@ class HandsOnsTable
 
                 TextColumn::make('name')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->limit(25)
+                    ->tooltip(fn ($record) => $record->name),
 
                 TextColumn::make('ho_code')
                     ->label('HO Code')
