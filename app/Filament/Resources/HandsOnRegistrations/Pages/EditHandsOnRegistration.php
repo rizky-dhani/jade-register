@@ -19,8 +19,34 @@ class EditHandsOnRegistration extends EditRecord
         ];
     }
 
+    protected function mutateFormDataBeforeFill(array $data): array
+    {
+        // Pre-populate the per-date hands-on radio from the record's current session
+        if ($this->record->hands_on_id) {
+            $handsOn = $this->record->handsOn;
+
+            if ($handsOn) {
+                $data['selectedHandsOn'][$handsOn->event_date->format('Y-m-d')] = $handsOn->id;
+            }
+        }
+
+        return $data;
+    }
+
     protected function mutateFormDataBeforeSave(array $data): array
     {
+        // Map the selected hands-on session to the main record's hands_on_id.
+        // The pre-filled radio for the current session stays selected, so pick
+        // the selection that differs from the record's current session.
+        $selectedHandsOn = collect($data['selectedHandsOn'] ?? [])->filter();
+        unset($data['selectedHandsOn']);
+
+        if ($selectedHandsOn->isNotEmpty()) {
+            $data['hands_on_id'] = $selectedHandsOn
+                ->first(fn (mixed $id): bool => (int) $id !== (int) $this->record->hands_on_id)
+                ?? $selectedHandsOn->first();
+        }
+
         // Auto-fill or clear verified_at when payment_status changes
         if (($data['payment_status'] ?? '') === 'verified') {
             if (! $this->record->verified_at) {
