@@ -75,4 +75,9 @@ class EditHandsOnRegistration extends EditRecord
             }
         }
     }
+
+    protected function getRedirectUrl(): string
+    {
+        return static::$resource::getUrl('index');
+    }
 }

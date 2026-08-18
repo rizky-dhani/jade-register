@@ -82,4 +82,9 @@ class CreateHandsOnRegistration extends CreateRecord
         $registrationService = app(RegistrationService::class);
         $registrationService->sendHandsOnSubmissionConfirmation($record);
     }
+
+    protected function getRedirectUrl(): string
+    {
+        return static::$resource::getUrl('index');
+    }
 }
