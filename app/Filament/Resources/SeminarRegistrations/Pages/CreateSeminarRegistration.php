@@ -36,6 +36,11 @@ class CreateSeminarRegistration extends CreateRecord
         // Remove virtual fields not present on the model
         unset($data['addon_ids'], $data['addon_payment_proof_path']);
 
+        // Auto-verify payment if proof file is uploaded
+        if (! empty($data['payment_proof_path'])) {
+            $data['payment_status'] = 'verified';
+        }
+
         return $data;
     }
 
