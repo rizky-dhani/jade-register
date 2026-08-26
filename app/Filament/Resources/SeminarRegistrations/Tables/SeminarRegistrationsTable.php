@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\SeminarRegistrations\Tables;
 
+use App\Filament\Resources\SeminarRegistrations\Actions\CopyIdentityAction;
 use App\Models\SeminarRegistration;
 use App\Services\RegistrationService;
 use Filament\Actions\Action;
@@ -243,6 +244,7 @@ class SeminarRegistrationsTable
             ])
             ->recordActions([
                 ViewAction::make(),
+                CopyIdentityAction::make('copyIdentity'),
                 EditAction::make()
                     ->visible(fn (): bool => auth()->user()?->can('update seminar registrations') ?? false),
                 Action::make('uploadPaymentProof')

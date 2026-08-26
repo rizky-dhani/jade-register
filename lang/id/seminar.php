@@ -525,4 +525,9 @@ return [
     'of' => 'dari',
     'handson_price_label' => 'Harga',
     'no_data_available' => 'Belum ada data.',
+
+    // Copy Identity Action
+    'copy_identity' => 'Salin Identitas',
+    'copy_identity_copied' => 'Identitas disalin ke clipboard',
+    'chosen_package' => 'Paket yang Dipilih',
 ];

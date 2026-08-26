@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\SeminarRegistrations\Pages;
 
+use App\Filament\Resources\SeminarRegistrations\Actions\CopyIdentityAction;
 use App\Filament\Resources\SeminarRegistrations\Schemas\SeminarRegistrationInfolist;
 use App\Filament\Resources\SeminarRegistrations\SeminarRegistrationResource;
 use App\Models\AddonRegistration;
@@ -24,6 +25,9 @@ class ViewSeminarRegistration extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
+            CopyIdentityAction::make('copyIdentity')
+                ->record($this->record),
+
             Action::make('verifyAddonPayment')
                 ->label(__('seminar.verify_payment'))
                 ->icon('heroicon-o-check-circle')

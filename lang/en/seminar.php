@@ -526,4 +526,9 @@ return [
     'of' => 'of',
     'handson_price_label' => 'Price',
     'no_data_available' => 'No data available yet.',
+
+    // Copy Identity Action
+    'copy_identity' => 'Copy Identity',
+    'copy_identity_copied' => 'Identity copied to clipboard',
+    'chosen_package' => 'Chosen Package',
 ];
