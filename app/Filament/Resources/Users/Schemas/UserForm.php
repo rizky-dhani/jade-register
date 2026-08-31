@@ -15,25 +15,14 @@ class UserForm
         return $schema
             ->components([
                 Section::make('User Information')
+                    ->columns()
                     ->schema([
                         TextInput::make('name')
                             ->required(),
-                        TextInput::make('name_license')
-                            ->label(__('filament.users.name_license')),
-                        TextInput::make('nik')
-                            ->label(__('filament.users.nik')),
-                        TextInput::make('pdgi_branch')
-                            ->label(__('filament.users.pdgi_branch')),
-                        TextInput::make('kompetensi')
-                            ->label(__('filament.users.kompetensi')),
                         TextInput::make('email')
                             ->label(__('filament.users.email'))
                             ->email()
                             ->required(),
-                    ]),
-
-                Section::make('Roles')
-                    ->schema([
                         Select::make('roles')
                             ->relationship('roles', 'name')
                             ->options(
@@ -44,7 +33,8 @@ class UserForm
                             ->multiple()
                             ->searchable()
                             ->preload()
-                            ->placeholder('Select roles...'),
+                            ->placeholder('Select roles...')
+                            ->columnSpanFull(),
                     ]),
             ]);
     }
