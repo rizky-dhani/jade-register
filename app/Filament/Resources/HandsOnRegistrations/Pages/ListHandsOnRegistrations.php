@@ -20,7 +20,10 @@ class ListHandsOnRegistrations extends ListRecords
                 ->label('Export Excel')
                 ->icon('heroicon-o-arrow-down-tray')
                 ->action(function () {
-                    return Excel::download(new HandsOnRegistrationExport, 'hands-on-registrations.xlsx');
+                    return Excel::download(
+                        new HandsOnRegistrationExport,
+                        'hands-on-registrations_'.now()->format('d-m-Y').'.xlsx',
+                    );
                 }),
             CreateAction::make(),
         ];
