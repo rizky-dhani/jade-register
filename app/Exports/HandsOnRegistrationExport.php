@@ -6,11 +6,13 @@ use App\Models\HandsOn;
 use App\Models\HandsOnRegistration;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithTitle;
+use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class HandsOnRegistrationExport implements WithMultipleSheets
@@ -125,7 +127,7 @@ abstract class BaseHandsOnSheet implements FromCollection, ShouldAutoSize, WithH
     }
 }
 
-class HandsOnSummarySheet extends BaseHandsOnSheet
+class HandsOnSummarySheet extends BaseHandsOnSheet implements WithEvents
 {
     /**
      * @param  array<string, string>  $joinedHandsOn
@@ -133,6 +135,15 @@ class HandsOnSummarySheet extends BaseHandsOnSheet
     public function __construct(
         protected array $joinedHandsOn,
     ) {}
+
+    public function registerEvents(): array
+    {
+        return [
+            AfterSheet::class => function (AfterSheet $event): void {
+                $this->writeTotalsTable($event->sheet->getDelegate());
+            },
+        ];
+    }
 
     public function title(): string
     {
@@ -164,6 +175,36 @@ class HandsOnSummarySheet extends BaseHandsOnSheet
         array_splice($row, 3, 0, [$this->joinedHandsOn[self::participantKey($registration)] ?? '-']);
 
         return $row;
+    }
+
+    /**
+     * Append a per-session participant count table below the participant list.
+     * Paid counts verified payments, Pending counts pending payments; Total is their sum.
+     */
+    protected function writeTotalsTable(Worksheet $sheet): void
+    {
+        $sessions = HandsOn::whereHas('handsOnRegistrations')
+            ->withCount([
+                'handsOnRegistrations as paid_count' => fn ($query) => $query->where('payment_status', 'verified'),
+                'handsOnRegistrations as pending_count' => fn ($query) => $query->where('payment_status', 'pending'),
+            ])
+            ->orderBy('event_date')
+            ->orderBy('ho_code')
+            ->get();
+
+        $row = $sheet->getHighestRow() + 2;
+
+        $sheet->fromArray(['HO Code', 'Paid', 'Pending', 'Total'], null, 'A'.$row, true);
+        $sheet->getStyle('A'.$row.':D'.$row)->getFont()->setBold(true);
+        $row++;
+
+        foreach ($sessions as $session) {
+            $paid = (int) $session->paid_count;
+            $pending = (int) $session->pending_count;
+
+            $sheet->fromArray([$session->ho_code, $paid, $pending, $paid + $pending], null, 'A'.$row, true);
+            $row++;
+        }
     }
 }
 
