@@ -40,7 +40,7 @@ class ListSeminarRegistrations extends ListRecords
 
                     return Excel::download(
                         new SeminarRegistrationExport($paymentMethod),
-                        'seminar-registrations_'.now()->format('d-m-Y').'.xlsx',
+                        'seminar-registrations_'.now()->format('d-m-Y_H-i-s').'.xlsx',
                     );
                 }),
             CreateAction::make(),

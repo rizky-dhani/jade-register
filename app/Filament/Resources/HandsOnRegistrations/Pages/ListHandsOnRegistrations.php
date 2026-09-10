@@ -22,7 +22,7 @@ class ListHandsOnRegistrations extends ListRecords
                 ->action(function () {
                     return Excel::download(
                         new HandsOnRegistrationExport,
-                        'hands-on-registrations_'.now()->format('d-m-Y').'.xlsx',
+                        'hands-on-registrations_'.now()->format('d-m-Y_H-i-s').'.xlsx',
                     );
                 }),
             CreateAction::make(),
