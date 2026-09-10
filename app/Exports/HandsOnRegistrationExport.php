@@ -142,9 +142,12 @@ class HandsOnSummarySheet extends BaseHandsOnSheet
     public function collection()
     {
         return HandsOnRegistration::with('seminarRegistration')
-            ->orderBy('created_at')
-            ->orderBy('id')
-            ->get();
+            ->orderByDesc('created_at')
+            ->orderByDesc('id')
+            ->get()
+            ->unique(fn (HandsOnRegistration $registration): string => self::participantKey($registration))
+            ->reverse()
+            ->values();
     }
 
     public function headings(): array

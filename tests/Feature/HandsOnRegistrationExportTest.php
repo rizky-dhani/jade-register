@@ -47,8 +47,14 @@ test('summary sheet is first and lists joined hands on codes per participant', f
     $second = HandsOn::factory()->create(['ho_code' => 'HO-05', 'event_date' => '2026-11-14']);
     $solo = HandsOn::factory()->create(['ho_code' => 'HO-09', 'event_date' => '2026-11-15']);
 
-    HandsOnRegistration::factory()->for($first)->for($seminar)->create(['created_at' => now()->subDay()]);
-    HandsOnRegistration::factory()->for($second)->for($seminar)->create(['created_at' => now()]);
+    $multiFirst = HandsOnRegistration::factory()->for($first)->for($seminar)->create([
+        'registration_code' => 'JADE-HO-2026-000101',
+        'created_at' => now()->subDay(),
+    ]);
+    $multiLatest = HandsOnRegistration::factory()->for($second)->for($seminar)->create([
+        'registration_code' => 'JADE-HO-2026-000102',
+        'created_at' => now(),
+    ]);
     HandsOnRegistration::factory()->for($solo)->for(
         SeminarRegistration::factory()->create(['name_license' => 'Solo Dentist', 'email' => 'solo@example.com'])
     )->create(['created_at' => now()->subDays(2)]);
@@ -72,7 +78,13 @@ test('summary sheet is first and lists joined hands on codes per participant', f
     ]);
 
     $dataRows = collect($rows)->slice(1);
-    expect($dataRows->firstWhere(5, 'multi@example.com')[3])->toBe('HO-01, HO-05');
+
+    $multiRows = $dataRows->where(5, 'multi@example.com')->values();
+    expect($multiRows)->toHaveCount(1);
+    expect($multiRows[0][3])->toBe('HO-01, HO-05');
+    expect($multiRows[0][0])->toBe($multiLatest->registration_code);
+    expect($dataRows->pluck(0))->not->toContain($multiFirst->registration_code);
+
     expect($dataRows->firstWhere(5, 'solo@example.com')[3])->toBe('HO-09');
 
     $createdAt = $dataRows->pluck(8)->all();
