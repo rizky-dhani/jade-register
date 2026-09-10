@@ -65,8 +65,8 @@ test('summary sheet is first and lists joined hands on codes per participant', f
 
     $rows = sheetRows($workbook->getSheet(0));
     expect($rows[0])->toBe([
-        'HO Registration Code',
-        'Seminar Registration',
+        'HO Reg Code',
+        'Join Seminar?',
         'Seminar Reg Code',
         'Joined Hands On',
         'Participant Name',
@@ -101,8 +101,8 @@ test('session sheets keep the original columns without joined hands on', functio
 
     $headings = sheetRows($workbook->getSheet(1))[0];
     expect($headings)->toBe([
-        'HO Registration Code',
-        'Seminar Registration',
+        'HO Reg Code',
+        'Join Seminar?',
         'Seminar Reg Code',
         'Participant Name',
         'Email',

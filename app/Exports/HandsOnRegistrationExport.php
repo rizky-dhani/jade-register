@@ -83,8 +83,8 @@ abstract class BaseHandsOnSheet implements FromCollection, ShouldAutoSize, WithH
     public function headings(): array
     {
         return [
-            'HO Registration Code',
-            'Seminar Registration',
+            'HO Reg Code',
+            'Join Seminar?',
             'Seminar Reg Code',
             'Participant Name',
             'Email',
