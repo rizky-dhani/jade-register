@@ -17,35 +17,67 @@ class HandsOnRegistrationExport implements WithMultipleSheets
 {
     public function sheets(): array
     {
-        return HandsOn::whereHas('handsOnRegistrations')
+        $handsOnSessions = HandsOn::whereHas('handsOnRegistrations')
             ->orderBy('event_date')
             ->orderBy('ho_code')
+            ->get();
+
+        return [
+            new HandsOnSummarySheet($this->buildJoinedHandsOnMap()),
+            ...$handsOnSessions
+                ->map(fn (HandsOn $handsOn) => new HandsOnSessionSheet($handsOn))
+                ->all(),
+        ];
+    }
+
+    /**
+     * Map every participant to the comma-separated HO codes of the sessions they joined.
+     *
+     * @return array<string, string>
+     */
+    protected function buildJoinedHandsOnMap(): array
+    {
+        return HandsOnRegistration::with('handsOn')
             ->get()
-            ->map(fn (HandsOn $handsOn) => new HandsOnSessionSheet($handsOn))
+            ->groupBy(fn (HandsOnRegistration $registration): string => BaseHandsOnSheet::participantKey($registration))
+            ->map(fn ($registrations): string => $registrations
+                ->sortBy(fn (HandsOnRegistration $registration): string => sprintf(
+                    '%s-%s',
+                    $registration->handsOn?->event_date?->format('Y-m-d') ?? '',
+                    $registration->handsOn?->ho_code ?? '',
+                ))
+                ->pluck('handsOn.ho_code')
+                ->filter()
+                ->unique()
+                ->implode(', '))
             ->all();
     }
 }
 
-class HandsOnSessionSheet implements FromCollection, ShouldAutoSize, WithHeadings, WithMapping, WithStyles, WithTitle
+abstract class BaseHandsOnSheet implements FromCollection, ShouldAutoSize, WithHeadings, WithMapping, WithStyles, WithTitle
 {
-    public function __construct(
-        protected HandsOn $handsOn,
-    ) {}
-
-    public function collection()
+    /**
+     * Group registrations of the same participant: seminar registration when linked,
+     * otherwise the email address, falling back to the row itself.
+     */
+    public static function participantKey(HandsOnRegistration $registration): string
     {
-        return HandsOnRegistration::with('seminarRegistration')
-            ->where('hands_on_id', $this->handsOn->id)
-            ->orderBy('created_at')
-            ->orderBy('id')
-            ->get();
+        if ($registration->seminar_registration_id) {
+            return 'seminar-'.$registration->seminar_registration_id;
+        }
+
+        if ($registration->email) {
+            return 'email-'.mb_strtolower($registration->email);
+        }
+
+        return 'registration-'.$registration->id;
     }
 
-    public function title(): string
+    public function styles(Worksheet $sheet): array
     {
-        $title = "{$this->handsOn->ho_code} - {$this->handsOn->name}";
-
-        return mb_substr(str_replace([':', '\\', '/', '?', '*', '[', ']'], '-', $title), 0, 31);
+        return [
+            1 => ['font' => ['bold' => true]],
+        ];
     }
 
     public function headings(): array
@@ -69,12 +101,8 @@ class HandsOnSessionSheet implements FromCollection, ShouldAutoSize, WithHeading
             $registration->registration_code ?? '-',
             $registration->registration_type === 'combined' ? 'Yes' : 'No',
             $registration->seminarRegistration?->registration_code ?? '-',
-            $registration->seminarRegistration?->name_license
-                ?? $registration->seminarRegistration?->name
-                ?? $registration->name_license
-                ?? $registration->name
-                ?? '-',
-            $registration->seminarRegistration?->email ?? $registration->email ?? '-',
+            $this->participantName($registration),
+            $this->participantEmail($registration),
             $registration->registration_type === 'combined' ? 'Combined' : 'Independent',
             ucfirst($registration->payment_status ?? '-'),
             $registration->created_at?->format('Y-m-d H:i:s'),
@@ -82,10 +110,79 @@ class HandsOnSessionSheet implements FromCollection, ShouldAutoSize, WithHeading
         ];
     }
 
-    public function styles(Worksheet $sheet): array
+    protected function participantName(HandsOnRegistration $registration): string
     {
-        return [
-            1 => ['font' => ['bold' => true]],
-        ];
+        return $registration->seminarRegistration?->name_license
+            ?? $registration->seminarRegistration?->name
+            ?? $registration->name_license
+            ?? $registration->name
+            ?? '-';
+    }
+
+    protected function participantEmail(HandsOnRegistration $registration): string
+    {
+        return $registration->seminarRegistration?->email ?? $registration->email ?? '-';
+    }
+}
+
+class HandsOnSummarySheet extends BaseHandsOnSheet
+{
+    /**
+     * @param  array<string, string>  $joinedHandsOn
+     */
+    public function __construct(
+        protected array $joinedHandsOn,
+    ) {}
+
+    public function title(): string
+    {
+        return 'Summary';
+    }
+
+    public function collection()
+    {
+        return HandsOnRegistration::with('seminarRegistration')
+            ->orderBy('created_at')
+            ->orderBy('id')
+            ->get();
+    }
+
+    public function headings(): array
+    {
+        $headings = parent::headings();
+        array_splice($headings, 3, 0, ['Joined Hands On']);
+
+        return $headings;
+    }
+
+    public function map($registration): array
+    {
+        $row = parent::map($registration);
+        array_splice($row, 3, 0, [$this->joinedHandsOn[self::participantKey($registration)] ?? '-']);
+
+        return $row;
+    }
+}
+
+class HandsOnSessionSheet extends BaseHandsOnSheet
+{
+    public function __construct(
+        protected HandsOn $handsOn,
+    ) {}
+
+    public function collection()
+    {
+        return HandsOnRegistration::with('seminarRegistration')
+            ->where('hands_on_id', $this->handsOn->id)
+            ->orderBy('created_at')
+            ->orderBy('id')
+            ->get();
+    }
+
+    public function title(): string
+    {
+        $title = "{$this->handsOn->ho_code} - {$this->handsOn->name}";
+
+        return mb_substr(str_replace([':', '\\', '/', '?', '*', '[', ']'], '-', $title), 0, 31);
     }
 }
