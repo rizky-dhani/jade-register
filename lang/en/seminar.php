@@ -485,6 +485,7 @@ return [
     'registered_participants' => 'Registered Participants',
     'seminar_package_statistics' => 'Seminar Package Statistics',
     'participants_per_package' => 'Participants per Seminar Package',
+    'competency_statistics' => 'Competency Statistics',
 
     // Seminar Full Banner
     'registration_closed' => 'Registration Temporarily Closed',

@@ -2,10 +2,13 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\Resources\SeminarRegistrations\Widgets\SeminarCompetencyStatsWidget;
 use App\Filament\Resources\SeminarRegistrations\Widgets\SeminarPackageChartWidget;
 use App\Filament\Resources\SeminarRegistrations\Widgets\SeminarPackageStatsWidget;
 use App\Filament\Resources\SeminarRegistrations\Widgets\SeminarPaymentMethodChartWidget;
+use App\Models\User;
 use Filament\Pages\Page;
+use Illuminate\Support\Facades\Auth;
 use Filament\Support\Icons\Heroicon;
 
 class SeminarRegistrationReport extends Page
@@ -27,7 +30,10 @@ class SeminarRegistrationReport extends Page
 
     public static function canAccess(): bool
     {
-        return auth()->user()?->hasAnyRole(['Super Admin', 'Admin']) ?? false;
+        /** @var User|null $user */
+        $user = Auth::user();
+
+        return $user instanceof User && $user->hasAnyRole(['Super Admin', 'Admin']);
     }
 
     public function getHeading(): string
@@ -46,6 +52,7 @@ class SeminarRegistrationReport extends Page
             SeminarPackageStatsWidget::class,
             SeminarPackageChartWidget::class,
             SeminarPaymentMethodChartWidget::class,
+            SeminarCompetencyStatsWidget::class,
         ];
     }
 }

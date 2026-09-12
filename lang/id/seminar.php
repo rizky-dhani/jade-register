@@ -484,6 +484,7 @@ return [
     'registered_participants' => 'Peserta Terdaftar',
     'seminar_package_statistics' => 'Statistik Paket Seminar',
     'participants_per_package' => 'Peserta per Paket Seminar',
+    'competency_statistics' => 'Statistik Kompetensi',
 
     // Seminar Full Banner
     'registration_closed' => 'Pendaftaran Sementara Ditutup',
