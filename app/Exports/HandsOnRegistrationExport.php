@@ -179,7 +179,7 @@ class HandsOnSummarySheet extends BaseHandsOnSheet implements WithEvents
     }
 
     /**
-     * Append a per-session participant count table below the participant list.
+     * Prepend a per-session participant count table above the participant list.
      * Paid counts verified payments, Pending counts pending payments; Total is their sum.
      */
     protected function writeTotalsTable(Worksheet $sheet): void
@@ -193,12 +193,14 @@ class HandsOnSummarySheet extends BaseHandsOnSheet implements WithEvents
             ->orderBy('ho_code')
             ->get();
 
-        $row = $sheet->getHighestRow() + 2;
-        $firstRow = $row;
+        $headerRow = 1;
+        $lastRow = $headerRow + $sessions->count();
 
-        $sheet->fromArray(['HO Code', 'Paid', 'Pending', 'Total'], null, 'A'.$row, true);
-        $sheet->getStyle('A'.$row.':D'.$row)->getFont()->setBold(true);
-        $row++;
+        $sheet->insertNewRowBefore($headerRow, $lastRow + 1);
+        $sheet->fromArray(['HO Code', 'Paid', 'Pending', 'Total'], null, 'A'.$headerRow, true);
+        $sheet->getStyle('A'.$headerRow.':D'.$headerRow)->getFont()->setBold(true);
+
+        $row = $headerRow + 1;
 
         foreach ($sessions as $session) {
             $paid = (int) $session->paid_count;
@@ -208,7 +210,7 @@ class HandsOnSummarySheet extends BaseHandsOnSheet implements WithEvents
             $row++;
         }
 
-        $sheet->getStyle('A'.$firstRow.':D'.($row - 1))
+        $sheet->getStyle('A'.$headerRow.':D'.$lastRow)
             ->getAlignment()
             ->setHorizontal(Alignment::HORIZONTAL_CENTER);
     }

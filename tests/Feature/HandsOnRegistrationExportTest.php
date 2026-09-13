@@ -38,18 +38,22 @@ function sheetRows(Worksheet $sheet): array
 }
 
 /**
- * Summary sheet rows belonging to the participant table, excluding the totals table below it.
+ * Split the summary sheet into its totals table and participant table, each with its header row first.
+ *
+ * @return array{totals: array<int, array>, participants: array<int, array>}
  */
-function summaryParticipantRows(Worksheet $sheet): array
+function summarySections(Worksheet $sheet): array
 {
-    $rows = sheetRows($sheet);
-    $totalsIndex = collect($rows)->search(fn (array $row) => $row[0] === 'HO Code');
-
-    return collect($rows)
-        ->slice(1, $totalsIndex - 1)
+    $rows = collect(sheetRows($sheet))
         ->reject(fn (array $row) => collect($row)->filter()->isEmpty())
-        ->values()
-        ->all();
+        ->values();
+
+    $participantHeader = $rows->search(fn (array $row) => $row[0] === 'HO Reg Code');
+
+    return [
+        'totals' => $rows->take($participantHeader)->values()->all(),
+        'participants' => $rows->slice($participantHeader)->values()->all(),
+    ];
 }
 
 test('summary sheet is first and lists joined hands on codes per participant', function () {
@@ -78,8 +82,9 @@ test('summary sheet is first and lists joined hands on codes per participant', f
 
     expect($workbook->getSheetNames()[0])->toBe('Summary');
 
-    $rows = sheetRows($workbook->getSheet(0));
-    expect($rows[0])->toBe([
+    $sections = summarySections($workbook->getSheet(0));
+
+    expect($sections['participants'][0])->toBe([
         'HO Reg Code',
         'Join Seminar?',
         'Seminar Reg Code',
@@ -92,7 +97,7 @@ test('summary sheet is first and lists joined hands on codes per participant', f
         'Verified At',
     ]);
 
-    $dataRows = collect(summaryParticipantRows($workbook->getSheet(0)));
+    $dataRows = collect($sections['participants'])->slice(1);
 
     $multiRows = $dataRows->where(5, 'multi@example.com')->values();
     expect($multiRows)->toHaveCount(1);
@@ -135,10 +140,9 @@ test('summary sheet totals table counts paid and pending per hands on', function
     HandsOnRegistration::factory()->for($handsOn)->create(['payment_status' => 'pending']);
     HandsOnRegistration::factory()->for($handsOn)->create(['payment_status' => 'rejected']);
 
-    $rows = sheetRows(renderHandsOnExport()->getSheet(0));
-    $totalsHeaderIndex = collect($rows)->search(fn (array $row) => $row[0] === 'HO Code');
-    $totalsRows = collect($rows)->slice($totalsHeaderIndex)->map(fn (array $row) => array_slice($row, 0, 4));
+    $totals = collect(summarySections(renderHandsOnExport()->getSheet(0))['totals'])
+        ->map(fn (array $row) => array_slice($row, 0, 4));
 
-    expect($totalsRows->first())->toBe(['HO Code', 'Paid', 'Pending', 'Total']);
-    expect($totalsRows->firstWhere(0, 'HO-03'))->toBe(['HO-03', 2, 1, 3]);
+    expect($totals->first())->toBe(['HO Code', 'Paid', 'Pending', 'Total']);
+    expect($totals->firstWhere(0, 'HO-03'))->toBe(['HO-03', 2, 1, 3]);
 });
