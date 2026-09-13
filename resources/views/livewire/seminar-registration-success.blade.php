@@ -29,7 +29,8 @@
                     <h3 class="text-lg font-bold text-gray-800">{{ __('seminar.whatsapp_group_title') }}</h3>
                 </div>
                 <p class="text-gray-600 mb-4 text-sm">{{ __('seminar.whatsapp_group_description') }}</p>
-                <a href="https://chat.whatsapp.com/KtELLi4Q22VHqJWFavOwhQ?mode=hq1tcla"
+                <p class="text-sm text-gray-500 line-through mb-3 break-all">https://chat.whatsapp.com/KtELLi4Q22VHqJWFavOwhQ?mode=hq1tcla</p>
+                <a href="https://chat.whatsapp.com/FOUtwzgjBodABp1TdsEQcH?s=cl&p=a&mlu=4&ilr=4"
                    target="_blank"
                    class="inline-flex items-center justify-center px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg">
                     <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
