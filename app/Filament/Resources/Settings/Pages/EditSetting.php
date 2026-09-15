@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Settings\Pages;
 
 use App\Filament\Resources\Settings\SettingResource;
+use App\Models\Setting;
 use Carbon\Carbon;
 use Filament\Actions\DeleteAction;
 use Filament\Notifications\Notification;
@@ -40,9 +41,19 @@ class EditSetting extends EditRecord
             ->body(__('filament.notifications.setting_deleted_body'));
     }
 
+    protected function mutateFormDataBeforeFill(array $data): array
+    {
+        $data[Setting::valueFieldName($data['type'] ?? null)] = $this->record->getTypedValue();
+
+        return $data;
+    }
+
     protected function mutateFormDataBeforeSave(array $data): array
     {
-        if (($data['type'] ?? null) === 'datetime' && ! empty($data['value'])) {
+        $data['type'] = $this->record->type;
+        $data['value'] = Setting::extractValue($data);
+
+        if ($data['type'] === 'datetime' && ! empty($data['value'])) {
             $data['value'] = Carbon::parse($data['value'])->toDateTimeString();
         }
 

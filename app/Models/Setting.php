@@ -47,4 +47,34 @@ class Setting extends Model
             default => $this->value,
         };
     }
+
+    /**
+     * Form field name holding the value for the given setting type.
+     */
+    public static function valueFieldName(?string $type): string
+    {
+        return 'value_'.($type ?: 'string');
+    }
+
+    /**
+     * Pull the active type-specific value out of form data and normalize it
+     * back into the single `value` column representation.
+     *
+     * @param  array<string, mixed>  $data
+     */
+    public static function extractValue(array $data): mixed
+    {
+        $field = self::valueFieldName($data['type'] ?? null);
+        $value = $data[$field] ?? null;
+
+        if (is_bool($value)) {
+            return $value ? '1' : '0';
+        }
+
+        if (is_array($value)) {
+            return json_encode($value);
+        }
+
+        return $value;
+    }
 }

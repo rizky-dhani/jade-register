@@ -58,39 +58,45 @@ class SettingForm
                     ->icon('heroicon-o-cog-6-tooth')
                     ->collapsible()
                     ->schema([
-                        TextInput::make('value')
+                        TextInput::make('value_string')
                             ->label(__('filament.settings.form.value'))
-                            ->required()
+                            ->required(fn (Get $get): bool => $get('type') === 'string')
                             ->maxLength(65535)
-                            ->visible(fn (Get $get): bool => $get('type') === 'string'),
-                        TextInput::make('value')
+                            ->visible(fn (Get $get): bool => $get('type') === 'string')
+                            ->dehydrated(fn (Get $get): bool => $get('type') === 'string'),
+                        TextInput::make('value_integer')
                             ->label(__('filament.settings.form.value'))
-                            ->required()
+                            ->required(fn (Get $get): bool => $get('type') === 'integer')
                             ->numeric()
                             ->minValue(0)
                             ->maxValue(999999999)
-                            ->visible(fn (Get $get): bool => $get('type') === 'integer'),
-                        TextInput::make('value')
+                            ->visible(fn (Get $get): bool => $get('type') === 'integer')
+                            ->dehydrated(fn (Get $get): bool => $get('type') === 'integer'),
+                        TextInput::make('value_float')
                             ->label(__('filament.settings.form.value'))
-                            ->required()
+                            ->required(fn (Get $get): bool => $get('type') === 'float')
                             ->numeric()
                             ->minValue(0)
                             ->step(0.01)
-                            ->visible(fn (Get $get): bool => $get('type') === 'float'),
-                        Toggle::make('value')
+                            ->visible(fn (Get $get): bool => $get('type') === 'float')
+                            ->dehydrated(fn (Get $get): bool => $get('type') === 'float'),
+                        Toggle::make('value_boolean')
                             ->label(__('filament.settings.form.value'))
-                            ->visible(fn (Get $get): bool => $get('type') === 'boolean'),
-                        DateTimePicker::make('value')
+                            ->visible(fn (Get $get): bool => $get('type') === 'boolean')
+                            ->dehydrated(fn (Get $get): bool => $get('type') === 'boolean'),
+                        DateTimePicker::make('value_datetime')
                             ->label(__('filament.settings.form.value'))
                             ->seconds(false)
-                            ->visible(fn (Get $get): bool => $get('type') === 'datetime'),
-                        Textarea::make('value')
+                            ->visible(fn (Get $get): bool => $get('type') === 'datetime')
+                            ->dehydrated(fn (Get $get): bool => $get('type') === 'datetime'),
+                        Textarea::make('value_array')
                             ->label(__('filament.settings.form.value'))
-                            ->required()
+                            ->required(fn (Get $get): bool => $get('type') === 'array')
                             ->json()
                             ->maxLength(65535)
                             ->helperText(__('filament.settings.form.json_helper'))
-                            ->visible(fn (Get $get): bool => $get('type') === 'array'),
+                            ->visible(fn (Get $get): bool => $get('type') === 'array')
+                            ->dehydrated(fn (Get $get): bool => $get('type') === 'array'),
                     ]),
                 Section::make(__('filament.settings.section.notes'))
                     ->description(__('filament.settings.section.notes_description'))

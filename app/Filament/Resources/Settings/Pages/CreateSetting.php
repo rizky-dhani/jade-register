@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Settings\Pages;
 
 use App\Filament\Resources\Settings\SettingResource;
+use App\Models\Setting;
 use Carbon\Carbon;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
@@ -26,6 +27,8 @@ class CreateSetting extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
+        $data['value'] = Setting::extractValue($data);
+
         if ($data['type'] === 'datetime' && ! empty($data['value'])) {
             $data['value'] = Carbon::parse($data['value'])->toDateTimeString();
         }
