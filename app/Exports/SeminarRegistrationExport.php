@@ -104,6 +104,7 @@ class LocalParticipantsSheet extends BaseParticipantsSheet implements IValueBind
             'Status Pembayaran',
             'Kompetensi',
             'Metode Pembayaran',
+            'Tanggal Daftar',
             'Ingin Ikut Hands On?',
         ];
     }
@@ -139,6 +140,7 @@ class LocalParticipantsSheet extends BaseParticipantsSheet implements IValueBind
             ucfirst($registration->payment_status),
             $registration->kompetensi,
             $this->getPaymentMethodLabel($registration->payment_method),
+            $registration->created_at?->format('Y-m-d H:i:s'),
             $registration->wants_hands_on ? 'Ya' : 'Tidak',
         ];
     }
@@ -168,6 +170,7 @@ class InternationalParticipantsSheet extends BaseParticipantsSheet
             'Seminar',
             'Metode Pembayaran',
             'Harga Paket Seminar',
+            'Tanggal Daftar',
             'Ingin Ikut Hands On?',
         ];
     }
@@ -184,6 +187,7 @@ class InternationalParticipantsSheet extends BaseParticipantsSheet
             $registration->seminarPackage?->name ?? $registration->selected_seminar,
             $this->getPaymentMethodLabel($registration->payment_method),
             $this->getSelectedPrice($registration),
+            $registration->created_at?->format('Y-m-d H:i:s'),
             $registration->wants_hands_on ? 'Ya' : 'Tidak',
         ];
     }
