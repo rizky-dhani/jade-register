@@ -10,13 +10,18 @@ use Livewire\Component;
 
 class HandsOnRegistrationSuccess extends Component
 {
-    public ?SeminarRegistrationModel $registration = null;
+    public HandsOnRegistrationModel|SeminarRegistrationModel|null $registration = null;
 
     public array $handsOnSessions = [];
 
-    public function mount(int $id): void
+    /**
+     * Hands-on and seminar registrations use independent id sequences, so the
+     * id alone is ambiguous. The `type` query parameter, set by the redirect
+     * that sent the visitor here, decides which table to look in.
+     */
+    public function mount(int $id, ?string $type = null): void
     {
-        $this->registration = SeminarRegistrationModel::with('handsOnRegistrations.handsOn')->find($id);
+        $this->registration = $this->resolveRegistration($id, $type);
 
         if (! $this->registration) {
             abort(404);
@@ -27,8 +32,34 @@ class HandsOnRegistrationSuccess extends Component
         $locale = in_array($locale, ['en', 'id']) ? $locale : 'id';
         App::setLocale($locale);
 
-        // Load Hands-On sessions
-        $this->handsOnSessions = $this->registration->handsOnRegistrations
+        $this->handsOnSessions = $this->resolveHandsOnSessions();
+    }
+
+    protected function resolveRegistration(int $id, ?string $type): HandsOnRegistrationModel|SeminarRegistrationModel|null
+    {
+        if ($type === 'hands_on') {
+            return HandsOnRegistrationModel::find($id);
+        }
+
+        if ($type === 'seminar') {
+            return SeminarRegistrationModel::find($id);
+        }
+
+        // Legacy links carried no type: standalone hands-on ids are the newer
+        // sequence, so prefer the hands-on row when both exist.
+        return HandsOnRegistrationModel::find($id) ?? SeminarRegistrationModel::find($id);
+    }
+
+    /**
+     * @return array<int, array<string, string|null>>
+     */
+    protected function resolveHandsOnSessions(): array
+    {
+        $registrations = $this->registration instanceof HandsOnRegistrationModel
+            ? collect([$this->registration])
+            : $this->registration->handsOnRegistrations;
+
+        return $registrations
             ->filter(fn (HandsOnRegistrationModel $reg) => $reg->handsOn)
             ->map(fn (HandsOnRegistrationModel $reg) => [
                 'code' => $reg->handsOn->ho_code,
@@ -39,6 +70,19 @@ class HandsOnRegistrationSuccess extends Component
             ])
             ->values()
             ->toArray();
+    }
+
+    /**
+     * Standalone registrations hold their own amount; combined ones use the
+     * seminar registration's rolled-up total.
+     */
+    public function getHandsOnTotalAmountProperty(): int
+    {
+        if ($this->registration instanceof HandsOnRegistrationModel) {
+            return (int) ($this->registration->handsOn?->current_price ?? 0);
+        }
+
+        return (int) $this->registration->hands_on_total_amount;
     }
 
     public function render()

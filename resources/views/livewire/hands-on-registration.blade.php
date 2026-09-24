@@ -96,7 +96,7 @@
             @endif
 
             {{-- Email Verification for Existing Registration --}}
-            @if($is_already_registered === 'yes' && !$existingRegistration)
+            @if($is_already_registered === 'yes' && !$this->hasExistingRegistration())
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <h2 class="text-xl font-semibold text-gray-800 mb-4">{{ __('seminar.verify_registration') }}</h2>
                 <div class="flex gap-2">
@@ -136,25 +136,30 @@
             </div>
             @endif
 
-            {{-- Existing Registration Found - Show Details and Hands On Selection --}}
-            @if($existingRegistration)
+            @php
+                $existingSource = $existingRegistration ?? $existingHandsOnRegistration;
+                $existingPaymentStatus = $existingSource?->payment_status;
+            @endphp
+            @if($existingSource)
             <div class="bg-green-50 border border-green-200 rounded-lg p-6">
                 <h2 class="text-xl font-semibold text-green-800 mb-4">{{ __('seminar.registration_found') }}</h2>
 
                 {{-- Registration Details --}}
                 <div class="space-y-2 mb-6 bg-white rounded-lg p-4 border border-green-200">
-                    <p><strong>{{ __('seminar.name_plataran') }}:</strong> {{ $existingRegistration->name_license }}</p>
-                    <p><strong>{{ __('seminar.email') }}:</strong> {{ $existingRegistration->email }}</p>
-                    <p><strong>{{ __('seminar.registration_code') }}:</strong> {{ $existingRegistration->registration_code }}</p>
-                    <p><strong>{{ __('seminar.selected_package') }}:</strong> {{ $existingRegistration->selected_seminar }}</p>
+                    <p><strong>{{ __('seminar.name_plataran') }}:</strong> {{ $existingSource->name_license }}</p>
+                    <p><strong>{{ __('seminar.email') }}:</strong> {{ $existingSource->email }}</p>
+                    <p><strong>{{ __('seminar.registration_code') }}:</strong> {{ $existingSource->registration_code }}</p>
+                    @if($existingRegistration)
+                        <p><strong>{{ __('seminar.selected_package') }}:</strong> {{ $existingRegistration->selected_seminar }}</p>
+                    @endif
                     <p><strong>{{ __('seminar.payment_status') }}:</strong>
-                        <span class="{{ $existingRegistration->payment_status === 'verified' ? 'text-green-600 font-medium' : 'text-yellow-600 font-medium' }}">
-                            {{ ucfirst($existingRegistration->payment_status) }}
+                        <span class="{{ $existingPaymentStatus === 'verified' ? 'text-green-600 font-medium' : 'text-yellow-600 font-medium' }}">
+                            {{ ucfirst($existingPaymentStatus) }}
                         </span>
                     </p>
                 </div>
 
-                @if($existingRegistration->payment_status === 'verified')
+                @if($existingPaymentStatus === 'verified')
                     {{-- Hands On Selection --}}
                     <div class="bg-white rounded-lg p-4 border border-green-200">
                         <h3 class="text-lg font-semibold text-gray-800 mb-2">{{ __('seminar.select_hands_on') }}</h3>

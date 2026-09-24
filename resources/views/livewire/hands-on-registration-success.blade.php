@@ -42,10 +42,10 @@
                         @endforeach
                     </div>
 
-                    @if($registration->hands_on_total_amount > 0)
+                    @if($this->handsOnTotalAmount > 0)
                         <div class="mt-4 bg-white border border-green-200 rounded-lg p-4 flex justify-between items-center">
                             <span class="text-sm font-medium text-gray-700">{{ __('seminar.hands_on_total_amount') }}</span>
-                            <span class="font-bold text-gray-800">Rp {{ number_format($registration->hands_on_total_amount, 0, ',', '.') }}</span>
+                            <span class="font-bold text-gray-800">Rp {{ number_format($this->handsOnTotalAmount, 0, ',', '.') }}</span>
                         </div>
                     @endif
                 </div>
