@@ -7,6 +7,7 @@ return [
     'success_thank_you' => 'Thank you for registering, ',
     'registration_code' => 'Your Registration Code: ',
     'confirmation_email_sent' => 'We have sent a confirmation email to ',
+    'registration_saved_email_pending' => 'Your registration is saved. Confirmation email is being prepared.',
     'success_message_1' => 'Thank you for registering for the JADE 2026 seminar / hands on / poster competition.',
     'success_message_2' => 'Please check your email for the response recording.',
     'whatsapp_group_title' => 'Join Our WhatsApp Group',

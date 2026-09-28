@@ -11,7 +11,11 @@
             <h1 class="text-2xl font-bold text-green-800 mb-2">{{ __('seminar.success_title') }}</h1>
             <p class="text-green-700 mb-4">{{ __('seminar.success_thank_you') }}{{ $registration->name_license }}!</p>
             <p class="text-gray-600 mb-1">{{ __('seminar.registration_code') }} <strong>{{ $registration->registration_code }}</strong></p>
-            <p class="text-gray-600 mb-6">{{ __('seminar.confirmation_email_sent') }} {{ $registration->email }}</p>
+            @if ($registration->confirmation_email_sent_at)
+                <p class="text-gray-600 mb-6">{{ __('seminar.confirmation_email_sent') }} {{ $registration->email }}</p>
+            @else
+                <p class="text-gray-600 mb-6">{{ __('seminar.registration_saved_email_pending') }}</p>
+            @endif
 
             @if (!$isInternational)
             {{-- Success Messages --}}

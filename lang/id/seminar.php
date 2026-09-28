@@ -7,6 +7,7 @@ return [
     'success_thank_you' => 'Terima kasih telah mendaftar, ',
     'registration_code' => 'Kode Pendaftaran Anda: ',
     'confirmation_email_sent' => 'Kami telah mengirimkan email konfirmasi ke ',
+    'registration_saved_email_pending' => 'Pendaftaran Anda tersimpan. Email konfirmasi sedang diproses.',
     'success_message_1' => 'Terima kasih telah melakukan pendaftaran seminar / hands on / lomba poster kegiatan JADE 2026.',
     'success_message_2' => 'Rekaman jawaban silahkan cek di email.',
     'whatsapp_group_title' => 'Bergabung ke Grup WhatsApp',

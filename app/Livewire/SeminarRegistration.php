@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Enums\HandsOnStatus;
+use App\Jobs\CompleteSeminarRegistration;
 use App\Models\Addon;
 use App\Models\AddonRegistration;
 use App\Models\Country;
@@ -11,8 +12,6 @@ use App\Models\HandsOnRegistration;
 use App\Models\Seminar;
 use App\Models\SeminarRegistration as SeminarRegistrationModel;
 use App\Models\Setting;
-use App\Services\QrTokenService;
-use App\Services\RegistrationService;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
@@ -528,13 +527,7 @@ class SeminarRegistration extends Component
 
             throw $e;
         }
-
-        $qrTokenService = app(QrTokenService::class);
-        $qrTokenService->generate($registration);
-
-        $registrationService = app(RegistrationService::class);
-        $registrationService->sendSeminarSubmissionConfirmation($registration);
-
+        CompleteSeminarRegistration::dispatch($registration);
         $this->redirectRoute('register.seminar.success', ['id' => $registration->id], navigate: true);
     }
 
