@@ -3,13 +3,12 @@
 namespace App\Livewire;
 
 use App\Enums\HandsOnStatus;
+use App\Jobs\CompleteHandsOnRegistration;
 use App\Models\Country;
 use App\Models\HandsOn;
 use App\Models\HandsOnRegistration as HandsOnRegistrationModel;
 use App\Models\SeminarRegistration as SeminarRegistrationModel;
 use App\Models\Setting;
-use App\Services\QrTokenService;
-use App\Services\RegistrationService;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -434,14 +433,9 @@ class HandsOnRegistration extends Component
 
             throw $e;
         }
-
-        $qrTokenService = app(QrTokenService::class);
-        $registrationService = app(RegistrationService::class);
         foreach ($handsOnRegistrations as $hoReg) {
-            $qrTokenService->generateForHandsOn($hoReg);
-            $registrationService->sendHandsOnSubmissionConfirmation($hoReg);
+            CompleteHandsOnRegistration::dispatch($hoReg);
         }
-
         $this->redirectRoute('register.hands-on.success', ['id' => $handsOnRegistrations[0]->id, 'type' => 'hands_on'], navigate: true);
     }
 
@@ -508,8 +502,10 @@ class HandsOnRegistration extends Component
         $participantData = $this->existingParticipantData();
         $email = $participantData['email'];
 
+        $newRegistrationIds = [];
+
         try {
-            DB::transaction(function () use ($seminarRegistration, $participantData, $paymentProofPath, $email) {
+            DB::transaction(function () use ($seminarRegistration, $participantData, $paymentProofPath, $email, &$newRegistrationIds) {
                 $hasNewSelections = false;
 
                 // CRITICAL: Lock HandsOn rows with pessimistic locking for NEW selections
@@ -547,7 +543,7 @@ class HandsOnRegistration extends Component
                         continue;
                     }
 
-                    HandsOnRegistrationModel::create($participantData + [
+                    $newRegistration = HandsOnRegistrationModel::create($participantData + [
                         'registration_code' => HandsOnRegistrationModel::generateRegistrationCode(),
                         'seminar_registration_id' => $seminarRegistration?->id,
                         'hands_on_id' => $eventId,
@@ -555,6 +551,8 @@ class HandsOnRegistration extends Component
                         'payment_status' => 'pending',
                         'payment_proof_path' => $paymentProofPath,
                     ]);
+
+                    $newRegistrationIds[] = $newRegistration->id;
 
                     $hasNewSelections = true;
                 }
@@ -591,19 +589,8 @@ class HandsOnRegistration extends Component
             return;
         }
 
-        // Generate QR and send confirmation for each new hands-on registration
-        $qrTokenService = app(QrTokenService::class);
-        $registrationService = app(RegistrationService::class);
-
-        $newRegistrations = HandsOnRegistrationModel::where('payment_status', 'pending')
-            ->where('payment_proof_path', $paymentProofPath)
-            ->whereRaw('LOWER(email) = ?', [strtolower($email)])
-            ->whereIn('hands_on_id', array_values(array_filter(array_map('intval', $this->selectedHandsOn))))
-            ->get();
-
-        foreach ($newRegistrations as $hoReg) {
-            $qrTokenService->generateForHandsOn($hoReg);
-            $registrationService->sendHandsOnSubmissionConfirmation($hoReg);
+        foreach ($newRegistrationIds as $registrationId) {
+            CompleteHandsOnRegistration::dispatch(HandsOnRegistrationModel::findOrFail($registrationId));
         }
 
         $this->isSubmitting = false;
@@ -616,9 +603,8 @@ class HandsOnRegistration extends Component
 
             return;
         }
-
         $this->redirectRoute('register.hands-on.success', [
-            'id' => $newRegistrations->first()?->id ?? $this->existingHandsOnRegistration?->id,
+            'id' => $newRegistrationIds[0] ?? $this->existingHandsOnRegistration?->id,
             'type' => 'hands_on',
         ], navigate: true);
     }

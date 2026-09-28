@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\HandsOnStatus;
+use App\Jobs\CompleteHandsOnRegistration;
 use App\Livewire\HandsOnRegistration;
 use App\Livewire\HandsOnRegistrationSuccess;
 use App\Models\Country;
@@ -17,6 +18,7 @@ use function Pest\Livewire\livewire;
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
+    Bus::fake();
     Country::create([
         'id' => 1,
         'name' => 'Indonesia',
@@ -73,6 +75,8 @@ it('creates only a hands-on registration, never a phantom seminar registration',
         ->set(standalonePayload($handsOn))
         ->call('submit')
         ->assertRedirect();
+
+    Bus::assertDispatched(CompleteHandsOnRegistration::class);
 
     assertDatabaseCount('hands_on_registrations', 1);
     assertDatabaseCount('seminar_registrations', 0);
@@ -139,6 +143,8 @@ it('rejects a second registration for the same session and email', function () {
         ->set(standalonePayload($handsOn))
         ->call('submit')
         ->assertRedirect();
+
+    Bus::assertDispatched(CompleteHandsOnRegistration::class);
 
     livewire(HandsOnRegistration::class)
         ->set(standalonePayload($handsOn))
