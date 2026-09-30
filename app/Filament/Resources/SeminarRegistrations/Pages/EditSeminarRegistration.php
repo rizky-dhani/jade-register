@@ -41,6 +41,13 @@ class EditSeminarRegistration extends EditRecord
     {
         $data['addon_ids'] = $this->record->addonRegistrations->pluck('addon_id')->toArray();
 
+        // Pre-fill selected hands-on sessions from linked registrations
+        $data['hands_on_sessions'] = $this->record->handsOnRegistrations
+            ->pluck('hands_on_id')
+            ->unique()
+            ->values()
+            ->toArray();
+
         // Pre-fill addon payment proof from first existing registration
         $firstAddonReg = $this->record->addonRegistrations->first();
         if ($firstAddonReg && $firstAddonReg->payment_proof_path) {
@@ -54,6 +61,45 @@ class EditSeminarRegistration extends EditRecord
     {
         /** @var SeminarRegistration $registration */
         $registration = $this->record;
+
+        // --- Sync hands-on registrations ---
+        $handsOnIds = $this->form->getState()['hands_on_sessions'] ?? [];
+
+        if (! empty($handsOnIds)) {
+            $handsOnIds = array_map('intval', $handsOnIds);
+        }
+
+        if (! $registration->wants_hands_on) {
+            $handsOnIds = [];
+        }
+
+        // Remove deselected hands-on registrations
+        $registration->handsOnRegistrations()
+            ->whereNotIn('hands_on_id', $handsOnIds)
+            ->delete();
+
+        // Add newly selected hands-on registrations
+        $existingHandsOnIds = $registration->handsOnRegistrations()->pluck('hands_on_id')->toArray();
+        $newHandsOnIds = array_diff($handsOnIds, $existingHandsOnIds);
+
+        if (! empty($newHandsOnIds)) {
+            foreach ($newHandsOnIds as $handsOnId) {
+                $registration->handsOnRegistrations()->create([
+                    'hands_on_id' => $handsOnId,
+                    'registration_type' => 'combined',
+                    'payment_status' => 'pending',
+                    'payment_proof_path' => $registration->payment_proof_path,
+                ]);
+            }
+        }
+
+        // Recalculate hands-on total from remaining registrations
+        $handsOnTotal = $registration->handsOnRegistrations()
+            ->with('handsOn')
+            ->get()
+            ->sum(fn ($hoReg) => $hoReg->handsOn?->current_price ?? 0);
+
+        $registration->update(['hands_on_total_amount' => $handsOnTotal]);
 
         // --- Handle add-on payment proof ---
         $addonPaymentProofPath = $this->form->getState()['addon_payment_proof_path'] ?? null;
