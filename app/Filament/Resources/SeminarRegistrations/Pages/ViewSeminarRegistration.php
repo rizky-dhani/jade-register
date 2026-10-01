@@ -6,6 +6,7 @@ use App\Filament\Resources\SeminarRegistrations\Actions\CopyIdentityAction;
 use App\Filament\Resources\SeminarRegistrations\Schemas\SeminarRegistrationInfolist;
 use App\Filament\Resources\SeminarRegistrations\SeminarRegistrationResource;
 use App\Models\AddonRegistration;
+use App\Services\RegistrationService;
 use Filament\Actions\Action;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Select;
@@ -25,6 +26,23 @@ class ViewSeminarRegistration extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
+            Action::make('sendConfirmationEmail')
+                ->label(__('seminar.resend_email_confirmation'))
+                ->icon('heroicon-o-envelope')
+                ->color('primary')
+                ->requiresConfirmation()
+                ->modalHeading(__('seminar.resend_email_confirmation'))
+                ->modalDescription(__('seminar.resend_email_confirmation_description'))
+                ->modalSubmitActionLabel(__('seminar.resend_email_confirmation'))
+                ->action(function (RegistrationService $registrationService): void {
+                    $registrationService->sendAttendanceConfirmation($this->record);
+
+                    Notification::make()
+                        ->title(__('seminar.email_confirmation_resent'))
+                        ->success()
+                        ->send();
+                }),
+
             CopyIdentityAction::make('copyIdentity')
                 ->record($this->record),
 
