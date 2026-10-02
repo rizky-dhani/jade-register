@@ -3,6 +3,7 @@
 namespace App\Mail;
 
 use App\Models\SeminarRegistration;
+use App\Models\Setting;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
@@ -13,7 +14,15 @@ class SeminarRegistrationConfirmation extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public function __construct(public SeminarRegistration $registration) {}
+    public string $whatsappGroupUrl;
+
+    public function __construct(public SeminarRegistration $registration)
+    {
+        $this->whatsappGroupUrl = (string) Setting::get(
+            'whatsapp_group_url',
+            config('settings.whatsapp_group_url.default')
+        );
+    }
 
     public function envelope(): Envelope
     {

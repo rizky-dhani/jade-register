@@ -167,7 +167,7 @@ describe('sendPosterSubmissionConfirmation', function () {
         $service = app(RegistrationService::class);
         $service->sendPosterSubmissionConfirmation($submission);
 
-        Mail::assertSent(PosterSubmissionConfirmation::class, 2);
+        Mail::assertQueued(PosterSubmissionConfirmation::class, 2);
     });
 
     it('sends to single email when only one author', function () {
@@ -204,7 +204,7 @@ describe('sendPosterSubmissionConfirmation', function () {
         $service = app(RegistrationService::class);
         $service->sendPosterSubmissionConfirmation($submission);
 
-        Mail::assertSent(PosterSubmissionConfirmation::class, 1);
+        Mail::assertQueued(PosterSubmissionConfirmation::class, 1);
     });
 
     it('skips invalid email addresses', function () {
@@ -241,6 +241,6 @@ describe('sendPosterSubmissionConfirmation', function () {
         $service = app(RegistrationService::class);
         $service->sendPosterSubmissionConfirmation($submission);
 
-        Mail::assertSent(PosterSubmissionConfirmation::class, 1);
+        Mail::assertQueued(PosterSubmissionConfirmation::class, 1);
     });
 });

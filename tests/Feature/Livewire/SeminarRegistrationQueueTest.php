@@ -19,7 +19,6 @@ beforeEach(function () {
         'code' => 'snack-only',
         'name' => 'Seminar Snack Only',
         'currency' => 'IDR',
-        'amount' => 600000,
         'original_price' => 900000,
         'applies_to' => 'local',
         'is_active' => true,

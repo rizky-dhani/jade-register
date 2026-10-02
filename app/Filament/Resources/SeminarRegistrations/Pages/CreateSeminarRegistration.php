@@ -3,11 +3,10 @@
 namespace App\Filament\Resources\SeminarRegistrations\Pages;
 
 use App\Filament\Resources\SeminarRegistrations\SeminarRegistrationResource;
+use App\Jobs\CompleteSeminarRegistration;
 use App\Models\Addon;
 use App\Models\Country;
 use App\Models\SeminarRegistration;
-use App\Services\QrTokenService;
-use App\Services\RegistrationService;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Support\Facades\Storage;
@@ -91,13 +90,9 @@ class CreateSeminarRegistration extends CreateRecord
             $registration->update(['addons_total_amount' => $totalAmount]);
         }
 
-        // Generate QR token for attendance check-in
-        $qrTokenService = app(QrTokenService::class);
-        $qrTokenService->generate($registration);
-
-        // Send confirmation email (same as Livewire)
-        $registrationService = app(RegistrationService::class);
-        $registrationService->sendSeminarSubmissionConfirmation($registration);
+        // Generate QR token and send the confirmation email off the request via the
+        // same job the public flow uses, so an SMTP outage cannot block this page.
+        CompleteSeminarRegistration::dispatch($registration);
     }
 
     protected function getRedirectUrl(): string

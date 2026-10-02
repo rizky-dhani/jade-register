@@ -68,4 +68,11 @@ return [
         'default' => env('BANK_SWIFT_CODE', ''),
         'description' => 'SWIFT code for international bank transfer payments.',
     ],
+
+    'whatsapp_group_url' => [
+        'label' => 'WhatsApp Group URL',
+        'type' => 'string',
+        'default' => env('WHATSAPP_GROUP_URL', 'https://chat.whatsapp.com/FOUtwzgjBodABp1TdsEQcH?s=cl&p=a&mlu=4&ilr=4'),
+        'description' => 'Invite link for the participant WhatsApp group. Used by the seminar/hands-on confirmation emails and the registration success pages.',
+    ],
 ];

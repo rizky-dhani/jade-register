@@ -3,9 +3,9 @@
 namespace App\Filament\Resources\HandsOnRegistrations\Pages;
 
 use App\Filament\Resources\HandsOnRegistrations\HandsOnRegistrationResource;
+use App\Jobs\CompleteHandsOnRegistration;
 use App\Models\Country;
 use App\Models\HandsOnRegistration;
-use App\Services\RegistrationService;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
@@ -78,9 +78,9 @@ class CreateHandsOnRegistration extends CreateRecord
             ]);
         }
 
-        // Send confirmation email
-        $registrationService = app(RegistrationService::class);
-        $registrationService->sendHandsOnSubmissionConfirmation($record);
+        // Generate QR token and send the confirmation email off the request via the
+        // same job the public flow uses, so an SMTP outage cannot block this page.
+        CompleteHandsOnRegistration::dispatch($record);
     }
 
     protected function getRedirectUrl(): string

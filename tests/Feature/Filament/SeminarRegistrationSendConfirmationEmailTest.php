@@ -50,7 +50,9 @@ it('sends the confirmation email when the action is triggered', function () {
         ->callAction('sendConfirmationEmail')
         ->assertHasNoActionErrors();
 
-    Mail::assertSent(SeminarRegistrationConfirmation::class, function ($mail) use ($registration) {
+    // The resend action queues the mail so a slow SMTP server cannot block the
+    // admin request.
+    Mail::assertQueued(SeminarRegistrationConfirmation::class, function ($mail) use ($registration) {
         return $mail->registration->is($registration)
             && $mail->hasTo($registration->email);
     });

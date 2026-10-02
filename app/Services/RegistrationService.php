@@ -69,7 +69,7 @@ class RegistrationService
     {
         Mail::to($registration->email)
             ->locale($registration->language ?? 'en')
-            ->send(new SeminarRegistrationConfirmation($registration));
+            ->queue(new SeminarRegistrationConfirmation($registration));
     }
 
     public function sendPaymentVerificationNotification(SeminarRegistration $registration): void

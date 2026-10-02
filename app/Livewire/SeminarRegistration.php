@@ -97,6 +97,10 @@ class SeminarRegistration extends Component
     // Submission lock to prevent duplicate submissions
     public bool $isSubmitting = false;
 
+    // Set when capacity is exhausted during submit; drives the inline full state
+    // instead of a flash-and-redirect that reads like a generic failure.
+    public bool $seminarJustFilled = false;
+
     // Existing registration payment proof
     public $existing_payment_proof = null;
 
@@ -322,8 +326,7 @@ class SeminarRegistration extends Component
 
         // Initial check (outside transaction) - quick fail if already full
         if (SeminarRegistrationModel::isSeminarFull()) {
-            session()->flash('error', __('seminar.seminar_just_filled'));
-            $this->redirectRoute('register.seminar', ['locale' => $this->locale], navigate: true);
+            $this->seminarJustFilled = true;
 
             return;
         }
@@ -508,8 +511,8 @@ class SeminarRegistration extends Component
 
             // Handle capacity check exception
             if ($e->getMessage() === __('seminar.seminar_just_filled')) {
-                session()->flash('error', __('seminar.seminar_just_filled'));
-                $this->redirectRoute('register.seminar', ['locale' => $this->locale], navigate: true);
+                $this->isSubmitting = false;
+                $this->seminarJustFilled = true;
 
                 return;
             }

@@ -84,6 +84,19 @@
             {{ __('seminar.register_hands_on_only') }}
         </a>
     </div>
+    @elseif($seminarJustFilled)
+    {{-- Capacity was exhausted during this submit; show the full state inline
+         rather than redirecting, so the user sees why it failed. --}}
+    <div class="bg-red-50 border-2 border-red-200 rounded-lg p-6 text-center" wire:key="seminar-just-filled">
+        <svg class="w-16 h-16 text-red-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+        </svg>
+        <h1 class="text-2xl font-bold text-red-800 mb-2">{{ __('seminar.registration_closed') }}</h1>
+        <p class="text-red-700 mb-4">{{ __('seminar.seminar_just_filled') }}</p>
+        <a href="{{ route('register.hands-on', ['locale' => $locale]) }}" wire:navigate class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2 rounded-lg transition">
+            {{ __('seminar.register_hands_on_only') }}
+        </a>
+    </div>
     @else
         {{-- Registration Form (hidden when full or closed) --}}
         <form wire:key="form-state" wire:submit="submit" class="space-y-6">

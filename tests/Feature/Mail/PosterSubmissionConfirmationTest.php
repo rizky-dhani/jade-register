@@ -87,5 +87,6 @@ it('can be sent via mail facade', function () {
 
     Mail::to('test@example.com')->send(new PosterSubmissionConfirmation($submission));
 
-    Mail::assertSent(PosterSubmissionConfirmation::class);
+    // PosterSubmissionConfirmation implements ShouldQueue, so send() queues it.
+    Mail::assertQueued(PosterSubmissionConfirmation::class);
 });
