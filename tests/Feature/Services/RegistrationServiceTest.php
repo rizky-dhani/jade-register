@@ -132,6 +132,66 @@ describe('sendHandsOnAttendanceConfirmation', function () {
     });
 });
 
+describe('hands-on recipient resolution', function () {
+    it('falls back to the seminar registration email when the hands-on email is missing', function () {
+        Mail::fake();
+
+        $seminarRegistration = SeminarRegistration::factory()->create([
+            'email' => 'seminar-owner@example.com',
+            'language' => 'id',
+        ]);
+
+        $registration = HandsOnRegistration::factory()->create([
+            'seminar_registration_id' => $seminarRegistration->id,
+            'email' => null,
+            'language' => '',
+        ]);
+
+        $service = app(RegistrationService::class);
+        $service->sendHandsOnAttendanceConfirmation($registration);
+
+        Mail::assertSent(HandsOnRegistrationConfirmation::class, function ($mail) {
+            return $mail->hasTo('seminar-owner@example.com');
+        });
+    });
+
+    it('falls back to the seminar registration email on the submission confirmation too', function () {
+        Mail::fake();
+
+        $seminarRegistration = SeminarRegistration::factory()->create([
+            'email' => 'seminar-owner@example.com',
+        ]);
+
+        $registration = HandsOnRegistration::factory()->create([
+            'seminar_registration_id' => $seminarRegistration->id,
+            'email' => null,
+        ]);
+
+        $service = app(RegistrationService::class);
+        $service->sendHandsOnSubmissionConfirmation($registration);
+
+        Mail::assertSent(HandsOnRegistrationConfirmation::class, function ($mail) {
+            return $mail->hasTo('seminar-owner@example.com');
+        });
+    });
+
+    it('sends nothing when no usable email exists', function () {
+        Mail::fake();
+
+        $seminarRegistration = SeminarRegistration::factory()->create(['email' => '']);
+
+        $registration = HandsOnRegistration::factory()->create([
+            'seminar_registration_id' => $seminarRegistration->id,
+            'email' => '',
+        ]);
+
+        $service = app(RegistrationService::class);
+        $service->sendHandsOnAttendanceConfirmation($registration);
+
+        Mail::assertNothingSent();
+    });
+});
+
 describe('sendPosterSubmissionConfirmation', function () {
     it('sends confirmation email to all author emails', function () {
         Mail::fake();

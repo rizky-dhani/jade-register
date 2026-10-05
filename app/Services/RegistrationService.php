@@ -34,10 +34,14 @@ class RegistrationService
 
     public function sendHandsOnSubmissionConfirmation(HandsOnRegistration $registration): void
     {
-        $locale = $registration->language ?? 'en';
+        $email = $registration->recipientEmail();
 
-        Mail::to($registration->email)
-            ->locale($locale)
+        if ($email === null) {
+            return;
+        }
+
+        Mail::to($email)
+            ->locale($registration->recipientLanguage())
             ->send(new HandsOnRegistrationConfirmation($registration));
 
         $registration->update(['confirmation_email_sent_at' => now()]);
@@ -56,10 +60,14 @@ class RegistrationService
 
     public function sendHandsOnAttendanceConfirmation(HandsOnRegistration $registration): void
     {
-        $locale = $registration->language ?? 'en';
+        $email = $registration->recipientEmail();
 
-        Mail::to($registration->email)
-            ->locale($locale)
+        if ($email === null) {
+            return;
+        }
+
+        Mail::to($email)
+            ->locale($registration->recipientLanguage())
             ->send(new HandsOnRegistrationConfirmation($registration));
 
         $registration->update(['confirmation_email_sent_at' => now()]);

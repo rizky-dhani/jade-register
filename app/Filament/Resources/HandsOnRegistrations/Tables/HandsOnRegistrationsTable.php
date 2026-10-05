@@ -182,6 +182,7 @@ class HandsOnRegistrationsTable
                     ->modalHeading(__('seminar.resend_email_confirmation'))
                     ->modalDescription(__('seminar.resend_email_confirmation_description'))
                     ->modalSubmitActionLabel(__('seminar.resend_email_confirmation'))
+                    ->visible(fn (HandsOnRegistration $record): bool => $record->recipientEmail() !== null)
                     ->action(function (HandsOnRegistration $record, RegistrationService $registrationService): void {
                         $registrationService->sendHandsOnAttendanceConfirmation($record);
                     })

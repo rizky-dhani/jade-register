@@ -77,6 +77,20 @@ class HandsOnRegistration extends Model
         return $this->payment_status === 'pending';
     }
 
+    public function recipientEmail(): ?string
+    {
+        $email = $this->email ?: $this->seminarRegistration?->email;
+
+        return filled($email) ? (string) $email : null;
+    }
+
+    public function recipientLanguage(): string
+    {
+        $language = $this->language ?: $this->seminarRegistration?->language;
+
+        return filled($language) ? (string) $language : 'en';
+    }
+
     public function isVerified(): bool
     {
         return $this->payment_status === 'verified';
