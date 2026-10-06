@@ -532,4 +532,15 @@ return [
     'copy_identity' => 'Salin Identitas',
     'copy_identity_copied' => 'Identitas disalin ke clipboard',
     'chosen_package' => 'Paket yang Dipilih',
+
+    // Digital Workshop
+    'digital_workshop_title' => 'Digital Workshop',
+    'digital_workshop_form_subtitle' => 'Pendaftaran Digital Workshop Jakarta Dental Exhibition 2026',
+    'digital_workshop_bundle_applied' => 'Harga bundling diterapkan karena Anda memiliki pendaftaran seminar yang lunas.',
+    'digital_workshop_session_full' => 'Sesi Digital Workshop ini sudah penuh.',
+    'digital_workshop_success_title' => 'Pendaftaran Digital Workshop Diterima',
+    'digital_workshop_success_message' => 'Terima kasih. Pendaftaran Anda sudah kami terima dan sedang menunggu verifikasi pembayaran.',
+    'digital_workshop_confirmation_sent' => 'Email konfirmasi telah dikirim ke alamat email Anda.',
+    'payment_proof_hint' => 'Format JPG, PNG, atau PDF. Maksimal 5 MB.',
+    'email_digital_workshop_confirmation_subject' => 'Konfirmasi Pendaftaran Digital Workshop - :code',
 ];

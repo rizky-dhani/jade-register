@@ -2,12 +2,14 @@
 
 namespace App\Services;
 
+use App\Mail\DigitalWorkshopRegistrationConfirmation;
 use App\Mail\HandsOnRegistrationConfirmation;
 use App\Mail\PosterSubmissionConfirmation;
 use App\Mail\SeminarPaymentRejected;
 use App\Mail\SeminarPaymentVerified;
 use App\Mail\SeminarRegistrationConfirmation;
 use App\Mail\VisitorRegistrationConfirmation;
+use App\Models\DigitalWorkshopRegistration;
 use App\Models\HandsOnRegistration;
 use App\Models\PosterSubmission;
 use App\Models\SeminarRegistration;
@@ -43,6 +45,21 @@ class RegistrationService
         Mail::to($email)
             ->locale($registration->recipientLanguage())
             ->send(new HandsOnRegistrationConfirmation($registration));
+
+        $registration->update(['confirmation_email_sent_at' => now()]);
+    }
+
+    public function sendDigitalWorkshopSubmissionConfirmation(DigitalWorkshopRegistration $registration): void
+    {
+        $email = $registration->recipientEmail();
+
+        if ($email === null) {
+            return;
+        }
+
+        Mail::to($email)
+            ->locale($registration->recipientLanguage())
+            ->send(new DigitalWorkshopRegistrationConfirmation($registration));
 
         $registration->update(['confirmation_email_sent_at' => now()]);
     }

@@ -533,4 +533,15 @@ return [
     'copy_identity' => 'Copy Identity',
     'copy_identity_copied' => 'Identity copied to clipboard',
     'chosen_package' => 'Chosen Package',
+
+    // Digital Workshop
+    'digital_workshop_title' => 'Digital Workshop',
+    'digital_workshop_form_subtitle' => 'Digital Workshop registration for Jakarta Dental Exhibition 2026',
+    'digital_workshop_bundle_applied' => 'Bundle price applied because you hold a paid seminar registration.',
+    'digital_workshop_session_full' => 'This Digital Workshop session is full.',
+    'digital_workshop_success_title' => 'Digital Workshop Registration Received',
+    'digital_workshop_success_message' => 'Thank you. We have received your registration and it is awaiting payment verification.',
+    'digital_workshop_confirmation_sent' => 'A confirmation email has been sent to your email address.',
+    'payment_proof_hint' => 'JPG, PNG, or PDF format. Maximum 5 MB.',
+    'email_digital_workshop_confirmation_subject' => 'Digital Workshop Registration Confirmation - :code',
 ];
