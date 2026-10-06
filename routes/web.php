@@ -4,6 +4,7 @@ use App\Http\Controllers\DatabaseBackupController;
 use App\Http\Controllers\PaymentProofController;
 use App\Livewire\AttendanceQrCode;
 use App\Livewire\AttendanceVerify;
+use App\Livewire\DigitalWorkshopLanding;
 use App\Livewire\DigitalWorkshopRegistration;
 use App\Livewire\DigitalWorkshopRegistrationSuccess;
 use App\Livewire\HandsOnRegistration;
@@ -31,6 +32,8 @@ Route::livewire('/seminar/success/{id}', SeminarRegistrationSuccess::class)->nam
 
 Route::livewire('/hands-on/register', HandsOnRegistration::class)->name('register.hands-on');
 Route::livewire('/hands-on/success/{id}', HandsOnRegistrationSuccess::class)->name('register.hands-on.success');
+
+Route::livewire('/digital-workshop', DigitalWorkshopLanding::class)->name('digital-workshop');
 
 Route::livewire('/digital-workshop/register', DigitalWorkshopRegistration::class)->name('register.digital-workshop');
 Route::livewire('/digital-workshop/success/{id}', DigitalWorkshopRegistrationSuccess::class)->name('register.digital-workshop.success');
