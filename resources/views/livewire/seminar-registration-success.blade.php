@@ -45,6 +45,18 @@
                 </a>
                 @endif
             </div>
+
+            @endif
+            {{-- Digital Workshop Section --}}
+            @if (\App\Models\DigitalWorkshop::query()->published()->orderBy('sort_order')->orderBy('id')->exists())
+            <div class="mt-6 bg-white border-2 border-blue-500 rounded-lg p-6 text-center">
+                <h3 class="text-lg font-bold text-gray-800 mb-3">{{ __('seminar.digital_workshop_title') }}</h3>
+                <p class="text-gray-600 mb-4 text-sm">{{ __('seminar.digital_workshop_subtitle') }}</p>
+                <a href="{{ route('digital-workshop') }}"
+                   class="inline-flex items-center justify-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg">
+                    {{ __('seminar.digital_workshop_cta') }}
+                </a>
+            </div>
             @endif
 
             @auth
