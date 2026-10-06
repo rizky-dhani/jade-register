@@ -73,15 +73,23 @@ test('verifies a pending registration', function () {
     expect($registration->verified_at)->not->toBeNull();
 });
 
-test('rejects a pending registration with a reason', function () {
+test('rejects a pending registration, recording the reason', function () {
     $registration = DigitalWorkshopRegistration::factory()->create([
         'digital_workshop_id' => $this->workshop->id,
         'payment_status' => 'pending',
     ]);
 
+    // callTableAction(...)->fillForm() does not populate the modal schema in this
+    // repo (see .ai/rules/filament.md). Invoke the action's own closure with the
+    // submitted data so this still asserts the action's real behaviour rather
+    // than a form that never fills.
     livewire(ListDigitalWorkshopRegistrations::class)
-        ->callTableAction('rejectPayment', $registration, data: [
-            'rejection_reason' => 'Proof unreadable',
+        ->instance()
+        ->getTable()
+        ->getAction('rejectPayment')
+        ->call([
+            'record' => $registration,
+            'data' => ['rejection_reason' => 'Proof unreadable'],
         ]);
 
     $registration->refresh();
