@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
             PosterCategoryAndTopicSeeder::class,
             PosterSubmissionSeeder::class,
             AddonSeeder::class,
+            DigitalWorkshopSeeder::class,
         ]);
     }
 }
