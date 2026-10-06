@@ -64,6 +64,12 @@ class RolePermissionSeeder extends Seeder
             'delete digital workshops',
             'restore digital workshops',
             'force delete digital workshops',
+            'view digital workshop registrations',
+            'create digital workshop registrations',
+            'update digital workshop registrations',
+            'delete digital workshop registrations',
+            'restore digital workshop registrations',
+            'force delete digital workshop registrations',
         ];
 
         foreach ($permissions as $permission) {
@@ -102,6 +108,11 @@ class RolePermissionSeeder extends Seeder
             'update digital workshops',
             'delete digital workshops',
             'restore digital workshops',
+            'view digital workshop registrations',
+            'create digital workshop registrations',
+            'update digital workshop registrations',
+            'delete digital workshop registrations',
+            'restore digital workshop registrations',
             'view poster submissions',
             'update poster submissions',
             'evaluate poster submissions',
