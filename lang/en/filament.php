@@ -5,6 +5,8 @@ return [
     'navigation.attendance' => 'Attendance',
     'navigation.addons' => 'Add-Ons',
     'navigation.countries' => 'Countries',
+    'navigation.digital_workshop' => 'Digital Workshop',
+    'navigation.digital_workshops' => 'Digital Workshop',
     'navigation.hands_on' => 'Hands On',
     'navigation.hands_on_registrations' => 'Hands On Registrations',
     'navigation.permissions' => 'Permissions',
@@ -111,6 +113,23 @@ return [
     'hands_on.early_bird' => 'Early Bird',
     'hands_on.early_bird_only' => 'Early Bird Only',
     'hands_on.status' => 'Status',
+
+    // Digital Workshop
+    'digital_workshop.code' => 'Code',
+    'digital_workshop.event_date' => 'Event Date',
+    'digital_workshop.event_time' => 'Start Time',
+    'digital_workshop.event_end_time' => 'End Time',
+    'digital_workshop.location' => 'Location',
+    'digital_workshop.price' => 'Price',
+    'digital_workshop.bundle_price' => 'Bundle Price',
+    'digital_workshop.max_seats' => 'Max Seats',
+    'digital_workshop.status' => 'Status',
+    'digital_workshop.sort_order' => 'Sort Order',
+    'digital_workshop.registered' => 'Registered',
+    'digital_workshop.available' => 'Available',
+    'digital_workshop.active' => 'Active',
+    'digital_workshop.active_only' => 'Active Only',
+    'digital_workshop.has_available_seats' => 'Has Available Seats',
 
     // Hands On Registrations
     'hands_on_registrations.registration_code' => 'Registration Code',

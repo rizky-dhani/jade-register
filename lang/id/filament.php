@@ -5,6 +5,8 @@ return [
     'navigation.attendance' => 'Kehadiran',
     'navigation.addons' => 'Add-On',
     'navigation.countries' => 'Negara',
+    'navigation.digital_workshop' => 'Digital Workshop',
+    'navigation.digital_workshops' => 'Digital Workshop',
     'navigation.hands_on' => 'Hands On',
     'navigation.hands_on_registrations' => 'Pendaftaran Hands On',
     'navigation.permissions' => 'Izin',
@@ -111,6 +113,23 @@ return [
     'hands_on.early_bird' => 'Early Bird',
     'hands_on.early_bird_only' => 'Hanya Early Bird',
     'hands_on.status' => 'Status',
+
+    // Digital Workshop
+    'digital_workshop.code' => 'Kode',
+    'digital_workshop.event_date' => 'Tanggal Acara',
+    'digital_workshop.event_time' => 'Waktu Mulai',
+    'digital_workshop.event_end_time' => 'Waktu Selesai',
+    'digital_workshop.location' => 'Lokasi',
+    'digital_workshop.price' => 'Harga',
+    'digital_workshop.bundle_price' => 'Harga Bundling',
+    'digital_workshop.max_seats' => 'Kursi Maksimal',
+    'digital_workshop.status' => 'Status',
+    'digital_workshop.sort_order' => 'Urutan',
+    'digital_workshop.registered' => 'Terdaftar',
+    'digital_workshop.available' => 'Tersedia',
+    'digital_workshop.active' => 'Aktif',
+    'digital_workshop.active_only' => 'Hanya Aktif',
+    'digital_workshop.has_available_seats' => 'Memiliki Kursi Tersedia',
 
     // Hands On Registrations
     'hands_on_registrations.registration_code' => 'Kode Pendaftaran',
