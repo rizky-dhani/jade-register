@@ -1,8 +1,11 @@
 <?php
 
+use App\Jobs\FulfillDigitalWorkshopIntent;
+use App\Models\DigitalWorkshopRegistrationIntent;
 use App\Models\HandsOnRegistration;
 use App\Models\SeminarRegistration;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Queue;
 
 uses(RefreshDatabase::class);
 
@@ -101,4 +104,109 @@ test('does not sign in or otherwise require an authenticated user', function () 
     $seminar->update(['payment_status' => 'verified']);
 
     expect($handsOn->refresh()->payment_status)->toBe('verified');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Digital Workshop bundle intents (added with the bundle handoff)
+|--------------------------------------------------------------------------
+*/
+
+test('dispatches fulfilment when a seminar payment verifies with an awaiting intent', function () {
+    Queue::fake();
+
+    $seminar = SeminarRegistration::factory()->create([
+        'payment_status' => 'pending',
+        'email' => 'bundle@example.com',
+    ]);
+
+    $intent = DigitalWorkshopRegistrationIntent::factory()->create([
+        'email' => 'BUNDLE@example.com', // different case on purpose
+        'seminar_registration_id' => null,
+    ]);
+
+    $seminar->update(['payment_status' => 'verified']);
+
+    Queue::assertPushed(FulfillDigitalWorkshopIntent::class);
+    expect($intent->refresh()->seminar_registration_id)->toBe($seminar->id);
+});
+
+test('does not dispatch fulfilment when the payment is rejected', function () {
+    // Review Focus 6: a rejected payment leaves the intent resolvable.
+    Queue::fake();
+
+    $seminar = SeminarRegistration::factory()->create([
+        'payment_status' => 'pending',
+        'email' => 'bundle@example.com',
+    ]);
+
+    $intent = DigitalWorkshopRegistrationIntent::factory()->create([
+        'email' => 'bundle@example.com',
+        'seminar_registration_id' => null,
+    ]);
+
+    $seminar->update(['payment_status' => 'rejected']);
+
+    Queue::assertNotPushed(FulfillDigitalWorkshopIntent::class);
+    expect($intent->refresh()->isAwaiting())->toBeTrue();
+});
+
+test('leaves intents for other emails alone', function () {
+    Queue::fake();
+
+    $seminar = SeminarRegistration::factory()->create([
+        'payment_status' => 'pending',
+        'email' => 'mine@example.com',
+    ]);
+
+    $theirs = DigitalWorkshopRegistrationIntent::factory()->create([
+        'email' => 'theirs@example.com',
+        'seminar_registration_id' => null,
+    ]);
+
+    $seminar->update(['payment_status' => 'verified']);
+
+    expect($theirs->refresh()->seminar_registration_id)->toBeNull();
+    expect($theirs->refresh()->isAwaiting())->toBeTrue();
+});
+
+test('does not re-dispatch for an already fulfilled intent', function () {
+    Queue::fake();
+
+    $seminar = SeminarRegistration::factory()->create([
+        'payment_status' => 'pending',
+        'email' => 'bundle@example.com',
+    ]);
+
+    DigitalWorkshopRegistrationIntent::factory()->create([
+        'email' => 'bundle@example.com',
+        'status' => 'fulfilled',
+        'fulfilled_at' => now(),
+    ]);
+
+    $seminar->update(['payment_status' => 'verified']);
+
+    Queue::assertNotPushed(FulfillDigitalWorkshopIntent::class);
+});
+
+test('does not write to seminar_registrations when dispatching an intent', function () {
+    Queue::fake();
+
+    $seminar = SeminarRegistration::factory()->create([
+        'payment_status' => 'pending',
+        'email' => 'bundle@example.com',
+        'amount' => 777777,
+    ]);
+    $amountBefore = $seminar->amount;
+    $countBefore = SeminarRegistration::count();
+
+    DigitalWorkshopRegistrationIntent::factory()->create([
+        'email' => 'bundle@example.com',
+        'seminar_registration_id' => null,
+    ]);
+
+    $seminar->update(['payment_status' => 'verified']);
+
+    expect(SeminarRegistration::count())->toBe($countBefore);
+    expect($seminar->refresh()->amount)->toBe($amountBefore);
 });
