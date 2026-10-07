@@ -7,6 +7,7 @@ use App\Jobs\CompleteDigitalWorkshopRegistration;
 use App\Models\Country;
 use App\Models\DigitalWorkshop;
 use App\Models\DigitalWorkshopRegistration as DigitalWorkshopRegistrationModel;
+use App\Models\Setting;
 use App\Services\DigitalWorkshopPricingService;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
@@ -192,6 +193,14 @@ class DigitalWorkshopRegistration extends Component
 
     public function submit()
     {
+        // Server-side gate: a tab left open past the close time must still be
+        // refused, so this lives in submit() and not only in the view.
+        if (! static::isRegistrationOpen()) {
+            $this->addError('email', __('seminar.digital_workshop_registration_closed'));
+
+            return;
+        }
+
         if ($this->isSubmitting) {
             return;
         }
@@ -292,6 +301,28 @@ class DigitalWorkshopRegistration extends Component
         CompleteDigitalWorkshopRegistration::dispatch($registration);
 
         $this->redirectRoute('register.digital-workshop.success', ['id' => $registration->id], navigate: true);
+    }
+
+    public static function isRegistrationOpen(): bool
+    {
+        // Super Admin and Admin bypass the registration toggle
+        if (auth()->check() && auth()->user()->hasRole(['Super Admin', 'Admin'])) {
+            return true;
+        }
+
+        $opensAt = Setting::get('digital_workshop_registration_opens_at');
+
+        if ($opensAt && now()->lt($opensAt)) {
+            return false;
+        }
+
+        $closeAt = Setting::get('digital_workshop_registration_close_at');
+
+        if ($closeAt && now()->gte($closeAt)) {
+            return false;
+        }
+
+        return Setting::get('digital_workshop_registration_open', true);
     }
 
     public function isIndonesia(): bool

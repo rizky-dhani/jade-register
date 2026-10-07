@@ -554,4 +554,5 @@ return [
     'digital_workshop_price_bundle' => 'IDR :price jika Anda sudah memiliki pendaftaran seminar yang lunas.',
     'digital_workshop_cta' => 'Daftar Digital Workshop',
     'digital_workshop_opens_soon' => 'Pendaftaran segera dibuka.',
+    'digital_workshop_registration_closed' => 'Pendaftaran Digital Workshop sudah ditutup.',
 ];

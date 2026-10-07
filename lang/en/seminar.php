@@ -555,4 +555,5 @@ return [
     'digital_workshop_price_bundle' => 'IDR :price if you already hold a paid seminar registration.',
     'digital_workshop_cta' => 'Register for Digital Workshop',
     'digital_workshop_opens_soon' => 'Registration opens soon.',
+    'digital_workshop_registration_closed' => 'Digital Workshop registration is closed.',
 ];
