@@ -48,7 +48,7 @@ function intentFor(SeminarRegistration $seminar, DigitalWorkshop $workshop, arra
 
 test('creates a bundled digital workshop registration when the intent is fulfilled', function () {
     Queue::fake();
-    $seminar = SeminarRegistration::factory()->create(['payment_status' => 'verified', 'email' => 'bundle@example.com']);
+    $seminar = SeminarRegistration::factory()->create(['payment_status' => 'verified', 'email' => 'bundle@example.com', 'country_id' => 1]);
     $intent = intentFor($seminar, $this->workshop);
 
     (new FulfillDigitalWorkshopIntent($intent))->handle();
@@ -66,7 +66,7 @@ test('creates a bundled digital workshop registration when the intent is fulfill
 
 test('marks the intent fulfilled and links the registration', function () {
     Queue::fake();
-    $seminar = SeminarRegistration::factory()->create(['payment_status' => 'verified', 'email' => 'bundle@example.com']);
+    $seminar = SeminarRegistration::factory()->create(['payment_status' => 'verified', 'email' => 'bundle@example.com', 'country_id' => 1]);
     $intent = intentFor($seminar, $this->workshop);
 
     (new FulfillDigitalWorkshopIntent($intent))->handle();
@@ -80,7 +80,7 @@ test('marks the intent fulfilled and links the registration', function () {
 
 test('dispatches the completion job for the new registration', function () {
     Queue::fake();
-    $seminar = SeminarRegistration::factory()->create(['payment_status' => 'verified', 'email' => 'bundle@example.com']);
+    $seminar = SeminarRegistration::factory()->create(['payment_status' => 'verified', 'email' => 'bundle@example.com', 'country_id' => 1]);
     $intent = intentFor($seminar, $this->workshop);
 
     (new FulfillDigitalWorkshopIntent($intent))->handle();
@@ -92,7 +92,7 @@ test('does not fulfil twice for the same intent', function () {
     // Review Focus 5: a re-verification or two concurrent dispatches must still
     // produce exactly one registration.
     Queue::fake();
-    $seminar = SeminarRegistration::factory()->create(['payment_status' => 'verified', 'email' => 'bundle@example.com']);
+    $seminar = SeminarRegistration::factory()->create(['payment_status' => 'verified', 'email' => 'bundle@example.com', 'country_id' => 1]);
     $intent = intentFor($seminar, $this->workshop);
 
     (new FulfillDigitalWorkshopIntent($intent))->handle();
@@ -117,7 +117,7 @@ test('does not fulfil when the intent has no seminar registration', function () 
 
 test('returns early when the intent has been deleted', function () {
     Queue::fake();
-    $seminar = SeminarRegistration::factory()->create(['payment_status' => 'verified', 'email' => 'bundle@example.com']);
+    $seminar = SeminarRegistration::factory()->create(['payment_status' => 'verified', 'email' => 'bundle@example.com', 'country_id' => 1]);
     $intent = intentFor($seminar, $this->workshop);
 
     // Simulate a queued job whose intent was removed before it ran: the job
@@ -137,6 +137,7 @@ test('does not create or modify a seminar registration', function () {
         'payment_status' => 'verified',
         'email' => 'bundle@example.com',
         'amount' => 654321,
+        'country_id' => 1,
     ]);
     $amountBefore = $seminar->amount;
     $countBefore = SeminarRegistration::count();
@@ -153,7 +154,7 @@ test('does not create or modify a seminar registration', function () {
 
 test('fulfils only the matching intent when several are awaiting', function () {
     Queue::fake();
-    $seminar = SeminarRegistration::factory()->create(['payment_status' => 'verified', 'email' => 'mine@example.com']);
+    $seminar = SeminarRegistration::factory()->create(['payment_status' => 'verified', 'email' => 'mine@example.com', 'country_id' => 1]);
     $mine = intentFor($seminar, $this->workshop);
 
     $theirs = DigitalWorkshopRegistrationIntent::factory()->create([
@@ -169,7 +170,7 @@ test('fulfils only the matching intent when several are awaiting', function () {
 
 test('carries the bundled price even when the buyer also has a verified seminar', function () {
     Queue::fake();
-    $seminar = SeminarRegistration::factory()->create(['payment_status' => 'verified', 'email' => 'bundle@example.com']);
+    $seminar = SeminarRegistration::factory()->create(['payment_status' => 'verified', 'email' => 'bundle@example.com', 'country_id' => 1]);
     $intent = intentFor($seminar, $this->workshop);
 
     (new FulfillDigitalWorkshopIntent($intent))->handle();
@@ -182,7 +183,7 @@ test('falls back to the standalone price when the workshop has no bundle price',
     Queue::fake();
     $this->workshop->update(['bundle_price' => null]);
 
-    $seminar = SeminarRegistration::factory()->create(['payment_status' => 'verified', 'email' => 'bundle@example.com']);
+    $seminar = SeminarRegistration::factory()->create(['payment_status' => 'verified', 'email' => 'bundle@example.com', 'country_id' => 1]);
     $intent = intentFor($seminar, $this->workshop);
 
     (new FulfillDigitalWorkshopIntent($intent))->handle();
@@ -191,7 +192,7 @@ test('falls back to the standalone price when the workshop has no bundle price',
 });
 
 test('the job is queued with retries and backoff', function () {
-    $seminar = SeminarRegistration::factory()->create(['payment_status' => 'verified', 'email' => 'bundle@example.com']);
+    $seminar = SeminarRegistration::factory()->create(['payment_status' => 'verified', 'email' => 'bundle@example.com', 'country_id' => 1]);
     $intent = intentFor($seminar, $this->workshop);
 
     $job = new FulfillDigitalWorkshopIntent($intent);
@@ -202,7 +203,7 @@ test('the job is queued with retries and backoff', function () {
 
 test('does not touch hands-on registrations', function () {
     Queue::fake();
-    $seminar = SeminarRegistration::factory()->create(['payment_status' => 'verified', 'email' => 'bundle@example.com']);
+    $seminar = SeminarRegistration::factory()->create(['payment_status' => 'verified', 'email' => 'bundle@example.com', 'country_id' => 1]);
     $handsOn = HandsOnRegistration::factory()->create([
         'seminar_registration_id' => $seminar->id,
         'payment_status' => 'pending',
@@ -220,7 +221,7 @@ test('an already-fulfilled intent is never fulfilled again, even if asked direct
     // workers is closed by the row lock in the job, which a single-process test
     // cannot reproduce; this proves the guard that ships alongside it.
     Queue::fake();
-    $seminar = SeminarRegistration::factory()->create(['payment_status' => 'verified', 'email' => 'bundle@example.com']);
+    $seminar = SeminarRegistration::factory()->create(['payment_status' => 'verified', 'email' => 'bundle@example.com', 'country_id' => 1]);
     $intent = intentFor($seminar, $this->workshop);
 
     $existing = DigitalWorkshopRegistration::factory()->create([
@@ -243,7 +244,7 @@ test('an already-fulfilled intent is never fulfilled again, even if asked direct
 
 test('a fulfilled intent whose link is present is skipped even when status was reset', function () {
     Queue::fake();
-    $seminar = SeminarRegistration::factory()->create(['payment_status' => 'verified', 'email' => 'bundle@example.com']);
+    $seminar = SeminarRegistration::factory()->create(['payment_status' => 'verified', 'email' => 'bundle@example.com', 'country_id' => 1]);
     $intent = intentFor($seminar, $this->workshop);
 
     $existing = DigitalWorkshopRegistration::factory()->create([
