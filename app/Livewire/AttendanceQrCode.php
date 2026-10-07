@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\DigitalWorkshopRegistration;
 use App\Models\HandsOnRegistration;
 use App\Models\SeminarRegistration;
 use App\Services\QrTokenService;
@@ -12,7 +13,7 @@ class AttendanceQrCode extends Component
 {
     public string $token;
 
-    public SeminarRegistration|HandsOnRegistration|null $registration = null;
+    public SeminarRegistration|HandsOnRegistration|DigitalWorkshopRegistration|null $registration = null;
 
     public bool $isValid = true;
 
@@ -80,6 +81,11 @@ class AttendanceQrCode extends Component
                     'time' => $handsOn->event_date->format('H:i'),
                 ],
             ]);
+        }
+
+        // A Digital Workshop registration has no hands-on sessions.
+        if ($this->registration instanceof DigitalWorkshopRegistration) {
+            return collect();
         }
 
         return $this->registration->handsOnRegistrations()

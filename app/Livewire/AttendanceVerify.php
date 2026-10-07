@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Attendance;
+use App\Models\DigitalWorkshopRegistration;
 use App\Models\HandsOnRegistration;
 use App\Models\SeminarRegistration;
 use App\Services\QrTokenService;
@@ -14,7 +15,7 @@ class AttendanceVerify extends Component
 {
     public string $token;
 
-    public SeminarRegistration|HandsOnRegistration|null $registration = null;
+    public SeminarRegistration|HandsOnRegistration|DigitalWorkshopRegistration|null $registration = null;
 
     public bool $isValid = true;
 
@@ -62,6 +63,13 @@ class AttendanceVerify extends Component
                 $this->handsOnCheckedIn[$this->registration->id] = $attendance->checked_in_at->format('d M Y H:i');
             }
 
+            return;
+        }
+
+        // A Digital Workshop registration has no seminar attendance of its own.
+        // Without this guard its id would be used as a seminar_registration_id
+        // and match an unrelated participant's attendance record.
+        if ($this->registration instanceof DigitalWorkshopRegistration) {
             return;
         }
 
@@ -176,6 +184,11 @@ class AttendanceVerify extends Component
                     'checked_in' => $this->handsOnCheckedIn[$this->registration->id] ?? null,
                 ],
             ]);
+        }
+
+        // A Digital Workshop registration has no hands-on sessions.
+        if ($this->registration instanceof DigitalWorkshopRegistration) {
+            return collect();
         }
 
         return $this->registration->handsOnRegistrations()
