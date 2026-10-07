@@ -44,6 +44,25 @@ return [
         'description' => 'Optional date/time when hands-on registration automatically closes. Leave null for no date restriction.',
     ],
 
+    'digital_workshop_registration_open' => [
+        'label' => 'Digital Workshop Registration Open/Close',
+        'type' => 'boolean',
+        'default' => true,
+        'description' => 'Controls whether digital workshop registration is open to participants.',
+    ],
+    'digital_workshop_registration_opens_at' => [
+        'label' => 'Digital Workshop Registration Opens At',
+        'type' => 'datetime',
+        'default' => null,
+        'description' => 'Optional date/time when digital workshop registration automatically opens. Leave null for no date restriction.',
+    ],
+    'digital_workshop_registration_close_at' => [
+        'label' => 'Digital Workshop Registration Close At',
+        'type' => 'datetime',
+        'default' => null,
+        'description' => 'Optional date/time when digital workshop registration automatically closes. Leave null for no date restriction.',
+    ],
+
     'bank_name' => [
         'label' => 'Bank Name',
         'type' => 'string',
