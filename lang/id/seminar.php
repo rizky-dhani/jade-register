@@ -555,4 +555,8 @@ return [
     'digital_workshop_cta' => 'Daftar Digital Workshop',
     'digital_workshop_opens_soon' => 'Pendaftaran segera dibuka.',
     'digital_workshop_registration_closed' => 'Pendaftaran Digital Workshop sudah ditutup.',
+    'digital_workshop_wants_bundle' => 'Saya ingin mengikuti Seminar juga (harga bundling)',
+    'digital_workshop_bundle_standalone_label' => 'Digital Workshop saja',
+    'digital_workshop_bundle_choice_help' => 'Harga bundling berlaku setelah pembayaran seminar Anda terverifikasi. Anda akan diarahkan ke formulir pendaftaran seminar.',
+    'digital_workshop_bundle_cta' => 'Lanjut ke Formulir Seminar',
 ];

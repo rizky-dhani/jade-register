@@ -556,4 +556,8 @@ return [
     'digital_workshop_cta' => 'Register for Digital Workshop',
     'digital_workshop_opens_soon' => 'Registration opens soon.',
     'digital_workshop_registration_closed' => 'Digital Workshop registration is closed.',
+    'digital_workshop_wants_bundle' => 'I also want to attend the Seminar (bundle price)',
+    'digital_workshop_bundle_standalone_label' => 'Digital Workshop only',
+    'digital_workshop_bundle_choice_help' => 'The bundle price applies once your seminar payment is verified. You will be taken to the seminar registration form.',
+    'digital_workshop_bundle_cta' => 'Continue to Seminar Form',
 ];

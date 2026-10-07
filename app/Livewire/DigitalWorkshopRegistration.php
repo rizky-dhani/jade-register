@@ -7,6 +7,7 @@ use App\Jobs\CompleteDigitalWorkshopRegistration;
 use App\Models\Country;
 use App\Models\DigitalWorkshop;
 use App\Models\DigitalWorkshopRegistration as DigitalWorkshopRegistrationModel;
+use App\Models\DigitalWorkshopRegistrationIntent;
 use App\Models\Setting;
 use App\Services\DigitalWorkshopPricingService;
 use Illuminate\Support\Facades\App;
@@ -52,6 +53,8 @@ class DigitalWorkshopRegistration extends Component
 
     #[Url(as: 'lang', keep: true)]
     public string $locale = 'id';
+
+    public bool $wantsBundle = false;
 
     public bool $isSubmitting = false;
 
@@ -232,6 +235,10 @@ class DigitalWorkshopRegistration extends Component
 
         $this->isSubmitting = true;
 
+        if ($this->wantsBundle) {
+            return $this->handOffToSeminar($workshop);
+        }
+
         $pricing = app(DigitalWorkshopPricingService::class)->forEmail($this->email, $workshop);
 
         $codeNumber = substr(DigitalWorkshopRegistrationModel::generateRegistrationCode(), -6);
@@ -301,6 +308,68 @@ class DigitalWorkshopRegistration extends Component
         CompleteDigitalWorkshopRegistration::dispatch($registration);
 
         $this->redirectRoute('register.digital-workshop.success', ['id' => $registration->id], navigate: true);
+    }
+
+    /**
+     * The bundle buyer is carried to the seminar form rather than registered here.
+     * Nothing is created on the Digital Workshop side: the registration is
+     * fulfilled later, once their seminar payment verifies.
+     */
+    protected function handOffToSeminar(DigitalWorkshop $workshop)
+    {
+        $path = null;
+
+        if ($this->payment_proof) {
+            $extension = $this->payment_proof->getClientOriginalExtension();
+            $path = $this->payment_proof->storeAs(
+                'payment-proofs',
+                'dw-intent-'.now()->format('YmdHis').'-'.substr(md5($this->email), 0, 8).'.'.$extension,
+                'public',
+            );
+        }
+
+        $attributes = [
+            'status' => 'awaiting_seminar',
+            'email' => $this->email,
+            'phone' => $this->phone,
+            'country_id' => $this->country_id,
+            'payment_method' => $this->payment_method,
+            'payment_proof_path' => $path,
+            'language' => $this->locale,
+        ];
+
+        if ($this->is_local) {
+            $attributes['name_license'] = $this->name_license;
+            $attributes['nik'] = $this->nik;
+            $attributes['pdgi_branch'] = $this->pdgi_branch;
+            $attributes['kompetensi'] = $this->kompetensi;
+        } else {
+            $attributes['name'] = $this->name;
+            $attributes['status_participant'] = $this->status;
+        }
+
+        // Reuse an existing awaiting intent for this email and workshop so the
+        // staff queue does not accumulate duplicates from repeat submissions.
+        $intent = DigitalWorkshopRegistrationIntent::query()
+            ->awaitingForEmail($this->email)
+            ->where('digital_workshop_id', $workshop->id)
+            ->first();
+
+        if ($intent) {
+            if ($path === null) {
+                unset($attributes['payment_proof_path']);
+            }
+
+            $intent->update($attributes);
+        } else {
+            $intent = DigitalWorkshopRegistrationIntent::create(
+                $attributes + ['digital_workshop_id' => $workshop->id]
+            );
+        }
+
+        $this->isSubmitting = false;
+
+        return $this->redirectRoute('register.seminar', ['dw_intent' => $intent->id], navigate: true);
     }
 
     public static function isRegistrationOpen(): bool

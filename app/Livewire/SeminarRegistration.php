@@ -7,6 +7,7 @@ use App\Jobs\CompleteSeminarRegistration;
 use App\Models\Addon;
 use App\Models\AddonRegistration;
 use App\Models\Country;
+use App\Models\DigitalWorkshopRegistrationIntent;
 use App\Models\HandsOn;
 use App\Models\HandsOnRegistration;
 use App\Models\Seminar;
@@ -155,13 +156,44 @@ class SeminarRegistration extends Component
         return $rules;
     }
 
-    public function mount(): void
+    public function mount(?int $dw_intent = null): void
     {
         $this->locale = in_array($this->locale, ['en', 'id']) ? $this->locale : 'en';
         App::setLocale($this->locale);
 
         // Set default country to Indonesia
         $this->country_id = 1;
+
+        // Pre-fill from a Digital Workshop bundle intent when the attendee was
+        // handed off with one. An unknown or already-consumed id is ignored
+        // silently so a stale link cannot error.
+        if ($dw_intent !== null) {
+            $intent = DigitalWorkshopRegistrationIntent::query()
+                ->whereKey($dw_intent)
+                ->where('status', 'awaiting_seminar')
+                ->first();
+
+            if ($intent) {
+                $this->email = $intent->email ?? $this->email;
+                $this->name = $intent->name ?? $this->name;
+                $this->name_license = $intent->name_license ?? $this->name_license;
+                $this->nik = $intent->nik ?? $this->nik;
+                $this->pdgi_branch = $intent->pdgi_branch ?? $this->pdgi_branch;
+                $this->kompetensi = $intent->kompetensi ?? $this->kompetensi;
+                $this->phone = $intent->phone ?? $this->phone;
+
+                if ($intent->country_id) {
+                    $this->country_id = $intent->country_id;
+                }
+
+                if ($intent->language && in_array($intent->language, ['en', 'id'])) {
+                    $this->locale = $intent->language;
+                    App::setLocale($this->locale);
+                }
+
+                $this->is_local = $this->isIndonesia();
+            }
+        }
 
         // Pre-fill data if user is authenticated
         if (auth()->check()) {

@@ -186,9 +186,32 @@
             @endif
         </div>
 
+        @if ($priceBreakdown['registration_type'] !== 'bundled')
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <label class="flex items-start gap-3 cursor-pointer">
+                <input type="checkbox" wire:model.live="wantsBundle" class="mt-1 rounded text-blue-600">
+                <span>
+                    <span class="block text-gray-800 font-medium">
+                        {{ __('seminar.digital_workshop_wants_bundle') }}
+                    </span>
+                    <span class="block text-gray-600 text-sm mt-1">
+                        {{ __('seminar.digital_workshop_bundle_choice_help') }}
+                    </span>
+                    <span class="block text-gray-800 text-sm mt-2 font-medium">
+                        IDR {{ number_format($priceBreakdown['standalone_price'] ?? $priceBreakdown['amount'], 0, ',', '.') }}
+                        &nbsp;/&nbsp;
+                        IDR {{ number_format($priceBreakdown['bundle_price'] ?? 0, 0, ',', '.') }}
+                    </span>
+                </span>
+            </label>
+        </div>
+        @endif
+
         <button type="submit" @disabled($isSubmitting)
                 class="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-semibold rounded-md px-4 py-3">
-            <span wire:loading.remove wire:target="submit">{{ __('seminar.submit_registration') }}</span>
+            <span wire:loading.remove wire:target="submit">
+                {{ $wantsBundle ? __('seminar.digital_workshop_bundle_cta') : __('seminar.submit_registration') }}
+            </span>
             <span wire:loading wire:target="submit">{{ __('seminar.submitting') }}</span>
         </button>
         </form>
