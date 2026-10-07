@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('digital_workshop_registration_intents', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('digital_workshop_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('digital_workshop_id')->constrained(indexName: 'dw_intent_workshop_foreign')->cascadeOnDelete();
             $table->string('status')->default('awaiting_seminar');
             $table->string('email');
             $table->string('name')->nullable();
@@ -27,8 +27,8 @@ return new class extends Migration
             $table->string('payment_method')->nullable();
             $table->string('payment_proof_path')->nullable();
             $table->string('language')->default('id');
-            $table->foreignId('seminar_registration_id')->nullable()->constrained()->nullOnDelete();
-            $table->foreignId('digital_workshop_registration_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('seminar_registration_id')->nullable()->constrained(indexName: 'dw_intent_seminar_foreign')->nullOnDelete();
+            $table->foreignId('digital_workshop_registration_id')->nullable()->constrained(indexName: 'dw_intent_registration_foreign')->nullOnDelete();
             $table->timestamp('fulfilled_at')->nullable();
             $table->timestamp('expired_at')->nullable();
             $table->timestamps();
