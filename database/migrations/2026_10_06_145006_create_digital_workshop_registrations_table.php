@@ -38,7 +38,10 @@ return new class extends Migration
             $table->string('language')->default('id');
             $table->timestamps();
 
-            $table->index(['digital_workshop_id', 'payment_status']);
+            // Explicit name: Laravel's auto-generated
+            // digital_workshop_registrations_digital_workshop_id_payment_status_index
+            // is 71 characters and exceeds MySQL's 64-character identifier limit.
+            $table->index(['digital_workshop_id', 'payment_status'], 'dw_registrations_workshop_payment_idx');
             $table->index('email');
         });
     }
