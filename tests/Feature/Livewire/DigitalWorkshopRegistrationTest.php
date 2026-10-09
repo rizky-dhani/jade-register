@@ -52,6 +52,14 @@ test('renders the registration form', function () {
     livewire(DigitalWorkshopRegistration::class)->assertOk();
 });
 
+test('renders translated labels instead of raw keys', function () {
+    // A key missing from lang/ renders as the literal "seminar.phone" string.
+    livewire(DigitalWorkshopRegistration::class)
+        ->assertOk()
+        ->assertSee(trans('seminar.phone', [], 'id'))
+        ->assertDontSee('seminar.phone');
+});
+
 test('places the bundle option ahead of the total and drops the total to the bundle price', function () {
     // Amounts chosen so a leaked standalone figure cannot be mistaken for the
     // bundle total, and so the two numbers cannot collide by coincidence.

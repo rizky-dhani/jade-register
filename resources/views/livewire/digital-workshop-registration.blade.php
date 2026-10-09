@@ -207,7 +207,7 @@
             <span wire:loading.remove wire:target="submit">
                 {{ $wantsBundle ? __('seminar.digital_workshop_bundle_cta') : __('seminar.submit_registration') }}
             </span>
-            <span wire:loading wire:target="submit">{{ __('seminar.submitting') }}</span>
+            <span wire:loading wire:target="submit">{{ __('seminar.processing') }}...</span>
         </button>
         </form>
     @endif

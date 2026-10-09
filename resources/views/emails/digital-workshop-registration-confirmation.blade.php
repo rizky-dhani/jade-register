@@ -95,7 +95,7 @@
                     <span class="detail-value">{{ $registration->digitalWorkshop->name }}</span>
                 </div>
                 <div class="detail-row">
-                    <span class="detail-label">{{ trans('seminar.hands_on.event_date', [], 'id') }}</span>
+                    <span class="detail-label">{{ trans('seminar.email_hands_on_date_label') }}</span>
                     <span class="detail-value">{{ $registration->digitalWorkshop->event_date->format('d F Y') }}</span>
                 </div>
                 @if($registration->digitalWorkshop->event_time)
