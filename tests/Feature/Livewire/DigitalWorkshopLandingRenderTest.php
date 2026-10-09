@@ -128,6 +128,14 @@ test('shows the lower sort order price when two published workshops exist', func
         ->assertDontSee('1.375.000', false);
 });
 
+test('labels the cta Daftar Workshop without the Digital prefix', function () {
+    publishedWorkshop();
+
+    $this->get(route('digital-workshop', ['lang' => 'id']))
+        ->assertSee('Daftar Workshop', false)
+        ->assertDontSee('Daftar Digital Workshop', false);
+});
+
 test('keeps the locale in the url', function () {
     publishedWorkshop();
 

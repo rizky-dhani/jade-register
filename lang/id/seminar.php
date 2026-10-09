@@ -552,7 +552,7 @@ return [
     'digital_workshop_closing' => 'Tanpa prasyarat. Datang apa adanya, sisanya justru inti dari workshop ini.',
     'digital_workshop_price_standalone' => 'IDR :price jika berdiri sendiri.',
     'digital_workshop_price_bundle' => 'IDR :price jika Anda sudah memiliki pendaftaran seminar yang lunas.',
-    'digital_workshop_cta' => 'Daftar Digital Workshop',
+    'digital_workshop_cta' => 'Daftar Workshop',
     'digital_workshop_opens_soon' => 'Pendaftaran segera dibuka.',
     'digital_workshop_registration_closed' => 'Pendaftaran Digital Workshop sudah ditutup.',
     'digital_workshop_wants_bundle' => 'Saya ingin mengikuti Seminar juga (harga bundling)',
