@@ -394,6 +394,23 @@ class DigitalWorkshopRegistration extends Component
         return Setting::get('digital_workshop_registration_open', true);
     }
 
+    /**
+     * Amount the form is currently quoting. Selecting the bundle option drops the
+     * figure to the bundle price even when no verified seminar registration has
+     * matched the typed email yet, so the total the buyer reads matches the
+     * bundle price the option advertises.
+     */
+    public function getDisplayAmountProperty(): int
+    {
+        $bundlePrice = $this->digitalWorkshop?->bundle_price;
+
+        if ($this->wantsBundle && $bundlePrice !== null) {
+            return (int) $bundlePrice;
+        }
+
+        return (int) $this->priceBreakdown['amount'];
+    }
+
     public function isIndonesia(): bool
     {
         return (bool) Country::find((int) $this->country_id)?->is_indonesia;

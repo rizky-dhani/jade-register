@@ -52,6 +52,40 @@ test('renders the registration form', function () {
     livewire(DigitalWorkshopRegistration::class)->assertOk();
 });
 
+test('places the bundle option ahead of the total and drops the total to the bundle price', function () {
+    // Amounts chosen so a leaked standalone figure cannot be mistaken for the
+    // bundle total, and so the two numbers cannot collide by coincidence.
+    $this->workshop->update(['price' => 1375000, 'bundle_price' => 812000]);
+
+    livewire(DigitalWorkshopRegistration::class)
+        ->set('wantsBundle', true)
+        ->assertSeeHtmlInOrder([
+            trans('seminar.digital_workshop_wants_bundle', [], 'id'),
+            trans('seminar.total_amount', [], 'id'),
+        ])
+        ->assertSee('IDR 812.000')
+        ->assertDontSee('IDR 1.375.000');
+});
+
+test('keeps the standalone amount in the total while the bundle option is unticked', function () {
+    $this->workshop->update(['price' => 1375000, 'bundle_price' => 812000]);
+
+    livewire(DigitalWorkshopRegistration::class)
+        ->assertSee('IDR 1.375.000')
+        ->assertDontSee('IDR 812.000');
+});
+
+test('does not print prices inside the bundle option description', function () {
+    $this->workshop->update(['price' => 1375000, 'bundle_price' => 812000]);
+
+    $html = livewire(DigitalWorkshopRegistration::class)->html();
+
+    preg_match('/<label class="flex items-start gap-3 cursor-pointer">(.*?)<\/label>/s', $html, $matches);
+
+    expect($matches[1] ?? '')->not->toBe('')
+        ->and($matches[1])->toContain(trans('seminar.digital_workshop_wants_bundle', [], 'id'))
+        ->and($matches[1])->not->toContain('IDR');
+});
 test('registers a local attendee at the standalone price', function () {
     livewire(DigitalWorkshopRegistration::class)
         ->set(($this->payload)())

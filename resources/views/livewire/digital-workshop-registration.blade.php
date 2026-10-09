@@ -174,18 +174,6 @@
             @error('payment_proof') <p class="text-red-600 text-sm mt-1">{{ $message }}</p> @enderror
         </div>
 
-        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
-            <div class="flex items-center justify-between">
-                <span class="text-gray-700 font-medium">{{ __('seminar.total_amount') }}</span>
-                <span class="text-xl font-bold text-gray-900">
-                    IDR {{ number_format($priceBreakdown['amount'], 0, ',', '.') }}
-                </span>
-            </div>
-            @if ($priceBreakdown['registration_type'] === 'bundled')
-                <p class="text-green-700 text-sm mt-2">{{ __('seminar.digital_workshop_bundle_applied') }}</p>
-            @endif
-        </div>
-
         @if ($priceBreakdown['registration_type'] !== 'bundled')
         <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
             <label class="flex items-start gap-3 cursor-pointer">
@@ -197,15 +185,22 @@
                     <span class="block text-gray-600 text-sm mt-1">
                         {{ __('seminar.digital_workshop_bundle_choice_help') }}
                     </span>
-                    <span class="block text-gray-800 text-sm mt-2 font-medium">
-                        IDR {{ number_format($priceBreakdown['standalone_price'] ?? $priceBreakdown['amount'], 0, ',', '.') }}
-                        &nbsp;/&nbsp;
-                        IDR {{ number_format($priceBreakdown['bundle_price'] ?? 0, 0, ',', '.') }}
-                    </span>
                 </span>
             </label>
         </div>
         @endif
+
+        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+            <div class="flex items-center justify-between">
+                <span class="text-gray-700 font-medium">{{ __('seminar.total_amount') }}</span>
+                <span class="text-xl font-bold text-gray-900">
+                    IDR {{ number_format($this->displayAmount, 0, ',', '.') }}
+                </span>
+            </div>
+            @if ($priceBreakdown['registration_type'] === 'bundled')
+                <p class="text-green-700 text-sm mt-2">{{ __('seminar.digital_workshop_bundle_applied') }}</p>
+            @endif
+        </div>
 
         <button type="submit" @disabled($isSubmitting)
                 class="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-semibold rounded-md px-4 py-3">
