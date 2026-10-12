@@ -6,13 +6,19 @@ use App\Filament\Resources\SeminarRegistrations\SeminarRegistrationResource;
 use App\Jobs\CompleteSeminarRegistration;
 use App\Models\Addon;
 use App\Models\Country;
+use App\Models\DigitalWorkshop;
+use App\Models\DigitalWorkshopRegistration;
 use App\Models\SeminarRegistration;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class CreateSeminarRegistration extends CreateRecord
 {
+    /** Digital-workshop virtual field state stashed in mutateFormDataBeforeCreate(). */
+    protected array $digitalWorkshopPayload = [];
+
     protected static string $resource = SeminarRegistrationResource::class;
 
     protected function getCreatedNotification(): ?Notification
@@ -33,7 +39,20 @@ class CreateSeminarRegistration extends CreateRecord
         $data['language'] = $country?->is_indonesia ? 'id' : 'en';
 
         // Remove virtual fields not present on the model
-        unset($data['addon_ids'], $data['addon_payment_proof_path']);
+        unset($data['addon_ids'], $data['addon_payment_proof_path'], $data['wants_digital_workshop'], $data['digital_workshop_id']);
+
+        // Auto-verify digital workshop payment if proof file is uploaded
+        $digitalWorkshopProof = $data['digital_workshop_payment_proof_path'] ?? null;
+        unset($data['digital_workshop_payment_proof_path']);
+
+        // Stash for afterCreate()
+        $this->digitalWorkshopPayload = [
+            'digital_workshop_id' => $data['digital_workshop_id'] ?? null,
+            'digital_workshop_payment_proof_path' => $digitalWorkshopProof,
+        ];
+        if (isset($data['wants_digital_workshop'])) {
+            unset($data['wants_digital_workshop']);
+        }
 
         // Auto-verify payment if proof file is uploaded
         if (! empty($data['payment_proof_path'])) {
@@ -48,6 +67,36 @@ class CreateSeminarRegistration extends CreateRecord
         /** @var SeminarRegistration $registration */
         $registration = $this->record;
 
+        // Create the bundled Digital Workshop registration when requested.
+        $state = $this->form->getState();
+        if (($state['wants_digital_workshop'] ?? false) === true
+            && filled($state['digital_workshop_id'] ?? null)) {
+            $proofPath = $this->digitalWorkshopPayload['digital_workshop_payment_proof_path'] ?? null;
+            $workshop = DigitalWorkshop::find($state['digital_workshop_id']);
+
+            $registration->digitalWorkshopRegistrations()->firstOrCreate(
+                ['digital_workshop_id' => $workshop?->id],
+                [
+                    'registration_code' => DigitalWorkshopRegistration::generateRegistrationCode(),
+                    'qr_token' => Str::uuid()->toString(),
+                    'registration_type' => 'bundled',
+                    'amount' => $workshop?->bundle_price ?? $workshop?->price ?? 0,
+                    'email' => $registration->email,
+                    'name' => $registration->name_license,
+                    'name_license' => $registration->name_license,
+                    'nik' => $registration->nik,
+                    'pdgi_branch' => $registration->pdgi_branch,
+                    'phone' => $registration->phone,
+                    'kompetensi' => $registration->kompetensi,
+                    'status' => 'registered',
+                    'country_id' => $registration->country_id,
+                    'payment_status' => filled($proofPath) ? 'verified' : 'pending',
+                    'payment_method' => $registration->payment_method ?? 'bank_transfer',
+                    'payment_proof_path' => $proofPath,
+                    'language' => $registration->language,
+                ]
+            );
+        }
         // Rename payment proof to use 6-digit registration code
         if ($registration->payment_proof_path) {
             $codeNumber = substr($registration->registration_code, -6);

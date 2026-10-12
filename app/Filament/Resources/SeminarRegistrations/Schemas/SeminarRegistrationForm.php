@@ -4,6 +4,7 @@ namespace App\Filament\Resources\SeminarRegistrations\Schemas;
 
 use App\Models\Addon;
 use App\Models\Country;
+use App\Models\DigitalWorkshop;
 use App\Models\HandsOn;
 use App\Models\Seminar;
 use Filament\Forms\Components\Checkbox;
@@ -179,6 +180,27 @@ class SeminarRegistrationForm
                                     ->nullable(),
                             ])
                             ->visible(fn (Get $get): bool => $get('wants_hands_on') === true)
+                            ->columnSpanFull(),
+
+                        Checkbox::make('wants_digital_workshop')
+                            ->label(__('seminar.want_to_join_digital_workshop'))
+                            ->live(),
+                        Select::make('digital_workshop_id')
+                            ->label(__('seminar.select_digital_workshop'))
+                            ->options(function (): array {
+                                return DigitalWorkshop::query()
+                                    ->published()
+                                    ->orderBy('sort_order')
+                                    ->get()
+                                    ->mapWithKeys(function (DigitalWorkshop $workshop) {
+                                        $label = "{$workshop->name} - {$workshop->event_date?->format('d M Y')} - {$workshop->formatted_price}";
+
+                                        return [$workshop->id => $label];
+                                    })
+                                    ->toArray();
+                            })
+                            ->live()
+                            ->visible(fn (Get $get): bool => $get('wants_digital_workshop') === true)
                             ->columnSpanFull(),
 
                         CheckboxList::make('addon_ids')

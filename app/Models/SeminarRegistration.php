@@ -83,6 +83,11 @@ class SeminarRegistration extends Model
         return $prefix.str_pad($nextNumber, 6, '0', STR_PAD_LEFT);
     }
 
+    public function digitalWorkshopRegistrations(): HasMany
+    {
+        return $this->hasMany(DigitalWorkshopRegistration::class);
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
