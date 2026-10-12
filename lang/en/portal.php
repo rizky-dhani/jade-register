@@ -9,5 +9,7 @@ return [
     'hands_on_description' => 'Register for hands-on workshops with limited seats.',
     'visitor_title' => 'Exhibition Visitor',
     'visitor_description' => 'Register as a visitor and get your entry QR code.',
+    'digital_workshop_title' => 'Digital Workshop',
+    'digital_workshop_description' => 'Register for the digital workshop sessions.',
     'register_now' => 'Register now',
 ];

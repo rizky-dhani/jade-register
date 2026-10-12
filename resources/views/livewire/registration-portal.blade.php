@@ -24,7 +24,7 @@
         <p class="text-gray-600 mt-2">{{ __('portal.subtitle') }}</p>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <a href="{{ route('register.seminar', ['lang' => $locale]) }}"
             wire:navigate
             class="group block bg-white rounded-xl shadow-sm border border-gray-200 p-8 text-center hover:shadow-lg hover:border-blue-300 hover:-translate-y-1 transition-all duration-200">
@@ -72,6 +72,24 @@
             <h2 class="text-xl font-semibold text-gray-800 mb-2">{{ __('portal.visitor_title') }}</h2>
             <p class="text-sm text-gray-600 mb-4">{{ __('portal.visitor_description') }}</p>
             <span class="inline-flex items-center text-sm font-medium text-amber-600 group-hover:gap-2 gap-1 transition-all">
+                {{ __('portal.register_now') }}
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+            </span>
+        </a>
+
+        <a href="{{ route('register.digital-workshop', ['lang' => $locale]) }}"
+            wire:navigate
+            class="group block bg-white rounded-xl shadow-sm border border-gray-200 p-8 text-center hover:shadow-lg hover:border-violet-300 hover:-translate-y-1 transition-all duration-200">
+            <div class="w-16 h-16 mx-auto mb-5 rounded-full bg-violet-50 group-hover:bg-violet-100 flex items-center justify-center transition-colors">
+                <svg class="w-8 h-8 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                </svg>
+            </div>
+            <h2 class="text-xl font-semibold text-gray-800 mb-2">{{ __('portal.digital_workshop_title') }}</h2>
+            <p class="text-sm text-gray-600 mb-4">{{ __('portal.digital_workshop_description') }}</p>
+            <span class="inline-flex items-center text-sm font-medium text-violet-600 group-hover:gap-2 gap-1 transition-all">
                 {{ __('portal.register_now') }}
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>

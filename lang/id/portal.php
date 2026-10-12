@@ -9,5 +9,7 @@ return [
     'hands_on_description' => 'Daftar untuk sesi workshop hands-on dengan kuota terbatas.',
     'visitor_title' => 'Pengunjung Pameran',
     'visitor_description' => 'Daftar sebagai pengunjung dan dapatkan QR code masuk Anda.',
+    'digital_workshop_title' => 'Workshop Digital',
+    'digital_workshop_description' => 'Daftar untuk sesi workshop digital.',
     'register_now' => 'Daftar sekarang',
 ];

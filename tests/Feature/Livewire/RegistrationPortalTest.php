@@ -10,7 +10,8 @@ it('renders the registration portal on the home route', function () {
         ->assertSeeLivewire(RegistrationPortal::class)
         ->assertSee(route('register.seminar', ['lang' => 'id']), false)
         ->assertSee(route('register.hands-on', ['lang' => 'id']), false)
-        ->assertSee(route('register.visitor', ['lang' => 'id']), false);
+        ->assertSee(route('register.visitor', ['lang' => 'id']), false)
+        ->assertSee(route('register.digital-workshop', ['lang' => 'id']), false);
 });
 
 it('renders links in english when locale is en', function () {
