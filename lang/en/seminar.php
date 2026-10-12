@@ -167,6 +167,7 @@ return [
     'hands_on_sessions' => 'Hands On Sessions',
     'hands_on_success_title' => 'Hands-On Registration Submitted!',
     'hands_on_success_thank_you' => 'Thank you for registering for Hands-On sessions, ',
+    'digital_workshop_description' => 'The Digital Workshop is a bundled add-on to your seminar package.',
     'want_to_join_digital_workshop' => 'I want to join Digital Workshop sessions',
     'select_digital_workshop' => 'Select Digital Workshop Session',
     'want_to_join_hands_on' => 'I want to join Hands On sessions',

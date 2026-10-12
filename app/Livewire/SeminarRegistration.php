@@ -7,6 +7,8 @@ use App\Jobs\CompleteSeminarRegistration;
 use App\Models\Addon;
 use App\Models\AddonRegistration;
 use App\Models\Country;
+use App\Models\DigitalWorkshop;
+use App\Models\DigitalWorkshopRegistration;
 use App\Models\DigitalWorkshopRegistrationIntent;
 use App\Models\HandsOn;
 use App\Models\HandsOnRegistration;
@@ -17,6 +19,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -94,6 +97,15 @@ class SeminarRegistration extends Component
     public array $availableAddons = [];
 
     public int $addonsTotalPrice = 0;
+
+    // Digital Workshop properties
+    public bool $wants_digital_workshop = false;
+
+    public int $digital_workshop_id = 0;
+
+    public int $digitalWorkshopTotalPrice = 0;
+
+    public array $availableDigitalWorkshops = [];
 
     // Submission lock to prevent duplicate submissions
     public bool $isSubmitting = false;
@@ -442,7 +454,7 @@ class SeminarRegistration extends Component
             'selected_seminar' => $package->name,
             'seminar_id' => $package->id,
             'payment_method' => $this->payment_method,
-            'amount' => $package->current_price + $this->handsOnTotalPrice + $this->addonsTotalPrice,
+            'amount' => $package->current_price + $this->handsOnTotalPrice + $this->addonsTotalPrice + $this->digitalWorkshopTotalPrice,
             'currency' => $package->currency,
             'payment_proof_path' => $path,
             'payment_status' => 'pending',
@@ -501,6 +513,35 @@ class SeminarRegistration extends Component
                                 'payment_proof_path' => $path,
                             ]);
                         }
+                    }
+                }
+
+                // Create Digital Workshop registration
+                if ($this->wants_digital_workshop && $this->digital_workshop_id) {
+                    $workshop = DigitalWorkshop::find($this->digital_workshop_id);
+
+                    if ($workshop) {
+                        DigitalWorkshopRegistration::create([
+                            'seminar_registration_id' => $reg->id,
+                            'digital_workshop_id' => $workshop->id,
+                            'registration_code' => DigitalWorkshopRegistration::generateRegistrationCode(),
+                            'qr_token' => (string) Str::uuid(),
+                            'registration_type' => 'bundled',
+                            'amount' => $workshop->bundle_price ?? $workshop->price ?? 0,
+                            'email' => $this->email,
+                            'name' => $this->name,
+                            'name_license' => $this->name_license,
+                            'nik' => $this->nik,
+                            'pdgi_branch' => $this->pdgi_branch,
+                            'phone' => $this->phone,
+                            'kompetensi' => $this->kompetensi,
+                            'status' => 'registered',
+                            'country_id' => $this->country_id,
+                            'payment_status' => 'pending',
+                            'payment_method' => $this->payment_method,
+                            'payment_proof_path' => $path,
+                            'language' => $language,
+                        ]);
                     }
                 }
 
@@ -746,6 +787,35 @@ class SeminarRegistration extends Component
                     }
                 }
 
+                // Create Digital Workshop registration
+                if ($this->wants_digital_workshop && $this->digital_workshop_id) {
+                    $workshop = DigitalWorkshop::find($this->digital_workshop_id);
+
+                    if ($workshop) {
+                        DigitalWorkshopRegistration::create([
+                            'seminar_registration_id' => $reg->id,
+                            'digital_workshop_id' => $workshop->id,
+                            'registration_code' => DigitalWorkshopRegistration::generateRegistrationCode(),
+                            'qr_token' => (string) Str::uuid(),
+                            'registration_type' => 'bundled',
+                            'amount' => $workshop->bundle_price ?? $workshop->price ?? 0,
+                            'email' => $this->email,
+                            'name' => $this->name,
+                            'name_license' => $this->name_license,
+                            'nik' => $this->nik,
+                            'pdgi_branch' => $this->pdgi_branch,
+                            'phone' => $this->phone,
+                            'kompetensi' => $this->kompetensi,
+                            'status' => 'registered',
+                            'country_id' => $this->country_id,
+                            'payment_status' => 'pending',
+                            'payment_method' => $this->payment_method,
+                            'payment_proof_path' => $path,
+                            'language' => $language,
+                        ]);
+                    }
+                }
+
                 // Create Addon registrations for newly selected add-ons
                 if ($hasNewAddonSelections) {
                     foreach ($this->selectedAddons as $addonCode => $selected) {
@@ -928,6 +998,46 @@ class SeminarRegistration extends Component
                 }
             }
         }
+    }
+
+    public function updatedWantsDigitalWorkshop(): void
+    {
+        if ($this->wants_digital_workshop) {
+            $this->loadAvailableDigitalWorkshops();
+        } else {
+            $this->digital_workshop_id = 0;
+            $this->digitalWorkshopTotalPrice = 0;
+        }
+    }
+
+    public function updatedDigitalWorkshopId(): void
+    {
+        $this->digitalWorkshopTotalPrice = 0;
+
+        foreach ($this->availableDigitalWorkshops as $workshop) {
+            if ($workshop['id'] == $this->digital_workshop_id) {
+                $this->digitalWorkshopTotalPrice = $workshop['bundle_price'] ?? $workshop['price'] ?? 0;
+                break;
+            }
+        }
+    }
+
+    public function loadAvailableDigitalWorkshops(): void
+    {
+        $this->availableDigitalWorkshops = DigitalWorkshop::query()
+            ->published()
+            ->orderBy('sort_order')
+            ->get()
+            ->map(fn (DigitalWorkshop $workshop): array => [
+                'id' => $workshop->id,
+                'name' => $workshop->name,
+                'description' => $workshop->description,
+                'event_date' => $workshop->event_date?->format('d M Y'),
+                'event_time' => $workshop->event_time,
+                'price' => $workshop->price,
+                'bundle_price' => $workshop->bundle_price,
+            ])
+            ->all();
     }
 
     // Add-On methods

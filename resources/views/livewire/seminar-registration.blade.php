@@ -566,6 +566,44 @@
                 @endif
             </div>
 
+            {{-- Digital Workshop Section --}}
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">{{ __('portal.digital_workshop_title') }}</h2>
+
+                <div class="flex items-start mb-4">
+                    <input type="checkbox" wire:model.live="wants_digital_workshop" id="wants_digital_workshop"
+                        class="w-5 h-5 text-violet-600 border-gray-300 rounded focus:ring-violet-500 mt-0.5">
+                    <label for="wants_digital_workshop" class="ml-2 text-sm text-gray-700">
+                        {{ __('seminar.want_to_join_digital_workshop') }}
+                    </label>
+                </div>
+
+                @if($wants_digital_workshop)
+                    <div class="bg-violet-50 border-2 border-violet-300 rounded-lg p-4">
+                        <div class="flex items-start gap-3 mb-4">
+                            <svg class="w-5 h-5 text-violet-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <p class="text-base font-medium text-violet-800">
+                                {{ __('seminar.digital_workshop_description') }}
+                            </p>
+                        </div>
+
+                        <select wire:model.live="digital_workshop_id" id="digital_workshop_id"
+                            class="w-full rounded-lg border-gray-300 focus:border-violet-500 focus:ring-violet-500">
+                            <option value="0">{{ __('seminar.select_digital_workshop') }}</option>
+                            @foreach($availableDigitalWorkshops as $workshop)
+                                <option value="{{ $workshop['id'] }}">
+                                    {{ $workshop['name'] }} - {{ $workshop['event_date'] }} -
+                                    Rp {{ number_format($workshop['bundle_price'] ?? $workshop['price'] ?? 0, 0, ',', '.') }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('digital_workshop_id') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+                    </div>
+                @endif
+            </div>
+
             {{-- Add-On Section (New Registration) --}}
             @if($country_id && count($availableAddons) > 0 && $is_already_registered === 'no')
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
@@ -698,7 +736,13 @@
                             {{ $isIdr ? 'Rp ' . number_format($seminarAmount, 0, ',', '.') : '$' . $seminarAmount }}
                         </span>
                     </div>
-                    @if($wants_hands_on && $handsOnTotalPrice > 0)
+                    @if($wants_digital_workshop && $digitalWorkshopTotalPrice > 0)
+                <div class="flex justify-between py-1">
+                    <span class="text-gray-700">{{ __('portal.digital_workshop_title') }}</span>
+                    <span class="font-medium">Rp {{ number_format($digitalWorkshopTotalPrice, 0, ',', '.') }}</span>
+                </div>
+            @endif
+            @if($wants_hands_on && $handsOnTotalPrice > 0)
                     <div class="flex justify-between items-center mb-2">
                         <span class="text-gray-700">{{ __('seminar.hands_on_fee') }}</span>
                         <span class="font-medium">Rp {{ number_format($handsOnTotalPrice, 0, ',', '.') }}</span>

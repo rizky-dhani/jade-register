@@ -167,6 +167,7 @@ return [
     'hands_on_sessions' => 'Sesi Hands On',
     'hands_on_success_title' => 'Pendaftaran Hands On Berhasil Dikirim!',
     'hands_on_success_thank_you' => 'Terima kasih telah mendaftar sesi Hands On, ',
+    'digital_workshop_description' => 'Workshop Digital adalah add-on bundling bersama paket seminar Anda.',
     'want_to_join_digital_workshop' => 'Saya ingin mengikuti sesi Digital Workshop',
     'select_digital_workshop' => 'Pilih Sesi Digital Workshop',
     'want_to_join_hands_on' => 'Saya ingin mengikuti sesi Hands On',
