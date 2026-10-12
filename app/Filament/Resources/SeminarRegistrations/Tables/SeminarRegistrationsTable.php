@@ -231,6 +231,22 @@ class SeminarRegistrationsTable
 
                         return $query;
                     }),
+                SelectFilter::make('registration_type')
+                    ->label(__('filament.hands_on_registrations.type'))
+                    ->options([
+                        'with_hands_on' => __('seminar.with_hands_on'),
+                        'with_digital_workshop' => __('seminar.with_digital_workshop'),
+                        'seminar_only' => __('seminar.seminar_only'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return match ($data['value'] ?? null) {
+                            'with_hands_on' => $query->whereHas('handsOnRegistrations'),
+                            'with_digital_workshop' => $query->whereHas('digitalWorkshopRegistrations'),
+                            'seminar_only' => $query->whereDoesntHave('handsOnRegistrations')
+                                ->whereDoesntHave('digitalWorkshopRegistrations'),
+                            default => $query,
+                        };
+                    }),
                 TernaryFilter::make('has_payment_proof')
                     ->label(__('seminar.payment_proof'))
                     ->trueLabel(__('seminar.yes'))

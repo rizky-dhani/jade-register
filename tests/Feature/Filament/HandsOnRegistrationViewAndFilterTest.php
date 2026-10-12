@@ -2,7 +2,10 @@
 
 use App\Filament\Resources\HandsOnRegistrations\HandsOnRegistrationResource;
 use App\Filament\Resources\HandsOnRegistrations\Pages\ListHandsOnRegistrations;
+use App\Filament\Resources\SeminarRegistrations\Pages\ListSeminarRegistrations;
 use App\Models\Country;
+use App\Models\DigitalWorkshop;
+use App\Models\DigitalWorkshopRegistration;
 use App\Models\HandsOn;
 use App\Models\HandsOnRegistration;
 use App\Models\Seminar;
@@ -105,4 +108,97 @@ it('filters by registration type', function () {
         ->filterTable('registration_type', 'bundled')
         ->assertCanSeeTableRecords(HandsOnRegistration::where('registration_type', 'bundled')->get())
         ->assertCanNotSeeTableRecords(HandsOnRegistration::where('registration_type', 'standalone')->get());
+});
+
+it('filters seminar registrations by type', function () {
+    $plain = SeminarRegistration::create([
+        'registration_code' => SeminarRegistration::generateRegistrationCode(),
+        'email' => 'plain@example.com',
+        'name_license' => 'Dr. Plain',
+        'phone' => '0814',
+        'country_id' => 1,
+        'language' => 'id',
+        'registration_type' => 'regular',
+        'seminar_id' => 1,
+        'payment_method' => 'bank_transfer',
+        'amount' => 500000,
+        'currency' => 'IDR',
+        'payment_status' => 'pending',
+        'status' => 'registered',
+    ]);
+
+    $withHo = SeminarRegistration::create([
+        'registration_code' => SeminarRegistration::generateRegistrationCode(),
+        'email' => 'ho@example.com',
+        'name_license' => 'Dr. Ho',
+        'phone' => '0815',
+        'country_id' => 1,
+        'language' => 'id',
+        'registration_type' => 'regular',
+        'seminar_id' => 1,
+        'payment_method' => 'bank_transfer',
+        'amount' => 500000,
+        'currency' => 'IDR',
+        'payment_status' => 'pending',
+        'status' => 'registered',
+    ]);
+    $withHo->handsOnRegistrations()->create([
+        'registration_code' => HandsOnRegistration::generateRegistrationCode(),
+        'hands_on_id' => $this->handsOn->id,
+        'registration_type' => 'bundled',
+        'payment_status' => 'pending',
+        'status' => 'registered',
+        'country_id' => 1,
+        'payment_method' => 'bank_transfer',
+        'language' => 'id',
+    ]);
+
+    $withDw = SeminarRegistration::create([
+        'registration_code' => SeminarRegistration::generateRegistrationCode(),
+        'email' => 'dw@example.com',
+        'name_license' => 'Dr. Dw',
+        'phone' => '0816',
+        'country_id' => 1,
+        'language' => 'id',
+        'registration_type' => 'regular',
+        'seminar_id' => 1,
+        'payment_method' => 'bank_transfer',
+        'amount' => 500000,
+        'currency' => 'IDR',
+        'payment_status' => 'pending',
+        'status' => 'registered',
+    ]);
+    $withDw->digitalWorkshopRegistrations()->create([
+        'registration_code' => DigitalWorkshopRegistration::generateRegistrationCode(),
+        'digital_workshop_id' => DigitalWorkshop::factory()->create(['status' => 'published'])->id,
+        'email' => 'dw@example.com',
+        'name' => 'Dr. Dw',
+        'phone' => '0816',
+        'nik' => '3200000000000003',
+        'pdgi_branch' => 'PDGI Jakarta',
+        'kompetensi' => 'Dokter Gigi Umum',
+        'name_license' => 'Dr. Dw',
+        'registration_type' => 'bundled',
+        'payment_status' => 'pending',
+        'payment_method' => 'bank_transfer',
+        'amount' => 999000,
+        'status' => 'registered',
+        'country_id' => 1,
+        'language' => 'id',
+    ]);
+
+    livewire(ListSeminarRegistrations::class)
+        ->filterTable('registration_type', 'with_hands_on')
+        ->assertCanSeeTableRecords([$withHo])
+        ->assertCanNotSeeTableRecords([$plain, $withDw]);
+
+    livewire(ListSeminarRegistrations::class)
+        ->filterTable('registration_type', 'with_digital_workshop')
+        ->assertCanSeeTableRecords([$withDw])
+        ->assertCanNotSeeTableRecords([$plain, $withHo]);
+
+    livewire(ListSeminarRegistrations::class)
+        ->filterTable('registration_type', 'seminar_only')
+        ->assertCanSeeTableRecords([$plain])
+        ->assertCanNotSeeTableRecords([$withHo, $withDw]);
 });
