@@ -41,6 +41,7 @@ return [
     'lunch_addon_name' => 'Add-On Makan Siang',
     'lunch_addon_description' => 'Tambahkan makan siang penuh ke paket seminar Anda (termasuk hidangan utama, minuman, dan makanan penutup).',
     'contact_person' => 'Kontak Person',
+    'linked_seminar_registration' => 'Registrasi Seminar Terkait',
     'payment_information' => 'Informasi Pembayaran',
     'scientific_poster_competition' => 'Kompetisi Poster Ilmiah',
 

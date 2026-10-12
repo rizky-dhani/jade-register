@@ -120,6 +120,18 @@ class HandsOnRegistrationsTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
+                SelectFilter::make('registration_type')
+                    ->label(__('filament.hands_on_registrations.type'))
+                    ->options([
+                        'standalone' => 'Standalone',
+                        'bundled' => __('filament.digital_workshop_registrations.bundled'),
+                    ])
+                    ->query(fn (Builder $query, array $data) => $query->when(
+                        $data['value'],
+                        fn (Builder $query, string $value) => $value === 'bundled'
+                            ? $query->whereNotNull('hands_on_registrations.seminar_registration_id')
+                            : $query->whereNull('hands_on_registrations.seminar_registration_id'),
+                    )),
                 SelectFilter::make('event_date')
                     ->label(__('filament.hands_on_registrations.event_date'))
                     ->options([

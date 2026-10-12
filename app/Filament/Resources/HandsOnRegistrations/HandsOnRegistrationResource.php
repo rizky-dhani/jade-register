@@ -5,6 +5,7 @@ namespace App\Filament\Resources\HandsOnRegistrations;
 use App\Filament\Resources\HandsOnRegistrations\Pages\CreateHandsOnRegistration;
 use App\Filament\Resources\HandsOnRegistrations\Pages\EditHandsOnRegistration;
 use App\Filament\Resources\HandsOnRegistrations\Pages\ListHandsOnRegistrations;
+use App\Filament\Resources\HandsOnRegistrations\Pages\ViewHandsOnRegistration;
 use App\Filament\Resources\HandsOnRegistrations\Schemas\HandsOnRegistrationForm;
 use App\Filament\Resources\HandsOnRegistrations\Tables\HandsOnRegistrationsTable;
 use App\Models\HandsOnRegistration;
@@ -71,6 +72,7 @@ class HandsOnRegistrationResource extends Resource
             'index' => ListHandsOnRegistrations::route('/'),
             'create' => CreateHandsOnRegistration::route('/create'),
             'edit' => EditHandsOnRegistration::route('/{record}/edit'),
+            'view' => ViewHandsOnRegistration::route('/{record}'),
         ];
     }
 
