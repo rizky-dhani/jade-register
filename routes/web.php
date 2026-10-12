@@ -10,6 +10,7 @@ use App\Livewire\DigitalWorkshopRegistrationSuccess;
 use App\Livewire\HandsOnRegistration;
 use App\Livewire\HandsOnRegistrationSuccess;
 use App\Livewire\PosterSubmission;
+use App\Livewire\RegistrationPortal;
 use App\Livewire\SeminarRegistration;
 use App\Livewire\SeminarRegistrationSuccess;
 use App\Livewire\TotalParticipant;
@@ -21,9 +22,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return redirect()->to(filament()->getLoginUrl());
-});
+Route::livewire('/', RegistrationPortal::class)->name('home');
 
 Route::livewire('/visitor/register', VisitorRegistration::class)->name('register.visitor');
 
