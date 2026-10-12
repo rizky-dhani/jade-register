@@ -35,7 +35,7 @@
             </div>
             <h2 class="text-xl font-semibold text-gray-800 mb-2">{{ __('portal.seminar_title') }}</h2>
             <p class="text-sm text-gray-600 mb-6">{{ __('portal.seminar_description') }}</p>
-            <span class="inline-flex items-center mt-auto text-sm font-medium text-blue-600 group-hover:gap-2 gap-1 transition-all">
+            <span class="inline-flex items-center justify-center mt-auto text-sm font-medium text-blue-600 group-hover:gap-2 gap-1 transition-all">
                 {{ __('portal.register_now') }}
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
@@ -53,7 +53,7 @@
             </div>
             <h2 class="text-xl font-semibold text-gray-800 mb-2">{{ __('portal.hands_on_title') }}</h2>
             <p class="text-sm text-gray-600 mb-6">{{ __('portal.hands_on_description') }}</p>
-            <span class="inline-flex items-center mt-auto text-sm font-medium text-teal-600 group-hover:gap-2 gap-1 transition-all">
+            <span class="inline-flex items-center justify-center mt-auto text-sm font-medium text-teal-600 group-hover:gap-2 gap-1 transition-all">
                 {{ __('portal.register_now') }}
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
@@ -71,7 +71,7 @@
             </div>
             <h2 class="text-xl font-semibold text-gray-800 mb-2">{{ __('portal.visitor_title') }}</h2>
             <p class="text-sm text-gray-600 mb-6">{{ __('portal.visitor_description') }}</p>
-            <span class="inline-flex items-center mt-auto text-sm font-medium text-amber-600 group-hover:gap-2 gap-1 transition-all">
+            <span class="inline-flex items-center justify-center mt-auto text-sm font-medium text-amber-600 group-hover:gap-2 gap-1 transition-all">
                 {{ __('portal.register_now') }}
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
@@ -89,7 +89,7 @@
             </div>
             <h2 class="text-xl font-semibold text-gray-800 mb-2">{{ __('portal.digital_workshop_title') }}</h2>
             <p class="text-sm text-gray-600 mb-6">{{ __('portal.digital_workshop_description') }}</p>
-            <span class="inline-flex items-center mt-auto text-sm font-medium text-violet-600 group-hover:gap-2 gap-1 transition-all">
+            <span class="inline-flex items-center justify-center mt-auto text-sm font-medium text-violet-600 group-hover:gap-2 gap-1 transition-all">
                 {{ __('portal.register_now') }}
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
