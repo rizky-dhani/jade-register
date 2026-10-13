@@ -116,7 +116,6 @@ abstract class BaseHandsOnSheet implements FromCollection, ShouldAutoSize, WithH
     protected function participantName(HandsOnRegistration $registration): string
     {
         return $registration->seminarRegistration?->name_license
-            ?? $registration->seminarRegistration?->name
             ?? $registration->name_license
             ?? $registration->name
             ?? '-';

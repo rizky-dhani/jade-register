@@ -20,14 +20,14 @@ class HandsOnAttendancesTable
                     ->label(__('filament.attendance.participant_name'))
                     ->state(function ($record): string {
                         if ($record->handsOnRegistration && $record->handsOnRegistration->seminarRegistration) {
-                            return $record->handsOnRegistration->seminarRegistration->name;
+                            return $record->handsOnRegistration->seminarRegistration->name_license;
                         }
 
                         return 'N/A';
                     })
                     ->searchable(query: function ($query, $search) {
                         $query->whereHas('handsOnRegistration.seminarRegistration', function ($q) use ($search) {
-                            $q->where('name', 'like', "%{$search}%");
+                            $q->where('name_license', 'like', "%{$search}%");
                         });
                     }),
                 TextColumn::make('hands_on_name')

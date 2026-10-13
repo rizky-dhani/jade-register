@@ -179,7 +179,7 @@ class InternationalParticipantsSheet extends BaseParticipantsSheet
     {
         return [
             $registration->registration_code,
-            $registration->name,
+            $registration->name_license,
             $registration->email,
             $registration->phone,
             $this->getStatusLabel($registration->status),

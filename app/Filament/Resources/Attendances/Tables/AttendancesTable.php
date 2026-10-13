@@ -19,11 +19,11 @@ class AttendancesTable
                     ->label(__('filament.attendance.participant_name'))
                     ->state(function ($record): string {
                         if ($record->isSeminar() && $record->seminarRegistration) {
-                            return $record->seminarRegistration->name;
+                            return $record->seminarRegistration->name_license;
                         }
 
                         if ($record->isHandsOn() && $record->handsOnRegistration && $record->handsOnRegistration->seminarRegistration) {
-                            return $record->handsOnRegistration->seminarRegistration->name;
+                            return $record->handsOnRegistration->seminarRegistration->name_license;
                         }
 
                         return 'N/A';

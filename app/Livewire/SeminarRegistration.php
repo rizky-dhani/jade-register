@@ -133,7 +133,7 @@ class SeminarRegistration extends Component
 
         if (! $this->is_local) {
             return [
-                'name' => 'required|string|max:255',
+                'name_license' => 'required|string|max:255',
                 'email' => 'required|email',
                 'phone' => 'required|string|max:20',
                 'status' => 'required|string|in:Dentist,Student',
@@ -146,7 +146,6 @@ class SeminarRegistration extends Component
 
         $rules = [
             'email' => 'required|email',
-            'name' => 'nullable|string|max:255',
             'name_license' => 'required|string|max:255',
             'nik' => 'required|string|max:20',
             'pdgi_branch' => 'required|string|max:255',
@@ -446,7 +445,7 @@ class SeminarRegistration extends Component
         $registrationData = [
             'registration_code' => $code,
             'email' => $this->email,
-            'name' => $this->name,
+            'name_license' => $this->is_local ? $this->name_license : $this->name,
             'phone' => $this->phone,
             'country_id' => $this->country_id,
             'language' => $language,
@@ -465,7 +464,6 @@ class SeminarRegistration extends Component
         ];
 
         if ($this->is_local) {
-            $registrationData['name_license'] = $this->name_license;
             $registrationData['nik'] = $this->nik;
             $registrationData['pdgi_branch'] = $this->pdgi_branch;
             $registrationData['kompetensi'] = $this->kompetensi;

@@ -28,7 +28,7 @@
     
     <div class="content">
         <h2>{{ __('seminar.email_payment_verified_title') }}</h2>
-        <p>{{ __('seminar.email_payment_verified_greeting') }}, {{ $registration->name }}! {{ __('seminar.email_payment_verified_message') }}</p>
+        <p>{{ __('seminar.email_payment_verified_greeting') }}, {{ $registration->name_license ?? $registration->name }}! {{ __('seminar.email_payment_verified_message') }}</p>
         
         <div class="registration-code">
             {{ $registration->registration_code }}

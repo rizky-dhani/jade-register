@@ -15,7 +15,6 @@ class SeminarRegistration extends Model
     protected $fillable = [
         'registration_code',
         'email',
-        'name',
         'name_license',
         'nik',
         'pdgi_branch',

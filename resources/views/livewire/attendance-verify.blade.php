@@ -45,7 +45,7 @@
                     <div class="space-y-3 mb-6">
                         <div>
                             <p class="text-sm text-gray-500">{{ __('seminar.name_label') }}</p>
-                            <p class="font-semibold text-gray-900">{{ $registration->name ?? $registration->name_license ?? '-' }}</p>
+                            <p class="font-semibold text-gray-900">{{ $registration->name_license ?? $registration->name ?? '-' }}</p>
                         </div>
                         <div>
                             <p class="text-sm text-gray-500">{{ __('seminar.email_label') }}</p>

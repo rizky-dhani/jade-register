@@ -98,7 +98,7 @@ class SeminarRegistrationForm
                 // International Participant Information
                 Section::make(__('seminar.international_participant'))
                     ->schema([
-                        TextInput::make('name')
+                        TextInput::make('name_license')
                             ->label(__('seminar.name'))
                             ->required()
                             ->maxLength(255)

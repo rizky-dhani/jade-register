@@ -40,7 +40,7 @@
 
     <div class="content">
         {{-- Thank You Message + Registration Code --}}
-        <h2>{{ trans('seminar.email_thank_you_title', ['name' => $registration->name]) }}</h2>
+        <h2>{{ trans('seminar.email_thank_you_title', ['name' => $registration->name_license ?? $registration->name]) }}</h2>
         <p>{{ trans('seminar.email_registration_received') }}</p>
 
         <div class="registration-code">
@@ -76,7 +76,7 @@
             @if($registration->country->name !== 'Indonesia')
                 <div class="detail-row">
                     <span class="detail-label">{{ trans('seminar.name') }}</span>
-                    <span class="detail-value">{{ $registration->name }}</span>
+                    <span class="detail-value">{{ $registration->name_license ?? $registration->name }}</span>
                 </div>
                 <div class="detail-row">
                     <span class="detail-label">{{ trans('seminar.email') }}</span>

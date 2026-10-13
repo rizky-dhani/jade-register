@@ -41,7 +41,7 @@
             @if($registration->country && ! $registration->country->is_indonesia)
                 <div class="detail-row">
                     <span class="detail-label">{{ trans('seminar.name') }}</span>
-                    <span class="detail-value">{{ $registration->name }}</span>
+                    <span class="detail-value">{{ $registration->name_license ?? $registration->name }}</span>
                 </div>
                 <div class="detail-row">
                     <span class="detail-label">{{ trans('seminar.email') }}</span>

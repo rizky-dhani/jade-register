@@ -69,7 +69,6 @@ test('international sheet lists tanggal daftar as the second to last column', fu
     $registration = SeminarRegistration::factory()
         ->for(Country::factory()->international())
         ->create([
-            'name' => 'Foreign Dentist',
             'status' => 'Dentist',
             'created_at' => '2026-11-14 17:45:00',
         ]);

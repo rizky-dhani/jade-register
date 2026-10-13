@@ -21,7 +21,7 @@ test('staff can view verification page with valid token', function () {
     $this->actingAs($this->user);
 
     livewire(AttendanceVerify::class, ['token' => $this->registration->qr_token])
-        ->assertSee($this->registration->name)
+        ->assertSee($this->registration->name_license)
         ->assertSee($this->registration->email)
         ->assertSee($this->registration->registration_code);
 });
@@ -31,8 +31,8 @@ test('staff can check in seminar', function () {
 
     livewire(AttendanceVerify::class, ['token' => $this->registration->qr_token])
         ->call('checkInSeminar')
-        ->assertSee('Check-in successful!')
-        ->assertSee('Already checked in');
+        ->assertSee(__('seminar.attendance_check_in_success'))
+        ->assertSee(__('seminar.already_checked_in'));
 
     $this->assertDatabaseHas('attendances', [
         'seminar_registration_id' => $this->registration->id,
@@ -47,7 +47,7 @@ test('staff cannot check in seminar if payment not verified', function () {
 
     livewire(AttendanceVerify::class, ['token' => $pendingRegistration->qr_token])
         ->call('checkInSeminar')
-        ->assertSee('Cannot check in - payment is not verified.');
+        ->assertSee(__('seminar.payment_not_verified'));
 
     $this->assertDatabaseMissing('attendances', [
         'seminar_registration_id' => $pendingRegistration->id,
@@ -64,7 +64,7 @@ test('staff cannot check in seminar twice', function () {
     ]);
 
     livewire(AttendanceVerify::class, ['token' => $this->registration->qr_token])
-        ->assertSee('Already checked in')
+        ->assertSee(__('seminar.already_checked_in'))
         ->call('checkInSeminar');
 
     $this->assertDatabaseCount('attendances', 1);
@@ -81,7 +81,7 @@ test('staff can check in hands-on session', function () {
 
     livewire(AttendanceVerify::class, ['token' => $this->registration->qr_token])
         ->call('checkInHandsOn', $handsOnReg->id)
-        ->assertSee('Check-in successful!');
+        ->assertSee(__('seminar.attendance_check_in_success'));
 
     $this->assertDatabaseHas('attendances', [
         'seminar_registration_id' => $this->registration->id,
@@ -126,7 +126,7 @@ test('staff cannot check in hands-on twice', function () {
     ]);
 
     livewire(AttendanceVerify::class, ['token' => $this->registration->qr_token])
-        ->assertSee('Checked in')
+        ->assertSee(__('seminar.checked_in'))
         ->call('checkInHandsOn', $handsOnReg->id);
 
     $this->assertDatabaseCount('attendances', 1);
@@ -138,7 +138,7 @@ test('verification page shows warning for unverified payment', function () {
     $pendingRegistration = SeminarRegistration::factory()->pending()->create();
 
     livewire(AttendanceVerify::class, ['token' => $pendingRegistration->qr_token])
-        ->assertSee('Payment is not verified - check-in is disabled');
+        ->assertSee(__('seminar.payment_not_verified_checkin_disabled'));
 });
 
 test('verification page shows expired message with expired token', function () {
@@ -148,7 +148,7 @@ test('verification page shows expired message with expired token', function () {
 
     livewire(AttendanceVerify::class, ['token' => $expiredRegistration->qr_token])
         ->assertSee('QR Code Expired')
-        ->assertDontSee($expiredRegistration->name);
+        ->assertDontSee($expiredRegistration->name_license);
 });
 
 test('verification page shows invalid message with invalid token', function () {

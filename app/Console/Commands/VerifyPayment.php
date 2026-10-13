@@ -191,7 +191,7 @@ class VerifyPayment extends Command
             return [
                 $reg->registration_code,
                 $reg->email,
-                $reg->name ?? 'N/A',
+                $reg->name_license ?? 'N/A',
                 $reg->created_at->format('Y-m-d'),
             ];
         })->toArray();
@@ -252,7 +252,7 @@ class VerifyPayment extends Command
             $registration instanceof SeminarRegistration => [
                 'Type' => 'Seminar Registration',
                 'Email' => $registration->email,
-                'Name' => $registration->name,
+                'Name' => $registration->name_license,
                 'Amount' => $registration->formatted_amount,
                 'Payment Status' => $registration->payment_status,
                 'Payment Method' => $registration->payment_method,
@@ -262,7 +262,7 @@ class VerifyPayment extends Command
             $registration instanceof HandsOnRegistration => [
                 'Type' => 'Hands On Registration',
                 'Email' => $registration->email ?? $registration->seminarRegistration?->email,
-                'Name' => $registration->name ?? $registration->seminarRegistration?->name,
+                'Name' => $registration->name ?? $registration->seminarRegistration?->name_license,
                 'Amount' => number_format($registration->handsOn->price ?? 0, 0, ',', '.'),
                 'Payment Status' => $registration->payment_status,
                 'Event' => $registration->handsOn->name ?? 'N/A',
@@ -270,7 +270,7 @@ class VerifyPayment extends Command
             $registration instanceof AddonRegistration => [
                 'Type' => 'Addon Registration',
                 'Email' => $registration->seminarRegistration?->email,
-                'Name' => $registration->seminarRegistration?->name,
+                'Name' => $registration->seminarRegistration?->name_license,
                 'Addon' => $registration->addon?->name ?? 'N/A',
                 'Amount' => number_format($registration->amount, 0, ',', '.'),
                 'Payment Status' => $registration->payment_status,

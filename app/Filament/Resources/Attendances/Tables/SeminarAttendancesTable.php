@@ -20,14 +20,14 @@ class SeminarAttendancesTable
                     ->label(__('filament.attendance.participant_name'))
                     ->state(function ($record): string {
                         if ($record->seminarRegistration) {
-                            return $record->seminarRegistration->name;
+                            return $record->seminarRegistration->name_license;
                         }
 
                         return 'N/A';
                     })
                     ->searchable(query: function ($query, $search) {
                         $query->whereHas('seminarRegistration', function ($q) use ($search) {
-                            $q->where('name', 'like', "%{$search}%");
+                            $q->where('name_license', 'like', "%{$search}%");
                         });
                     }),
                 IconColumn::make('is_checked_in')

@@ -14,7 +14,6 @@ class SeminarRegistrationFactory extends Factory
         return [
             'registration_code' => 'JADE-SEM-2026-'.str_pad(fake()->numberBetween(1, 999999), 6, '0', STR_PAD_LEFT),
             'email' => fake()->unique()->safeEmail(),
-            'name' => fake()->name(),
             'name_license' => fake()->name(),
             'nik' => fake()->numerify('################'),
             'pdgi_branch' => fake()->city(),
