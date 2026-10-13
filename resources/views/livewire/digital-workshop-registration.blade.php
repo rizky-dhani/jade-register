@@ -39,26 +39,11 @@
     </div>
     @else
     <form wire:submit="submit" class="bg-white border border-gray-200 rounded-lg p-6 space-y-6">
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-                {{ __('seminar.participant_type') }}
-            </label>
-            <div class="flex gap-4">
-                <label class="inline-flex items-center gap-2">
-                    <input type="radio" wire:model.live="is_local" value="1" class="text-blue-600">
-                    <span class="text-gray-700">{{ __('seminar.local_participant') }}</span>
-                </label>
-                <label class="inline-flex items-center gap-2">
-                    <input type="radio" wire:model.live="is_local" value="0" class="text-blue-600">
-                    <span class="text-gray-700">{{ __('seminar.international_participant') }}</span>
-                </label>
-            </div>
-        </div>
 
         @if ($is_local)
             <div>
                 <label for="name_license" class="block text-sm font-medium text-gray-700 mb-1">
-                    {{ __('seminar.name_plataran') }}
+                    {{ __('seminar.name_lengkap') }}
                 </label>
                 <input id="name_license" type="text" wire:model="name_license"
                        class="w-full border border-gray-300 rounded-md px-3 py-2">

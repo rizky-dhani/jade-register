@@ -4,6 +4,7 @@ namespace App\Filament\Resources\SeminarRegistrations;
 
 use App\Filament\Resources\SeminarRegistrations\Pages\CreateSeminarRegistration;
 use App\Filament\Resources\SeminarRegistrations\Pages\EditSeminarRegistration;
+use App\Filament\Resources\SeminarRegistrations\Pages\ListLunchSeminarRegistrations;
 use App\Filament\Resources\SeminarRegistrations\Pages\ListSeminarRegistrations;
 use App\Filament\Resources\SeminarRegistrations\Pages\ViewSeminarRegistration;
 use App\Filament\Resources\SeminarRegistrations\Schemas\SeminarRegistrationForm;
@@ -69,6 +70,7 @@ class SeminarRegistrationResource extends Resource
     {
         return [
             'index' => ListSeminarRegistrations::route('/'),
+            'lunch' => ListLunchSeminarRegistrations::route('/lunch'),
             'create' => CreateSeminarRegistration::route('/create'),
             'view' => ViewSeminarRegistration::route('/{record}'),
             'edit' => EditSeminarRegistration::route('/{record}/edit'),

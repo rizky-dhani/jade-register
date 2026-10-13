@@ -61,7 +61,7 @@
                 </div>
             @else
                 <div class="detail-row">
-                    <span class="detail-label">{{ trans('seminar.name_plataran') }}</span>
+                    <span class="detail-label">{{ trans('seminar.name_lengkap') }}</span>
                     <span class="detail-value">{{ $registration->name_license }}</span>
                 </div>
                 <div class="detail-row">

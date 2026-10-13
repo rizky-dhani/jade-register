@@ -20,6 +20,11 @@ class ListSeminarRegistrations extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
+            Action::make('lunchRegistrations')
+                ->label('Lunch Registrations')
+                ->icon('heroicon-o-rectangle-stack')
+                ->color('gray')
+                ->url(SeminarRegistrationResource::getUrl('lunch')),
             Action::make('refresh')
                 ->label('Refresh')
                 ->icon('heroicon-o-arrow-path')

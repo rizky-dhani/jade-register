@@ -58,6 +58,7 @@ return [
     'registration_code' => 'Registration Code',
     'name_str' => 'Name as per STR (without title)',
     'name_plataran' => 'Name as per Plataran Sehat',
+    'name_lengkap' => 'Full Name',
     'email_plataran' => 'Email as per Plataran Sehat',
     'whatsapp_number' => 'WhatsApp Number',
     'phone' => 'Phone Number',
