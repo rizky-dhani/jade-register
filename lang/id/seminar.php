@@ -51,6 +51,7 @@ return [
     // Form fields
     'country' => 'Negara',
     'select_country' => 'Pilih Negara',
+    'all' => 'Semua',
     'participant_type' => 'Tipe Peserta',
     'local' => 'Lokal',
     'international' => 'Internasional',

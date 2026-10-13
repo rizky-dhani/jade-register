@@ -51,6 +51,7 @@ return [
     // Form fields
     'country' => 'Country',
     'select_country' => 'Select Country',
+    'all' => 'All',
     'participant_type' => 'Participant Type',
     'local' => 'Local',
     'international' => 'International',
