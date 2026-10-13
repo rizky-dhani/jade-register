@@ -8,11 +8,13 @@ class CountryFactory extends Factory
 {
     public function definition(): array
     {
+        // Deterministic codes avoid colliding with tests that create
+        // countries manually (e.g. Indonesia 'ID') and each other.
         return [
-            'name' => fake()->country(),
-            'code' => fake()->countryCode(),
+            'name' => 'Test Country '.fake()->unique()->numberBetween(1, 9999),
+            'code' => 'CF'.str_pad((string) fake()->unique()->numberBetween(1, 9999), 4, '0', STR_PAD_LEFT),
             'is_indonesia' => false,
-            'phone_code' => '+'.fake()->numberBetween(1, 999),
+            'phone_code' => '+'.fake()->unique()->numberBetween(1, 999),
         ];
     }
 

@@ -753,9 +753,11 @@
                             <span class="font-semibold text-gray-800">{{ __('seminar.total_amount') }}</span>
                             <span class="font-bold text-lg text-gray-800">
                                 @if($isIdr)
-                                    Rp {{ number_format($seminarAmount + $handsOnTotalPrice, 0, ',', '.') }}
+                                @if($isIdr)
+                                    Rp {{ number_format($seminarAmount + $handsOnTotalPrice + $addonsTotalPrice + $digitalWorkshopTotalPrice, 0, ',', '.') }}
                                 @else
-                                    ${{ $seminarAmount }} + Rp {{ number_format($handsOnTotalPrice, 0, ',', '.') }}
+                                    ${{ $seminarAmount }} + Rp {{ number_format($handsOnTotalPrice + $addonsTotalPrice + $digitalWorkshopTotalPrice, 0, ',', '.') }}
+                                @endif
                                 @endif
                             </span>
                         </div>
