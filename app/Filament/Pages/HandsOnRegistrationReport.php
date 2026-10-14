@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Filament\Widgets\HandsOnParticipantCount;
+use App\Filament\Widgets\HandsOnRegistrationRevenue;
 use App\Filament\Widgets\HandsOnRegistrationStatusChart;
 use App\Filament\Widgets\HandsOnRegistrationTotals;
 use Filament\Pages\Page;
@@ -46,6 +47,7 @@ class HandsOnRegistrationReport extends Page
             HandsOnRegistrationTotals::class,
             HandsOnParticipantCount::class,
             HandsOnRegistrationStatusChart::class,
+            HandsOnRegistrationRevenue::class,
         ];
     }
 }
