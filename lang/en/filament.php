@@ -179,6 +179,11 @@ return [
     'poster_submissions.author_emails' => 'Author Emails',
     'poster_submissions.presenter_name' => 'Presenter Name',
     'poster_submissions.rejection_reason' => 'Rejection Reason',
+    'poster_submissions.download_poster' => 'Download Poster',
+    'poster_submissions.poster_file_missing' => 'The poster file is no longer available on the server.',
+    'poster_submissions.copy_submission_info' => 'Copy Submission Info',
+    'poster_submissions.copy_submission_info_copied' => 'Submission info copied to clipboard',
+    'poster_submissions.copy_heading' => '=== POSTER SUBMISSION ===',
 
     // Seminar Registrations
     'seminar_registrations.nik' => 'NIK',

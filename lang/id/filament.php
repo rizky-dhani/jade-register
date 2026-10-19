@@ -179,6 +179,11 @@ return [
     'poster_submissions.author_emails' => 'Email Penulis',
     'poster_submissions.presenter_name' => 'Nama Presentator',
     'poster_submissions.rejection_reason' => 'Alasan Penolakan',
+    'poster_submissions.download_poster' => 'Unduh Poster',
+    'poster_submissions.poster_file_missing' => 'File poster sudah tidak tersedia di server.',
+    'poster_submissions.copy_submission_info' => 'Salin Info Pengumpulan',
+    'poster_submissions.copy_submission_info_copied' => 'Info pengumpulan disalin ke clipboard',
+    'poster_submissions.copy_heading' => '=== PENGUMPULAN POSTER ===',
 
     // Seminar Registrations
     'seminar_registrations.nik' => 'NIK',
