@@ -232,6 +232,65 @@
                         @include('livewire.partials.hands-on-selection', ['isSeparate' => true])
                     </div>
 
+                    {{-- Digital Workshop Selection (Existing Registration) --}}
+                    @if(count($availableDigitalWorkshops) > 0)
+                    <div class="bg-white rounded-lg p-4 border border-green-200 mt-4">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-2">{{ __('portal.digital_workshop_title') }}</h3>
+                        <p class="text-gray-600 mb-4 text-sm">{{ __('seminar.digital_workshop_existing_description') }}</p>
+
+                        @if($alreadyRegisteredDigitalWorkshopId)
+                            @php
+                                $registeredWorkshop = collect($availableDigitalWorkshops)->firstWhere('id', $alreadyRegisteredDigitalWorkshopId);
+                            @endphp
+                            <div class="flex items-start p-4 bg-gray-50 rounded-lg border border-gray-200 mb-4">
+                                <svg class="w-5 h-5 text-green-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                                <div class="ml-3 flex-1">
+                                    <p class="font-medium text-gray-800">{{ $registeredWorkshop['name'] ?? __('seminar.digital_workshop_title') }}</p>
+                                    <p class="text-sm text-green-600">{{ __('seminar.digital_workshop_already_registered') }}</p>
+                                </div>
+                            </div>
+                        @endif
+
+                        <div class="flex items-start mb-4">
+                            <input type="checkbox" wire:model.live="wants_digital_workshop" id="existing_wants_digital_workshop"
+                                class="w-5 h-5 text-violet-600 border-gray-300 rounded focus:ring-violet-500 mt-0.5">
+                            <label for="existing_wants_digital_workshop" class="ml-2 text-sm text-gray-700">
+                                {{ __('seminar.want_to_join_digital_workshop') }}
+                            </label>
+                        </div>
+
+                        @if($wants_digital_workshop)
+                            <div class="bg-violet-50 border-2 border-violet-300 rounded-lg p-4">
+                                <select wire:model.live="digital_workshop_id" id="existing_digital_workshop_id"
+                                    class="w-full rounded-lg border-gray-300 focus:border-violet-500 focus:ring-violet-500">
+                                    <option value="0">{{ __('seminar.select_digital_workshop') }}</option>
+                                    @foreach($availableDigitalWorkshops as $workshop)
+                                        @continue((int) $workshop['id'] === (int) $alreadyRegisteredDigitalWorkshopId)
+                                        <option value="{{ $workshop['id'] }}">
+                                            {{ $workshop['name'] }} - {{ $workshop['event_date'] }} -
+                                            Rp {{ number_format($workshop['bundle_price'] ?? $workshop['price'] ?? 0, 0, ',', '.') }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('digital_workshop_id') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+
+                                @if($digitalWorkshopTotalPrice > 0)
+                                    <div class="flex justify-between py-1 mt-3">
+                                        <span class="text-gray-700">{{ __('portal.digital_workshop_title') }}</span>
+                                        <span class="font-medium">Rp {{ number_format($digitalWorkshopTotalPrice, 0, ',', '.') }}</span>
+                                    </div>
+                                @endif
+
+                                @if($digitalWorkshopError)
+                                    <p class="text-red-500 text-sm mt-2">{{ $digitalWorkshopError }}</p>
+                                @endif
+                            </div>
+                        @endif
+                    </div>
+                    @endif
+
                     {{-- Error message for no selections --}}
                     @error('existing')
                         <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
