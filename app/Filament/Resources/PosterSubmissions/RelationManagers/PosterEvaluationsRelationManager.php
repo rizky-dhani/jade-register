@@ -3,8 +3,13 @@
 namespace App\Filament\Resources\PosterSubmissions\RelationManagers;
 
 use App\Models\PosterEvaluation;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\CreateAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -27,29 +32,29 @@ class PosterEvaluationsRelationManager extends RelationManager
                 }
             })
             ->columns([
-                Tables\Columns\TextColumn::make('judge.name')
+                TextColumn::make('judge.name')
                     ->label('Judge')
                     ->visible($isSuperAdmin),
-                Tables\Columns\TextColumn::make('content_score')
+                TextColumn::make('content_score')
                     ->label('Content')
                     ->formatStateUsing(fn (int $state): string => "{$state}/".PosterEvaluation::MAX_CONTENT_SCORE),
-                Tables\Columns\TextColumn::make('creativity_score')
+                TextColumn::make('creativity_score')
                     ->label('Creativity')
                     ->formatStateUsing(fn (int $state): string => "{$state}/".PosterEvaluation::MAX_CREATIVITY_SCORE),
-                Tables\Columns\TextColumn::make('visual_score')
+                TextColumn::make('visual_score')
                     ->label('Visual')
                     ->formatStateUsing(fn (int $state): string => "{$state}/".PosterEvaluation::MAX_VISUAL_SCORE),
-                Tables\Columns\TextColumn::make('presentation_score')
+                TextColumn::make('presentation_score')
                     ->label('Presentation')
                     ->formatStateUsing(fn (int $state): string => "{$state}/".PosterEvaluation::MAX_PRESENTATION_SCORE),
-                Tables\Columns\TextColumn::make('total_score')
+                TextColumn::make('total_score')
                     ->label('Total')
                     ->formatStateUsing(fn (int $state): string => "{$state}/100"),
-                Tables\Columns\TextColumn::make('evaluated_at')
+                TextColumn::make('evaluated_at')
                     ->dateTime('d M Y, H:i'),
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make()
+                CreateAction::make()
                     ->mutateFormDataUsing(function (array $data): array {
                         $data['judge_id'] = auth()->id();
 
@@ -58,14 +63,14 @@ class PosterEvaluationsRelationManager extends RelationManager
                     ->visible(fn () => $user?->can('evaluate poster submissions') ?? false),
             ])
             ->actions([
-                Tables\Actions\EditAction::make()
+                EditAction::make()
                     ->visible(fn ($record) => $isSuperAdmin || $record->judge_id === $user?->getKey()),
-                Tables\Actions\DeleteAction::make()
+                DeleteAction::make()
                     ->visible(fn () => $isSuperAdmin),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make()
+                BulkActionGroup::make([
+                    DeleteBulkAction::make()
                         ->visible(fn () => $isSuperAdmin),
                 ]),
             ]);
