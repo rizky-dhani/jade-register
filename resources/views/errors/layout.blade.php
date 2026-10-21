@@ -10,7 +10,7 @@
         * { box-sizing: border-box; }
         body { min-height: 100vh; margin: 0; display: grid; place-items: center; padding: 24px; }
         main { width: min(100%, 520px); padding: 48px 40px; text-align: center; background: #fff; border: 1px solid #e4e9e5; border-radius: 18px; box-shadow: 0 18px 55px rgb(26 54 38 / 8%); }
-        .mark { display: inline-grid; place-items: center; width: 54px; height: 54px; margin-bottom: 24px; border-radius: 16px; background: #e8f0e9; color: #315a3d; font-size: 24px; font-weight: 700; }
+        .logo { display: block; width: min(100%, 240px); height: 96px; margin: 0 auto 24px; object-fit: contain; }
         .eyebrow { margin: 0 0 12px; color: #52705a; font-size: 12px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
         h1 { margin: 0; font-size: clamp(28px, 7vw, 38px); letter-spacing: -.04em; line-height: 1.15; }
         .message { margin: 18px auto 0; max-width: 360px; color: #647168; font-size: 16px; line-height: 1.7; }
@@ -21,7 +21,7 @@
 </head>
 <body>
     <main aria-labelledby="page-title">
-        <div class="mark" aria-hidden="true">J</div>
+        <img src="{{ asset('assets/images/JADE_PDGI_LightBG.webp') }}" alt="JADE" class="logo">
         <p class="eyebrow">JADE 2026</p>
         @yield('content')
         <div class="rule" aria-hidden="true"></div>
