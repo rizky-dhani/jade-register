@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Visitor;
+use App\Models\VisitorAttendance;
 use App\Services\VisitorQrTokenService;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
@@ -47,7 +48,7 @@ class VisitorVerify extends Component
             return;
         }
 
-        if (! Auth::user()->hasRole('Admin')) {
+        if (! Auth::user()->hasRole(['Admin', 'Super Admin'])) {
             $this->addError('auth', __('seminar.admin_only'));
 
             return;
@@ -60,6 +61,16 @@ class VisitorVerify extends Component
         }
 
         $this->visitor->markAsScanned();
+
+        // The visitor list in the admin panel reads visitor_attendances, so the
+        // check-in has to leave a row there as well as stamp scanned_at.
+        VisitorAttendance::firstOrCreate(
+            ['visitor_id' => $this->visitor->id],
+            [
+                'checked_in_at' => now(),
+                'checked_in_by' => Auth::id(),
+            ]
+        );
         $this->isAlreadyScanned = true;
         $this->showSuccess = true;
     }

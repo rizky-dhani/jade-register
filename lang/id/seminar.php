@@ -364,6 +364,7 @@ return [
     'invalid_qr_code_title' => 'Kode QR Tidak Valid',
     'invalid_qr_code_message' => 'Kode QR ini tidak valid atau tidak ditemukan.',
     'attendance_check_in_success' => 'Check-in berhasil!',
+    'attendance_check_out_success' => 'Check-out berhasil!',
     'participant_details_title' => 'Detail Peserta',
     'name_label' => 'Nama',
     'email_label' => 'Email',
@@ -372,6 +373,7 @@ return [
     'seminar_attendance_title' => 'Kehadiran Seminar',
     'already_checked_in' => 'Sudah Check-in',
     'check_in_seminar_button' => 'Check-in Seminar',
+    'check_out_seminar_button' => 'Check-out Seminar',
     'hands_on_sessions_title' => 'Sesi Hands On',
     'verified_by' => 'Diverifikasi Oleh',
     'verified_at' => 'Tanggal Verifikasi',
@@ -384,6 +386,10 @@ return [
     'wants_hands_on' => 'Ingin Mengikuti Hands On',
     'payment_pending' => 'Pembayaran Menunggu',
     'checked_in' => 'Sudah Check-in',
+    'check_out' => 'Check-out',
+    'check_out_button' => 'Check-out',
+    'checked_out' => 'Sudah Check-out',
+    'check_out_requires_check_in' => 'Peserta ini belum check-in, jadi belum ada yang bisa di-check-out.',
     'check_in_button' => 'Check-in',
 
     // Visitor QR Code

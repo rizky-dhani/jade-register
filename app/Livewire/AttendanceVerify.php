@@ -7,6 +7,7 @@ use App\Models\DigitalWorkshopRegistration;
 use App\Models\HandsOnRegistration;
 use App\Models\LunchRedemption;
 use App\Models\SeminarRegistration;
+use App\Services\AttendanceCheckOutService;
 use App\Services\LunchRedemptionService;
 use App\Services\QrTokenService;
 use Illuminate\Support\Collection;
@@ -25,7 +26,13 @@ class AttendanceVerify extends Component
 
     public bool $showSuccess = false;
 
+    public bool $showCheckOutSuccess = false;
+
     public ?string $seminarCheckedInAt = null;
+
+    public ?string $seminarCheckedOutAt = null;
+
+    public array $handsOnCheckedOut = [];
 
     public array $handsOnCheckedIn = [];
 
@@ -70,6 +77,10 @@ class AttendanceVerify extends Component
 
             if ($attendance) {
                 $this->handsOnCheckedIn[$this->registration->id] = $attendance->checked_in_at->format('d M Y H:i');
+
+                if ($attendance->checked_out_at) {
+                    $this->handsOnCheckedOut[$this->registration->id] = $attendance->checked_out_at->format('d M Y H:i');
+                }
             }
 
             return;
@@ -88,6 +99,10 @@ class AttendanceVerify extends Component
 
         if ($seminarAttendance) {
             $this->seminarCheckedInAt = $seminarAttendance->checked_in_at->format('d M Y H:i');
+
+            if ($seminarAttendance->checked_out_at) {
+                $this->seminarCheckedOutAt = $seminarAttendance->checked_out_at->format('d M Y H:i');
+            }
         }
 
         $handsOnAttendances = Attendance::where('seminar_registration_id', $this->registration->id)
@@ -97,6 +112,10 @@ class AttendanceVerify extends Component
 
         foreach ($handsOnAttendances as $attendance) {
             $this->handsOnCheckedIn[$attendance->hands_on_registration_id] = $attendance->checked_in_at->format('d M Y H:i');
+
+            if ($attendance->checked_out_at) {
+                $this->handsOnCheckedOut[$attendance->hands_on_registration_id] = $attendance->checked_out_at->format('d M Y H:i');
+            }
         }
     }
 
@@ -107,6 +126,16 @@ class AttendanceVerify extends Component
     }
 
     public function canRedeemLunch(): bool
+    {
+        return Auth::user()?->hasRole(['Admin', 'Super Admin']) ?? false;
+    }
+
+    /**
+     * Only desk staff may confirm attendance. Participants own accounts of their
+     * own and the verify URL is printed in their confirmation email, so without
+     * this they could check themselves in from anywhere.
+     */
+    public function canCheckIn(): bool
     {
         return Auth::user()?->hasRole(['Admin', 'Super Admin']) ?? false;
     }
@@ -142,6 +171,12 @@ class AttendanceVerify extends Component
 
     public function checkInSeminar(): void
     {
+        if (! $this->canCheckIn()) {
+            $this->addError('auth', __('seminar.admin_only'));
+
+            return;
+        }
+
         if (! $this->registration instanceof SeminarRegistration) {
             return;
         }
@@ -156,12 +191,20 @@ class AttendanceVerify extends Component
             return;
         }
 
-        Attendance::create([
-            'seminar_registration_id' => $this->registration->id,
-            'activity_type' => 'seminar',
-            'checked_in_at' => now(),
-            'checked_in_by' => Auth::id(),
-        ]);
+        // firstOrCreate, not create: the unique index includes the nullable
+        // hands_on_registration_id, so it cannot block a duplicate seminar row
+        // when two desks scan the same participant at the same moment.
+        Attendance::firstOrCreate(
+            [
+                'seminar_registration_id' => $this->registration->id,
+                'hands_on_registration_id' => null,
+                'activity_type' => 'seminar',
+            ],
+            [
+                'checked_in_at' => now(),
+                'checked_in_by' => Auth::id(),
+            ]
+        );
 
         $this->seminarCheckedInAt = now()->format('d M Y H:i');
         $this->showSuccess = true;
@@ -169,6 +212,12 @@ class AttendanceVerify extends Component
 
     public function checkInHandsOn(int $handsOnRegistrationId): void
     {
+        if (! $this->canCheckIn()) {
+            $this->addError('auth', __('seminar.admin_only'));
+
+            return;
+        }
+
         if (isset($this->handsOnCheckedIn[$handsOnRegistrationId])) {
             return;
         }
@@ -199,6 +248,62 @@ class AttendanceVerify extends Component
 
         $this->handsOnCheckedIn[$handsOnReg->id] = now()->format('d M Y H:i');
         $this->showSuccess = true;
+    }
+
+    /**
+     * Check-out is the closing half of the same desk flow, so it is gated the
+     * same way as check-in and only applies to a record that is already in.
+     */
+    public function checkOutSeminar(): void
+    {
+        if (! $this->canCheckIn()) {
+            $this->addError('auth', __('seminar.admin_only'));
+
+            return;
+        }
+
+        if (! $this->registration instanceof SeminarRegistration || $this->seminarCheckedOutAt) {
+            return;
+        }
+
+        $staff = Auth::user();
+
+        if (! $staff || ! app(AttendanceCheckOutService::class)->checkOutSeminar($this->registration, $staff)) {
+            $this->addError('check_out', __('seminar.check_out_requires_check_in'));
+
+            return;
+        }
+
+        $this->seminarCheckedOutAt = now()->format('d M Y H:i');
+        $this->showCheckOutSuccess = true;
+    }
+
+    public function checkOutHandsOn(int $handsOnRegistrationId): void
+    {
+        if (! $this->canCheckIn()) {
+            $this->addError('auth', __('seminar.admin_only'));
+
+            return;
+        }
+
+        if (isset($this->handsOnCheckedOut[$handsOnRegistrationId])) {
+            return;
+        }
+
+        $handsOnReg = $this->registration instanceof HandsOnRegistration
+            ? $this->registration
+            : $this->registration->handsOnRegistrations()->find($handsOnRegistrationId);
+
+        $staff = Auth::user();
+
+        if (! $handsOnReg || ! $staff || ! app(AttendanceCheckOutService::class)->checkOutHandsOn($handsOnReg, $staff)) {
+            $this->addError('hands_on_check_out_'.$handsOnRegistrationId, __('seminar.check_out_requires_check_in'));
+
+            return;
+        }
+
+        $this->handsOnCheckedOut[$handsOnReg->id] = now()->format('d M Y H:i');
+        $this->showCheckOutSuccess = true;
     }
 
     public function getPaymentStatusLabelProperty(): string
@@ -237,6 +342,7 @@ class AttendanceVerify extends Component
                     'date' => $handsOn->event_date->format('d M Y'),
                     'payment_status' => $this->registration->payment_status,
                     'checked_in' => $this->handsOnCheckedIn[$this->registration->id] ?? null,
+                    'checked_out' => $this->handsOnCheckedOut[$this->registration->id] ?? null,
                 ],
             ]);
         }
@@ -255,6 +361,7 @@ class AttendanceVerify extends Component
                 'date' => $reg->handsOn->event_date->format('d M Y'),
                 'payment_status' => $reg->payment_status,
                 'checked_in' => $this->handsOnCheckedIn[$reg->id] ?? null,
+                'checked_out' => $this->handsOnCheckedOut[$reg->id] ?? null,
             ]);
     }
 
