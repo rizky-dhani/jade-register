@@ -342,7 +342,7 @@ class DemoAttendanceSeeder extends Seeder
     private function createAttendances(array $registrations, User $deskStaff): void
     {
         foreach (array_slice($registrations, 0, 2) as $index => $registration) {
-            Attendance::firstOrCreate(
+            $attendance = Attendance::firstOrCreate(
                 [
                     'seminar_registration_id' => $registration->id,
                     'hands_on_registration_id' => null,
@@ -353,6 +353,16 @@ class DemoAttendanceSeeder extends Seeder
                     'checked_in_by' => $deskStaff->id,
                 ]
             );
+
+            // The first participant has already left the hall, so the check-out
+            // column has something to show. Kept outside firstOrCreate so
+            // re-seeding still fills it in.
+            if ($index === 0 && $attendance->checked_out_at === null) {
+                $attendance->update([
+                    'checked_out_at' => $attendance->checked_in_at->copy()->addMinutes(45),
+                    'checked_out_by' => $deskStaff->id,
+                ]);
+            }
         }
 
         foreach (array_slice($registrations, 0, 2) as $index => $registration) {

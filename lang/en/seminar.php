@@ -365,6 +365,7 @@ return [
     'invalid_qr_code_title' => 'Invalid QR Code',
     'invalid_qr_code_message' => 'This QR code is invalid or not found.',
     'attendance_check_in_success' => 'Check-in successful!',
+    'attendance_check_out_success' => 'Check-out successful!',
     'participant_details_title' => 'Participant Details',
     'name_label' => 'Name',
     'email_label' => 'Email',
@@ -373,6 +374,7 @@ return [
     'seminar_attendance_title' => 'Seminar Attendance',
     'already_checked_in' => 'Already Checked In',
     'check_in_seminar_button' => 'Check-in Seminar',
+    'check_out_seminar_button' => 'Check-out Seminar',
     'hands_on_sessions_title' => 'Hands-On Sessions',
     'verified_by' => 'Verified By',
     'verified_at' => 'Verified At',
@@ -385,6 +387,10 @@ return [
     'wants_hands_on' => 'Wants Hands On',
     'payment_pending' => 'Payment Pending',
     'checked_in' => 'Checked In',
+    'check_out' => 'Check Out',
+    'check_out_button' => 'Check-out',
+    'checked_out' => 'Checked Out',
+    'check_out_requires_check_in' => 'This participant has not checked in yet, so there is nothing to check out.',
     'check_in_button' => 'Check-in',
 
     // Visitor QR Code

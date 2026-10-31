@@ -16,11 +16,14 @@ class Attendance extends Model
         'activity_type',
         'checked_in_at',
         'checked_in_by',
+        'checked_out_at',
+        'checked_out_by',
         'notes',
     ];
 
     protected $casts = [
         'checked_in_at' => 'datetime',
+        'checked_out_at' => 'datetime',
     ];
 
     public function seminarRegistration(): BelongsTo
@@ -36,6 +39,11 @@ class Attendance extends Model
     public function checkedInBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'checked_in_by');
+    }
+
+    public function checkedOutBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'checked_out_by');
     }
 
     public function isSeminar(): bool

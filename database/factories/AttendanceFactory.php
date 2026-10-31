@@ -21,6 +21,14 @@ class AttendanceFactory extends Factory
         ];
     }
 
+    public function checkedOut(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'checked_out_at' => now(),
+            'checked_out_by' => User::factory(),
+        ]);
+    }
+
     public function handsOn(): static
     {
         return $this->state(fn (array $attributes) => [

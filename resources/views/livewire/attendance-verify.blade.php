@@ -29,6 +29,11 @@
                     <p class="text-green-800 font-medium">{{ __('seminar.attendance_check_in_success') }}</p>
                 </div>
             @endif
+            @if($showCheckOutSuccess)
+                <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-4" wire:transition>
+                    <p class="text-green-800 font-medium">{{ __('seminar.attendance_check_out_success') }}</p>
+                </div>
+            @endif
             @if($lunchRedemptionSuccess)
                 <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-4" wire:transition>
                     <p class="text-green-800 font-medium">{{ __('lunch-coupon.redemption_success') }}</p>
@@ -97,6 +102,19 @@
                                     <span class="text-green-800">{{ __('seminar.already_checked_in') }}</span>
                                     <span class="text-sm text-green-600">{{ $seminarCheckedInAt }}</span>
                                 </div>
+                                @if($seminarCheckedOutAt)
+                                    <div class="mt-3 bg-gray-50 border border-gray-200 rounded-lg p-3 flex items-center justify-between">
+                                        <span class="text-gray-700">{{ __('seminar.checked_out') }}</span>
+                                        <span class="text-sm text-gray-500">{{ $seminarCheckedOutAt }}</span>
+                                    </div>
+                                @elseif($this->canCheckIn())
+                                    <button
+                                        wire:click="checkOutSeminar"
+                                        class="mt-3 w-full bg-gray-700 text-white py-3 px-6 rounded-lg font-semibold hover:bg-gray-800 transition-colors"
+                                    >
+                                        {{ __('seminar.check_out_seminar_button') }}
+                                    </button>
+                                @endif
                             @else
                                 @if($this->canCheckIn())
                                     <button
@@ -124,6 +142,9 @@
                                 </button>
                             </div>
                         @endif
+                        @error('check_out')
+                            <div class="mt-3 rounded-lg border border-red-200 bg-red-50 p-3" role="alert">{{ $message }}</div>
+                        @enderror
                         @error('lunch')
                             <div class="mt-3 rounded-lg border border-red-200 bg-red-50 p-3" role="alert">{{ $message }}</div>
                         @enderror
@@ -149,6 +170,19 @@
                                                 <span class="text-green-800 text-sm">{{ __('seminar.checked_in') }}</span>
                                                 <span class="text-xs text-green-600">{{ $session['checked_in'] }}</span>
                                             </div>
+                                            @if($session['checked_out'])
+                                                <div class="mt-2 bg-gray-50 border border-gray-200 rounded p-2 flex items-center justify-between">
+                                                    <span class="text-gray-700 text-sm">{{ __('seminar.checked_out') }}</span>
+                                                    <span class="text-xs text-gray-500">{{ $session['checked_out'] }}</span>
+                                                </div>
+                                            @elseif($this->canCheckIn())
+                                                <button
+                                                    wire:click="checkOutHandsOn({{ $session['id'] }})"
+                                                    class="mt-2 w-full bg-gray-700 text-white py-2 px-4 rounded font-medium hover:bg-gray-800 transition-colors text-sm"
+                                                >
+                                                    {{ __('seminar.check_out_button') }}
+                                                </button>
+                                            @endif
                                         @else
                                             @if($this->canCheckIn())
                                                 <button
@@ -160,6 +194,9 @@
                                                 </button>
                                             @endif
                                         @endif
+                                        @error('hands_on_check_out_'.$session['id'])
+                                            <div class="mt-2 rounded border border-red-200 bg-red-50 p-2 text-xs text-red-700" role="alert">{{ $message }}</div>
+                                        @enderror
                                     </div>
                                 @endforeach
                             </div>

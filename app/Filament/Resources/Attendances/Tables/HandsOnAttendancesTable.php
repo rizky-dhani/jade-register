@@ -2,9 +2,13 @@
 
 namespace App\Filament\Resources\Attendances\Tables;
 
+use App\Models\Attendance;
+use App\Services\AttendanceCheckOutService;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Notifications\Notification;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
@@ -64,6 +68,17 @@ class HandsOnAttendancesTable
                 TextColumn::make('checkedInBy.name')
                     ->label(__('filament.attendance.checked_in_by'))
                     ->searchable(),
+                IconColumn::make('is_checked_out')
+                    ->label(__('filament.attendance.checked_out'))
+                    ->state(fn ($record): bool => $record->checked_out_at !== null)
+                    ->boolean(),
+                TextColumn::make('checked_out_at')
+                    ->label(__('filament.attendance.check_out_time'))
+                    ->dateTime()
+                    ->sortable(),
+                TextColumn::make('checkedOutBy.name')
+                    ->label(__('filament.attendance.checked_out_by'))
+                    ->searchable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -88,8 +103,40 @@ class HandsOnAttendancesTable
                             $query->whereNull('checked_in_at');
                         }
                     }),
+                SelectFilter::make('is_checked_out')
+                    ->label(__('filament.attendance.check_out_status'))
+                    ->options([
+                        'checked_out' => __('filament.attendance.checked_out'),
+                        'not_checked_out' => __('filament.attendance.not_checked_out'),
+                    ])
+                    ->query(function ($query, array $data): void {
+                        if ($data['value'] === 'checked_out') {
+                            $query->whereNotNull('checked_out_at');
+                        } elseif ($data['value'] === 'not_checked_out') {
+                            $query->whereNull('checked_out_at');
+                        }
+                    }),
             ])
             ->recordActions([
+                Action::make('checkOut')
+                    ->label(__('filament.attendance.check_out'))
+                    ->icon('heroicon-o-arrow-right-on-rectangle')
+                    ->color('gray')
+                    ->requiresConfirmation()
+                    ->visible(fn (Attendance $record): bool => $record->checked_in_at !== null
+                        && $record->checked_out_at === null
+                        && (auth()->user()?->can('update attendances') ?? false))
+                    ->action(function (Attendance $record): void {
+                        $staff = auth()->user();
+
+                        if (! $staff) {
+                            return;
+                        }
+
+                        app(AttendanceCheckOutService::class)->checkOut($record, $staff);
+
+                        Notification::make()->success()->title(__('filament.attendance.checked_out'))->send();
+                    }),
                 EditAction::make()
                     ->visible(fn (): bool => auth()->user()?->can('update attendances') ?? false),
             ])

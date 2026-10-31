@@ -300,3 +300,125 @@ test('two simultaneous seminar scans leave a single attendance row', function ()
 
     $this->assertDatabaseCount('attendances', 1);
 });
+
+test('staff can check out a seminar participant', function () {
+    $this->actingAs($this->user);
+
+    $attendance = Attendance::factory()->create([
+        'seminar_registration_id' => $this->registration->id,
+        'activity_type' => 'seminar',
+        'checked_in_by' => $this->user->id,
+    ]);
+
+    livewire(AttendanceVerify::class, ['token' => $this->registration->qr_token])
+        ->call('checkOutSeminar')
+        ->assertSee(__('seminar.attendance_check_out_success'))
+        ->assertSee(__('seminar.checked_out'));
+
+    $attendance->refresh();
+
+    expect($attendance->checked_out_at)->not->toBeNull()
+        ->and($attendance->checked_out_by)->toBe($this->user->id);
+});
+
+test('a seminar participant cannot be checked out before checking in', function () {
+    $this->actingAs($this->user);
+
+    livewire(AttendanceVerify::class, ['token' => $this->registration->qr_token])
+        ->call('checkOutSeminar')
+        ->assertHasErrors(['check_out']);
+
+    $this->assertDatabaseCount('attendances', 0);
+});
+
+test('checking out a seminar participant twice keeps the first check-out', function () {
+    $this->actingAs($this->user);
+
+    $attendance = Attendance::factory()->create([
+        'seminar_registration_id' => $this->registration->id,
+        'activity_type' => 'seminar',
+        'checked_in_by' => $this->user->id,
+    ]);
+
+    livewire(AttendanceVerify::class, ['token' => $this->registration->qr_token])
+        ->call('checkOutSeminar')
+        ->assertHasNoErrors();
+
+    $attendance->refresh();
+    $firstCheckOutAt = $attendance->checked_out_at;
+    $firstCheckedOutBy = $attendance->checked_out_by;
+
+    $otherStaff = User::factory()->create();
+    $otherStaff->assignRole('Admin');
+    $this->actingAs($otherStaff);
+
+    livewire(AttendanceVerify::class, ['token' => $this->registration->qr_token])
+        ->call('checkOutSeminar')
+        ->assertHasNoErrors();
+
+    $attendance->refresh();
+
+    expect($attendance->checked_out_at->equalTo($firstCheckOutAt))->toBeTrue()
+        ->and($attendance->checked_out_by)->toBe($firstCheckedOutBy);
+});
+
+test('staff can check out a hands-on session', function () {
+    $this->actingAs($this->user);
+
+    $handsOn = HandsOn::factory()->create();
+    $handsOnReg = HandsOnRegistration::factory()->verified()->create([
+        'seminar_registration_id' => $this->registration->id,
+        'hands_on_id' => $handsOn->id,
+    ]);
+
+    $attendance = Attendance::factory()->handsOn()->create([
+        'seminar_registration_id' => $this->registration->id,
+        'hands_on_registration_id' => $handsOnReg->id,
+        'checked_in_by' => $this->user->id,
+    ]);
+
+    livewire(AttendanceVerify::class, ['token' => $this->registration->qr_token])
+        ->call('checkOutHandsOn', $handsOnReg->id)
+        ->assertSee(__('seminar.attendance_check_out_success'))
+        ->assertSee(__('seminar.checked_out'));
+
+    $attendance->refresh();
+
+    expect($attendance->checked_out_at)->not->toBeNull()
+        ->and($attendance->checked_out_by)->toBe($this->user->id);
+});
+
+test('a hands-on session cannot be checked out before checking in', function () {
+    $this->actingAs($this->user);
+
+    $handsOn = HandsOn::factory()->create();
+    $handsOnReg = HandsOnRegistration::factory()->verified()->create([
+        'seminar_registration_id' => $this->registration->id,
+        'hands_on_id' => $handsOn->id,
+    ]);
+
+    livewire(AttendanceVerify::class, ['token' => $this->registration->qr_token])
+        ->call('checkOutHandsOn', $handsOnReg->id)
+        ->assertHasErrors(['hands_on_check_out_'.$handsOnReg->id]);
+
+    $this->assertDatabaseCount('attendances', 0);
+});
+
+test('a participant cannot check out the seminar', function () {
+    $participant = User::factory()->create();
+    $participant->assignRole('Participant');
+    $this->actingAs($participant);
+
+    $attendance = Attendance::factory()->create([
+        'seminar_registration_id' => $this->registration->id,
+        'activity_type' => 'seminar',
+        'checked_in_by' => $participant->id,
+    ]);
+
+    livewire(AttendanceVerify::class, ['token' => $this->registration->qr_token])
+        ->call('checkOutSeminar')
+        ->assertHasErrors(['auth'])
+        ->assertDontSee(__('seminar.check_out_seminar_button'));
+
+    expect($attendance->refresh()->checked_out_at)->toBeNull();
+});
