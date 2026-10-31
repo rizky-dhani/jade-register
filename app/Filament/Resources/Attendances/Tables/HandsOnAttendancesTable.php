@@ -46,7 +46,13 @@ class HandsOnAttendancesTable
 
                         return 'N/A';
                     })
-                    ->searchable(),
+                    // hands_on_name is computed state, not a column: a plain
+                    // searchable() would query attendances.hands_on_name.
+                    ->searchable(query: function ($query, $search) {
+                        $query->whereHas('handsOnRegistration.handsOn', function ($q) use ($search) {
+                            $q->where('name', 'like', "%{$search}%");
+                        });
+                    }),
                 IconColumn::make('is_checked_in')
                     ->label(__('filament.attendance.checked_in'))
                     ->state(fn ($record): bool => $record->checked_in_at !== null)
