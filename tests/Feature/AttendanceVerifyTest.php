@@ -7,6 +7,7 @@ use App\Models\HandsOnRegistration;
 use App\Models\SeminarRegistration;
 use App\Models\User;
 use App\Services\QrTokenService;
+use Database\Seeders\RolePermissionSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use function Pest\Livewire\livewire;
@@ -14,7 +15,10 @@ use function Pest\Livewire\livewire;
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
+    $this->seed(RolePermissionSeeder::class);
+
     $this->user = User::factory()->create();
+    $this->user->assignRole('Admin');
     $this->registration = SeminarRegistration::factory()->verified()->create();
 });
 
@@ -219,6 +223,80 @@ test('checking in the same hands-on registration twice records one attendance', 
     // A second scan arrives as a fresh request against the same token.
     livewire(AttendanceVerify::class, ['token' => $handsOnReg->qr_token])
         ->call('checkInHandsOn', $handsOnReg->id);
+
+    $this->assertDatabaseCount('attendances', 1);
+});
+
+/**
+ * Participants can self-register at /admin/register, and the verify URL is
+ * printed in their confirmation email — so the check-in buttons and the actions
+ * behind them must be closed to anyone without a desk role.
+ */
+test('a participant cannot check in the seminar', function () {
+    $participant = User::factory()->create();
+    $participant->assignRole('Participant');
+    $this->actingAs($participant);
+
+    livewire(AttendanceVerify::class, ['token' => $this->registration->qr_token])
+        ->call('checkInSeminar')
+        ->assertHasErrors(['auth'])
+        ->assertDontSee(__('seminar.check_in_seminar_button'));
+
+    $this->assertDatabaseCount('attendances', 0);
+});
+
+test('a participant cannot check in a hands-on session', function () {
+    $participant = User::factory()->create();
+    $participant->assignRole('Participant');
+    $this->actingAs($participant);
+
+    $handsOn = HandsOn::factory()->create();
+    $handsOnReg = HandsOnRegistration::factory()->verified()->create([
+        'seminar_registration_id' => $this->registration->id,
+        'hands_on_id' => $handsOn->id,
+    ]);
+
+    livewire(AttendanceVerify::class, ['token' => $this->registration->qr_token])
+        ->call('checkInHandsOn', $handsOnReg->id)
+        ->assertHasErrors(['auth']);
+
+    $this->assertDatabaseMissing('attendances', [
+        'hands_on_registration_id' => $handsOnReg->id,
+    ]);
+});
+
+test('a guest is not offered the check-in buttons', function () {
+    $this->actingAs(User::factory()->create());
+
+    livewire(AttendanceVerify::class, ['token' => $this->registration->qr_token])
+        ->assertSee(__('seminar.admin_only_action'))
+        ->assertDontSee(__('seminar.check_in_seminar_button'));
+});
+
+test('a super admin can check in the seminar', function () {
+    $superAdmin = User::factory()->create();
+    $superAdmin->assignRole('Super Admin');
+    $this->actingAs($superAdmin);
+
+    livewire(AttendanceVerify::class, ['token' => $this->registration->qr_token])
+        ->assertSee(__('seminar.check_in_seminar_button'))
+        ->call('checkInSeminar')
+        ->assertHasNoErrors();
+
+    $this->assertDatabaseCount('attendances', 1);
+});
+
+test('two simultaneous seminar scans leave a single attendance row', function () {
+    $this->actingAs($this->user);
+
+    // Two desks hit the same participant at once: clear the in-memory guard the
+    // way a second, concurrent mount would have it, so only the database
+    // uniqueness check protects the row. The unique index includes the nullable
+    // hands_on_registration_id and therefore cannot block this insert — the
+    // firstOrCreate lookup is what has to hold.
+    $component = livewire(AttendanceVerify::class, ['token' => $this->registration->qr_token]);
+    $component->call('checkInSeminar');
+    $component->set('seminarCheckedInAt', null)->call('checkInSeminar');
 
     $this->assertDatabaseCount('attendances', 1);
 });

@@ -111,6 +111,16 @@ class AttendanceVerify extends Component
         return Auth::user()?->hasRole(['Admin', 'Super Admin']) ?? false;
     }
 
+    /**
+     * Only desk staff may confirm attendance. Participants own accounts of their
+     * own and the verify URL is printed in their confirmation email, so without
+     * this they could check themselves in from anywhere.
+     */
+    public function canCheckIn(): bool
+    {
+        return Auth::user()?->hasRole(['Admin', 'Super Admin']) ?? false;
+    }
+
     public function redeemLunch(): void
     {
         if (! $this->registration instanceof SeminarRegistration) {
@@ -142,6 +152,12 @@ class AttendanceVerify extends Component
 
     public function checkInSeminar(): void
     {
+        if (! $this->canCheckIn()) {
+            $this->addError('auth', __('seminar.admin_only'));
+
+            return;
+        }
+
         if (! $this->registration instanceof SeminarRegistration) {
             return;
         }
@@ -156,12 +172,20 @@ class AttendanceVerify extends Component
             return;
         }
 
-        Attendance::create([
-            'seminar_registration_id' => $this->registration->id,
-            'activity_type' => 'seminar',
-            'checked_in_at' => now(),
-            'checked_in_by' => Auth::id(),
-        ]);
+        // firstOrCreate, not create: the unique index includes the nullable
+        // hands_on_registration_id, so it cannot block a duplicate seminar row
+        // when two desks scan the same participant at the same moment.
+        Attendance::firstOrCreate(
+            [
+                'seminar_registration_id' => $this->registration->id,
+                'hands_on_registration_id' => null,
+                'activity_type' => 'seminar',
+            ],
+            [
+                'checked_in_at' => now(),
+                'checked_in_by' => Auth::id(),
+            ]
+        );
 
         $this->seminarCheckedInAt = now()->format('d M Y H:i');
         $this->showSuccess = true;
@@ -169,6 +193,12 @@ class AttendanceVerify extends Component
 
     public function checkInHandsOn(int $handsOnRegistrationId): void
     {
+        if (! $this->canCheckIn()) {
+            $this->addError('auth', __('seminar.admin_only'));
+
+            return;
+        }
+
         if (isset($this->handsOnCheckedIn[$handsOnRegistrationId])) {
             return;
         }

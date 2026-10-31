@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Addon;
 use App\Models\AddonRegistration;
+use App\Models\Attendance;
 use App\Models\Country;
 use App\Models\HandsOn;
 use App\Models\HandsOnRegistration;
@@ -11,8 +12,11 @@ use App\Models\Seminar;
 use App\Models\SeminarRegistration;
 use App\Models\Setting;
 use App\Models\User;
+use App\Models\Visitor;
+use App\Models\VisitorAttendance;
 use App\Services\QrTokenService;
 use App\Services\RegistrationService;
+use App\Services\VisitorQrTokenService;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -27,6 +31,10 @@ class DemoAttendanceSeeder extends Seeder
      *   1-3  lunch included in the seminar package
      *   4    lunch bought as a verified LUNCH_ADDON
      *   5    no lunch at all, so the coupon button must stay hidden
+     *
+     * Two seminar participants and their hands-on sessions are already checked in,
+     * and two visitors are already at the desk, so every attendance list in the
+     * admin panel has rows to show. The rest stay unscanned for a live demo.
      */
     public function run(): void
     {
@@ -45,6 +53,8 @@ class DemoAttendanceSeeder extends Seeder
         );
 
         $this->createHandsOnRegistrations($registrations);
+        $this->createVisitors($deskStaff);
+        $this->createAttendances($registrations, $deskStaff);
 
         $this->command?->newLine();
         $this->command?->info('Demo attendance data ready.');
@@ -283,6 +293,86 @@ class DemoAttendanceSeeder extends Seeder
                 'wants_hands_on' => true,
                 'hands_on_total_amount' => (int) $event->price,
             ]);
+        }
+    }
+
+    /**
+     * Visitor walk-ins. Two are already at the desk; the other two still hold an
+     * unscanned QR so the visitor verification page can be demoed.
+     */
+    private function createVisitors(User $deskStaff): void
+    {
+        $visitors = [
+            ['Rina Anggraini', 'rina.anggraini@example.test', '+6281290000001', 'Universitas Indonesia', true],
+            ['Yusuf Hidayat', 'yusuf.hidayat@example.test', '+6281290000002', 'RS Cipto Mangunkusumo', true],
+            ['Melati Puspita', 'melati.puspita@example.test', '+6281290000003', 'Klinik Sehat Gigi', false],
+            ['Rangga Wijaya', 'rangga.wijaya@example.test', '+6281290000004', 'PDGI Cabang Bali', false],
+        ];
+
+        foreach ($visitors as $index => [$name, $email, $phone, $affiliation, $isCheckedIn]) {
+            $visitor = Visitor::updateOrCreate(
+                ['email' => $email],
+                ['name' => $name, 'phone' => $phone, 'affiliation' => $affiliation]
+            );
+
+            if (! $visitor->qr_token) {
+                app(VisitorQrTokenService::class)->generate($visitor);
+            }
+
+            if (! $isCheckedIn) {
+                continue;
+            }
+
+            $checkedInAt = now()->subMinutes(90 - ($index * 15));
+
+            $visitor->update(['scanned_at' => $checkedInAt]);
+
+            VisitorAttendance::firstOrCreate(
+                ['visitor_id' => $visitor->id],
+                ['checked_in_at' => $checkedInAt, 'checked_in_by' => $deskStaff->id]
+            );
+        }
+    }
+
+    /**
+     * Check in the first two seminar participants and their hands-on sessions.
+     *
+     * @param  array<int, SeminarRegistration>  $registrations
+     */
+    private function createAttendances(array $registrations, User $deskStaff): void
+    {
+        foreach (array_slice($registrations, 0, 2) as $index => $registration) {
+            Attendance::firstOrCreate(
+                [
+                    'seminar_registration_id' => $registration->id,
+                    'hands_on_registration_id' => null,
+                    'activity_type' => 'seminar',
+                ],
+                [
+                    'checked_in_at' => now()->subMinutes(60 - ($index * 10)),
+                    'checked_in_by' => $deskStaff->id,
+                ]
+            );
+        }
+
+        foreach (array_slice($registrations, 0, 2) as $index => $registration) {
+            $handsOnRegistration = $registration->handsOnRegistrations()->first();
+
+            if (! $handsOnRegistration) {
+                continue;
+            }
+
+            Attendance::firstOrCreate(
+                [
+                    'hands_on_registration_id' => $handsOnRegistration->id,
+                    'activity_type' => 'hands_on',
+                ],
+                [
+                    'seminar_registration_id' => $registration->id,
+                    'checked_in_at' => now()->subMinutes(45 - ($index * 10)),
+                    'checked_in_by' => $deskStaff->id,
+                ]
+            );
         }
     }
 

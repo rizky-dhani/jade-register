@@ -79,6 +79,16 @@
                         </div>
                     @endif
 
+                    @error('auth')
+                        <div class="mb-4 rounded-lg border border-red-200 bg-red-50 p-4" role="alert">
+                            <p class="text-center text-red-700">{{ $message }}</p>
+                        </div>
+                    @enderror
+
+                    @if(! $this->canCheckIn())
+                        <p class="mb-4 text-center text-sm text-gray-500">{{ __('seminar.admin_only_action') }}</p>
+                    @endif
+
                     @if($registration instanceof \App\Models\SeminarRegistration)
                         <div class="border-t pt-4">
                             <h3 class="font-semibold text-gray-900 mb-3">{{ __('seminar.seminar_attendance_title') }}</h3>
@@ -88,13 +98,15 @@
                                     <span class="text-sm text-green-600">{{ $seminarCheckedInAt }}</span>
                                 </div>
                             @else
-                                <button
-                                    wire:click="checkInSeminar"
-                                    class="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                    @if($registration->payment_status !== 'verified') disabled @endif
-                                >
-                                    {{ __('seminar.check_in_seminar_button') }}
-                                </button>
+                                @if($this->canCheckIn())
+                                    <button
+                                        wire:click="checkInSeminar"
+                                        class="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                        @if($registration->payment_status !== 'verified') disabled @endif
+                                    >
+                                        {{ __('seminar.check_in_seminar_button') }}
+                                    </button>
+                                @endif
                             @endif
                         </div>
 
@@ -138,13 +150,15 @@
                                                 <span class="text-xs text-green-600">{{ $session['checked_in'] }}</span>
                                             </div>
                                         @else
-                                            <button
-                                                wire:click="checkInHandsOn({{ $session['id'] }})"
-                                                class="w-full bg-blue-600 text-white py-2 px-4 rounded font-medium hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm"
-                                                @if($session['payment_status'] !== 'verified') disabled @endif
-                                            >
-                                                {{ __('seminar.check_in_button') }}
-                                            </button>
+                                            @if($this->canCheckIn())
+                                                <button
+                                                    wire:click="checkInHandsOn({{ $session['id'] }})"
+                                                    class="w-full bg-blue-600 text-white py-2 px-4 rounded font-medium hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                                                    @if($session['payment_status'] !== 'verified') disabled @endif
+                                                >
+                                                    {{ __('seminar.check_in_button') }}
+                                                </button>
+                                            @endif
                                         @endif
                                     </div>
                                 @endforeach
