@@ -97,6 +97,7 @@ class LocalParticipantsSheet extends BaseParticipantsSheet implements IValueBind
             'Kode Peserta',
             'Nama sesuai Plataran Sehat',
             'Email',
+            'No Telp',
             'NIK',
             'Cabang PDGI',
             'Seminar',
@@ -113,12 +114,13 @@ class LocalParticipantsSheet extends BaseParticipantsSheet implements IValueBind
     {
         return [
             'D' => NumberFormat::FORMAT_TEXT,
+            'E' => NumberFormat::FORMAT_TEXT,
         ];
     }
 
     public function bindValue(Cell $cell, mixed $value): bool
     {
-        if ($cell->getColumn() === 'D') {
+        if (in_array($cell->getColumn(), ['D', 'E'], true)) {
             $cell->setValueExplicit($value, DataType::TYPE_STRING);
 
             return true;
@@ -133,6 +135,7 @@ class LocalParticipantsSheet extends BaseParticipantsSheet implements IValueBind
             $registration->registration_code,
             $registration->name_license,
             $registration->email,
+            $registration->phone,
             $registration->nik,
             $registration->pdgi_branch,
             $registration->seminarPackage?->name ?? $registration->selected_seminar,

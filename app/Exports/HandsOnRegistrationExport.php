@@ -91,6 +91,7 @@ abstract class BaseHandsOnSheet implements FromCollection, ShouldAutoSize, WithH
             'Seminar Reg Code',
             'Participant Name',
             'Email',
+            'No Telp',
             'Register Type',
             'Payment Status',
             'Created At',
@@ -106,6 +107,7 @@ abstract class BaseHandsOnSheet implements FromCollection, ShouldAutoSize, WithH
             $registration->seminarRegistration?->registration_code ?? '-',
             $this->participantName($registration),
             $this->participantEmail($registration),
+            $this->participantPhone($registration),
             $registration->registration_type === 'combined' ? 'Combined' : 'Independent',
             ucfirst($registration->payment_status ?? '-'),
             $registration->created_at?->format('Y-m-d H:i:s'),
@@ -124,6 +126,11 @@ abstract class BaseHandsOnSheet implements FromCollection, ShouldAutoSize, WithH
     protected function participantEmail(HandsOnRegistration $registration): string
     {
         return $registration->seminarRegistration?->email ?? $registration->email ?? '-';
+    }
+
+    protected function participantPhone(HandsOnRegistration $registration): string
+    {
+        return $registration->seminarRegistration?->phone ?? $registration->phone ?? '-';
     }
 }
 

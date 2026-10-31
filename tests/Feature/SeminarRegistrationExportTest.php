@@ -42,6 +42,7 @@ test('local sheet lists tanggal daftar as the second to last column', function (
         ->create([
             'name_license' => 'Local Dentist',
             'created_at' => '2026-11-13 09:30:00',
+            'phone' => '081234567890',
         ]);
 
     $rows = seminarSheetRows(renderSeminarExport()->getSheet(0));
@@ -50,6 +51,7 @@ test('local sheet lists tanggal daftar as the second to last column', function (
         'Kode Peserta',
         'Nama sesuai Plataran Sehat',
         'Email',
+        'No Telp',
         'NIK',
         'Cabang PDGI',
         'Seminar',
@@ -62,7 +64,8 @@ test('local sheet lists tanggal daftar as the second to last column', function (
     ]);
 
     $dataRow = collect($rows)->firstWhere(0, $registration->registration_code);
-    expect($dataRow[10])->toBe('2026-11-13 09:30:00');
+    expect($dataRow[11])->toBe('2026-11-13 09:30:00');
+    expect($dataRow[3])->toBe('081234567890');
 });
 
 test('international sheet lists tanggal daftar as the second to last column', function () {
