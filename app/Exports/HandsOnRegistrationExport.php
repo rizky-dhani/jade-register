@@ -6,6 +6,8 @@ use App\Models\HandsOn;
 use App\Models\HandsOnRegistration;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use Maatwebsite\Excel\Concerns\WithColumnFormatting;
+use Maatwebsite\Excel\Concerns\WithCustomValueBinder;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
@@ -13,7 +15,13 @@ use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Events\AfterSheet;
+use PhpOffice\PhpSpreadsheet\Cell\Cell;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
+use PhpOffice\PhpSpreadsheet\Cell\DefaultValueBinder;
+use PhpOffice\PhpSpreadsheet\Cell\IValueBinder;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class HandsOnRegistrationExport implements WithMultipleSheets
@@ -57,8 +65,38 @@ class HandsOnRegistrationExport implements WithMultipleSheets
     }
 }
 
-abstract class BaseHandsOnSheet implements FromCollection, ShouldAutoSize, WithHeadings, WithMapping, WithStyles, WithTitle
+abstract class BaseHandsOnSheet implements FromCollection, IValueBinder, ShouldAutoSize, WithColumnFormatting, WithCustomValueBinder, WithHeadings, WithMapping, WithStyles, WithTitle
 {
+    /**
+     * Phone numbers arrive as +62…, which PhpSpreadsheet's default binder would
+     * store as a number — losing the leading + and rendering as 6.28121E+12.
+     */
+    public function bindValue(Cell $cell, mixed $value): bool
+    {
+        if ($cell->getColumn() === $this->phoneColumn()) {
+            $cell->setValueExplicit($value, DataType::TYPE_STRING);
+
+            return true;
+        }
+
+        return (new DefaultValueBinder)->bindValue($cell, $value);
+    }
+
+    public function columnFormats(): array
+    {
+        return [$this->phoneColumn() => NumberFormat::FORMAT_TEXT];
+    }
+
+    /**
+     * Derived from the headings so sheets that insert their own columns stay correct.
+     */
+    protected function phoneColumn(): string
+    {
+        $index = array_search('No Telp', $this->headings(), true);
+
+        return Coordinate::stringFromColumnIndex($index === false ? 1 : $index + 1);
+    }
+
     /**
      * Group registrations of the same participant: seminar registration when linked,
      * otherwise the email address, falling back to the row itself.

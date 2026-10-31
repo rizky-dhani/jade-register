@@ -38,6 +38,28 @@ function sheetRows(Worksheet $sheet): array
 }
 
 /**
+ * Non-empty values in one column, each paired with the type PhpSpreadsheet stored it as.
+ *
+ * @return array<int, array{0: string, 1: string}>
+ */
+function columnValues(Worksheet $sheet, string $column): array
+{
+    $values = [];
+
+    for ($row = 1; $row <= $sheet->getHighestRow(); $row++) {
+        $cell = $sheet->getCell($column.$row);
+
+        if ($cell->getValue() === null || $cell->getValue() === '') {
+            continue;
+        }
+
+        $values[] = [$cell->getValue(), $cell->getDataType()];
+    }
+
+    return $values;
+}
+
+/**
  * Split the summary sheet into its totals table and participant table, each with its header row first.
  *
  * @return array{totals: array<int, array>, participants: array<int, array>}
@@ -60,7 +82,7 @@ test('summary sheet is first and lists joined hands on codes per participant', f
     $seminar = SeminarRegistration::factory()->create([
         'name_license' => 'Multi Session Dentist',
         'email' => 'multi@example.com',
-        'phone' => '081200000001',
+        'phone' => '+6281200000001',
     ]);
 
     $first = HandsOn::factory()->create(['ho_code' => 'HO-01', 'event_date' => '2026-11-13']);
@@ -105,7 +127,7 @@ test('summary sheet is first and lists joined hands on codes per participant', f
     expect($multiRows)->toHaveCount(1);
     expect($multiRows[0][3])->toBe('HO-01, HO-05');
     expect($multiRows[0][0])->toBe($multiLatest->registration_code);
-    expect($multiRows[0][6])->toBe('081200000001');
+    expect($multiRows[0][6])->toBe('+6281200000001');
     expect($dataRows->pluck(0))->not->toContain($multiFirst->registration_code);
 
     expect($dataRows->firstWhere(5, 'solo@example.com')[3])->toBe('HO-09');
@@ -149,4 +171,16 @@ test('summary sheet totals table counts paid and pending per hands on', function
 
     expect($totals->first())->toBe(['HO Code', 'Paid', 'Pending', 'Total']);
     expect($totals->firstWhere(0, 'HO-03'))->toBe(['HO-03', 2, 1, 3]);
+});
+
+test('phone numbers are stored as text so excel does not show scientific notation', function () {
+    $handsOn = HandsOn::factory()->create(['ho_code' => 'HO-04', 'event_date' => '2026-11-13']);
+    $seminar = SeminarRegistration::factory()->create(['phone' => '+6281200000001']);
+    HandsOnRegistration::factory()->for($handsOn)->for($seminar)->create();
+
+    $workbook = renderHandsOnExport();
+
+    // Summary splices Joined Hands On in front of the phone column, so it lands in G; session sheets keep it in F.
+    expect(columnValues($workbook->getSheet(0), 'G'))->toBe([['No Telp', 's'], ['+6281200000001', 's']]);
+    expect(columnValues($workbook->getSheet(1), 'F'))->toBe([['No Telp', 's'], ['+6281200000001', 's']]);
 });
