@@ -22,8 +22,10 @@ class AttendancesTable
                             return $record->seminarRegistration->name_license;
                         }
 
-                        if ($record->isHandsOn() && $record->handsOnRegistration && $record->handsOnRegistration->seminarRegistration) {
-                            return $record->handsOnRegistration->seminarRegistration->name_license;
+                        if ($record->isHandsOn() && $record->handsOnRegistration) {
+                            return $record->handsOnRegistration->seminarRegistration?->name_license
+                                ?? $record->handsOnRegistration->name_license
+                                ?? 'N/A';
                         }
 
                         return 'N/A';

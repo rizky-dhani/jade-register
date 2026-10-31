@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Settings\Schemas;
 
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -44,6 +45,7 @@ class SettingForm
                                 'float' => 'Float',
                                 'boolean' => 'Boolean',
                                 'datetime' => 'Date / Time',
+                                'date' => 'Date',
                                 'array' => 'Array (JSON)',
                             ])
                             ->required()
@@ -89,6 +91,11 @@ class SettingForm
                             ->seconds(false)
                             ->visible(fn (Get $get): bool => $get('type') === 'datetime')
                             ->dehydrated(fn (Get $get): bool => $get('type') === 'datetime'),
+                        DatePicker::make('value_date')
+                            ->label(__('filament.settings.form.value'))
+                            ->nullable()
+                            ->visible(fn (Get $get): bool => $get('type') === 'date')
+                            ->dehydrated(fn (Get $get): bool => $get('type') === 'date'),
                         Textarea::make('value_array')
                             ->label(__('filament.settings.form.value'))
                             ->required(fn (Get $get): bool => $get('type') === 'array')

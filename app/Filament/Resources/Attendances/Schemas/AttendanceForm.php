@@ -15,8 +15,7 @@ class AttendanceForm
         return $schema
             ->components([
                 Select::make('seminar_registration_id')
-                    ->relationship('seminarRegistration', 'name_license')
-                    ->required(),
+                    ->relationship('seminarRegistration', 'name_license'),
                 Select::make('hands_on_registration_id')
                     ->relationship('handsOnRegistration', 'id'),
                 TextInput::make('activity_type')

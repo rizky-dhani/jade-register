@@ -29,6 +29,11 @@
                     <p class="text-green-800 font-medium">{{ __('seminar.attendance_check_in_success') }}</p>
                 </div>
             @endif
+            @if($lunchRedemptionSuccess)
+                <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-4" wire:transition>
+                    <p class="text-green-800 font-medium">{{ __('lunch-coupon.redemption_success') }}</p>
+                </div>
+            @endif
 
             @error('payment')
                 <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
@@ -75,23 +80,41 @@
                     @endif
 
                     @if($registration instanceof \App\Models\SeminarRegistration)
-                    <div class="border-t pt-4">
-                        <h3 class="font-semibold text-gray-900 mb-3">{{ __('seminar.seminar_attendance_title') }}</h3>
-                        @if($seminarCheckedInAt)
-                            <div class="bg-green-50 border border-green-200 rounded-lg p-3 flex items-center justify-between">
-                                <span class="text-green-800">{{ __('seminar.already_checked_in') }}</span>
-                                <span class="text-sm text-green-600">{{ $seminarCheckedInAt }}</span>
+                        <div class="border-t pt-4">
+                            <h3 class="font-semibold text-gray-900 mb-3">{{ __('seminar.seminar_attendance_title') }}</h3>
+                            @if($seminarCheckedInAt)
+                                <div class="bg-green-50 border border-green-200 rounded-lg p-3 flex items-center justify-between">
+                                    <span class="text-green-800">{{ __('seminar.already_checked_in') }}</span>
+                                    <span class="text-sm text-green-600">{{ $seminarCheckedInAt }}</span>
+                                </div>
+                            @else
+                                <button
+                                    wire:click="checkInSeminar"
+                                    class="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                    @if($registration->payment_status !== 'verified') disabled @endif
+                                >
+                                    {{ __('seminar.check_in_seminar_button') }}
+                                </button>
+                            @endif
+                        </div>
+
+                        @if($this->lunchRedemption)
+                            <div class="mt-4 rounded-lg border border-green-200 bg-green-50 p-4">
+                                <p class="font-semibold text-green-800">{{ __('lunch-coupon.redeemed') }}</p>
+                                <p class="text-sm text-green-700">{{ __('lunch-coupon.redeemed_at') }}: {{ $this->lunchRedemption->redeemed_at->timezone(config('app.timezone'))->format('d M Y H:i') }}</p>
+                                <p class="text-sm text-green-700">{{ __('lunch-coupon.redeemed_by') }}: {{ $this->lunchRedemption->redeemed_by_name }}</p>
                             </div>
-                        @else
-                            <button
-                                wire:click="checkInSeminar"
-                                class="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                @if($registration->payment_status !== 'verified') disabled @endif
-                            >
-                                {{ __('seminar.check_in_seminar_button') }}
-                            </button>
+                        @elseif($this->lunchEligible() && $this->canRedeemLunch() && $this->isLunchRedemptionOpen())
+                            <div class="mt-4 rounded-lg border border-amber-200 bg-amber-50 p-4">
+                                <p class="mb-3 font-semibold text-gray-900">{{ __('lunch-coupon.title') }}</p>
+                                <button wire:click="redeemLunch" class="w-full rounded-lg bg-green-600 px-6 py-3 font-semibold text-white hover:bg-green-700">
+                                    {{ __('lunch-coupon.redeem') }}
+                                </button>
+                            </div>
                         @endif
-                    </div>
+                        @error('lunch')
+                            <div class="mt-3 rounded-lg border border-red-200 bg-red-50 p-3" role="alert">{{ $message }}</div>
+                        @enderror
                     @endif
 
                     @if($this->handsOnSessions->isNotEmpty())

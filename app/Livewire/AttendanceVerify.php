@@ -5,7 +5,9 @@ namespace App\Livewire;
 use App\Models\Attendance;
 use App\Models\DigitalWorkshopRegistration;
 use App\Models\HandsOnRegistration;
+use App\Models\LunchRedemption;
 use App\Models\SeminarRegistration;
+use App\Services\LunchRedemptionService;
 use App\Services\QrTokenService;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -29,6 +31,10 @@ class AttendanceVerify extends Component
 
     protected static string $view = 'livewire.attendance-verify';
 
+    public ?LunchRedemption $lunchRedemption = null;
+
+    public bool $lunchRedemptionSuccess = false;
+
     public function mount(string $token): void
     {
         $this->token = $token;
@@ -50,6 +56,9 @@ class AttendanceVerify extends Component
         }
 
         $this->loadCheckInStatus();
+        if ($this->registration instanceof SeminarRegistration) {
+            $this->lunchRedemption = $this->registration->lunchRedemption()->with('redeemedBy')->first();
+        }
     }
 
     public function loadCheckInStatus(): void
@@ -89,6 +98,46 @@ class AttendanceVerify extends Component
         foreach ($handsOnAttendances as $attendance) {
             $this->handsOnCheckedIn[$attendance->hands_on_registration_id] = $attendance->checked_in_at->format('d M Y H:i');
         }
+    }
+
+    public function lunchEligible(): bool
+    {
+        return $this->registration instanceof SeminarRegistration
+            && $this->registration->isEligibleForLunch();
+    }
+
+    public function canRedeemLunch(): bool
+    {
+        return Auth::user()?->hasRole(['Admin', 'Super Admin']) ?? false;
+    }
+
+    public function redeemLunch(): void
+    {
+        if (! $this->registration instanceof SeminarRegistration) {
+            return;
+        }
+
+        if (! $this->canRedeemLunch()) {
+            $this->addError('lunch', __('lunch-coupon.forbidden'));
+
+            return;
+        }
+
+        try {
+            $this->lunchRedemption = app(LunchRedemptionService::class)
+                ->redeem($this->registration, Auth::user());
+        } catch (\DomainException) {
+            $this->addError('lunch', __('lunch-coupon.unavailable'));
+
+            return;
+        }
+
+        $this->lunchRedemptionSuccess = true;
+    }
+
+    public function isLunchRedemptionOpen(): bool
+    {
+        return app(LunchRedemptionService::class)->isRedemptionOpen();
     }
 
     public function checkInSeminar(): void
@@ -134,13 +183,19 @@ class AttendanceVerify extends Component
             return;
         }
 
-        Attendance::create([
-            'seminar_registration_id' => $this->registration instanceof SeminarRegistration ? $this->registration->id : null,
-            'hands_on_registration_id' => $handsOnReg->id,
-            'activity_type' => 'hands_on',
-            'checked_in_at' => now(),
-            'checked_in_by' => Auth::id(),
-        ]);
+        // firstOrCreate keeps a double scan idempotent: the unique index cannot
+        // guard hands-on rows whose seminar_registration_id is NULL.
+        Attendance::firstOrCreate(
+            [
+                'hands_on_registration_id' => $handsOnReg->id,
+                'activity_type' => 'hands_on',
+            ],
+            [
+                'seminar_registration_id' => $handsOnReg->seminar_registration_id,
+                'checked_in_at' => now(),
+                'checked_in_by' => Auth::id(),
+            ]
+        );
 
         $this->handsOnCheckedIn[$handsOnReg->id] = now()->format('d M Y H:i');
         $this->showSuccess = true;

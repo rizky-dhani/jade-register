@@ -1,6 +1,12 @@
 <?php
 
 return [
+    'seminar_event_date' => [
+        'label' => 'Seminar Event Date',
+        'type' => 'date',
+        'default' => null,
+        'description' => 'Calendar date when lunch coupons may be redeemed. Redemption is blocked until a date is configured.',
+    ],
     'registration_open' => [
         'label' => 'Seminar Registration Open/Close',
         'type' => 'boolean',

@@ -6,6 +6,7 @@ use App\Models\HandsOn;
 use App\Models\HandsOnRegistration;
 use App\Models\SeminarRegistration;
 use App\Models\User;
+use App\Services\QrTokenService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use function Pest\Livewire\livewire;
@@ -147,7 +148,7 @@ test('verification page shows expired message with expired token', function () {
     $expiredRegistration = SeminarRegistration::factory()->verified()->expired()->create();
 
     livewire(AttendanceVerify::class, ['token' => $expiredRegistration->qr_token])
-        ->assertSee('QR Code Expired')
+        ->assertSee(__('seminar.qr_code_expired_title'))
         ->assertDontSee($expiredRegistration->name_license);
 });
 
@@ -155,5 +156,69 @@ test('verification page shows invalid message with invalid token', function () {
     $this->actingAs($this->user);
 
     livewire(AttendanceVerify::class, ['token' => 'invalid-token-123'])
-        ->assertSee('Invalid QR Code');
+        ->assertSee(__('seminar.invalid_qr_code_title'));
+});
+
+test('staff can check in hands-on from a hands-on token that is linked to a seminar registration', function () {
+    $this->actingAs($this->user);
+
+    $handsOn = HandsOn::factory()->create();
+    $handsOnReg = HandsOnRegistration::factory()->verified()->create([
+        'seminar_registration_id' => $this->registration->id,
+        'hands_on_id' => $handsOn->id,
+    ]);
+    app(QrTokenService::class)->generateForHandsOn($handsOnReg);
+
+    livewire(AttendanceVerify::class, ['token' => $handsOnReg->qr_token])
+        ->call('checkInHandsOn', $handsOnReg->id);
+
+    $this->assertDatabaseHas('attendances', [
+        'seminar_registration_id' => $this->registration->id,
+        'hands_on_registration_id' => $handsOnReg->id,
+        'activity_type' => 'hands_on',
+        'checked_in_by' => $this->user->id,
+    ]);
+});
+
+test('staff can check in a standalone hands-on registration that has no seminar registration', function () {
+    $this->actingAs($this->user);
+
+    $handsOn = HandsOn::factory()->create();
+    $handsOnReg = HandsOnRegistration::factory()->verified()->create([
+        'seminar_registration_id' => null,
+        'hands_on_id' => $handsOn->id,
+        'registration_type' => 'hands_on',
+    ]);
+    app(QrTokenService::class)->generateForHandsOn($handsOnReg);
+
+    livewire(AttendanceVerify::class, ['token' => $handsOnReg->qr_token])
+        ->call('checkInHandsOn', $handsOnReg->id);
+
+    $this->assertDatabaseHas('attendances', [
+        'seminar_registration_id' => null,
+        'hands_on_registration_id' => $handsOnReg->id,
+        'activity_type' => 'hands_on',
+        'checked_in_by' => $this->user->id,
+    ]);
+});
+
+test('checking in the same hands-on registration twice records one attendance', function () {
+    $this->actingAs($this->user);
+
+    $handsOn = HandsOn::factory()->create();
+    $handsOnReg = HandsOnRegistration::factory()->verified()->create([
+        'seminar_registration_id' => null,
+        'hands_on_id' => $handsOn->id,
+        'registration_type' => 'hands_on',
+    ]);
+    app(QrTokenService::class)->generateForHandsOn($handsOnReg);
+
+    $component = livewire(AttendanceVerify::class, ['token' => $handsOnReg->qr_token]);
+    $component->call('checkInHandsOn', $handsOnReg->id);
+
+    // A second scan arrives as a fresh request against the same token.
+    livewire(AttendanceVerify::class, ['token' => $handsOnReg->qr_token])
+        ->call('checkInHandsOn', $handsOnReg->id);
+
+    $this->assertDatabaseCount('attendances', 1);
 });

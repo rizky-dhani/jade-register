@@ -12,10 +12,13 @@ class DatabaseSeeder extends Seeder
             RolePermissionSeeder::class,
             CountrySeeder::class,
             UserSeeder::class,
+            SettingSeeder::class,
             PosterCategoryAndTopicSeeder::class,
             PosterSubmissionSeeder::class,
             AddonSeeder::class,
+            HandsOnSeeder::class,
             DigitalWorkshopSeeder::class,
+            DemoAttendanceSeeder::class,
         ]);
     }
 }

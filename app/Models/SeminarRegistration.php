@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class SeminarRegistration extends Model
 {
@@ -114,6 +115,11 @@ class SeminarRegistration extends Model
             ->withTimestamps();
     }
 
+    public function lunchRedemption(): HasOne
+    {
+        return $this->hasOne(LunchRedemption::class);
+    }
+
     public function attendances(): HasMany
     {
         return $this->hasMany(Attendance::class);
@@ -127,6 +133,15 @@ class SeminarRegistration extends Model
     public function seminarPackage(): BelongsTo
     {
         return $this->belongsTo(Seminar::class, 'seminar_id');
+    }
+
+    public function isEligibleForLunch(): bool
+    {
+
+        return $this->seminarPackage?->includes_lunch === true
+            || $this->addonRegistrations()
+                ->whereHas('addon', fn ($query) => $query->where('code', 'LUNCH_ADDON'))
+                ->exists();
     }
 
     public function canRegisterHandsOn(): bool

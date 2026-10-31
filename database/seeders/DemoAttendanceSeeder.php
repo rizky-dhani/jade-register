@@ -1,0 +1,298 @@
+<?php
+
+namespace Database\Seeders;
+
+use App\Models\Addon;
+use App\Models\AddonRegistration;
+use App\Models\Country;
+use App\Models\HandsOn;
+use App\Models\HandsOnRegistration;
+use App\Models\Seminar;
+use App\Models\SeminarRegistration;
+use App\Models\Setting;
+use App\Models\User;
+use App\Services\QrTokenService;
+use App\Services\RegistrationService;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
+
+class DemoAttendanceSeeder extends Seeder
+{
+    /**
+     * Every registration below is payment-verified with a live QR token, so each
+     * one can be scanned at the attendance desk and its confirmation email is
+     * waiting in Mailpit.
+     *
+     * Lunch states are deliberately mixed:
+     *   1-3  lunch included in the seminar package
+     *   4    lunch bought as a verified LUNCH_ADDON
+     *   5    no lunch at all, so the coupon button must stay hidden
+     */
+    public function run(): void
+    {
+        $this->prepareSettings();
+
+        $deskStaff = $this->createDeskStaff();
+        $lunchPackage = $this->createSeminarPackage();
+        $noLunchPackage = $this->createLunchlessSeminarPackage();
+        $lunchAddon = $this->createLunchAddon();
+
+        $registrations = $this->createSeminarRegistrations(
+            $lunchPackage,
+            $noLunchPackage,
+            $lunchAddon,
+            $deskStaff
+        );
+
+        $this->createHandsOnRegistrations($registrations);
+
+        $this->command?->newLine();
+        $this->command?->info('Demo attendance data ready.');
+        $this->command?->table(
+            ['Role', 'Email', 'Password'],
+            [['Admin (lunch desk)', $deskStaff->email, 'Password123!']]
+        );
+        $this->command?->info('Admin panel: '.url('/admin'));
+        $this->command?->info('Mailpit: http://127.0.0.1:8025');
+    }
+
+    private function prepareSettings(): void
+    {
+        // Lunch redemption only opens when the seminar event date is today.
+        Setting::updateOrCreate(
+            ['key' => 'seminar_event_date'],
+            [
+                'label' => 'Seminar Event Date',
+                'value' => today()->toDateString(),
+                'type' => 'date',
+                'description' => 'Calendar date when lunch coupons may be redeemed. Redemption is blocked until a date is configured.',
+            ]
+        );
+
+        Setting::updateOrCreate(
+            ['key' => 'seminar_registration_opens_at'],
+            ['value' => now()->subMonth()->toDateTimeString()]
+        );
+
+        Setting::updateOrCreate(
+            ['key' => 'seminar_registration_close_at'],
+            ['value' => now()->addMonth()->toDateTimeString()]
+        );
+    }
+
+    private function createDeskStaff(): User
+    {
+        $staff = User::updateOrCreate(
+            ['email' => 'attendancedesk@jakartadentalexhibitions.id'],
+            [
+                'name' => 'Attendance Desk',
+                'password' => Hash::make('Password123!'),
+                'email_verified_at' => now(),
+            ]
+        );
+
+        // Only Admin / Super Admin may redeem a lunch coupon.
+        $staff->syncRoles(['Admin']);
+
+        return $staff;
+    }
+
+    private function createSeminarPackage(): Seminar
+    {
+        return Seminar::updateOrCreate(
+            ['code' => 'DEMO-SEM-LUNCH'],
+            [
+                'name' => 'JADE 2026 Seminar (Demo)',
+                'description' => 'Demo seminar package that includes lunch.',
+                'applies_to' => 'all',
+                'original_price' => 750000,
+                'discounted_price' => 750000,
+                'max_seats' => 500,
+                'currency' => 'IDR',
+                'includes_lunch' => true,
+                'is_early_bird' => false,
+                'is_active' => true,
+                'sort_order' => 1,
+            ]
+        );
+    }
+
+    private function createLunchlessSeminarPackage(): Seminar
+    {
+        return Seminar::updateOrCreate(
+            ['code' => 'DEMO-SEM-NOLUNCH'],
+            [
+                'name' => 'JADE 2026 Seminar (Demo, No Lunch)',
+                'description' => 'Demo seminar package without lunch.',
+                'applies_to' => 'all',
+                'original_price' => 500000,
+                'discounted_price' => 500000,
+                'max_seats' => 500,
+                'currency' => 'IDR',
+                'includes_lunch' => false,
+                'is_early_bird' => false,
+                'is_active' => true,
+                'sort_order' => 2,
+            ]
+        );
+    }
+
+    private function createLunchAddon(): Addon
+    {
+        return Addon::updateOrCreate(
+            ['code' => 'LUNCH_ADDON'],
+            [
+                'name' => 'Lunch Add-On',
+                'description' => 'Add full lunch to your seminar package.',
+                'price' => 75000,
+                'currency' => 'IDR',
+                'is_active' => true,
+                'sort_order' => 1,
+            ]
+        );
+    }
+
+    /**
+     * @return array<int, SeminarRegistration>
+     */
+    private function createSeminarRegistrations(
+        Seminar $lunchPackage,
+        Seminar $noLunchPackage,
+        Addon $lunchAddon,
+        User $deskStaff,
+    ): array {
+        $indonesia = Country::where('is_indonesia', true)->firstOrFail();
+
+        $participants = [
+            ['Ayu Kartika Dewi', 'ayu.dewi@example.test', 'Sp.KG', 'Cabang Jakarta', 'package'],
+            ['Budi Santoso', 'budi.santoso@example.test', 'Dokter Gigi Umum', 'Cabang Bandung', 'package'],
+            ['Citra Maharani', 'citra.maharani@example.test', 'Sp.Ort', 'Cabang Surabaya', 'package'],
+            ['Dimas Prabowo', 'dimas.prabowo@example.test', 'Sp.Pros', 'Cabang Yogyakarta', 'addon'],
+            ['Eka Nur Fadilah', 'eka.fadilah@example.test', 'Dokter Gigi Umum', 'Cabang Medan', 'none'],
+        ];
+
+        $registrations = [];
+
+        foreach ($participants as $index => [$name, $email, $kompetensi, $branch, $lunchSource]) {
+            $package = $lunchSource === 'package' ? $lunchPackage : $noLunchPackage;
+            $addonAmount = $lunchSource === 'addon' ? (int) $lunchAddon->price : 0;
+
+            $registration = SeminarRegistration::updateOrCreate(
+                ['email' => $email],
+                [
+                    'registration_code' => 'JADE-SEM-2026-'.str_pad((string) ($index + 1), 6, '0', STR_PAD_LEFT),
+                    'name_license' => $name,
+                    'nik' => '3174'.str_pad((string) (100000000000 + $index), 12, '0', STR_PAD_LEFT),
+                    'pdgi_branch' => $branch,
+                    'kompetensi' => $kompetensi,
+                    'phone' => '+62812'.str_pad((string) (10000000 + $index), 8, '0', STR_PAD_LEFT),
+                    'country_id' => $indonesia->id,
+                    'language' => $index % 2 === 0 ? 'id' : 'en',
+                    'registration_type' => 'online',
+                    'selected_seminar' => $package->code,
+                    'seminar_id' => $package->id,
+                    'payment_method' => 'bank_transfer',
+                    'amount' => (int) $package->current_price + $addonAmount,
+                    'currency' => 'IDR',
+                    'payment_status' => 'verified',
+                    'payment_proof_path' => 'payment-proofs/demo.jpg',
+                    'verified_at' => now(),
+                    'wants_poster_competition' => false,
+                    'wants_hands_on' => false,
+                    'hands_on_total_amount' => 0,
+                    'addons_total_amount' => $addonAmount,
+                    'status' => 'Dentist',
+                ]
+            );
+
+            if ($lunchSource === 'addon') {
+                AddonRegistration::updateOrCreate(
+                    [
+                        'seminar_registration_id' => $registration->id,
+                        'addon_id' => $lunchAddon->id,
+                    ],
+                    [
+                        'amount' => $lunchAddon->price,
+                        'currency' => $lunchAddon->currency,
+                        'payment_proof_path' => 'payment-proofs/demo.jpg',
+                        'payment_status' => 'verified',
+                        'verified_at' => now(),
+                        'verified_by' => $deskStaff->id,
+                    ]
+                );
+            }
+
+            app(QrTokenService::class)->generate($registration);
+            $this->sendSeminarConfirmation($registration->refresh());
+
+            $registrations[] = $registration;
+        }
+
+        return $registrations;
+    }
+
+    /**
+     * @param  array<int, SeminarRegistration>  $registrations
+     */
+    private function createHandsOnRegistrations(array $registrations): void
+    {
+        $events = HandsOn::query()
+            ->where('is_active', true)
+            ->orderBy('event_date')
+            ->orderBy('id')
+            ->get();
+
+        if ($events->isEmpty()) {
+            $this->command?->warn('No Hands On events found. Run HandsOnSeeder first.');
+
+            return;
+        }
+
+        foreach ($registrations as $index => $registration) {
+            $event = $events[$index % $events->count()];
+
+            $handsOnRegistration = HandsOnRegistration::updateOrCreate(
+                [
+                    'seminar_registration_id' => $registration->id,
+                    'hands_on_id' => $event->id,
+                ],
+                [
+                    'registration_code' => HandsOnRegistration::generateRegistrationCode(),
+                    'registration_type' => 'combined',
+                    'payment_status' => 'verified',
+                    'payment_proof_path' => 'payment-proofs/demo.jpg',
+                    'verified_at' => now(),
+                    'name' => $registration->name_license,
+                    'name_license' => $registration->name_license,
+                    'email' => $registration->email,
+                    'phone' => $registration->phone,
+                    'nik' => $registration->nik,
+                    'pdgi_branch' => $registration->pdgi_branch,
+                    'kompetensi' => $registration->kompetensi,
+                    'status' => $registration->status,
+                    'country_id' => $registration->country_id,
+                    'payment_method' => $registration->payment_method,
+                    'language' => $registration->language,
+                ]
+            );
+
+            app(QrTokenService::class)->generateForHandsOn($handsOnRegistration);
+            $this->sendHandsOnConfirmation($handsOnRegistration->refresh());
+
+            $registration->update([
+                'wants_hands_on' => true,
+                'hands_on_total_amount' => (int) $event->price,
+            ]);
+        }
+    }
+
+    private function sendSeminarConfirmation(SeminarRegistration $registration): void
+    {
+        app(RegistrationService::class)->sendSeminarSubmissionConfirmation($registration);
+    }
+
+    private function sendHandsOnConfirmation(HandsOnRegistration $registration): void
+    {
+        app(RegistrationService::class)->sendHandsOnSubmissionConfirmation($registration);
+    }
+}

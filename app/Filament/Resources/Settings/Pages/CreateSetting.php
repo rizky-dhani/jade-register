@@ -33,6 +33,10 @@ class CreateSetting extends CreateRecord
             $data['value'] = Carbon::parse($data['value'])->toDateTimeString();
         }
 
+        if ($data['type'] === 'date') {
+            $data['value'] = filled($data['value']) ? Carbon::parse($data['value'])->toDateString() : '';
+        }
+
         return $data;
     }
 }

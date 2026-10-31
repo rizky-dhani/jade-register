@@ -43,6 +43,7 @@ class Setting extends Model
             'boolean' => (bool) $this->value,
             'float' => (float) $this->value,
             'datetime' => $this->value ? Carbon::parse($this->value) : null,
+            'date' => $this->value ? Carbon::parse($this->value)->startOfDay() : null,
             'array' => json_decode($this->value, true),
             default => $this->value,
         };
