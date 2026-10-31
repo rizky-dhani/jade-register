@@ -14,3 +14,9 @@ Schedule::command('queue:work --stop-when-empty', [
     '--tries' => 3,
     '--max-time' => 3600,
 ])->everyMinute()->withoutOverlapping();
+
+// Scheduled even when disabled: the command no-ops so the schedule stays
+// predictable, and enabling it is a config change rather than a deploy.
+Schedule::command('sheets:sync-registrations')
+    ->everyTenMinutes()
+    ->withoutOverlapping();

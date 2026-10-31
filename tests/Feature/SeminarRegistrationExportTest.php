@@ -139,3 +139,15 @@ test('local sheet keeps phone and NIK as text', function () {
     expect(seminarColumnValues($workbook->getSheet(0), 'E'))
         ->toBe([['NIK', 's'], ['3171234567890001', 's']]);
 });
+
+test('international sheet renders a missing status instead of failing', function () {
+    // status is nullable in the schema; a row without one must not throw.
+    $registration = SeminarRegistration::factory()
+        ->for(Country::factory()->international())
+        ->create(['status' => null]);
+
+    $rows = seminarSheetRows(renderSeminarExport()->getSheet(1));
+    $dataRow = collect($rows)->firstWhere(0, $registration->registration_code);
+
+    expect($dataRow[4])->toBe('-');
+});

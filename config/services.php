@@ -28,6 +28,15 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'google_sheets' => [
+        // Mirrors the registration exports into a spreadsheet. Off by default so a
+        // missing credential can never break the scheduler.
+        'enabled' => env('GOOGLE_SHEETS_SYNC_ENABLED', false),
+        'spreadsheet_id' => env('GOOGLE_SHEETS_SPREADSHEET_ID'),
+        // Service-account JSON, kept outside the web root (storage/app/private).
+        'credentials_path' => env('GOOGLE_SHEETS_CREDENTIALS_PATH', storage_path('app/private/google-service-account.json')),
+    ],
+
     'slack' => [
         'notifications' => [
             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),
