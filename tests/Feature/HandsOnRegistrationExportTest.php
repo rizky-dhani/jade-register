@@ -60,6 +60,7 @@ test('summary sheet is first and lists joined hands on codes per participant', f
     $seminar = SeminarRegistration::factory()->create([
         'name_license' => 'Multi Session Dentist',
         'email' => 'multi@example.com',
+        'phone' => '081200000001',
     ]);
 
     $first = HandsOn::factory()->create(['ho_code' => 'HO-01', 'event_date' => '2026-11-13']);
@@ -91,6 +92,7 @@ test('summary sheet is first and lists joined hands on codes per participant', f
         'Joined Hands On',
         'Participant Name',
         'Email',
+        'No Telp',
         'Register Type',
         'Payment Status',
         'Created At',
@@ -103,11 +105,12 @@ test('summary sheet is first and lists joined hands on codes per participant', f
     expect($multiRows)->toHaveCount(1);
     expect($multiRows[0][3])->toBe('HO-01, HO-05');
     expect($multiRows[0][0])->toBe($multiLatest->registration_code);
+    expect($multiRows[0][6])->toBe('081200000001');
     expect($dataRows->pluck(0))->not->toContain($multiFirst->registration_code);
 
     expect($dataRows->firstWhere(5, 'solo@example.com')[3])->toBe('HO-09');
 
-    $createdAt = $dataRows->pluck(8)->all();
+    $createdAt = $dataRows->pluck(9)->all();
     expect($createdAt)->toBe(collect($createdAt)->sort()->values()->all());
 });
 
@@ -126,6 +129,7 @@ test('session sheets keep the original columns without joined hands on', functio
         'Seminar Reg Code',
         'Participant Name',
         'Email',
+        'No Telp',
         'Register Type',
         'Payment Status',
         'Created At',
