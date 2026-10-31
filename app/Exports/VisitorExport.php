@@ -2,14 +2,27 @@
 
 namespace App\Exports;
 
+use App\Exports\Concerns\TextColumns;
 use App\Models\Visitor;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use Maatwebsite\Excel\Concerns\WithColumnFormatting;
+use Maatwebsite\Excel\Concerns\WithCustomValueBinder;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 
-class VisitorExport implements FromCollection, ShouldAutoSize, WithHeadings, WithMapping
+class VisitorExport implements FromCollection, ShouldAutoSize, WithColumnFormatting, WithCustomValueBinder, WithHeadings, WithMapping
 {
+    use TextColumns;
+
+    /**
+     * @return array<int, string>
+     */
+    protected function textHeadings(): array
+    {
+        return ['Phone'];
+    }
+
     public function collection()
     {
         return Visitor::all();
