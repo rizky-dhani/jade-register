@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\SeminarRegistrations\Pages;
 
 use App\Filament\Resources\SeminarRegistrations\Actions\CopyIdentityAction;
+use App\Filament\Resources\SeminarRegistrations\Actions\SaveContactAction;
 use App\Filament\Resources\SeminarRegistrations\Schemas\SeminarRegistrationInfolist;
 use App\Filament\Resources\SeminarRegistrations\SeminarRegistrationResource;
 use App\Models\AddonRegistration;
@@ -42,6 +43,9 @@ class ViewSeminarRegistration extends ViewRecord
                         ->success()
                         ->send();
                 }),
+
+            SaveContactAction::make()
+                ->record($this->record),
 
             CopyIdentityAction::make('copyIdentity')
                 ->record($this->record),

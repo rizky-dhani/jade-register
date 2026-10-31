@@ -3,15 +3,20 @@
 namespace App\Filament\Resources\SeminarRegistrations\Pages;
 
 use App\Exports\SeminarRegistrationExport;
+use App\Filament\Resources\SeminarRegistrations\Actions\SaveContactAction;
 use App\Filament\Resources\SeminarRegistrations\SeminarRegistrationResource;
 use App\Models\SeminarRegistration;
+use App\Services\VCard;
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Forms\Components\Select;
+use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Schemas\Components\Tabs\Tab;
+use Filament\Support\Icons\Heroicon;
 use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ListSeminarRegistrations extends ListRecords
 {
@@ -50,6 +55,23 @@ class ListSeminarRegistrations extends ListRecords
                         new SeminarRegistrationExport($paymentMethod),
                         'seminar-registrations_'.now()->format('d-m-Y_H-i-s').'.xlsx',
                     );
+                }),
+            Action::make('exportAllContacts')
+                ->label(__('filament.contacts.export_contacts'))
+                ->icon(Heroicon::OutlinedUsers)
+                ->action(function (): ?StreamedResponse {
+                    $contacts = SaveContactAction::contactsFor($this->getFilteredTableQuery()?->get() ?? collect());
+
+                    if ($contacts === []) {
+                        Notification::make()
+                            ->title(__('filament.contacts.none_found'))
+                            ->warning()
+                            ->send();
+
+                        return null;
+                    }
+
+                    return VCard::download($contacts, 'seminar-contacts_'.now()->format('d-m-Y_H-i-s').'.vcf');
                 }),
             CreateAction::make(),
         ];

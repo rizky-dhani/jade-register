@@ -2,17 +2,22 @@
 
 namespace App\Filament\Resources\HandsOnRegistrations\Tables;
 
+use App\Filament\Resources\HandsOnRegistrations\Actions\SaveContactAction;
 use App\Models\HandsOnRegistration;
 use App\Services\RegistrationService;
+use App\Services\VCard;
 use Filament\Actions\Action;
 use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
+use Filament\Notifications\Notification;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class HandsOnRegistrationsTable
 {
@@ -199,9 +204,28 @@ class HandsOnRegistrationsTable
                         $registrationService->sendHandsOnAttendanceConfirmation($record);
                     })
                     ->successNotificationTitle(__('seminar.email_confirmation_resent')),
+                SaveContactAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
+                    BulkAction::make('exportContacts')
+                        ->label(__('filament.contacts.export_contacts'))
+                        ->icon(Heroicon::OutlinedUsers)
+                        ->deselectRecordsAfterCompletion()
+                        ->action(function (Collection $records): ?StreamedResponse {
+                            $contacts = SaveContactAction::contactsFor($records);
+
+                            if ($contacts === []) {
+                                Notification::make()
+                                    ->title(__('filament.contacts.none_selected'))
+                                    ->warning()
+                                    ->send();
+
+                                return null;
+                            }
+
+                            return VCard::download($contacts, 'hands-on-contacts_'.now()->format('d-m-Y_H-i-s').'.vcf');
+                        }),
                     BulkAction::make('verifyPayment')
                         ->label(__('seminar.verify_payment'))
                         ->icon('heroicon-o-check-circle')

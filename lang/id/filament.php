@@ -185,6 +185,13 @@ return [
     'poster_submissions.copy_submission_info_copied' => 'Info pengumpulan disalin ke clipboard',
     'poster_submissions.copy_heading' => '=== PENGUMPULAN POSTER ===',
 
+    // Contact Card Actions
+    'contacts.save_contact' => 'Simpan Kontak',
+    'contacts.export_contacts' => 'Ekspor sebagai Kontak',
+    'contacts.phone_missing' => 'Peserta ini tidak memiliki nomor telepon untuk disimpan.',
+    'contacts.none_selected' => 'Tidak ada peserta terpilih yang memiliki nomor telepon.',
+    'contacts.none_found' => 'Tidak ada peserta dengan nomor telepon yang cocok dengan filter saat ini.',
+
     // Seminar Registrations
     'seminar_registrations.nik' => 'NIK',
 
