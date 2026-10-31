@@ -192,11 +192,15 @@ class InternationalParticipantsSheet extends BaseParticipantsSheet
         ];
     }
 
-    protected function getStatusLabel(string $status): string
+    /**
+     * status is nullable in the schema, so a row without one must not throw.
+     */
+    protected function getStatusLabel(?string $status): string
     {
         return match ($status) {
             'Dentist' => __('seminar.dentist'),
             'Student' => __('seminar.student'),
+            null, '' => '-',
             default => $status,
         };
     }
