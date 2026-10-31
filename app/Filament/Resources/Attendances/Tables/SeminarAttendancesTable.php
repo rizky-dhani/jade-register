@@ -100,9 +100,12 @@ class SeminarAttendancesTable
                     ->icon('heroicon-o-arrow-right-on-rectangle')
                     ->color('gray')
                     ->requiresConfirmation()
+                    // Gated on the desk role, not on `update attendances`: the Admin
+                    // role is never granted that permission, and the same people check
+                    // participants out on the verify screen (AttendanceVerify::canCheckIn).
                     ->visible(fn (Attendance $record): bool => $record->checked_in_at !== null
                         && $record->checked_out_at === null
-                        && (auth()->user()?->can('update attendances') ?? false))
+                        && (auth()->user()?->hasRole(['Admin', 'Super Admin']) ?? false))
                     ->action(function (Attendance $record): void {
                         $staff = auth()->user();
 

@@ -112,3 +112,46 @@ it('keeps the original check-out when the action runs twice', function () {
     expect($attendance->checked_out_at->equalTo($firstCheckOutAt))->toBeTrue()
         ->and($attendance->checked_out_by)->toBe($firstCheckedOutBy);
 });
+
+/**
+ * The Admin desk role has no `update attendances` permission, so gating the
+ * action on it hid check-out from the very people who scan at the desk.
+ */
+it('lets a desk admin check a participant out from the attendance list', function () {
+    $desk = User::factory()->create();
+    $desk->assignRole('Admin');
+    actingAs($desk);
+
+    $registration = SeminarRegistration::factory()->verified()->create();
+    $attendance = Attendance::factory()->create([
+        'seminar_registration_id' => $registration->id,
+        'activity_type' => 'seminar',
+        'checked_in_by' => $desk->id,
+    ]);
+
+    livewire(ListSeminarAttendances::class)
+        ->assertTableActionVisible('checkOut', $attendance);
+
+    callCheckOutAction(ListSeminarAttendances::class, $attendance);
+
+    $attendance->refresh();
+
+    expect($attendance->checked_out_at)->not->toBeNull()
+        ->and($attendance->checked_out_by)->toBe($desk->id);
+});
+
+it('keeps the check-out action away from participants', function () {
+    $participant = User::factory()->create();
+    $participant->assignRole('Participant');
+    actingAs($participant);
+
+    $registration = SeminarRegistration::factory()->verified()->create();
+    $attendance = Attendance::factory()->create([
+        'seminar_registration_id' => $registration->id,
+        'activity_type' => 'seminar',
+        'checked_in_by' => $participant->id,
+    ]);
+
+    livewire(ListSeminarAttendances::class)
+        ->assertTableActionHidden('checkOut', $attendance);
+});
