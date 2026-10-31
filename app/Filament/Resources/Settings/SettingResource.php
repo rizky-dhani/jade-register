@@ -35,11 +35,6 @@ class SettingResource extends Resource
         return static::getModel()::count() > 0 ? (string) static::getModel()::count() : null;
     }
 
-    public static function canCreate(): bool
-    {
-        return false;
-    }
-
     public static function form(Schema $schema): Schema
     {
         return SettingForm::configure($schema);
