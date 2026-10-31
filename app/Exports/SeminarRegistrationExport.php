@@ -2,6 +2,7 @@
 
 namespace App\Exports;
 
+use App\Exports\Concerns\TextColumns;
 use App\Models\SeminarRegistration;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromCollection;
@@ -13,12 +14,6 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithTitle;
-use PhpOffice\PhpSpreadsheet\Cell\Cell;
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
-use PhpOffice\PhpSpreadsheet\Cell\DataType;
-use PhpOffice\PhpSpreadsheet\Cell\DefaultValueBinder;
-use PhpOffice\PhpSpreadsheet\Cell\IValueBinder;
-use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class SeminarRegistrationExport implements WithMultipleSheets
@@ -36,43 +31,17 @@ class SeminarRegistrationExport implements WithMultipleSheets
     }
 }
 
-abstract class BaseParticipantsSheet implements FromCollection, IValueBinder, ShouldAutoSize, WithColumnFormatting, WithCustomValueBinder, WithHeadings, WithMapping, WithStyles, WithTitle
+abstract class BaseParticipantsSheet implements FromCollection, ShouldAutoSize, WithColumnFormatting, WithCustomValueBinder, WithHeadings, WithMapping, WithStyles, WithTitle
 {
     use Exportable;
+    use TextColumns;
 
     /**
-     * PhpSpreadsheet stores a phone number or a 16-digit NIK as a number, which
-     * drops a leading + and renders as 6.28121E+12 — so those columns stay text.
-     *
      * @return array<int, string>
      */
-    protected function textColumns(): array
+    protected function textHeadings(): array
     {
-        $columns = [];
-
-        foreach ($this->headings() as $index => $heading) {
-            if (in_array($heading, ['No Telp', 'NIK'], true)) {
-                $columns[] = Coordinate::stringFromColumnIndex($index + 1);
-            }
-        }
-
-        return $columns;
-    }
-
-    public function bindValue(Cell $cell, mixed $value): bool
-    {
-        if (in_array($cell->getColumn(), $this->textColumns(), true)) {
-            $cell->setValueExplicit($value, DataType::TYPE_STRING);
-
-            return true;
-        }
-
-        return (new DefaultValueBinder)->bindValue($cell, $value);
-    }
-
-    public function columnFormats(): array
-    {
-        return array_fill_keys($this->textColumns(), NumberFormat::FORMAT_TEXT);
+        return ['No Telp', 'NIK'];
     }
 
     public function __construct(
