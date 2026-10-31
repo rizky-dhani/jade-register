@@ -3,8 +3,10 @@
 namespace App\Filament\Resources\SeminarRegistrations\Tables;
 
 use App\Filament\Resources\SeminarRegistrations\Actions\CopyIdentityAction;
+use App\Filament\Resources\SeminarRegistrations\Actions\SaveContactAction;
 use App\Models\SeminarRegistration;
 use App\Services\RegistrationService;
+use App\Services\VCard;
 use Filament\Actions\Action;
 use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
@@ -12,12 +14,15 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\FileUpload;
+use Filament\Notifications\Notification;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class SeminarRegistrationsTable
 {
@@ -261,6 +266,7 @@ class SeminarRegistrationsTable
             ->recordActions([
                 ViewAction::make(),
                 CopyIdentityAction::make('copyIdentity'),
+                SaveContactAction::make(),
                 EditAction::make()
                     ->visible(fn (): bool => auth()->user()?->can('update seminar registrations') ?? false),
                 Action::make('uploadPaymentProof')
@@ -402,6 +408,24 @@ class SeminarRegistrationsTable
                                     ]);
                                 }
                             }
+                        }),
+                    BulkAction::make('exportContacts')
+                        ->label(__('filament.contacts.export_contacts'))
+                        ->icon(Heroicon::OutlinedUsers)
+                        ->deselectRecordsAfterCompletion()
+                        ->action(function (Collection $records): ?StreamedResponse {
+                            $contacts = SaveContactAction::contactsFor($records);
+
+                            if ($contacts === []) {
+                                Notification::make()
+                                    ->title(__('filament.contacts.none_selected'))
+                                    ->warning()
+                                    ->send();
+
+                                return null;
+                            }
+
+                            return VCard::download($contacts, 'seminar-contacts_'.now()->format('d-m-Y_H-i-s').'.vcf');
                         }),
                     DeleteBulkAction::make()
                         ->visible(fn (): bool => auth()->user()?->can('delete seminar registrations') ?? false),

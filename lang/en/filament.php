@@ -185,6 +185,13 @@ return [
     'poster_submissions.copy_submission_info_copied' => 'Submission info copied to clipboard',
     'poster_submissions.copy_heading' => '=== POSTER SUBMISSION ===',
 
+    // Contact Card Actions
+    'contacts.save_contact' => 'Save Contact',
+    'contacts.export_contacts' => 'Export as Contact',
+    'contacts.phone_missing' => 'This participant has no phone number to save.',
+    'contacts.none_selected' => 'None of the selected participants have a phone number.',
+    'contacts.none_found' => 'No participant with a phone number matches the current filters.',
+
     // Seminar Registrations
     'seminar_registrations.nik' => 'NIK',
 

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\HandsOnRegistrations\Pages;
 
+use App\Filament\Resources\HandsOnRegistrations\Actions\SaveContactAction;
 use App\Filament\Resources\HandsOnRegistrations\HandsOnRegistrationResource;
 use App\Filament\Resources\HandsOnRegistrations\Schemas\HandsOnRegistrationInfolist;
 use Filament\Actions\EditAction;
@@ -20,6 +21,8 @@ class ViewHandsOnRegistration extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
+            SaveContactAction::make()
+                ->record($this->record),
             EditAction::make()
                 ->label(__('filament.actions.edit'))
                 ->icon('heroicon-m-pencil-square'),
