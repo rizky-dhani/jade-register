@@ -12,7 +12,9 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use Maatwebsite\Excel\Concerns\WithStyles;
+use Maatwebsite\Excel\Concerns\WithTitle;
 use PhpOffice\PhpSpreadsheet\Cell\Cell;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\Cell\DefaultValueBinder;
 use PhpOffice\PhpSpreadsheet\Cell\IValueBinder;
@@ -34,9 +36,44 @@ class SeminarRegistrationExport implements WithMultipleSheets
     }
 }
 
-abstract class BaseParticipantsSheet implements FromCollection, ShouldAutoSize, WithHeadings, WithMapping, WithStyles
+abstract class BaseParticipantsSheet implements FromCollection, IValueBinder, ShouldAutoSize, WithColumnFormatting, WithCustomValueBinder, WithHeadings, WithMapping, WithStyles, WithTitle
 {
     use Exportable;
+
+    /**
+     * PhpSpreadsheet stores a phone number or a 16-digit NIK as a number, which
+     * drops a leading + and renders as 6.28121E+12 — so those columns stay text.
+     *
+     * @return array<int, string>
+     */
+    protected function textColumns(): array
+    {
+        $columns = [];
+
+        foreach ($this->headings() as $index => $heading) {
+            if (in_array($heading, ['No Telp', 'NIK'], true)) {
+                $columns[] = Coordinate::stringFromColumnIndex($index + 1);
+            }
+        }
+
+        return $columns;
+    }
+
+    public function bindValue(Cell $cell, mixed $value): bool
+    {
+        if (in_array($cell->getColumn(), $this->textColumns(), true)) {
+            $cell->setValueExplicit($value, DataType::TYPE_STRING);
+
+            return true;
+        }
+
+        return (new DefaultValueBinder)->bindValue($cell, $value);
+    }
+
+    public function columnFormats(): array
+    {
+        return array_fill_keys($this->textColumns(), NumberFormat::FORMAT_TEXT);
+    }
 
     public function __construct(
         protected ?string $paymentMethod = null,
@@ -76,7 +113,7 @@ abstract class BaseParticipantsSheet implements FromCollection, ShouldAutoSize, 
     }
 }
 
-class LocalParticipantsSheet extends BaseParticipantsSheet implements IValueBinder, WithColumnFormatting, WithCustomValueBinder
+class LocalParticipantsSheet extends BaseParticipantsSheet
 {
     public function collection()
     {
@@ -110,23 +147,9 @@ class LocalParticipantsSheet extends BaseParticipantsSheet implements IValueBind
         ];
     }
 
-    public function columnFormats(): array
+    public function title(): string
     {
-        return [
-            'D' => NumberFormat::FORMAT_TEXT,
-            'E' => NumberFormat::FORMAT_TEXT,
-        ];
-    }
-
-    public function bindValue(Cell $cell, mixed $value): bool
-    {
-        if (in_array($cell->getColumn(), ['D', 'E'], true)) {
-            $cell->setValueExplicit($value, DataType::TYPE_STRING);
-
-            return true;
-        }
-
-        return (new DefaultValueBinder)->bindValue($cell, $value);
+        return 'Local';
     }
 
     public function map($registration): array
@@ -176,6 +199,11 @@ class InternationalParticipantsSheet extends BaseParticipantsSheet
             'Tanggal Daftar',
             'Ingin Ikut Hands On?',
         ];
+    }
+
+    public function title(): string
+    {
+        return 'International';
     }
 
     public function map($registration): array

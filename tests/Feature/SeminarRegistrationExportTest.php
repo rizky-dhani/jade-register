@@ -36,6 +36,32 @@ function seminarSheetRows(Worksheet $sheet): array
     return $rows;
 }
 
+/**
+ * Non-empty values in one column, each paired with the type PhpSpreadsheet stored it as.
+ *
+ * @return array<int, array{0: string, 1: string}>
+ */
+function seminarColumnValues(Worksheet $sheet, string $column): array
+{
+    $values = [];
+
+    for ($row = 1; $row <= $sheet->getHighestRow(); $row++) {
+        $cell = $sheet->getCell($column.$row);
+
+        if ($cell->getValue() === null || $cell->getValue() === '') {
+            continue;
+        }
+
+        $values[] = [$cell->getValue(), $cell->getDataType()];
+    }
+
+    return $values;
+}
+
+test('sheets are named Local and International', function () {
+    expect(renderSeminarExport()->getSheetNames())->toBe(['Local', 'International']);
+});
+
 test('local sheet lists tanggal daftar as the second to last column', function () {
     $registration = SeminarRegistration::factory()
         ->for(Country::factory()->indonesia())
@@ -74,6 +100,7 @@ test('international sheet lists tanggal daftar as the second to last column', fu
         ->create([
             'status' => 'Dentist',
             'created_at' => '2026-11-14 17:45:00',
+            'phone' => '+6281299990000',
         ]);
 
     $rows = seminarSheetRows(renderSeminarExport()->getSheet(1));
@@ -94,4 +121,21 @@ test('international sheet lists tanggal daftar as the second to last column', fu
 
     $dataRow = collect($rows)->firstWhere(0, $registration->registration_code);
     expect($dataRow[9])->toBe('2026-11-14 17:45:00');
+
+    // A +62 number must survive as text, or Excel shows it as 6.28129E+12.
+    expect(seminarColumnValues(renderSeminarExport()->getSheet(1), 'D'))
+        ->toBe([['No Telp', 's'], ['+6281299990000', 's']]);
+});
+
+test('local sheet keeps phone and NIK as text', function () {
+    SeminarRegistration::factory()
+        ->for(Country::factory()->indonesia())
+        ->create(['phone' => '+6281200000001', 'nik' => '3171234567890001']);
+
+    $workbook = renderSeminarExport();
+
+    expect(seminarColumnValues($workbook->getSheet(0), 'D'))
+        ->toBe([['No Telp', 's'], ['+6281200000001', 's']]);
+    expect(seminarColumnValues($workbook->getSheet(0), 'E'))
+        ->toBe([['NIK', 's'], ['3171234567890001', 's']]);
 });
