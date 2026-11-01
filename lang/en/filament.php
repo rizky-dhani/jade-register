@@ -84,6 +84,7 @@ return [
     'attendance.check_out_time' => 'Check-out Time',
     'attendance.not_checked_out' => 'Not Checked Out',
     'attendance.check_out' => 'Check Out',
+    'attendance.check_out_confirm' => ':name will be checked out now. The time and your name are recorded on the attendance row.',
     'attendance.check_out_status' => 'Check-out Status',
     'attendance.check_in_status' => 'Check-in Status',
     'attendance.hands_on_session' => 'Hands On Session',

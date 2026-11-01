@@ -84,6 +84,7 @@ return [
     'attendance.check_out_time' => 'Waktu Check-out',
     'attendance.not_checked_out' => 'Belum Check-out',
     'attendance.check_out' => 'Check-out',
+    'attendance.check_out_confirm' => ':name akan di-check-out sekarang. Waktu dan nama Anda dicatat pada baris kehadiran.',
     'attendance.check_out_status' => 'Status Check-out',
     'attendance.check_in_status' => 'Status Check-in',
     'attendance.hands_on_session' => 'Sesi Hands On',

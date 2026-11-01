@@ -100,6 +100,11 @@ class SeminarAttendancesTable
                     ->icon('heroicon-o-arrow-right-on-rectangle')
                     ->color('gray')
                     ->requiresConfirmation()
+                    ->modalHeading(__('filament.attendance.check_out'))
+                    ->modalDescription(fn (Attendance $record): string => __('filament.attendance.check_out_confirm', [
+                        'name' => $record->seminarRegistration?->name_license ?? __('filament.attendance.participant_name'),
+                    ]))
+                    ->modalSubmitActionLabel(__('filament.attendance.check_out'))
                     // Gated on the desk role, not on `update attendances`: the Admin
                     // role is never granted that permission, and the same people check
                     // participants out on the verify screen (AttendanceVerify::canCheckIn).
