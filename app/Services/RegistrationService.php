@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Mail\DigitalWorkshopRegistrationConfirmation;
 use App\Mail\HandsOnRegistrationConfirmation;
+use App\Mail\PosterFileRequest;
 use App\Mail\PosterSubmissionConfirmation;
 use App\Mail\SeminarPaymentRejected;
 use App\Mail\SeminarPaymentVerified;
@@ -73,6 +74,33 @@ class RegistrationService
                 Mail::to($email)->send(new PosterSubmissionConfirmation($submission));
             }
         }
+    }
+
+    /**
+     * Ask the authors to re-upload the poster file when nothing was stored.
+     *
+     * @return int number of recipients the request was sent to
+     */
+    public function sendPosterFileRequest(PosterSubmission $submission): int
+    {
+        $locale = $submission->seminarRegistration?->language ?? 'id';
+        $emails = array_map('trim', explode(',', (string) $submission->author_emails));
+
+        $sent = 0;
+
+        foreach (array_unique(array_filter($emails)) as $email) {
+            if (! filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                continue;
+            }
+
+            Mail::to($email)
+                ->locale($locale)
+                ->queue(new PosterFileRequest($submission));
+
+            $sent++;
+        }
+
+        return $sent;
     }
 
     public function sendHandsOnAttendanceConfirmation(HandsOnRegistration $registration): void
