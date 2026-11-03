@@ -180,7 +180,6 @@ return [
     'poster_submissions.author' => 'Penulis',
     'poster_submissions.category' => 'Kategori',
     'poster_submissions.topic' => 'Topik',
-    'poster_submissions.score' => 'Skor',
     'poster_submissions.submitted' => 'Dikumpulkan',
     'poster_submissions.author_names' => 'Nama Penulis',
     'poster_submissions.author_emails' => 'Email Penulis',
