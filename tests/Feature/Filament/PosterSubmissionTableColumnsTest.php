@@ -33,18 +33,42 @@ beforeEach(function () {
     ]);
 });
 
-it('shows the author names in the penulis column', function () {
+it('shows only the first author plus a count in the penulis column', function () {
     $submission = PosterSubmission::factory()->create([
         'poster_category_id' => $this->category->getKey(),
         'poster_topic_id' => $this->topic->getKey(),
-        'author_names' => 'Dr. Jane Doe, Dr. John Roe',
+        'author_names' => 'Aleina Indira, Irene Patricia, Abigail Marisca Christy, Alifia Dian Pramesti',
     ]);
 
     livewire(ListPosterSubmissions::class)
         ->assertOk()
         ->assertTableColumnExists('author_names')
-        ->assertTableColumnStateSet('author_names', 'Dr. Jane Doe, Dr. John Roe', $submission)
-        ->assertTableColumnFormattedStateSet('author_names', 'Dr. Jane Doe, Dr. John Roe', $submission);
+        ->assertTableColumnStateSet('author_names', 'Aleina Indira, Irene Patricia, Abigail Marisca Christy, Alifia Dian Pramesti', $submission)
+        ->assertTableColumnFormattedStateSet('author_names', 'Aleina Indira + 3', $submission);
+});
+
+it('shows a sole author without a count', function () {
+    $submission = PosterSubmission::factory()->create([
+        'poster_category_id' => $this->category->getKey(),
+        'poster_topic_id' => $this->topic->getKey(),
+        'author_names' => 'Zakiyaturohmah',
+    ]);
+
+    livewire(ListPosterSubmissions::class)
+        ->assertOk()
+        ->assertTableColumnFormattedStateSet('author_names', 'Zakiyaturohmah', $submission);
+});
+
+it('keeps the full author list in the column tooltip', function () {
+    $submission = PosterSubmission::factory()->create([
+        'poster_category_id' => $this->category->getKey(),
+        'poster_topic_id' => $this->topic->getKey(),
+        'author_names' => 'Elin Hertiana, Sarah Mersil',
+    ]);
+
+    livewire(ListPosterSubmissions::class)
+        ->assertOk()
+        ->assertTableColumnExists('author_names', fn ($column): bool => $column->getTooltip($submission) === 'Elin Hertiana, Sarah Mersil');
 });
 
 it('labels the penulis column with the author translation', function () {
@@ -57,4 +81,18 @@ it('no longer shows a score column', function () {
     livewire(ListPosterSubmissions::class)
         ->assertOk()
         ->assertTableColumnDoesNotExist('average_score');
+});
+
+it('still searches the full author list, not just the shown author', function () {
+    $submission = PosterSubmission::factory()->create([
+        'poster_category_id' => $this->category->getKey(),
+        'poster_topic_id' => $this->topic->getKey(),
+        'author_names' => 'Aleina Indira, Irene Patricia',
+    ]);
+
+    livewire(ListPosterSubmissions::class)
+        ->assertOk()
+        ->assertCanSeeTableRecords([$submission])
+        ->searchTable('Irene Patricia')
+        ->assertCanSeeTableRecords([$submission]);
 });
