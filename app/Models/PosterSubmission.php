@@ -89,6 +89,23 @@ class PosterSubmission extends Model
         return (int) round($evaluations->avg('total_score'));
     }
 
+    /**
+     * Compact author list for dense table cells: the first author plus a
+     * "+ N" count of the co-authors the cell hides.
+     */
+    public function getAuthorSummaryAttribute(): string
+    {
+        $authors = collect(explode(',', $this->author_names))
+            ->map(fn (string $part): string => trim(preg_replace('/\s+/', ' ', $part)))
+            ->filter();
+
+        if ($authors->count() <= 1) {
+            return $authors->first() ?? '';
+        }
+
+        return $authors->first().' + '.($authors->count() - 1);
+    }
+
     public function syncTotalScoreFromEvaluations(): void
     {
         $this->autoUpdateStatus();

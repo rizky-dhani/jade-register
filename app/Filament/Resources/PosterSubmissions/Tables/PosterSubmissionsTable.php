@@ -25,7 +25,8 @@ class PosterSubmissionsTable
                 TextColumn::make('author_names')
                     ->label(__('filament.poster_submissions.author'))
                     ->searchable()
-                    ->wrap(),
+                    ->formatStateUsing(fn (string $state, PosterSubmission $record): string => $record->author_summary)
+                    ->tooltip(fn (PosterSubmission $record): ?string => str_contains($record->author_names, ',') ? $record->author_names : null),
                 TextColumn::make('category.name')
                     ->label(__('filament.poster_submissions.category')),
                 TextColumn::make('topic.name')
