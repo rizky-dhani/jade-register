@@ -51,7 +51,8 @@ class PosterSubmissionsTable
                     }),
                 TextColumn::make('submitted_at')
                     ->dateTime('d M Y, H:i')
-                    ->label(__('filament.poster_submissions.submitted')),
+                    ->label(__('filament.poster_submissions.submitted'))
+                    ->sortable(),
             ])
             ->filters([
                 //
@@ -68,6 +69,7 @@ class PosterSubmissionsTable
                     DeleteBulkAction::make()
                         ->visible(fn (): bool => auth()->user()?->can('delete poster submissions') ?? false),
                 ]),
-            ]);
+            ])
+            ->defaultSort('submitted_at', 'desc');
     }
 }

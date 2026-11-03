@@ -96,3 +96,58 @@ it('still searches the full author list, not just the shown author', function ()
         ->searchTable('Irene Patricia')
         ->assertCanSeeTableRecords([$submission]);
 });
+
+it('sorts the newest submission first by default', function () {
+    $older = PosterSubmission::factory()->create([
+        'poster_category_id' => $this->category->getKey(),
+        'poster_topic_id' => $this->topic->getKey(),
+        'submitted_at' => now()->subDays(2),
+    ]);
+
+    $newer = PosterSubmission::factory()->create([
+        'poster_category_id' => $this->category->getKey(),
+        'poster_topic_id' => $this->topic->getKey(),
+        'submitted_at' => now()->subDay(),
+    ]);
+
+    livewire(ListPosterSubmissions::class)
+        ->assertOk()
+        ->assertCanSeeTableRecords([$newer, $older], inOrder: true);
+});
+
+it('lets the committee reverse the submitted column order', function () {
+    $older = PosterSubmission::factory()->create([
+        'poster_category_id' => $this->category->getKey(),
+        'poster_topic_id' => $this->topic->getKey(),
+        'submitted_at' => now()->subDays(2),
+    ]);
+
+    $newer = PosterSubmission::factory()->create([
+        'poster_category_id' => $this->category->getKey(),
+        'poster_topic_id' => $this->topic->getKey(),
+        'submitted_at' => now()->subDay(),
+    ]);
+
+    livewire(ListPosterSubmissions::class)
+        ->sortTable('submitted_at', 'asc')
+        ->assertCanSeeTableRecords([$older, $newer], inOrder: true);
+});
+
+it('keeps drafts with no submitted date out of the way of the newest first order', function () {
+    $submitted = PosterSubmission::factory()->create([
+        'poster_category_id' => $this->category->getKey(),
+        'poster_topic_id' => $this->topic->getKey(),
+        'submitted_at' => now()->subDay(),
+    ]);
+
+    $draft = PosterSubmission::factory()->create([
+        'poster_category_id' => $this->category->getKey(),
+        'poster_topic_id' => $this->topic->getKey(),
+        'status' => PosterSubmission::STATUS_DRAFT,
+        'submitted_at' => null,
+    ]);
+
+    livewire(ListPosterSubmissions::class)
+        ->assertOk()
+        ->assertCanSeeTableRecords([$submitted, $draft], inOrder: true);
+});
