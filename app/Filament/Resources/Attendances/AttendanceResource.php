@@ -25,7 +25,13 @@ class AttendanceResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    protected static ?string $recordTitleAttribute = 'name';
+    /**
+     * Attendance has no display-name column of its own (the participant name
+     * lives on the related registration), so it is excluded from global
+     * search. Declaring a title attribute here made Filament query a
+     * non-existent `attendances.name` column.
+     */
+    protected static bool $isGloballySearchable = false;
 
     protected static bool $shouldRegisterNavigation = false;
 

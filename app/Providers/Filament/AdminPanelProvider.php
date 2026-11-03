@@ -39,6 +39,7 @@ class AdminPanelProvider extends PanelProvider
             ->registration(Register::class)
             ->emailVerification(EmailVerificationPrompt::class)
             ->maxContentWidth(Width::Full)
+            ->globalSearch(false)
             ->brandLogo(fn () => asset('assets/images/JADE_PDGI_Light.webp'))
             ->darkModeBrandLogo(fn () => asset('assets/images/JADE_PDGI_Dark.webp'))
             ->brandLogoHeight('8rem')
