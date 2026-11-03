@@ -91,6 +91,14 @@ return [
     'attendance.not_checked_in' => 'Not Checked In',
     'attendance.visitor' => 'Visitor',
     'attendance.title_visitor' => 'Visitor Attendance',
+    'attendance.manual_check_in' => 'Manual Check In',
+    'attendance.manual_check_in_description' => 'Find a verified participant by name, email, or registration code when their QR code is not available.',
+    'attendance.search_participant' => 'Search name, email, or registration code',
+    'attendance.participant' => 'Participant',
+    'attendance.check_in' => 'Check In',
+    'attendance.check_in_success' => ':name is checked in.',
+    'attendance.already_checked_in' => ':name was already checked in.',
+    'attendance.not_verified' => 'Only registrations with a verified payment can be checked in.',
 
     // Countries
     'countries.code' => 'Code',

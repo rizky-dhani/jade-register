@@ -117,6 +117,9 @@ class HandsOnAttendancesTable
                         }
                     }),
             ])
+            ->headerActions([
+                ManualCheckInAction::handsOn(),
+            ])
             ->recordActions([
                 Action::make('checkOut')
                     ->label(__('filament.attendance.check_out'))

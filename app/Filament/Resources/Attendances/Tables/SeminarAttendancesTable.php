@@ -94,6 +94,9 @@ class SeminarAttendancesTable
                         }
                     }),
             ])
+            ->headerActions([
+                ManualCheckInAction::seminar(),
+            ])
             ->recordActions([
                 Action::make('checkOut')
                     ->label(__('filament.attendance.check_out'))

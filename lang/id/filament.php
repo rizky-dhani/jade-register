@@ -91,6 +91,14 @@ return [
     'attendance.not_checked_in' => 'Belum Check-in',
     'attendance.visitor' => 'Pengunjung',
     'attendance.title_visitor' => 'Kehadiran Pengunjung',
+    'attendance.manual_check_in' => 'Check-in Manual',
+    'attendance.manual_check_in_description' => 'Cari peserta terverifikasi berdasarkan nama, email, atau kode pendaftaran bila QR code tidak tersedia.',
+    'attendance.search_participant' => 'Cari nama, email, atau kode pendaftaran',
+    'attendance.participant' => 'Peserta',
+    'attendance.check_in' => 'Check-in',
+    'attendance.check_in_success' => ':name berhasil check-in.',
+    'attendance.already_checked_in' => ':name sudah check-in sebelumnya.',
+    'attendance.not_verified' => 'Hanya pendaftaran dengan pembayaran terverifikasi yang dapat check-in.',
 
     // Countries
     'countries.code' => 'Kode',

@@ -7,6 +7,7 @@ use App\Models\DigitalWorkshopRegistration;
 use App\Models\HandsOnRegistration;
 use App\Models\LunchRedemption;
 use App\Models\SeminarRegistration;
+use App\Services\AttendanceCheckInService;
 use App\Services\AttendanceCheckOutService;
 use App\Services\LunchRedemptionService;
 use App\Services\QrTokenService;
@@ -191,20 +192,13 @@ class AttendanceVerify extends Component
             return;
         }
 
-        // firstOrCreate, not create: the unique index includes the nullable
-        // hands_on_registration_id, so it cannot block a duplicate seminar row
-        // when two desks scan the same participant at the same moment.
-        Attendance::firstOrCreate(
-            [
-                'seminar_registration_id' => $this->registration->id,
-                'hands_on_registration_id' => null,
-                'activity_type' => 'seminar',
-            ],
-            [
-                'checked_in_at' => now(),
-                'checked_in_by' => Auth::id(),
-            ]
-        );
+        $staff = Auth::user();
+
+        if (! $staff) {
+            return;
+        }
+
+        app(AttendanceCheckInService::class)->checkInSeminar($this->registration, $staff);
 
         $this->seminarCheckedInAt = now()->format('d M Y H:i');
         $this->showSuccess = true;
@@ -232,19 +226,13 @@ class AttendanceVerify extends Component
             return;
         }
 
-        // firstOrCreate keeps a double scan idempotent: the unique index cannot
-        // guard hands-on rows whose seminar_registration_id is NULL.
-        Attendance::firstOrCreate(
-            [
-                'hands_on_registration_id' => $handsOnReg->id,
-                'activity_type' => 'hands_on',
-            ],
-            [
-                'seminar_registration_id' => $handsOnReg->seminar_registration_id,
-                'checked_in_at' => now(),
-                'checked_in_by' => Auth::id(),
-            ]
-        );
+        $staff = Auth::user();
+
+        if (! $staff) {
+            return;
+        }
+
+        app(AttendanceCheckInService::class)->checkInHandsOn($handsOnReg, $staff);
 
         $this->handsOnCheckedIn[$handsOnReg->id] = now()->format('d M Y H:i');
         $this->showSuccess = true;
