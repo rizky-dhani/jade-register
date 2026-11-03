@@ -22,16 +22,14 @@ class PosterSubmissionsTable
                 TextColumn::make('title')
                     ->searchable()
                     ->limit(50),
-                TextColumn::make('user.name')
+                TextColumn::make('author_names')
                     ->label(__('filament.poster_submissions.author'))
-                    ->searchable(),
+                    ->searchable()
+                    ->wrap(),
                 TextColumn::make('category.name')
                     ->label(__('filament.poster_submissions.category')),
                 TextColumn::make('topic.name')
                     ->label(__('filament.poster_submissions.topic')),
-                TextColumn::make('average_score')
-                    ->label(__('filament.poster_submissions.score'))
-                    ->formatStateUsing(fn (?int $state): string => $state ? "{$state}/100" : '-'),
                 BadgeColumn::make('status')
                     ->colors([
                         'gray' => PosterSubmission::STATUS_DRAFT,

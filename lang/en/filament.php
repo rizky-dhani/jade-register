@@ -180,7 +180,6 @@ return [
     'poster_submissions.author' => 'Author',
     'poster_submissions.category' => 'Category',
     'poster_submissions.topic' => 'Topic',
-    'poster_submissions.score' => 'Score',
     'poster_submissions.submitted' => 'Submitted',
     'poster_submissions.author_names' => 'Author Names',
     'poster_submissions.author_emails' => 'Author Emails',
