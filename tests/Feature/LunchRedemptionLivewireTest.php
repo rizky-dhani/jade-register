@@ -172,7 +172,7 @@ test('seminar check-in continues to work without redeeming lunch', function () {
     $registration = lunchEligibleRegistrationForLivewire();
 
     livewire(AttendanceVerify::class, ['token' => $registration->qr_token])
-        ->call('checkInSeminar');
+        ->call('checkInSeminarDay', 1);
 
     $this->assertDatabaseHas('attendances', [
         'seminar_registration_id' => $registration->id,

@@ -93,38 +93,51 @@
                     @if(! $this->canCheckIn())
                         <p class="mb-4 text-center text-sm text-gray-500">{{ __('seminar.admin_only_action') }}</p>
                     @endif
-
                     @if($registration instanceof \App\Models\SeminarRegistration)
                         <div class="border-t pt-4">
                             <h3 class="font-semibold text-gray-900 mb-3">{{ __('seminar.seminar_attendance_title') }}</h3>
-                            @if($seminarCheckedInAt)
-                                <div class="bg-green-50 border border-green-200 rounded-lg p-3 flex items-center justify-between">
-                                    <span class="text-green-800">{{ __('seminar.already_checked_in') }}</span>
-                                    <span class="text-sm text-green-600">{{ $seminarCheckedInAt }}</span>
-                                </div>
-                                @if($seminarCheckedOutAt)
-                                    <div class="mt-3 bg-gray-50 border border-gray-200 rounded-lg p-3 flex items-center justify-between">
-                                        <span class="text-gray-800">{{ __('seminar.checked_out') }}</span>
-                                        <span class="text-sm text-gray-500">{{ $seminarCheckedOutAt }}</span>
+                            <p class="mb-3 text-sm text-gray-500">{{ __('seminar.seminar_attendance_days_hint') }}</p>
+
+                            <div class="space-y-3">
+                                @foreach(\App\Models\Attendance::SEMINAR_DAYS as $day)
+                                    <div class="bg-gray-50 rounded-lg p-3">
+                                        <div class="flex justify-between items-start mb-2">
+                                            <p class="font-medium text-gray-900">{{ __('seminar.seminar_day_label', ['day' => $day]) }}</p>
+                                            @if($registration->payment_status !== 'verified')
+                                                <span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">{{ __('seminar.payment_pending') }}</span>
+                                            @endif
+                                        </div>
+
+                                        @if($seminarDayCheckedIn[$day] ?? null)
+                                            <div class="bg-green-50 border border-green-200 rounded p-2 flex items-center justify-between">
+                                                <span class="text-green-800 text-sm">{{ __('seminar.checked_in') }}</span>
+                                                <span class="text-xs text-green-600">{{ $seminarDayCheckedIn[$day] }}</span>
+                                            </div>
+                                        @elseif($this->canCheckIn())
+                                            <button
+                                                wire:click="checkInSeminarDay({{ $day }})"
+                                                class="w-full bg-blue-600 text-white py-2 px-4 rounded font-medium hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                                                @if($registration->payment_status !== 'verified') disabled @endif
+                                            >
+                                                {{ __('seminar.check_in_day_button', ['day' => $day]) }}
+                                            </button>
+                                        @endif
                                     </div>
-                                @elseif($this->canCheckIn())
-                                    <button
-                                        wire:click="checkOutSeminar"
-                                        class="mt-3 w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
-                                    >
-                                        {{ __('seminar.check_out_seminar_button') }}
-                                    </button>
-                                @endif
-                            @else
-                                @if($this->canCheckIn())
-                                    <button
-                                        wire:click="checkInSeminar"
-                                        class="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                        @if($registration->payment_status !== 'verified') disabled @endif
-                                    >
-                                        {{ __('seminar.check_in_seminar_button') }}
-                                    </button>
-                                @endif
+                                @endforeach
+                            </div>
+
+                            @if($seminarCheckedOutAt)
+                                <div class="mt-3 bg-gray-50 border border-gray-200 rounded-lg p-3 flex items-center justify-between">
+                                    <span class="text-gray-800">{{ __('seminar.checked_out') }}</span>
+                                    <span class="text-sm text-gray-500">{{ $seminarCheckedOutAt }}</span>
+                                </div>
+                            @elseif($this->canCheckIn() && collect($seminarDayCheckedIn)->filter()->isNotEmpty())
+                                <button
+                                    wire:click="checkOutSeminar"
+                                    class="mt-3 w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+                                >
+                                    {{ __('seminar.check_out_seminar_button') }}
+                                </button>
                             @endif
                         </div>
 

@@ -28,7 +28,14 @@ class AttendanceCheckOutService
         return $attendance;
     }
 
-    public function checkOutSeminar(SeminarRegistration $registration, User $staff): bool
+    /**
+     * Check out a seminar participant for one day.
+     *
+     * `$day = null` targets the participant's earliest day that is still open,
+     * which is what the single check-out button on the verify screen means now
+     * that a participant has one row per day.
+     */
+    public function checkOutSeminar(SeminarRegistration $registration, User $staff, ?int $day = null): bool
     {
         $attendance = Attendance::query()
             ->where('seminar_registration_id', $registration->id)
@@ -36,6 +43,9 @@ class AttendanceCheckOutService
             // hands-on id is what identifies the seminar attendance itself.
             ->whereNull('hands_on_registration_id')
             ->where('activity_type', 'seminar')
+            ->when($day !== null, fn ($query) => $query->where('day', $day))
+            ->when($day === null, fn ($query) => $query->whereNull('checked_out_at'))
+            ->orderBy('day')
             ->first();
 
         if (! $attendance) {

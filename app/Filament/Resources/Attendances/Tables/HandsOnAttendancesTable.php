@@ -2,18 +2,20 @@
 
 namespace App\Filament\Resources\Attendances\Tables;
 
-use App\Models\Attendance;
+use App\Models\HandsOnRegistration;
+use App\Services\AttendanceCheckInService;
 use App\Services\AttendanceCheckOutService;
 use Filament\Actions\Action;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
 use Filament\Notifications\Notification;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
+/**
+ * The hands-on desk roster: one row per verified session registration, whether
+ * or not it has been scanned, with the attendance row joined in when it exists.
+ */
 class HandsOnAttendancesTable
 {
     public static function configure(Table $table): Table
@@ -22,63 +24,49 @@ class HandsOnAttendancesTable
             ->columns([
                 TextColumn::make('participant_name')
                     ->label(__('filament.attendance.participant_name'))
-                    ->state(function ($record): string {
-                        $handsOnRegistration = $record->handsOnRegistration;
-
-                        if (! $handsOnRegistration) {
-                            return 'N/A';
-                        }
-
-                        return $handsOnRegistration->seminarRegistration?->name_license
-                            ?? $handsOnRegistration->name_license
-                            ?? 'N/A';
-                    })
+                    ->state(fn (HandsOnRegistration $record): string => self::participantName($record))
+                    // participant_name is computed state, not a column: a plain
+                    // searchable() would query hands_on_registrations.participant_name.
                     ->searchable(query: function ($query, $search) {
-                        $query->whereHas('handsOnRegistration', function ($q) use ($search) {
-                            $q->where('name_license', 'like', "%{$search}%")
-                                ->orWhereHas('seminarRegistration', function ($seminar) use ($search) {
+                        $query->where(function ($inner) use ($search): void {
+                            $inner->where('name_license', 'like', "%{$search}%")
+                                ->orWhereHas('seminarRegistration', function ($seminar) use ($search): void {
                                     $seminar->where('name_license', 'like', "%{$search}%");
                                 });
                         });
                     }),
-                TextColumn::make('hands_on_name')
+                TextColumn::make('registration_code')
+                    ->label(__('filament.attendance.registration_code'))
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('handsOn.name')
                     ->label(__('filament.attendance.hands_on_session'))
-                    ->state(function ($record): string {
-                        if ($record->handsOnRegistration && $record->handsOnRegistration->handsOn) {
-                            return $record->handsOnRegistration->handsOn->name;
-                        }
-
-                        return 'N/A';
-                    })
-                    // hands_on_name is computed state, not a column: a plain
-                    // searchable() would query attendances.hands_on_name.
-                    ->searchable(query: function ($query, $search) {
-                        $query->whereHas('handsOnRegistration.handsOn', function ($q) use ($search) {
-                            $q->where('name', 'like', "%{$search}%");
-                        });
-                    }),
+                    ->searchable()
+                    ->sortable(),
                 IconColumn::make('is_checked_in')
                     ->label(__('filament.attendance.checked_in'))
-                    ->state(fn ($record): bool => $record->checked_in_at !== null)
+                    ->state(fn (HandsOnRegistration $record): bool => $record->attendance?->checked_in_at !== null)
                     ->boolean(),
-                TextColumn::make('checked_in_at')
+                TextColumn::make('attendance.checked_in_at')
                     ->label(__('filament.attendance.check_in_time'))
                     ->dateTime()
+                    ->placeholder('-')
                     ->sortable(),
-                TextColumn::make('checkedInBy.name')
+                TextColumn::make('attendance.checkedInBy.name')
                     ->label(__('filament.attendance.checked_in_by'))
-                    ->searchable(),
+                    ->placeholder('-'),
                 IconColumn::make('is_checked_out')
                     ->label(__('filament.attendance.checked_out'))
-                    ->state(fn ($record): bool => $record->checked_out_at !== null)
+                    ->state(fn (HandsOnRegistration $record): bool => $record->attendance?->checked_out_at !== null)
                     ->boolean(),
-                TextColumn::make('checked_out_at')
+                TextColumn::make('attendance.checked_out_at')
                     ->label(__('filament.attendance.check_out_time'))
                     ->dateTime()
+                    ->placeholder('-')
                     ->sortable(),
-                TextColumn::make('checkedOutBy.name')
+                TextColumn::make('attendance.checkedOutBy.name')
                     ->label(__('filament.attendance.checked_out_by'))
-                    ->searchable(),
+                    ->placeholder('-'),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -88,7 +76,11 @@ class HandsOnAttendancesTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->defaultSort('created_at', 'desc')
+            ->defaultSort('registration_code', 'asc')
+            // The record is a registration, not an attendance, so Filament's
+            // default record link would point the attendance edit page at a
+            // hands-on registration id.
+            ->recordUrl(null)
             ->filters([
                 SelectFilter::make('is_checked_in')
                     ->label(__('filament.attendance.check_in_status'))
@@ -98,9 +90,9 @@ class HandsOnAttendancesTable
                     ])
                     ->query(function ($query, array $data): void {
                         if ($data['value'] === 'checked_in') {
-                            $query->whereNotNull('checked_in_at');
+                            $query->whereHas('attendance', fn ($attendance) => $attendance->whereNotNull('checked_in_at'));
                         } elseif ($data['value'] === 'not_checked_in') {
-                            $query->whereNull('checked_in_at');
+                            $query->whereDoesntHave('attendance', fn ($attendance) => $attendance->whereNotNull('checked_in_at'));
                         }
                     }),
                 SelectFilter::make('is_checked_out')
@@ -111,9 +103,9 @@ class HandsOnAttendancesTable
                     ])
                     ->query(function ($query, array $data): void {
                         if ($data['value'] === 'checked_out') {
-                            $query->whereNotNull('checked_out_at');
+                            $query->whereHas('attendance', fn ($attendance) => $attendance->whereNotNull('checked_out_at'));
                         } elseif ($data['value'] === 'not_checked_out') {
-                            $query->whereNull('checked_out_at');
+                            $query->whereDoesntHave('attendance', fn ($attendance) => $attendance->whereNotNull('checked_out_at'));
                         }
                     }),
             ])
@@ -121,43 +113,83 @@ class HandsOnAttendancesTable
                 ManualCheckInAction::handsOn(),
             ])
             ->recordActions([
-                Action::make('checkOut')
-                    ->label(__('filament.attendance.check_out'))
-                    ->icon('heroicon-o-arrow-right-on-rectangle')
-                    ->color('gray')
-                    ->requiresConfirmation()
-                    ->modalHeading(__('filament.attendance.check_out'))
-                    ->modalDescription(fn (Attendance $record): string => __('filament.attendance.check_out_confirm', [
-                        'name' => $record->handsOnRegistration?->seminarRegistration?->name_license
-                            ?? $record->handsOnRegistration?->name_license
-                            ?? __('filament.attendance.participant_name'),
-                    ]))
-                    ->modalSubmitActionLabel(__('filament.attendance.check_out'))
-                    // Gated on the desk role, not on `update attendances`: the Admin
-                    // role is never granted that permission, and the same people check
-                    // participants out on the verify screen (AttendanceVerify::canCheckIn).
-                    ->visible(fn (Attendance $record): bool => $record->checked_in_at !== null
-                        && $record->checked_out_at === null
-                        && (auth()->user()?->hasRole(['Admin', 'Super Admin']) ?? false))
-                    ->action(function (Attendance $record): void {
-                        $staff = auth()->user();
-
-                        if (! $staff) {
-                            return;
-                        }
-
-                        app(AttendanceCheckOutService::class)->checkOut($record, $staff);
-
-                        Notification::make()->success()->title(__('filament.attendance.checked_out'))->send();
-                    }),
-                EditAction::make()
-                    ->visible(fn (): bool => auth()->user()?->can('update attendances') ?? false),
-            ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make()
-                        ->visible(fn (): bool => auth()->user()?->can('delete attendances') ?? false),
-                ]),
+                self::checkInAction(),
+                self::checkOutAction(),
             ]);
+    }
+
+    /**
+     * The seminar registration owns participant identity; the hands-on row only
+     * carries it for standalone registrations.
+     *
+     * @see .ai/rules/seminar-registrations-hands-on-registrations.md
+     */
+    private static function participantName(HandsOnRegistration $record): string
+    {
+        return $record->seminarRegistration?->name_license
+            ?? $record->name_license
+            ?? 'N/A';
+    }
+
+    private static function checkInAction(): Action
+    {
+        return Action::make('checkIn')
+            ->label(__('filament.attendance.check_in'))
+            ->icon('heroicon-o-arrow-left-on-rectangle')
+            ->color('gray')
+            ->requiresConfirmation()
+            ->modalHeading(__('filament.attendance.check_in'))
+            ->modalDescription(fn (HandsOnRegistration $record): string => __('filament.attendance.check_in_confirm', [
+                'name' => self::participantName($record),
+            ]))
+            ->modalSubmitActionLabel(__('filament.attendance.check_in'))
+            // Same desk-role gate as ManualCheckInAction: the Admin role is
+            // never granted `update attendances`.
+            ->visible(fn (HandsOnRegistration $record): bool => $record->attendance === null
+                && (auth()->user()?->hasRole(['Admin', 'Super Admin']) ?? false))
+            ->action(function (HandsOnRegistration $record): void {
+                $staff = auth()->user();
+
+                if (! $staff) {
+                    return;
+                }
+
+                app(AttendanceCheckInService::class)->checkInHandsOn($record, $staff);
+
+                Notification::make()->success()->title(__('filament.attendance.check_in_success', [
+                    'name' => self::participantName($record),
+                ]))->send();
+            });
+    }
+
+    private static function checkOutAction(): Action
+    {
+        return Action::make('checkOut')
+            ->label(__('filament.attendance.check_out'))
+            ->icon('heroicon-o-arrow-right-on-rectangle')
+            ->color('gray')
+            ->requiresConfirmation()
+            ->modalHeading(__('filament.attendance.check_out'))
+            ->modalDescription(fn (HandsOnRegistration $record): string => __('filament.attendance.check_out_confirm', [
+                'name' => self::participantName($record),
+            ]))
+            ->modalSubmitActionLabel(__('filament.attendance.check_out'))
+            // Gated on the desk role, not on `update attendances`: the Admin
+            // role is never granted that permission, and the same people check
+            // participants out on the verify screen (AttendanceVerify::canCheckIn).
+            ->visible(fn (HandsOnRegistration $record): bool => $record->attendance?->checked_in_at !== null
+                && $record->attendance?->checked_out_at === null
+                && (auth()->user()?->hasRole(['Admin', 'Super Admin']) ?? false))
+            ->action(function (HandsOnRegistration $record): void {
+                $staff = auth()->user();
+
+                if (! $staff) {
+                    return;
+                }
+
+                app(AttendanceCheckOutService::class)->checkOutHandsOn($record, $staff);
+
+                Notification::make()->success()->title(__('filament.attendance.checked_out'))->send();
+            });
     }
 }

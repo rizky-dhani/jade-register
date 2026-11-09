@@ -47,16 +47,22 @@ class ManualCheckInAction
                     ->getOptionLabelUsing(fn ($value): ?string => filled($value) && ($registration = SeminarRegistration::find($value))
                         ? self::seminarOptionLabel($registration)
                         : null),
+                Select::make('day')
+                    ->label(__('filament.attendance.day_label'))
+                    ->required()
+                    ->default(1)
+                    ->options(self::dayOptions()),
             ])
             ->action(function (array $data): void {
                 $staff = auth()->user();
                 $registration = SeminarRegistration::find($data['seminar_registration_id'] ?? null);
+                $day = (int) ($data['day'] ?? 1);
 
                 if (! $staff || ! $registration) {
                     return;
                 }
 
-                self::checkIn(fn () => app(AttendanceCheckInService::class)->checkInSeminar($registration, $staff));
+                self::checkIn(fn () => app(AttendanceCheckInService::class)->checkInSeminar($registration, $staff, $day));
             });
     }
 
@@ -157,6 +163,20 @@ class ManualCheckInAction
             ->filter()
             ->unique()
             ->implode(' · ');
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    private static function dayOptions(): array
+    {
+        $options = [];
+
+        foreach (Attendance::SEMINAR_DAYS as $day) {
+            $options[$day] = __('filament.attendance.day', ['day' => $day]);
+        }
+
+        return $options;
     }
 
     private static function handsOnOptionLabel(HandsOnRegistration $registration): string

@@ -35,13 +35,14 @@ test('staff can check in seminar', function () {
     $this->actingAs($this->user);
 
     livewire(AttendanceVerify::class, ['token' => $this->registration->qr_token])
-        ->call('checkInSeminar')
+        ->call('checkInSeminarDay', 1)
         ->assertSee(__('seminar.attendance_check_in_success'))
-        ->assertSee(__('seminar.already_checked_in'));
+        ->assertSee(__('seminar.checked_in'));
 
     $this->assertDatabaseHas('attendances', [
         'seminar_registration_id' => $this->registration->id,
         'activity_type' => 'seminar',
+        'day' => 1,
         'checked_in_by' => $this->user->id,
     ]);
 });
@@ -51,7 +52,7 @@ test('staff cannot check in seminar if payment not verified', function () {
     $this->actingAs($this->user);
 
     livewire(AttendanceVerify::class, ['token' => $pendingRegistration->qr_token])
-        ->call('checkInSeminar')
+        ->call('checkInSeminarDay', 1)
         ->assertSee(__('seminar.payment_not_verified'));
 
     $this->assertDatabaseMissing('attendances', [
@@ -69,8 +70,8 @@ test('staff cannot check in seminar twice', function () {
     ]);
 
     livewire(AttendanceVerify::class, ['token' => $this->registration->qr_token])
-        ->assertSee(__('seminar.already_checked_in'))
-        ->call('checkInSeminar');
+        ->assertSee(__('seminar.checked_in'))
+        ->call('checkInSeminarDay', 1);
 
     $this->assertDatabaseCount('attendances', 1);
 });
@@ -238,7 +239,7 @@ test('a participant cannot check in the seminar', function () {
     $this->actingAs($participant);
 
     livewire(AttendanceVerify::class, ['token' => $this->registration->qr_token])
-        ->call('checkInSeminar')
+        ->call('checkInSeminarDay', 1)
         ->assertHasErrors(['auth'])
         ->assertDontSee(__('seminar.check_in_seminar_button'));
 
@@ -270,7 +271,7 @@ test('a guest is not offered the check-in buttons', function () {
 
     livewire(AttendanceVerify::class, ['token' => $this->registration->qr_token])
         ->assertSee(__('seminar.admin_only_action'))
-        ->assertDontSee(__('seminar.check_in_seminar_button'));
+        ->assertDontSee(__('seminar.check_in_day_button', ['day' => 1]));
 });
 
 test('a super admin can check in the seminar', function () {
@@ -279,8 +280,8 @@ test('a super admin can check in the seminar', function () {
     $this->actingAs($superAdmin);
 
     livewire(AttendanceVerify::class, ['token' => $this->registration->qr_token])
-        ->assertSee(__('seminar.check_in_seminar_button'))
-        ->call('checkInSeminar')
+        ->assertSee(__('seminar.check_in_day_button', ['day' => 1]))
+        ->call('checkInSeminarDay', 1)
         ->assertHasNoErrors();
 
     $this->assertDatabaseCount('attendances', 1);
@@ -295,8 +296,8 @@ test('two simultaneous seminar scans leave a single attendance row', function ()
     // hands_on_registration_id and therefore cannot block this insert — the
     // firstOrCreate lookup is what has to hold.
     $component = livewire(AttendanceVerify::class, ['token' => $this->registration->qr_token]);
-    $component->call('checkInSeminar');
-    $component->set('seminarCheckedInAt', null)->call('checkInSeminar');
+    $component->call('checkInSeminarDay', 1);
+    $component->set('seminarDayCheckedIn', [])->call('checkInSeminarDay', 1);
 
     $this->assertDatabaseCount('attendances', 1);
 });

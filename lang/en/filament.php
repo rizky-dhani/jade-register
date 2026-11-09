@@ -99,6 +99,13 @@ return [
     'attendance.check_in_success' => ':name is checked in.',
     'attendance.already_checked_in' => ':name was already checked in.',
     'attendance.not_verified' => 'Only registrations with a verified payment can be checked in.',
+    'attendance.registration_code' => 'Registration Code',
+    'attendance.seminar_package' => 'Seminar Package',
+    'attendance.check_in_confirm' => ':name will be checked in now. The time and your name are recorded on the attendance row.',
+    'attendance.day' => 'Day :day',
+    'attendance.day_check_in' => 'Day :day Check-in',
+    'attendance.day_check_in_time' => 'Day :day Check-in Time',
+    'attendance.day_label' => 'Event Day',
 
     // Countries
     'countries.code' => 'Code',

@@ -15,6 +15,7 @@ class AttendanceFactory extends Factory
             'seminar_registration_id' => SeminarRegistration::factory(),
             'hands_on_registration_id' => null,
             'activity_type' => 'seminar',
+            'day' => 1,
             'checked_in_at' => now(),
             'checked_in_by' => User::factory(),
             'notes' => null,
@@ -33,7 +34,15 @@ class AttendanceFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'activity_type' => 'hands_on',
+            'day' => 1,
             'hands_on_registration_id' => HandsOnRegistration::factory(),
+        ]);
+    }
+
+    public function day(int $day): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'day' => $day,
         ]);
     }
 }

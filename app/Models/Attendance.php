@@ -10,10 +10,14 @@ class Attendance extends Model
 {
     use HasFactory;
 
+    /** The seminar runs for three days; day 1-3 are the seminar check-in slots. */
+    public const SEMINAR_DAYS = [1, 2, 3];
+
     protected $fillable = [
         'seminar_registration_id',
         'hands_on_registration_id',
         'activity_type',
+        'day',
         'checked_in_at',
         'checked_in_by',
         'checked_out_at',
@@ -22,6 +26,7 @@ class Attendance extends Model
     ];
 
     protected $casts = [
+        'day' => 'integer',
         'checked_in_at' => 'datetime',
         'checked_out_at' => 'datetime',
     ];

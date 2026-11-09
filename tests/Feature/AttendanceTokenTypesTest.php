@@ -140,7 +140,7 @@ test('checking in a digital workshop token is a no-op rather than an error', fun
     digitalWorkshopRegistration($token);
 
     livewire(AttendanceVerify::class, ['token' => $token])
-        ->call('checkInSeminar')
+        ->call('checkInSeminarDay', 1)
         ->assertOk();
 
     expect(Attendance::count())->toBe(0);

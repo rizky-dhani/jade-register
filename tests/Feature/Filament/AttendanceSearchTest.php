@@ -1,7 +1,6 @@
 <?php
 
 use App\Filament\Resources\Attendances\Pages\ListHandsOnAttendances;
-use App\Models\Attendance;
 use App\Models\HandsOn;
 use App\Models\HandsOnRegistration;
 use App\Models\User;
@@ -22,10 +21,10 @@ beforeEach(function () {
 });
 
 /**
- * hands_on_name is computed from the relationship, so searching it must go
- * through whereHas rather than the default column search.
+ * The hands-on roster is keyed on registrations, so search has to work on the
+ * session name and the participant name that live on related tables.
  */
-it('searches the hands-on attendance list by session name', function () {
+it('searches the hands-on roster by session name', function () {
     $implant = HandsOn::create([
         'name' => 'Dental Implant Workshop', 'currency' => 'IDR',
         'original_price' => 500000, 'is_active' => true, 'event_date' => '2026-11-13',
@@ -35,39 +34,61 @@ it('searches the hands-on attendance list by session name', function () {
         'original_price' => 450000, 'is_active' => true, 'event_date' => '2026-11-15',
     ]);
 
-    foreach ([$implant, $composite] as $handsOn) {
-        $registration = HandsOnRegistration::create([
-            'registration_code' => HandsOnRegistration::generateRegistrationCode(),
-            'hands_on_id' => $handsOn->id,
-            'registration_type' => 'hands_on',
-            'payment_status' => 'verified',
-            'verified_at' => now(),
-        ]);
+    $implantRegistration = HandsOnRegistration::create([
+        'registration_code' => HandsOnRegistration::generateRegistrationCode(),
+        'hands_on_id' => $implant->id,
+        'registration_type' => 'hands_on',
+        'payment_status' => 'verified',
+        'verified_at' => now(),
+    ]);
 
-        Attendance::create([
-            'seminar_registration_id' => null,
-            'hands_on_registration_id' => $registration->id,
-            'activity_type' => 'hands_on',
-            'checked_in_at' => now(),
-            'checked_in_by' => $this->user->id,
-        ]);
-    }
+    $compositeRegistration = HandsOnRegistration::create([
+        'registration_code' => HandsOnRegistration::generateRegistrationCode(),
+        'hands_on_id' => $composite->id,
+        'registration_type' => 'hands_on',
+        'payment_status' => 'verified',
+        'verified_at' => now(),
+    ]);
 
     livewire(ListHandsOnAttendances::class)
         ->assertOk()
-        ->assertCanSeeTableRecords(Attendance::all())
+        ->assertCanSeeTableRecords([$implantRegistration, $compositeRegistration])
         ->searchTable('Dental Implant')
-        ->assertCanSeeTableRecords(Attendance::whereHas(
-            'handsOnRegistration.handsOn',
-            fn ($query) => $query->where('name', 'Dental Implant Workshop')
-        )->get())
-        ->assertCanNotSeeTableRecords(Attendance::whereHas(
-            'handsOnRegistration.handsOn',
-            fn ($query) => $query->where('name', 'Aesthetic Composite Restoration')
-        )->get());
+        ->assertCanSeeTableRecords([$implantRegistration])
+        ->assertCanNotSeeTableRecords([$compositeRegistration]);
 });
 
-it('searches the hands-on attendance list without matching anything', function () {
+it('searches the hands-on roster by participant name', function () {
+    $handsOn = HandsOn::create([
+        'name' => 'Dental Implant Workshop', 'currency' => 'IDR',
+        'original_price' => 500000, 'is_active' => true, 'event_date' => '2026-11-13',
+    ]);
+
+    $ayu = HandsOnRegistration::create([
+        'registration_code' => HandsOnRegistration::generateRegistrationCode(),
+        'hands_on_id' => $handsOn->id,
+        'registration_type' => 'hands_on',
+        'payment_status' => 'verified',
+        'verified_at' => now(),
+        'name_license' => 'Ayu Kartika',
+    ]);
+
+    $budi = HandsOnRegistration::create([
+        'registration_code' => HandsOnRegistration::generateRegistrationCode(),
+        'hands_on_id' => $handsOn->id,
+        'registration_type' => 'hands_on',
+        'payment_status' => 'verified',
+        'verified_at' => now(),
+        'name_license' => 'Budi Santoso',
+    ]);
+
+    livewire(ListHandsOnAttendances::class)
+        ->searchTable('Ayu')
+        ->assertCanSeeTableRecords([$ayu])
+        ->assertCanNotSeeTableRecords([$budi]);
+});
+
+it('searches the hands-on roster without matching anything', function () {
     $handsOn = HandsOn::create([
         'name' => 'Dental Implant Workshop', 'currency' => 'IDR',
         'original_price' => 500000, 'is_active' => true, 'event_date' => '2026-11-13',
@@ -81,15 +102,7 @@ it('searches the hands-on attendance list without matching anything', function (
         'verified_at' => now(),
     ]);
 
-    Attendance::create([
-        'seminar_registration_id' => null,
-        'hands_on_registration_id' => $registration->id,
-        'activity_type' => 'hands_on',
-        'checked_in_at' => now(),
-        'checked_in_by' => $this->user->id,
-    ]);
-
     livewire(ListHandsOnAttendances::class)
         ->searchTable('Nothing Matches This')
-        ->assertCanNotSeeTableRecords(Attendance::all());
+        ->assertCanNotSeeTableRecords([$registration]);
 });

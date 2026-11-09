@@ -29,8 +29,17 @@ class AttendanceVerify extends Component
 
     public bool $showCheckOutSuccess = false;
 
-    public ?string $seminarCheckedInAt = null;
+    /**
+     * The participant's seminar check-in rows keyed by event day, e.g.
+     * `[1 => '13 Nov 2026 09:12', 2 => null, 3 => null]`.
+     *
+     * @var array<int, string|null>
+     */
+    public array $seminarDayCheckedIn = [];
 
+    /**
+     * The latest check-out across the participant's seminar days.
+     */
     public ?string $seminarCheckedOutAt = null;
 
     public array $handsOnCheckedOut = [];
@@ -94,15 +103,23 @@ class AttendanceVerify extends Component
             return;
         }
 
-        $seminarAttendance = Attendance::where('seminar_registration_id', $this->registration->id)
+        $seminarAttendances = Attendance::where('seminar_registration_id', $this->registration->id)
             ->where('activity_type', 'seminar')
-            ->first();
+            ->whereNull('hands_on_registration_id')
+            ->orderBy('day')
+            ->get();
 
-        if ($seminarAttendance) {
-            $this->seminarCheckedInAt = $seminarAttendance->checked_in_at->format('d M Y H:i');
+        // Every event day starts un-checked so the desk always sees three slots,
+        // including the days that have no attendance row yet.
+        foreach (Attendance::SEMINAR_DAYS as $day) {
+            $this->seminarDayCheckedIn[$day] = null;
+        }
 
-            if ($seminarAttendance->checked_out_at) {
-                $this->seminarCheckedOutAt = $seminarAttendance->checked_out_at->format('d M Y H:i');
+        foreach ($seminarAttendances as $attendance) {
+            $this->seminarDayCheckedIn[$attendance->day] = $attendance->checked_in_at->format('d M Y H:i');
+
+            if ($attendance->checked_out_at) {
+                $this->seminarCheckedOutAt = $attendance->checked_out_at->format('d M Y H:i');
             }
         }
 
@@ -170,7 +187,13 @@ class AttendanceVerify extends Component
         return app(LunchRedemptionService::class)->isRedemptionOpen();
     }
 
-    public function checkInSeminar(): void
+    /**
+     * Check the participant in for one day of the seminar.
+     *
+     * The event runs for three days, so each day is a separate check-in with its
+     * own attendance row. A second tap on an already-checked-in day is a no-op.
+     */
+    public function checkInSeminarDay(int $day): void
     {
         if (! $this->canCheckIn()) {
             $this->addError('auth', __('seminar.admin_only'));
@@ -182,7 +205,11 @@ class AttendanceVerify extends Component
             return;
         }
 
-        if ($this->seminarCheckedInAt) {
+        if (! in_array($day, Attendance::SEMINAR_DAYS, true)) {
+            return;
+        }
+
+        if ($this->seminarDayCheckedIn[$day] ?? null) {
             return;
         }
 
@@ -198,9 +225,9 @@ class AttendanceVerify extends Component
             return;
         }
 
-        app(AttendanceCheckInService::class)->checkInSeminar($this->registration, $staff);
+        $attendance = app(AttendanceCheckInService::class)->checkInSeminar($this->registration, $staff, $day);
 
-        $this->seminarCheckedInAt = now()->format('d M Y H:i');
+        $this->seminarDayCheckedIn[$day] = $attendance->checked_in_at->format('d M Y H:i');
         $this->showSuccess = true;
     }
 

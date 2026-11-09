@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class HandsOnRegistration extends Model
 {
@@ -65,6 +66,17 @@ class HandsOnRegistration extends Model
     public function handsOn(): BelongsTo
     {
         return $this->belongsTo(HandsOn::class);
+    }
+
+    /**
+     * The check-in row for this session. One session registration has at most
+     * one hands-on attendance, keyed on the hands-on registration id because
+     * the attendance row also carries the seminar registration id.
+     */
+    public function attendance(): HasOne
+    {
+        return $this->hasOne(Attendance::class)
+            ->where('activity_type', 'hands_on');
     }
 
     public function country(): BelongsTo

@@ -29,12 +29,12 @@ beforeEach(function () {
  *
  * @see .ai/rules/filament.md
  */
-function callCheckOutAction(string $page, Attendance $attendance): void
+function callCheckOutAction(string $page, $record): void
 {
-    livewire($page)->instance()->getTable()->getAction('checkOut')->call(['record' => $attendance]);
+    livewire($page)->instance()->getTable()->getAction('checkOut')->call(['record' => $record]);
 }
 
-it('checks out a seminar attendance from the seminar list', function () {
+it('checks out a seminar participant from the seminar roster', function () {
     $registration = SeminarRegistration::factory()->verified()->create();
     $attendance = Attendance::factory()->create([
         'seminar_registration_id' => $registration->id,
@@ -42,7 +42,7 @@ it('checks out a seminar attendance from the seminar list', function () {
         'checked_in_by' => $this->user->id,
     ]);
 
-    callCheckOutAction(ListSeminarAttendances::class, $attendance);
+    callCheckOutAction(ListSeminarAttendances::class, $registration);
 
     $attendance->refresh();
 
@@ -50,7 +50,7 @@ it('checks out a seminar attendance from the seminar list', function () {
         ->and($attendance->checked_out_by)->toBe($this->user->id);
 });
 
-it('checks out a hands-on attendance from the hands-on list', function () {
+it('checks out a hands-on participant from the hands-on roster', function () {
     $handsOn = HandsOn::factory()->create();
     $handsOnReg = HandsOnRegistration::factory()->verified()->create([
         'seminar_registration_id' => null,
@@ -64,22 +64,23 @@ it('checks out a hands-on attendance from the hands-on list', function () {
         'checked_in_by' => $this->user->id,
     ]);
 
-    callCheckOutAction(ListHandsOnAttendances::class, $attendance);
+    callCheckOutAction(ListHandsOnAttendances::class, $handsOnReg);
 
     expect($attendance->refresh()->checked_out_at)->not->toBeNull();
 });
 
 it('offers the check-out action only while the participant is still checked in', function () {
-    $registration = SeminarRegistration::factory()->verified()->create();
+    $stillIn = SeminarRegistration::factory()->verified()->create();
+    $alreadyOut = SeminarRegistration::factory()->verified()->create();
 
-    $stillIn = Attendance::factory()->create([
-        'seminar_registration_id' => $registration->id,
+    Attendance::factory()->create([
+        'seminar_registration_id' => $stillIn->id,
         'activity_type' => 'seminar',
         'checked_in_by' => $this->user->id,
     ]);
 
-    $alreadyOut = Attendance::factory()->checkedOut()->create([
-        'seminar_registration_id' => SeminarRegistration::factory()->verified()->create()->id,
+    Attendance::factory()->checkedOut()->create([
+        'seminar_registration_id' => $alreadyOut->id,
         'activity_type' => 'seminar',
         'checked_in_by' => $this->user->id,
     ]);
@@ -97,7 +98,7 @@ it('keeps the original check-out when the action runs twice', function () {
         'checked_in_by' => $this->user->id,
     ]);
 
-    callCheckOutAction(ListSeminarAttendances::class, $attendance);
+    callCheckOutAction(ListSeminarAttendances::class, $registration);
     $attendance->refresh();
     $firstCheckOutAt = $attendance->checked_out_at;
     $firstCheckedOutBy = $attendance->checked_out_by;
@@ -106,7 +107,7 @@ it('keeps the original check-out when the action runs twice', function () {
     $otherStaff->assignRole('Super Admin');
     actingAs($otherStaff);
 
-    callCheckOutAction(ListSeminarAttendances::class, $attendance);
+    callCheckOutAction(ListSeminarAttendances::class, $registration);
     $attendance->refresh();
 
     expect($attendance->checked_out_at->equalTo($firstCheckOutAt))->toBeTrue()
@@ -117,7 +118,7 @@ it('keeps the original check-out when the action runs twice', function () {
  * The Admin desk role has no `update attendances` permission, so gating the
  * action on it hid check-out from the very people who scan at the desk.
  */
-it('lets a desk admin check a participant out from the attendance list', function () {
+it('lets a desk admin check a participant out from the seminar roster', function () {
     $desk = User::factory()->create();
     $desk->assignRole('Admin');
     actingAs($desk);
@@ -130,9 +131,9 @@ it('lets a desk admin check a participant out from the attendance list', functio
     ]);
 
     livewire(ListSeminarAttendances::class)
-        ->assertTableActionVisible('checkOut', $attendance);
+        ->assertTableActionVisible('checkOut', $registration);
 
-    callCheckOutAction(ListSeminarAttendances::class, $attendance);
+    callCheckOutAction(ListSeminarAttendances::class, $registration);
 
     $attendance->refresh();
 
@@ -146,12 +147,12 @@ it('keeps the check-out action away from participants', function () {
     actingAs($participant);
 
     $registration = SeminarRegistration::factory()->verified()->create();
-    $attendance = Attendance::factory()->create([
+    Attendance::factory()->create([
         'seminar_registration_id' => $registration->id,
         'activity_type' => 'seminar',
-        'checked_in_by' => $participant->id,
+        'checked_in_by' => $this->user->id,
     ]);
 
     livewire(ListSeminarAttendances::class)
-        ->assertTableActionHidden('checkOut', $attendance);
+        ->assertTableActionHidden('checkOut', $registration);
 });

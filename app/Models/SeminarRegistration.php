@@ -125,6 +125,40 @@ class SeminarRegistration extends Model
         return $this->hasMany(Attendance::class);
     }
 
+    /**
+     * The participant's own check-in rows, one per event day. Hands-on rows also
+     * carry `seminar_registration_id`, so the null hands-on id is what picks the
+     * seminar attendances out of `attendances()`.
+     */
+    public function seminarAttendances(): HasMany
+    {
+        return $this->hasMany(Attendance::class)
+            ->where('activity_type', 'seminar')
+            ->whereNull('hands_on_registration_id')
+            ->orderBy('day');
+    }
+
+    public function seminarAttendanceForDay(int $day): ?Attendance
+    {
+        return $this->seminarAttendances->firstWhere('day', $day);
+    }
+
+    /**
+     * The day the desk should act on next: the earliest day not yet checked in.
+     */
+    public function nextOpenSeminarDay(): ?int
+    {
+        $checkedIn = $this->seminarAttendances->pluck('day')->all();
+
+        foreach (Attendance::SEMINAR_DAYS as $day) {
+            if (! in_array($day, $checkedIn, true)) {
+                return $day;
+            }
+        }
+
+        return null;
+    }
+
     public function addonRegistrations(): HasMany
     {
         return $this->hasMany(AddonRegistration::class);
