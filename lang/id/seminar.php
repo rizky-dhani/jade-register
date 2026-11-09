@@ -374,6 +374,7 @@ return [
     'already_checked_in' => 'Sudah Check-in',
     'check_in_seminar_button' => 'Check-in Seminar',
     'check_out_seminar_button' => 'Check-out Seminar',
+    'check_out_day_button' => 'Check-out Hari :day',
     'seminar_attendance_days_hint' => 'Seminar berlangsung selama tiga hari. Lakukan check-in peserta pada setiap hari kehadirannya.',
     'seminar_day_label' => 'Hari :day',
     'check_in_day_button' => 'Check-in Hari :day',

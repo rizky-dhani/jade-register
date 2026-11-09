@@ -236,3 +236,56 @@ it('leaves the seminar package empty for a standalone hands-on participant', fun
         ->assertOk()
         ->assertSee('HO-99');
 });
+
+it('checks out a single day from the roster, leaving other days open', function () {
+    $registration = SeminarRegistration::factory()->verified()->create();
+
+    $day1 = Attendance::factory()->day(1)->create([
+        'seminar_registration_id' => $registration->id, 'activity_type' => 'seminar', 'checked_in_by' => $this->user->id,
+    ]);
+    $day2 = Attendance::factory()->day(2)->create([
+        'seminar_registration_id' => $registration->id, 'activity_type' => 'seminar', 'checked_in_by' => $this->user->id,
+    ]);
+
+    callCancelAction('checkOutDay1', seminarRow($registration));
+
+    expect($day1->refresh()->checked_out_at)->not->toBeNull()
+        ->and($day1->checked_out_by)->toBe($this->user->id)
+        ->and($day2->refresh()->checked_out_at)->toBeNull();
+});
+
+it('offers per-day check-out only for days that are in and still open', function () {
+    $registration = SeminarRegistration::factory()->verified()->create();
+
+    Attendance::factory()->day(1)->create([
+        'seminar_registration_id' => $registration->id, 'activity_type' => 'seminar', 'checked_in_by' => $this->user->id,
+    ]);
+    Attendance::factory()->day(2)->checkedOut()->create([
+        'seminar_registration_id' => $registration->id, 'activity_type' => 'seminar', 'checked_in_by' => $this->user->id,
+    ]);
+
+    $row = seminarRow($registration);
+
+    livewire(ListAttendanceRoster::class)
+        ->assertTableActionVisible('checkOutDay1', $row)   // in, still open
+        ->assertTableActionHidden('checkOutDay2', $row)   // already out
+        ->assertTableActionHidden('checkOutDay3', $row);  // never checked in
+});
+
+it('keeps the first day check-out when run twice', function () {
+    $registration = SeminarRegistration::factory()->verified()->create();
+    $attendance = Attendance::factory()->day(1)->create([
+        'seminar_registration_id' => $registration->id, 'activity_type' => 'seminar', 'checked_in_by' => $this->user->id,
+    ]);
+
+    $row = seminarRow($registration);
+    callCancelAction('checkOutDay1', $row);
+    $first = $attendance->refresh()->checked_out_at;
+
+    $other = User::factory()->create();
+    $other->assignRole('Super Admin');
+    actingAs($other);
+    callCancelAction('checkOutDay1', $row);
+
+    expect($attendance->refresh()->checked_out_at->equalTo($first))->toBeTrue();
+});

@@ -113,6 +113,20 @@
                                                 <span class="text-green-800 text-sm">{{ __('seminar.checked_in') }}</span>
                                                 <span class="text-xs text-green-600">{{ $seminarDayCheckedIn[$day] }}</span>
                                             </div>
+
+                                            @if($seminarDayCheckedOut[$day] ?? null)
+                                                <div class="mt-2 bg-gray-50 border border-gray-200 rounded p-2 flex items-center justify-between">
+                                                    <span class="text-gray-800 text-sm">{{ __('seminar.checked_out') }}</span>
+                                                    <span class="text-xs text-gray-500">{{ $seminarDayCheckedOut[$day] }}</span>
+                                                </div>
+                                            @elseif($this->canCheckOut())
+                                                <button
+                                                    wire:click="checkOutSeminarDay({{ $day }})"
+                                                    class="mt-2 w-full bg-gray-700 text-white py-2 px-4 rounded font-medium hover:bg-gray-800 transition-colors text-sm"
+                                                >
+                                                    {{ __('seminar.check_out_day_button', ['day' => $day]) }}
+                                                </button>
+                                            @endif
                                         @elseif($this->canCheckIn())
                                             <button
                                                 wire:click="checkInSeminarDay({{ $day }})"
@@ -126,19 +140,6 @@
                                 @endforeach
                             </div>
 
-                            @if($seminarCheckedOutAt)
-                                <div class="mt-3 bg-gray-50 border border-gray-200 rounded-lg p-3 flex items-center justify-between">
-                                    <span class="text-gray-800">{{ __('seminar.checked_out') }}</span>
-                                    <span class="text-sm text-gray-500">{{ $seminarCheckedOutAt }}</span>
-                                </div>
-                            @elseif($this->canCheckIn() && collect($seminarDayCheckedIn)->filter()->isNotEmpty())
-                                <button
-                                    wire:click="checkOutSeminar"
-                                    class="mt-3 w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
-                                >
-                                    {{ __('seminar.check_out_seminar_button') }}
-                                </button>
-                            @endif
                         </div>
 
                         @if($this->lunchRedemption)

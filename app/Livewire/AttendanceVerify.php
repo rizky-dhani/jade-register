@@ -38,7 +38,16 @@ class AttendanceVerify extends Component
     public array $seminarDayCheckedIn = [];
 
     /**
-     * The latest check-out across the participant's seminar days.
+     * The participant's seminar check-out stamps keyed by event day, e.g.
+     * `[1 => '13 Nov 2026 17:02', 2 => null, 3 => null]`.
+     *
+     * @var array<int, string|null>
+     */
+    public array $seminarDayCheckedOut = [];
+
+    /**
+     * The latest check-out across the participant's seminar days, kept for the
+     * summary line above the day list.
      */
     public ?string $seminarCheckedOutAt = null;
 
@@ -116,12 +125,14 @@ class AttendanceVerify extends Component
         // including the days that have no attendance row yet.
         foreach (Attendance::SEMINAR_DAYS as $day) {
             $this->seminarDayCheckedIn[$day] = null;
+            $this->seminarDayCheckedOut[$day] = null;
         }
 
         foreach ($seminarAttendances as $attendance) {
             $this->seminarDayCheckedIn[$attendance->day] = $attendance->checked_in_at->format('d M Y H:i');
 
             if ($attendance->checked_out_at) {
+                $this->seminarDayCheckedOut[$attendance->day] = $attendance->checked_out_at->format('d M Y H:i');
                 $this->seminarCheckedOutAt = $attendance->checked_out_at->format('d M Y H:i');
             }
         }
@@ -278,27 +289,50 @@ class AttendanceVerify extends Component
      * Check-out is the closing half of the same desk flow, so it is gated the
      * same way as check-in and only applies to a record that is already in.
      */
-    public function checkOutSeminar(): void
+    /**
+     * Check the participant out of one event day.
+     *
+     * Check-out closes a day, so it is per-day like check-in: the participant
+     * may leave after day 1 while still attending day 2.
+     */
+    public function checkOutSeminarDay(int $day): void
     {
-        if (! $this->canCheckIn()) {
+        if (! $this->canCheckOut()) {
             $this->addError('auth', __('seminar.admin_only'));
 
             return;
         }
 
-        if (! $this->registration instanceof SeminarRegistration || $this->seminarCheckedOutAt) {
+        if (! $this->registration instanceof SeminarRegistration) {
             return;
         }
 
-        $staff = Auth::user();
+        if (! in_array($day, Attendance::SEMINAR_DAYS, true)) {
+            return;
+        }
 
-        if (! $staff || ! app(AttendanceCheckOutService::class)->checkOutSeminar($this->registration, $staff)) {
+        // Already checked out: idempotent, keep the first stamp.
+        if ($this->seminarDayCheckedOut[$day] ?? null) {
+            return;
+        }
+
+        // Nothing to close until the day has been checked in.
+        if (! ($this->seminarDayCheckedIn[$day] ?? null)) {
             $this->addError('check_out', __('seminar.check_out_requires_check_in'));
 
             return;
         }
 
-        $this->seminarCheckedOutAt = now()->format('d M Y H:i');
+        $staff = Auth::user();
+
+        if (! $staff || ! app(AttendanceCheckOutService::class)->checkOutSeminar($this->registration, $staff, $day)) {
+            $this->addError('check_out', __('seminar.check_out_requires_check_in'));
+
+            return;
+        }
+
+        $this->seminarDayCheckedOut[$day] = now()->format('d M Y H:i');
+        $this->seminarCheckedOutAt = $this->seminarDayCheckedOut[$day];
         $this->showCheckOutSuccess = true;
     }
 

@@ -125,3 +125,45 @@ test('nextOpenSeminarDay reports the first day without a check-in', function () 
 
     expect($this->registration->fresh()->nextOpenSeminarDay())->toBe(3);
 });
+
+test('the detail page offers a check-out button for each checked-in day', function () {
+    $this->actingAs($this->user);
+
+    Attendance::factory()->day(1)->create([
+        'seminar_registration_id' => $this->registration->id,
+        'activity_type' => 'seminar',
+        'checked_in_by' => $this->user->id,
+    ]);
+    Attendance::factory()->day(2)->create([
+        'seminar_registration_id' => $this->registration->id,
+        'activity_type' => 'seminar',
+        'checked_in_by' => $this->user->id,
+    ]);
+
+    livewire(AttendanceVerify::class, ['token' => $this->registration->qr_token])
+        ->assertSee(__('seminar.check_out_day_button', ['day' => 1]))
+        ->assertSee(__('seminar.check_out_day_button', ['day' => 2]))
+        ->assertDontSee(__('seminar.check_out_day_button', ['day' => 3]));
+});
+
+test('checking out one day on the detail page leaves the other days open', function () {
+    $this->actingAs($this->user);
+
+    $day1 = Attendance::factory()->day(1)->create([
+        'seminar_registration_id' => $this->registration->id,
+        'activity_type' => 'seminar',
+        'checked_in_by' => $this->user->id,
+    ]);
+    $day2 = Attendance::factory()->day(2)->create([
+        'seminar_registration_id' => $this->registration->id,
+        'activity_type' => 'seminar',
+        'checked_in_by' => $this->user->id,
+    ]);
+
+    livewire(AttendanceVerify::class, ['token' => $this->registration->qr_token])
+        ->call('checkOutSeminarDay', 1)
+        ->assertSee(__('seminar.attendance_check_out_success'));
+
+    expect($day1->refresh()->checked_out_at)->not->toBeNull()
+        ->and($day2->refresh()->checked_out_at)->toBeNull();
+});

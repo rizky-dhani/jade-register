@@ -375,6 +375,7 @@ return [
     'already_checked_in' => 'Already Checked In',
     'check_in_seminar_button' => 'Check-in Seminar',
     'check_out_seminar_button' => 'Check-out Seminar',
+    'check_out_day_button' => 'Check-out Day :day',
     'seminar_attendance_days_hint' => 'The seminar runs for three days. Check the participant in on each day they attend.',
     'seminar_day_label' => 'Day :day',
     'check_in_day_button' => 'Check-in Day :day',

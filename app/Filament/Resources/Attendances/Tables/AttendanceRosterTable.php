@@ -81,6 +81,7 @@ class AttendanceRosterTable
             ->recordActions([
                 ...self::seminarDayCheckInActions(),
                 ...self::seminarDayCancelActions(),
+                ...self::seminarDayCheckOutActions(),
                 self::handsOnCheckInAction(),
                 self::handsOnCancelAction(),
                 self::checkOutAction(),
@@ -309,6 +310,49 @@ class AttendanceRosterTable
                         : $notification->warning()->title(__('filament.attendance.nothing_to_cancel'));
 
                     $notification->send();
+                }),
+            Attendance::SEMINAR_DAYS,
+        );
+    }
+
+    /**
+     * Check the participant out of one event day.
+     *
+     * Check-out closes a day, so it is per-day like check-in: a participant may
+     * leave after day 1 and still attend day 2.
+     *
+     * @return array<int, Action>
+     */
+    private static function seminarDayCheckOutActions(): array
+    {
+        return array_map(
+            fn (int $day): Action => Action::make("checkOutDay{$day}")
+                ->label(__('filament.attendance.check_out_day', ['day' => $day]))
+                ->icon('heroicon-o-arrow-right-on-rectangle')
+                ->color('gray')
+                ->requiresConfirmation()
+                ->modalHeading(__('filament.attendance.check_out_day', ['day' => $day]))
+                ->modalDescription(fn (AttendanceRoster $record): string => __('filament.attendance.check_out_day_confirm', [
+                    'name' => $record->participant_name,
+                    'day' => $day,
+                ]))
+                ->modalSubmitActionLabel(__('filament.attendance.check_out'))
+                // Only a day that is checked in and still open can be closed.
+                ->visible(fn (AttendanceRoster $record): bool => $record->isSeminar()
+                    && ($attendance = $record->seminarAttendanceForDay($day)) !== null
+                    && $attendance->checked_out_at === null
+                    && (auth()->user()?->can('checkOut', Attendance::class) ?? false))
+                ->action(function (AttendanceRoster $record) use ($day): void {
+                    $staff = auth()->user();
+                    $registration = $record->seminarRegistration;
+
+                    if (! $staff || ! $registration) {
+                        return;
+                    }
+
+                    app(AttendanceCheckOutService::class)->checkOutSeminar($registration, $staff, $day);
+
+                    Notification::make()->success()->title(__('filament.attendance.checked_out'))->send();
                 }),
             Attendance::SEMINAR_DAYS,
         );

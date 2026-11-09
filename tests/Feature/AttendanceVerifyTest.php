@@ -312,7 +312,7 @@ test('staff can check out a seminar participant', function () {
     ]);
 
     livewire(AttendanceVerify::class, ['token' => $this->registration->qr_token])
-        ->call('checkOutSeminar')
+        ->call('checkOutSeminarDay', 1)
         ->assertSee(__('seminar.attendance_check_out_success'))
         ->assertSee(__('seminar.checked_out'));
 
@@ -326,7 +326,7 @@ test('a seminar participant cannot be checked out before checking in', function 
     $this->actingAs($this->user);
 
     livewire(AttendanceVerify::class, ['token' => $this->registration->qr_token])
-        ->call('checkOutSeminar')
+        ->call('checkOutSeminarDay', 1)
         ->assertHasErrors(['check_out']);
 
     $this->assertDatabaseCount('attendances', 0);
@@ -342,7 +342,7 @@ test('checking out a seminar participant twice keeps the first check-out', funct
     ]);
 
     livewire(AttendanceVerify::class, ['token' => $this->registration->qr_token])
-        ->call('checkOutSeminar')
+        ->call('checkOutSeminarDay', 1)
         ->assertHasNoErrors();
 
     $attendance->refresh();
@@ -354,7 +354,7 @@ test('checking out a seminar participant twice keeps the first check-out', funct
     $this->actingAs($otherStaff);
 
     livewire(AttendanceVerify::class, ['token' => $this->registration->qr_token])
-        ->call('checkOutSeminar')
+        ->call('checkOutSeminarDay', 1)
         ->assertHasNoErrors();
 
     $attendance->refresh();
@@ -417,9 +417,9 @@ test('a participant cannot check out the seminar', function () {
     ]);
 
     livewire(AttendanceVerify::class, ['token' => $this->registration->qr_token])
-        ->call('checkOutSeminar')
+        ->call('checkOutSeminarDay', 1)
         ->assertHasErrors(['auth'])
-        ->assertDontSee(__('seminar.check_out_seminar_button'));
+        ->assertDontSee(__('seminar.check_out_day_button', ['day' => 1]));
 
     expect($attendance->refresh()->checked_out_at)->toBeNull();
 });

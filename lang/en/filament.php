@@ -105,6 +105,8 @@ return [
     'attendance.seminar_package' => 'Seminar Package',
     'attendance.check_in_confirm' => ':name will be checked in now. The time and your name are recorded on the attendance row.',
     'attendance.cancel_check_in' => 'Cancel Check-In',
+    'attendance.check_out_day' => 'Check Out Day :day',
+    'attendance.check_out_day_confirm' => ':name will be checked out of Day :day. The time and your name are recorded on that day\'s attendance row.',
     'attendance.cancel_check_in_day' => 'Cancel Day :day Check-In',
     'attendance.cancel_check_in_hands_on' => 'Cancel Hands-On Check-In',
     'attendance.cancel_check_in_confirm' => ':name will be marked as not checked in for Day :day. The cancelled row is kept and the day becomes open again.',
