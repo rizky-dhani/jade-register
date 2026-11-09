@@ -12,7 +12,9 @@ use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 
@@ -71,6 +73,22 @@ class AttendanceRosterTable
                         'seminar' => __('filament.attendance.activity_seminar'),
                         'hands_on' => __('filament.attendance.activity_hands_on'),
                     ]),
+                TernaryFilter::make('seminar_package')
+                    ->label(__('filament.attendance.seminar_package'))
+                    ->placeholder(__('filament.attendance.all_packages'))
+                    ->trueLabel(__('seminar.package_name_with_lunch'))
+                    ->falseLabel(__('seminar.package_name_snack_only'))
+                    ->queries(
+                        true: fn (Builder $query) => $query->whereHas(
+                            'seminarRegistration.seminarPackage',
+                            fn (Builder $package) => $package->where('includes_lunch', true)
+                        ),
+                        false: fn (Builder $query) => $query->whereHas(
+                            'seminarRegistration.seminarPackage',
+                            fn (Builder $package) => $package->where('includes_lunch', false)
+                        ),
+                        blank: fn (Builder $query) => $query,
+                    ),
             ])
             ->headerActions([
                 ManualCheckInAction::seminar(),

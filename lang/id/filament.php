@@ -103,6 +103,7 @@ return [
     'attendance.not_verified' => 'Hanya pendaftaran dengan pembayaran terverifikasi yang dapat check-in.',
     'attendance.registration_code' => 'Kode Pendaftaran',
     'attendance.seminar_package' => 'Paket Seminar',
+    'attendance.all_packages' => 'Semua Paket',
     'attendance.check_in_confirm' => ':name akan check-in sekarang. Waktu dan nama Anda dicatat pada baris kehadiran.',
     'attendance.cancel_check_in' => 'Batalkan Check-in',
     'attendance.check_out_day' => 'Check-out Hari :day',

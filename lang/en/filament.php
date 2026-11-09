@@ -103,6 +103,7 @@ return [
     'attendance.not_verified' => 'Only registrations with a verified payment can be checked in.',
     'attendance.registration_code' => 'Registration Code',
     'attendance.seminar_package' => 'Seminar Package',
+    'attendance.all_packages' => 'All Packages',
     'attendance.check_in_confirm' => ':name will be checked in now. The time and your name are recorded on the attendance row.',
     'attendance.cancel_check_in' => 'Cancel Check-In',
     'attendance.check_out_day' => 'Check Out Day :day',
