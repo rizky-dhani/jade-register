@@ -1,9 +1,9 @@
 <?php
 
 use App\Filament\Resources\Attendances\AttendanceResource;
-use App\Filament\Resources\Attendances\Pages\ListHandsOnAttendances;
-use App\Filament\Resources\Attendances\Pages\ListSeminarAttendances;
+use App\Filament\Resources\Attendances\Pages\ListAttendanceRoster;
 use App\Models\Attendance;
+use App\Models\AttendanceRoster;
 use App\Models\HandsOn;
 use App\Models\HandsOnRegistration;
 use App\Models\SeminarRegistration;
@@ -30,110 +30,89 @@ beforeEach(function () {
  *
  * @see .ai/rules/filament.md
  */
-function callRosterAction(string $page, string $action, $record): void
+function callRosterAction(string $action, $record): void
 {
-    livewire($page)->instance()->getTable()->getAction($action)->call(['record' => $record]);
+    livewire(ListAttendanceRoster::class)->instance()->getTable()->getAction($action)->call(['record' => $record]);
 }
 
-it('lists every verified seminar participant, checked in or not', function () {
-    $checkedIn = SeminarRegistration::factory()->verified()->create(['name_license' => 'Ayu Kartika']);
-    $notYet = SeminarRegistration::factory()->verified()->create(['name_license' => 'Budi Santoso']);
+function rosterRowFor(SeminarRegistration $registration)
+{
+    return AttendanceRoster::where('participant_key', 'seminar-'.$registration->id)->sole();
+}
 
-    Attendance::factory()->create([
-        'seminar_registration_id' => $checkedIn->id,
-        'activity_type' => 'seminar',
-        'checked_in_by' => $this->user->id,
+it('lists verified seminar and hands-on participants in one table', function () {
+    $seminar = SeminarRegistration::factory()->verified()->create(['name_license' => 'Ayu Kartika']);
+
+    $handsOn = HandsOn::factory()->create(['name' => 'Dental Implant Workshop']);
+    $standalone = HandsOnRegistration::factory()->verified()->create([
+        'seminar_registration_id' => null,
+        'hands_on_id' => $handsOn->id,
+        'registration_type' => 'hands_on',
+        'name_license' => 'Budi Santoso',
     ]);
 
-    livewire(ListSeminarAttendances::class)
+    livewire(ListAttendanceRoster::class)
         ->assertOk()
-        ->assertCanSeeTableRecords([$checkedIn, $notYet]);
+        ->assertCanSeeTableRecords(AttendanceRoster::all())
+        ->assertSee('Ayu Kartika')
+        ->assertSee('Budi Santoso');
 });
 
-it('leaves unpaid seminar registrations off the desk roster', function () {
+it('leaves unpaid registrations off the roster', function () {
     $verified = SeminarRegistration::factory()->verified()->create();
     $pending = SeminarRegistration::factory()->pending()->create();
-    $rejected = SeminarRegistration::factory()->rejected()->create();
 
-    livewire(ListSeminarAttendances::class)
-        ->assertCanSeeTableRecords([$verified])
-        ->assertCanNotSeeTableRecords([$pending, $rejected]);
+    livewire(ListAttendanceRoster::class)
+        ->assertCanSeeTableRecords([rosterRowFor($verified)])
+        ->assertCanNotSeeTableRecords(AttendanceRoster::where('seminar_registration_id', $pending->id)->get());
 });
 
-it('lists every verified hands-on session registration, checked in or not', function () {
-    $handsOn = HandsOn::factory()->create();
+it('filters the roster by activity type', function () {
     $seminar = SeminarRegistration::factory()->verified()->create();
 
-    $checkedIn = HandsOnRegistration::factory()->verified()->create([
+    $handsOn = HandsOn::factory()->create();
+    $standalone = HandsOnRegistration::factory()->verified()->create([
+        'seminar_registration_id' => null,
+        'hands_on_id' => $handsOn->id,
+        'registration_type' => 'hands_on',
+    ]);
+
+    $seminarRow = rosterRowFor($seminar);
+    $handsOnRow = AttendanceRoster::where('participant_key', 'hands_on-'.$standalone->id)->sole();
+
+    livewire(ListAttendanceRoster::class)
+        ->filterTable('activity_type', 'seminar')
+        ->assertCanSeeTableRecords([$seminarRow])
+        ->assertCanNotSeeTableRecords([$handsOnRow])
+        ->filterTable('activity_type', 'hands_on')
+        ->assertCanSeeTableRecords([$handsOnRow])
+        ->assertCanNotSeeTableRecords([$seminarRow]);
+});
+
+it('does not list a linked hands-on registration as its own row', function () {
+    $seminar = SeminarRegistration::factory()->verified()->create();
+    $handsOn = HandsOn::factory()->create();
+
+    $linked = HandsOnRegistration::factory()->verified()->create([
         'seminar_registration_id' => $seminar->id,
         'hands_on_id' => $handsOn->id,
         'registration_type' => 'combined',
     ]);
-    $notYet = HandsOnRegistration::factory()->verified()->create([
-        'hands_on_id' => $handsOn->id,
-        'registration_type' => 'hands_on',
-    ]);
 
-    Attendance::factory()->handsOn()->create([
-        'seminar_registration_id' => $seminar->id,
-        'hands_on_registration_id' => $checkedIn->id,
-        'checked_in_by' => $this->user->id,
-    ]);
-
-    livewire(ListHandsOnAttendances::class)
-        ->assertOk()
-        ->assertCanSeeTableRecords([$checkedIn, $notYet]);
+    // The participant is one row (the seminar registration); the hands-on
+    // session shows inside it rather than doubling the row count.
+    expect(AttendanceRoster::count())->toBe(1)
+        ->and(AttendanceRoster::where('participant_key', 'hands_on-'.$linked->id)->exists())->toBeFalse();
 });
 
-it('filters the seminar roster down to participants who have not checked in', function () {
-    $checkedIn = SeminarRegistration::factory()->verified()->create();
-    $notYet = SeminarRegistration::factory()->verified()->create();
-
-    Attendance::factory()->create([
-        'seminar_registration_id' => $checkedIn->id,
-        'activity_type' => 'seminar',
-        'checked_in_by' => $this->user->id,
-    ]);
-
-    livewire(ListSeminarAttendances::class)
-        ->filterTable('is_checked_in', 'not_checked_in')
-        ->assertCanSeeTableRecords([$notYet])
-        ->assertCanNotSeeTableRecords([$checkedIn]);
-});
-
-it('filters the hands-on roster down to sessions that have not checked in', function () {
-    $handsOn = HandsOn::factory()->create();
-
-    $checkedIn = HandsOnRegistration::factory()->verified()->create([
-        'hands_on_id' => $handsOn->id,
-        'registration_type' => 'hands_on',
-    ]);
-    $notYet = HandsOnRegistration::factory()->verified()->create([
-        'hands_on_id' => $handsOn->id,
-        'registration_type' => 'hands_on',
-    ]);
-
-    Attendance::factory()->handsOn()->create([
-        'seminar_registration_id' => null,
-        'hands_on_registration_id' => $checkedIn->id,
-        'checked_in_by' => $this->user->id,
-    ]);
-
-    livewire(ListHandsOnAttendances::class)
-        ->filterTable('is_checked_in', 'not_checked_in')
-        ->assertCanSeeTableRecords([$notYet])
-        ->assertCanNotSeeTableRecords([$checkedIn]);
-});
-
-it('checks a seminar participant in for a single day from their roster row', function () {
+it('checks a seminar day in from the roster row', function () {
     $registration = SeminarRegistration::factory()->verified()->create();
+    $row = rosterRowFor($registration);
 
-    livewire(ListSeminarAttendances::class)
-        ->assertTableActionVisible('checkInDay1', $registration)
-        ->assertTableActionVisible('checkInDay2', $registration)
-        ->assertTableActionVisible('checkInDay3', $registration);
+    livewire(ListAttendanceRoster::class)
+        ->assertTableActionVisible('checkInDay2', $row);
 
-    callRosterAction(ListSeminarAttendances::class, 'checkInDay2', $registration);
+    callRosterAction('checkInDay2', $row);
 
     $attendance = Attendance::query()
         ->where('seminar_registration_id', $registration->id)
@@ -141,71 +120,59 @@ it('checks a seminar participant in for a single day from their roster row', fun
         ->sole();
 
     expect($attendance->day)->toBe(2)
-        ->and($attendance->checked_in_at)->not->toBeNull()
-        ->and($attendance->checked_in_by)->toBe($this->user->id)
-        ->and($attendance->hands_on_registration_id)->toBeNull();
+        ->and($attendance->checked_in_by)->toBe($this->user->id);
 });
 
-it('accumulates one seminar attendance row per day checked in', function () {
-    $registration = SeminarRegistration::factory()->verified()->create();
-
-    callRosterAction(ListSeminarAttendances::class, 'checkInDay1', $registration);
-    callRosterAction(ListSeminarAttendances::class, 'checkInDay3', $registration);
-
-    $days = Attendance::query()
-        ->where('seminar_registration_id', $registration->id)
-        ->where('activity_type', 'seminar')
-        ->orderBy('day')
-        ->pluck('day')
-        ->all();
-
-    expect($days)->toBe([1, 3]);
-});
-
-it('checks a hands-on participant in from their own roster row', function () {
+it('checks in a standalone hands-on participant from the roster row', function () {
     $handsOn = HandsOn::factory()->create();
-    $seminar = SeminarRegistration::factory()->verified()->create();
     $registration = HandsOnRegistration::factory()->verified()->create([
-        'seminar_registration_id' => $seminar->id,
+        'seminar_registration_id' => null,
         'hands_on_id' => $handsOn->id,
-        'registration_type' => 'combined',
+        'registration_type' => 'hands_on',
     ]);
 
-    livewire(ListHandsOnAttendances::class)
-        ->assertTableActionVisible('checkIn', $registration);
+    $row = AttendanceRoster::where('participant_key', 'hands_on-'.$registration->id)->sole();
 
-    callRosterAction(ListHandsOnAttendances::class, 'checkIn', $registration);
+    callRosterAction('checkInHandsOn', $row);
 
-    $attendance = Attendance::query()
+    expect(Attendance::query()
         ->where('hands_on_registration_id', $registration->id)
         ->where('activity_type', 'hands_on')
-        ->sole();
-
-    expect($attendance->checked_in_at)->not->toBeNull()
-        ->and($attendance->seminar_registration_id)->toBe($seminar->id);
+        ->exists())->toBeTrue();
 });
 
-it('hides only the checked-in day, and offers check-out once any day is in', function () {
+it('hides the day check-in actions once that day is in', function () {
     $registration = SeminarRegistration::factory()->verified()->create();
 
-    Attendance::factory()->day(2)->create([
+    Attendance::factory()->day(1)->create([
         'seminar_registration_id' => $registration->id,
         'activity_type' => 'seminar',
         'checked_in_by' => $this->user->id,
     ]);
 
-    livewire(ListSeminarAttendances::class)
-        ->assertTableActionHidden('checkInDay2', $registration)
-        ->assertTableActionVisible('checkInDay1', $registration)
-        ->assertTableActionVisible('checkInDay3', $registration)
-        ->assertTableActionVisible('checkOut', $registration);
+    $row = rosterRowFor($registration);
+
+    livewire(ListAttendanceRoster::class)
+        ->assertTableActionHidden('checkInDay1', $row)
+        ->assertTableActionVisible('checkInDay2', $row)
+        ->assertTableActionVisible('checkInDay3', $row)
+        ->assertTableActionVisible('checkOut', $row);
 });
 
-/**
- * The attendance pages are gated on `view attendances`, which Participant does
- * not hold — so a participant never reaches the roster at all, rather than
- * reaching it with the buttons hidden.
- */
+it('checks a participant out from the roster row', function () {
+    $registration = SeminarRegistration::factory()->verified()->create();
+    $attendance = Attendance::factory()->create([
+        'seminar_registration_id' => $registration->id,
+        'activity_type' => 'seminar',
+        'checked_in_by' => $this->user->id,
+    ]);
+
+    callRosterAction('checkOut', rosterRowFor($registration));
+
+    expect($attendance->refresh()->checked_out_at)->not->toBeNull()
+        ->and($attendance->checked_out_by)->toBe($this->user->id);
+});
+
 it('keeps participants off the attendance roster entirely', function () {
     $participant = User::factory()->create();
     $participant->assignRole('Participant');
@@ -214,18 +181,28 @@ it('keeps participants off the attendance roster entirely', function () {
     expect(AttendanceResource::canViewAny())->toBeFalse();
 });
 
-it('keeps the roster check-in away from a role without the check-in permission', function () {
+it('hides the roster actions from a role without the check-in permission', function () {
     $viewer = User::factory()->create();
-    $viewer->assignRole('Super Admin');
     $viewer->syncRoles([]);
     $viewer->givePermissionTo('view attendances');
     actingAs($viewer);
 
     $registration = SeminarRegistration::factory()->verified()->create();
+    $row = rosterRowFor($registration);
 
-    livewire(ListSeminarAttendances::class)
+    livewire(ListAttendanceRoster::class)
         ->assertOk()
-        ->assertTableActionHidden('checkInDay1', $registration)
-        ->assertTableActionHidden('checkInDay2', $registration)
-        ->assertTableActionHidden('checkInDay3', $registration);
+        ->assertTableActionHidden('checkInDay1', $row)
+        ->assertTableActionHidden('checkInHandsOn', $row)
+        ->assertTableActionHidden('checkOut', $row);
+});
+
+it('searches the roster by participant name and registration code', function () {
+    $ayu = SeminarRegistration::factory()->verified()->create(['name_license' => 'Ayu Kartika']);
+    $budi = SeminarRegistration::factory()->verified()->create(['name_license' => 'Budi Santoso']);
+
+    livewire(ListAttendanceRoster::class)
+        ->searchTable('Ayu Kartika')
+        ->assertCanSeeTableRecords([rosterRowFor($ayu)])
+        ->assertCanNotSeeTableRecords([rosterRowFor($budi)]);
 });

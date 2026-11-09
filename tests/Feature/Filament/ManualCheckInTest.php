@@ -1,7 +1,6 @@
 <?php
 
-use App\Filament\Resources\Attendances\Pages\ListHandsOnAttendances;
-use App\Filament\Resources\Attendances\Pages\ListSeminarAttendances;
+use App\Filament\Resources\Attendances\Pages\ListAttendanceRoster;
 use App\Models\Attendance;
 use App\Models\HandsOn;
 use App\Models\HandsOnRegistration;
@@ -30,16 +29,17 @@ beforeEach(function () {
  *
  * @see .ai/rules/filament.md
  */
-function callManualCheckInAction(string $page, array $data): void
+function callManualCheckInAction(array $data, string $action = 'manualCheckInSeminar'): void
 {
-    livewire($page)->instance()->getTable()->getAction('manualCheckIn')->call(['data' => $data]);
+    livewire(ListAttendanceRoster::class)->instance()->getTable()->getAction($action)->call(['data' => $data]);
 }
 
-it('checks in a verified seminar participant from the seminar attendance list', function () {
+it('checks in a verified seminar participant for the chosen day', function () {
     $registration = SeminarRegistration::factory()->verified()->create();
 
-    callManualCheckInAction(ListSeminarAttendances::class, [
+    callManualCheckInAction([
         'seminar_registration_id' => $registration->id,
+        'day' => 2,
     ]);
 
     $attendance = Attendance::query()
@@ -47,23 +47,24 @@ it('checks in a verified seminar participant from the seminar attendance list', 
         ->where('activity_type', 'seminar')
         ->sole();
 
-    expect($attendance->checked_in_at)->not->toBeNull()
+    expect($attendance->day)->toBe(2)
+        ->and($attendance->checked_in_at)->not->toBeNull()
         ->and($attendance->checked_in_by)->toBe($this->user->id)
         ->and($attendance->hands_on_registration_id)->toBeNull();
 });
 
-it('checks in a verified hands-on participant from the hands-on attendance list', function () {
+it('checks in a verified hands-on participant', function () {
     $seminar = SeminarRegistration::factory()->verified()->create();
     $handsOn = HandsOn::factory()->create();
     $registration = HandsOnRegistration::factory()->verified()->create([
         'seminar_registration_id' => $seminar->id,
         'hands_on_id' => $handsOn->id,
-        'registration_type' => 'hands_on',
+        'registration_type' => 'combined',
     ]);
 
-    callManualCheckInAction(ListHandsOnAttendances::class, [
+    callManualCheckInAction([
         'hands_on_registration_id' => $registration->id,
-    ]);
+    ], 'manualCheckInHandsOn');
 
     $attendance = Attendance::query()
         ->where('hands_on_registration_id', $registration->id)
@@ -80,8 +81,9 @@ it('leaves an existing check-in untouched when the participant is checked in aga
     $originalStaff = User::factory()->create();
     $originalStaff->assignRole('Super Admin');
 
-    callManualCheckInAction(ListSeminarAttendances::class, [
+    callManualCheckInAction([
         'seminar_registration_id' => $registration->id,
+        'day' => 1,
     ]);
 
     $attendance = Attendance::query()
@@ -93,8 +95,9 @@ it('leaves an existing check-in untouched when the participant is checked in aga
     ]);
     $originalCheckedInAt = $attendance->refresh()->checked_in_at;
 
-    callManualCheckInAction(ListSeminarAttendances::class, [
+    callManualCheckInAction([
         'seminar_registration_id' => $registration->id,
+        'day' => 1,
     ]);
 
     expect(Attendance::query()->where('seminar_registration_id', $registration->id)->count())->toBe(1)
@@ -105,26 +108,27 @@ it('leaves an existing check-in untouched when the participant is checked in aga
 it('refuses a registration whose payment is not verified', function () {
     $pending = SeminarRegistration::factory()->create(['payment_status' => 'pending']);
 
-    callManualCheckInAction(ListSeminarAttendances::class, [
+    callManualCheckInAction([
         'seminar_registration_id' => $pending->id,
+        'day' => 1,
     ]);
 
     expect(Attendance::query()->where('seminar_registration_id', $pending->id)->exists())->toBeFalse();
 });
 
-it('shows the manual check-in action to desk admins and hides it from participants', function () {
+it('shows the manual check-in action to desk admins and hides it from view-only roles', function () {
     $desk = User::factory()->create();
     $desk->assignRole('Admin');
     actingAs($desk);
 
-    livewire(ListSeminarAttendances::class)
-        ->assertActionVisible(TestAction::make('manualCheckIn')->table());
+    livewire(ListAttendanceRoster::class)
+        ->assertActionVisible(TestAction::make('manualCheckInSeminar')->table());
 
     $viewer = User::factory()->create();
     $viewer->syncRoles([]);
     $viewer->givePermissionTo('view attendances');
     actingAs($viewer);
 
-    livewire(ListSeminarAttendances::class)
-        ->assertActionHidden(TestAction::make('manualCheckIn')->table());
+    livewire(ListAttendanceRoster::class)
+        ->assertActionHidden(TestAction::make('manualCheckInSeminar')->table());
 });

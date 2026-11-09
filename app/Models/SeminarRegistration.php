@@ -108,6 +108,17 @@ class SeminarRegistration extends Model
         return $this->hasMany(HandsOnRegistration::class);
     }
 
+    /**
+     * Hands-on sessions the desk may check in: unverified payments are refused
+     * by AttendanceCheckInService, so they never appear on the roster.
+     */
+    public function verifiedHandsOnRegistrations(): HasMany
+    {
+        return $this->handsOnRegistrations()
+            ->where('payment_status', 'verified')
+            ->with(['handsOn', 'attendance']);
+    }
+
     public function handsOns(): BelongsToMany
     {
         return $this->belongsToMany(HandsOn::class, 'hands_on_registrations')

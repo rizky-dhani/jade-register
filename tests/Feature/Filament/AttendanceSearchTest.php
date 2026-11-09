@@ -1,8 +1,10 @@
 <?php
 
-use App\Filament\Resources\Attendances\Pages\ListHandsOnAttendances;
+use App\Filament\Resources\Attendances\Pages\ListAttendanceRoster;
+use App\Models\AttendanceRoster;
 use App\Models\HandsOn;
 use App\Models\HandsOnRegistration;
+use App\Models\SeminarRegistration;
 use App\Models\User;
 use Database\Seeders\RolePermissionSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -21,44 +23,10 @@ beforeEach(function () {
 });
 
 /**
- * The hands-on roster is keyed on registrations, so search has to work on the
- * session name and the participant name that live on related tables.
+ * The roster is one row per participant, so search has to work across the
+ * view's own columns rather than a single registration table.
  */
-it('searches the hands-on roster by session name', function () {
-    $implant = HandsOn::create([
-        'name' => 'Dental Implant Workshop', 'currency' => 'IDR',
-        'original_price' => 500000, 'is_active' => true, 'event_date' => '2026-11-13',
-    ]);
-    $composite = HandsOn::create([
-        'name' => 'Aesthetic Composite Restoration', 'currency' => 'IDR',
-        'original_price' => 450000, 'is_active' => true, 'event_date' => '2026-11-15',
-    ]);
-
-    $implantRegistration = HandsOnRegistration::create([
-        'registration_code' => HandsOnRegistration::generateRegistrationCode(),
-        'hands_on_id' => $implant->id,
-        'registration_type' => 'hands_on',
-        'payment_status' => 'verified',
-        'verified_at' => now(),
-    ]);
-
-    $compositeRegistration = HandsOnRegistration::create([
-        'registration_code' => HandsOnRegistration::generateRegistrationCode(),
-        'hands_on_id' => $composite->id,
-        'registration_type' => 'hands_on',
-        'payment_status' => 'verified',
-        'verified_at' => now(),
-    ]);
-
-    livewire(ListHandsOnAttendances::class)
-        ->assertOk()
-        ->assertCanSeeTableRecords([$implantRegistration, $compositeRegistration])
-        ->searchTable('Dental Implant')
-        ->assertCanSeeTableRecords([$implantRegistration])
-        ->assertCanNotSeeTableRecords([$compositeRegistration]);
-});
-
-it('searches the hands-on roster by participant name', function () {
+it('searches the roster by participant name', function () {
     $handsOn = HandsOn::create([
         'name' => 'Dental Implant Workshop', 'currency' => 'IDR',
         'original_price' => 500000, 'is_active' => true, 'event_date' => '2026-11-13',
@@ -82,27 +50,27 @@ it('searches the hands-on roster by participant name', function () {
         'name_license' => 'Budi Santoso',
     ]);
 
-    livewire(ListHandsOnAttendances::class)
+    livewire(ListAttendanceRoster::class)
+        ->assertOk()
         ->searchTable('Ayu')
-        ->assertCanSeeTableRecords([$ayu])
-        ->assertCanNotSeeTableRecords([$budi]);
+        ->assertCanSeeTableRecords([AttendanceRoster::find('hands_on-'.$ayu->id)])
+        ->assertCanNotSeeTableRecords([AttendanceRoster::find('hands_on-'.$budi->id)]);
 });
 
-it('searches the hands-on roster without matching anything', function () {
-    $handsOn = HandsOn::create([
-        'name' => 'Dental Implant Workshop', 'currency' => 'IDR',
-        'original_price' => 500000, 'is_active' => true, 'event_date' => '2026-11-13',
-    ]);
+it('searches the roster by registration code', function () {
+    $target = SeminarRegistration::factory()->verified()->create();
+    $other = SeminarRegistration::factory()->verified()->create();
 
-    $registration = HandsOnRegistration::create([
-        'registration_code' => HandsOnRegistration::generateRegistrationCode(),
-        'hands_on_id' => $handsOn->id,
-        'registration_type' => 'hands_on',
-        'payment_status' => 'verified',
-        'verified_at' => now(),
-    ]);
+    livewire(ListAttendanceRoster::class)
+        ->searchTable($target->registration_code)
+        ->assertCanSeeTableRecords([AttendanceRoster::find('seminar-'.$target->id)])
+        ->assertCanNotSeeTableRecords([AttendanceRoster::find('seminar-'.$other->id)]);
+});
 
-    livewire(ListHandsOnAttendances::class)
+it('searches the roster without matching anything', function () {
+    $registration = SeminarRegistration::factory()->verified()->create();
+
+    livewire(ListAttendanceRoster::class)
         ->searchTable('Nothing Matches This')
-        ->assertCanNotSeeTableRecords([$registration]);
+        ->assertCanNotSeeTableRecords([AttendanceRoster::find('seminar-'.$registration->id)]);
 });

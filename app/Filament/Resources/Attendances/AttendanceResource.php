@@ -4,18 +4,14 @@ namespace App\Filament\Resources\Attendances;
 
 use App\Filament\Resources\Attendances\Pages\CreateAttendance;
 use App\Filament\Resources\Attendances\Pages\EditAttendance;
-use App\Filament\Resources\Attendances\Pages\ListAttendances;
-use App\Filament\Resources\Attendances\Pages\ListHandsOnAttendances;
-use App\Filament\Resources\Attendances\Pages\ListSeminarAttendances;
+use App\Filament\Resources\Attendances\Pages\ListAttendanceRoster;
 use App\Filament\Resources\Attendances\Pages\ListVisitorAttendances;
 use App\Filament\Resources\Attendances\Schemas\AttendanceForm;
-use App\Filament\Resources\Attendances\Tables\AttendancesTable;
 use App\Models\Attendance;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
-use Filament\Tables\Table;
 
 class AttendanceResource extends Resource
 {
@@ -55,11 +51,6 @@ class AttendanceResource extends Resource
         return AttendanceForm::configure($schema);
     }
 
-    public static function table(Table $table): Table
-    {
-        return AttendancesTable::configure($table);
-    }
-
     public static function getRelations(): array
     {
         return [
@@ -70,9 +61,7 @@ class AttendanceResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => ListAttendances::route('/'),
-            'seminar' => ListSeminarAttendances::route('/seminar'),
-            'hands-on' => ListHandsOnAttendances::route('/hands-on'),
+            'index' => ListAttendanceRoster::route('/'),
             'visitor' => ListVisitorAttendances::route('/visitor'),
             'create' => CreateAttendance::route('/create'),
             'edit' => EditAttendance::route('/{record}/edit'),

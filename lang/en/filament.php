@@ -93,6 +93,8 @@ return [
     'attendance.title_visitor' => 'Visitor Attendance',
     'attendance.manual_check_in' => 'Manual Check In',
     'attendance.manual_check_in_description' => 'Find a verified participant by name, email, or registration code when their QR code is not available.',
+    'attendance.manual_check_in_seminar' => 'Manual Check In — Seminar',
+    'attendance.manual_check_in_hands_on' => 'Manual Check In — Hands On',
     'attendance.search_participant' => 'Search name, email, or registration code',
     'attendance.participant' => 'Participant',
     'attendance.check_in' => 'Check In',
@@ -106,6 +108,13 @@ return [
     'attendance.day_check_in' => 'Day :day Check-in',
     'attendance.day_check_in_time' => 'Day :day Check-in Time',
     'attendance.day_label' => 'Event Day',
+    'attendance.activity_seminar' => 'Seminar',
+    'attendance.activity_hands_on' => 'Hands On',
+    'attendance.day_number' => 'Day :day',
+    'attendance.hands_on_sessions' => 'Hands-On Sessions',
+    'attendance.checked_in_short' => 'in',
+    'attendance.last_check_in' => 'Last Check-in',
+    'attendance.check_in_hands_on' => 'Check in Hands-On',
 
     // Countries
     'countries.code' => 'Code',

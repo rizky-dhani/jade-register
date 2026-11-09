@@ -82,16 +82,11 @@ class AdminPanelProvider extends PanelProvider
                     ->icon('heroicon-o-photo')
                     ->group('Registrations')
                     ->visible(fn () => auth()->user()?->hasRole('Participant') && auth()->user()?->seminarRegistrations()->where('payment_status', 'verified')->exists()),
-                NavigationItem::make('Seminar')
-                    ->url(fn () => AttendanceResource::getUrl('seminar'))
-                    ->icon('heroicon-o-book-open')
+                NavigationItem::make(__('filament.navigation.attendance'))
+                    ->url(fn () => AttendanceResource::getUrl('index'))
+                    ->icon('heroicon-o-clipboard-document-check')
                     ->group('Attendance')
-                    ->isActiveWhen(fn (): bool => request()->routeIs('filament.dashboard.resources.attendances.seminar')),
-                NavigationItem::make('Hands On')
-                    ->url(fn () => AttendanceResource::getUrl('hands-on'))
-                    ->icon('heroicon-o-wrench-screwdriver')
-                    ->group('Attendance')
-                    ->isActiveWhen(fn (): bool => request()->routeIs('filament.dashboard.resources.attendances.hands-on')),
+                    ->isActiveWhen(fn (): bool => request()->routeIs('filament.dashboard.resources.attendances.index')),
                 NavigationItem::make(__('filament.attendance.visitor'))
                     ->url(fn () => AttendanceResource::getUrl('visitor'))
                     ->icon('heroicon-o-users')

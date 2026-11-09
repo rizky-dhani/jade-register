@@ -23,7 +23,8 @@ class ManualCheckInAction
 {
     public static function seminar(): Action
     {
-        return self::base()
+        return self::base('manualCheckInSeminar')
+            ->label(__('filament.attendance.manual_check_in_seminar'))
             ->schema([
                 Select::make('seminar_registration_id')
                     ->label(__('filament.attendance.participant'))
@@ -68,7 +69,8 @@ class ManualCheckInAction
 
     public static function handsOn(): Action
     {
-        return self::base()
+        return self::base('manualCheckInHandsOn')
+            ->label(__('filament.attendance.manual_check_in_hands_on'))
             ->schema([
                 Select::make('hands_on_registration_id')
                     ->label(__('filament.attendance.hands_on_session'))
@@ -108,10 +110,9 @@ class ManualCheckInAction
             });
     }
 
-    private static function base(): Action
+    private static function base(string $name): Action
     {
-        return Action::make('manualCheckIn')
-            ->label(__('filament.attendance.manual_check_in'))
+        return Action::make($name)
             ->icon('heroicon-o-user-plus')
             ->color('gray')
             ->modalHeading(__('filament.attendance.manual_check_in'))

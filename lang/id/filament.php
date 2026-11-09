@@ -93,6 +93,8 @@ return [
     'attendance.title_visitor' => 'Kehadiran Pengunjung',
     'attendance.manual_check_in' => 'Check-in Manual',
     'attendance.manual_check_in_description' => 'Cari peserta terverifikasi berdasarkan nama, email, atau kode pendaftaran bila QR code tidak tersedia.',
+    'attendance.manual_check_in_seminar' => 'Check-in Manual — Seminar',
+    'attendance.manual_check_in_hands_on' => 'Check-in Manual — Hands On',
     'attendance.search_participant' => 'Cari nama, email, atau kode pendaftaran',
     'attendance.participant' => 'Peserta',
     'attendance.check_in' => 'Check-in',
@@ -106,6 +108,13 @@ return [
     'attendance.day_check_in' => 'Check-in Hari :day',
     'attendance.day_check_in_time' => 'Waktu Check-in Hari :day',
     'attendance.day_label' => 'Hari Acara',
+    'attendance.activity_seminar' => 'Seminar',
+    'attendance.activity_hands_on' => 'Hands On',
+    'attendance.day_number' => 'Hari :day',
+    'attendance.hands_on_sessions' => 'Sesi Hands On',
+    'attendance.checked_in_short' => 'sudah',
+    'attendance.last_check_in' => 'Check-in Terakhir',
+    'attendance.check_in_hands_on' => 'Check-in Hands On',
 
     // Countries
     'countries.code' => 'Kode',
