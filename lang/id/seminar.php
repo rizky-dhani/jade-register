@@ -383,6 +383,8 @@ return [
     'verified_at' => 'Tanggal Verifikasi',
     'hands_on_registrations' => 'Pendaftaran Hands On',
     'registered_hands_on' => 'Hands On Terdaftar',
+    'package_name_snack_only' => 'Seminar',
+    'package_name_with_lunch' => 'Seminar + Lunch',
     'hands_on_total_amount' => 'Total Hands On',
     'addons_total_amount' => 'Total Add-On',
     'selected_addons' => 'Add-On Terpilih',

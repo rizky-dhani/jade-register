@@ -384,6 +384,8 @@ return [
     'verified_at' => 'Verified At',
     'hands_on_registrations' => 'Hands On Registrations',
     'registered_hands_on' => 'Registered Hands-On',
+    'package_name_snack_only' => 'Seminar',
+    'package_name_with_lunch' => 'Seminar + Lunch',
     'hands_on_total_amount' => 'Hands On Total Amount',
     'addons_total_amount' => 'Total Add-Ons',
     'selected_addons' => 'Selected Add-Ons',
