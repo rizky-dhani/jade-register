@@ -81,6 +81,23 @@ class Seminar extends Model
         };
     }
 
+    /**
+     * The package name as the desk says it out loud.
+     *
+     * The stored names carry a lunch qualifier that repeats the price label
+     * ("Seminar (+ Lunch)" next to "Regular - Snack + Lunch"), so the lunch
+     * variant is rendered as one short phrase. Every other package keeps its
+     * own name, so "Seminar International" is not flattened into the local one.
+     */
+    public function getDisplayNameAttribute(): string
+    {
+        if (str_contains($this->name, '(+ Lunch)')) {
+            return __('seminar.package_name_with_lunch');
+        }
+
+        return $this->name;
+    }
+
     public function scopeActive($query)
     {
         return $query->where('is_active', true);

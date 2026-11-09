@@ -148,7 +148,7 @@ class AttendanceRosterTable
             return '-';
         }
 
-        return $package->name.' ('.$package->label.')';
+        return $package->display_name;
     }
 
     /**

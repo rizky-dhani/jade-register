@@ -210,7 +210,7 @@ it('shows the hands-on code rather than the session title', function () {
 
 it('shows the seminar package column before the hands-on sessions', function () {
     $package = Seminar::create([
-        'name' => 'JADE 2026 Seminar', 'code' => 'PKG-TEST', 'applies_to' => 'all',
+        'name' => 'Seminar (+ Lunch)', 'code' => 'PKG-TEST', 'applies_to' => 'all',
         'currency' => 'IDR', 'original_price' => 750000, 'discounted_price' => 750000,
         'max_seats' => 500, 'includes_lunch' => true, 'is_early_bird' => false,
         'is_active' => true, 'sort_order' => 1,
@@ -218,10 +218,11 @@ it('shows the seminar package column before the hands-on sessions', function () 
 
     $registration = SeminarRegistration::factory()->verified()->create(['seminar_id' => $package->id]);
 
+    // The cell renders the short package name, not "name (price label)".
     livewire(ListAttendanceRoster::class)
         ->assertOk()
-        ->assertSee('JADE 2026 Seminar')
-        ->assertSee('Snack + Lunch');
+        ->assertSee(__('seminar.package_name_with_lunch'))
+        ->assertDontSee('Snack + Lunch');
 });
 
 it('leaves the seminar package empty for a standalone hands-on participant', function () {

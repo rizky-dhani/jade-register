@@ -4,7 +4,6 @@ namespace App\Filament\Resources\SeminarRegistrations\Tables;
 
 use App\Filament\Resources\SeminarRegistrations\Actions\CopyIdentityAction;
 use App\Filament\Resources\SeminarRegistrations\Actions\SaveContactAction;
-use App\Models\Seminar;
 use App\Models\SeminarRegistration;
 use App\Services\RegistrationService;
 use App\Services\VCard;
@@ -102,7 +101,7 @@ class SeminarRegistrationsTable
                             ? $seminar->formatted_discounted_price.' (Early Bird)'
                             : $seminar->formatted_original_price;
 
-                        return self::packageName($seminar)." ({$price})";
+                        return $seminar->display_name." ({$price})";
                     })
                     ->searchable(query: function (Builder $query, string $search): Builder {
                         return $query->where(function (Builder $q) use ($search) {
@@ -432,22 +431,5 @@ class SeminarRegistrationsTable
                         ->visible(fn (): bool => auth()->user()?->can('delete seminar registrations') ?? false),
                 ]),
             ]);
-    }
-
-    /**
-     * The package title as the desk says it out loud.
-     *
-     * The stored names carry a lunch qualifier that repeats the price label
-     * ("Seminar (+ Lunch)"), which reads as noise next to the price in a cell.
-     * Anything else keeps its own name so "Seminar International" is not
-     * flattened into the local package.
-     */
-    private static function packageName(Seminar $seminar): string
-    {
-        if (str_contains($seminar->name, '(+ Lunch)')) {
-            return __('seminar.package_name_with_lunch');
-        }
-
-        return $seminar->name;
     }
 }
