@@ -1,5 +1,6 @@
 <?php
 
+use App\Filament\Resources\Attendances\AttendanceResource;
 use App\Filament\Resources\Attendances\Pages\ListHandsOnAttendances;
 use App\Filament\Resources\Attendances\Pages\ListSeminarAttendances;
 use App\Models\Attendance;
@@ -200,14 +201,30 @@ it('hides only the checked-in day, and offers check-out once any day is in', fun
         ->assertTableActionVisible('checkOut', $registration);
 });
 
-it('keeps the roster check-in away from participants', function () {
+/**
+ * The attendance pages are gated on `view attendances`, which Participant does
+ * not hold — so a participant never reaches the roster at all, rather than
+ * reaching it with the buttons hidden.
+ */
+it('keeps participants off the attendance roster entirely', function () {
     $participant = User::factory()->create();
     $participant->assignRole('Participant');
     actingAs($participant);
 
+    expect(AttendanceResource::canViewAny())->toBeFalse();
+});
+
+it('keeps the roster check-in away from a role without the check-in permission', function () {
+    $viewer = User::factory()->create();
+    $viewer->assignRole('Super Admin');
+    $viewer->syncRoles([]);
+    $viewer->givePermissionTo('view attendances');
+    actingAs($viewer);
+
     $registration = SeminarRegistration::factory()->verified()->create();
 
     livewire(ListSeminarAttendances::class)
+        ->assertOk()
         ->assertTableActionHidden('checkInDay1', $registration)
         ->assertTableActionHidden('checkInDay2', $registration)
         ->assertTableActionHidden('checkInDay3', $registration);

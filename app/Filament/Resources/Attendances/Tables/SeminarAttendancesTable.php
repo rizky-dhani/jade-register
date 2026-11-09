@@ -152,10 +152,9 @@ class SeminarAttendancesTable
                     'name' => $record->name_license,
                 ]))
                 ->modalSubmitActionLabel(__('filament.attendance.check_in'))
-                // Same desk-role gate as ManualCheckInAction: the Admin role is
-                // never granted `update attendances`.
+                // Check-in is its own permission, not part of `update attendances`.
                 ->visible(fn (SeminarRegistration $record): bool => $record->seminarAttendances->firstWhere('day', $day) === null
-                    && (auth()->user()?->hasRole(['Admin', 'Super Admin']) ?? false))
+                    && (auth()->user()?->can('checkIn', Attendance::class) ?? false))
                 ->action(function (SeminarRegistration $record) use ($day): void {
                     $staff = auth()->user();
 
@@ -199,12 +198,11 @@ class SeminarAttendancesTable
                 'name' => $record->name_license,
             ]))
             ->modalSubmitActionLabel(__('filament.attendance.check_out'))
-            // Gated on the desk role, not on `update attendances`: the Admin
-            // role is never granted that permission, and the same people check
-            // participants out on the verify screen (AttendanceVerify::canCheckIn).
+            // Check-out is its own permission: the desk may hold it without
+            // write access to the attendance records.
             ->visible(fn (SeminarRegistration $record): bool => $record->seminarAttendances
                 ->contains(fn (Attendance $attendance): bool => $attendance->checked_in_at !== null && $attendance->checked_out_at === null)
-                && (auth()->user()?->hasRole(['Admin', 'Super Admin']) ?? false))
+                && (auth()->user()?->can('checkOut', Attendance::class) ?? false))
             ->action(function (SeminarRegistration $record): void {
                 $staff = auth()->user();
 

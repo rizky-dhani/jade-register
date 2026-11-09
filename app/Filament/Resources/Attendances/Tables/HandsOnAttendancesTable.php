@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Attendances\Tables;
 
+use App\Models\Attendance;
 use App\Models\HandsOnRegistration;
 use App\Services\AttendanceCheckInService;
 use App\Services\AttendanceCheckOutService;
@@ -143,10 +144,9 @@ class HandsOnAttendancesTable
                 'name' => self::participantName($record),
             ]))
             ->modalSubmitActionLabel(__('filament.attendance.check_in'))
-            // Same desk-role gate as ManualCheckInAction: the Admin role is
-            // never granted `update attendances`.
+            // Check-in is its own permission, not part of `update attendances`.
             ->visible(fn (HandsOnRegistration $record): bool => $record->attendance === null
-                && (auth()->user()?->hasRole(['Admin', 'Super Admin']) ?? false))
+                && (auth()->user()?->can('checkIn', Attendance::class) ?? false))
             ->action(function (HandsOnRegistration $record): void {
                 $staff = auth()->user();
 
@@ -174,12 +174,11 @@ class HandsOnAttendancesTable
                 'name' => self::participantName($record),
             ]))
             ->modalSubmitActionLabel(__('filament.attendance.check_out'))
-            // Gated on the desk role, not on `update attendances`: the Admin
-            // role is never granted that permission, and the same people check
-            // participants out on the verify screen (AttendanceVerify::canCheckIn).
+            // Check-out is its own permission: the desk may hold it without
+            // write access to the attendance records.
             ->visible(fn (HandsOnRegistration $record): bool => $record->attendance?->checked_in_at !== null
                 && $record->attendance?->checked_out_at === null
-                && (auth()->user()?->hasRole(['Admin', 'Super Admin']) ?? false))
+                && (auth()->user()?->can('checkOut', Attendance::class) ?? false))
             ->action(function (HandsOnRegistration $record): void {
                 $staff = auth()->user();
 

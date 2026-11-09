@@ -1,5 +1,6 @@
 <?php
 
+use App\Filament\Resources\Attendances\AttendanceResource;
 use App\Filament\Resources\Attendances\Pages\ListHandsOnAttendances;
 use App\Filament\Resources\Attendances\Pages\ListSeminarAttendances;
 use App\Models\Attendance;
@@ -141,10 +142,19 @@ it('lets a desk admin check a participant out from the seminar roster', function
         ->and($attendance->checked_out_by)->toBe($desk->id);
 });
 
-it('keeps the check-out action away from participants', function () {
+it('keeps participants off the attendance roster entirely', function () {
     $participant = User::factory()->create();
     $participant->assignRole('Participant');
     actingAs($participant);
+
+    expect(AttendanceResource::canViewAny())->toBeFalse();
+});
+
+it('keeps the check-out action away from a role without the check-out permission', function () {
+    $viewer = User::factory()->create();
+    $viewer->syncRoles([]);
+    $viewer->givePermissionTo(['view attendances', 'check in participants']);
+    actingAs($viewer);
 
     $registration = SeminarRegistration::factory()->verified()->create();
     Attendance::factory()->create([
@@ -154,5 +164,6 @@ it('keeps the check-out action away from participants', function () {
     ]);
 
     livewire(ListSeminarAttendances::class)
+        ->assertOk()
         ->assertTableActionHidden('checkOut', $registration);
 });

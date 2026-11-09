@@ -145,7 +145,7 @@ class AttendanceVerify extends Component
 
     public function canRedeemLunch(): bool
     {
-        return Auth::user()?->hasRole(['Admin', 'Super Admin']) ?? false;
+        return $this->canCheckIn();
     }
 
     /**
@@ -155,7 +155,12 @@ class AttendanceVerify extends Component
      */
     public function canCheckIn(): bool
     {
-        return Auth::user()?->hasRole(['Admin', 'Super Admin']) ?? false;
+        return Auth::user()?->can('checkIn', Attendance::class) ?? false;
+    }
+
+    public function canCheckOut(): bool
+    {
+        return Auth::user()?->can('checkOut', Attendance::class) ?? false;
     }
 
     public function redeemLunch(): void

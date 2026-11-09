@@ -120,9 +120,10 @@ it('shows the manual check-in action to desk admins and hides it from participan
     livewire(ListSeminarAttendances::class)
         ->assertActionVisible(TestAction::make('manualCheckIn')->table());
 
-    $participant = User::factory()->create();
-    $participant->assignRole('Participant');
-    actingAs($participant);
+    $viewer = User::factory()->create();
+    $viewer->syncRoles([]);
+    $viewer->givePermissionTo('view attendances');
+    actingAs($viewer);
 
     livewire(ListSeminarAttendances::class)
         ->assertActionHidden(TestAction::make('manualCheckIn')->table());

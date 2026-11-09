@@ -73,6 +73,12 @@ class RolePermissionSeeder extends Seeder
             'view digital workshop intents',
             'update digital workshop intents',
             'delete digital workshop intents',
+            'view attendances',
+            'check in participants',
+            'check out participants',
+            'create attendances',
+            'update attendances',
+            'delete attendances',
         ];
 
         foreach ($permissions as $permission) {
@@ -122,6 +128,11 @@ class RolePermissionSeeder extends Seeder
             'update poster submissions',
             'evaluate poster submissions',
             'export poster submissions',
+            // Desk duties: the Admin role runs the attendance desk even though
+            // it is not granted the general `update attendances` permission.
+            'view attendances',
+            'check in participants',
+            'check out participants',
         ]);
 
         $judgeRole = Role::firstOrCreate(['name' => 'Judge', 'guard_name' => 'web']);

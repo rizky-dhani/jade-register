@@ -8,6 +8,7 @@ use App\Models\SeminarRegistration;
 use App\Models\Setting;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 use function Pest\Livewire\livewire;
@@ -18,6 +19,13 @@ beforeEach(function () {
     Role::create(['name' => 'Admin', 'guard_name' => 'web']);
     Role::create(['name' => 'Super Admin', 'guard_name' => 'web']);
     Role::create(['name' => 'Participant', 'guard_name' => 'web']);
+
+    // Desk check-in is a permission, not a role name: roles created without
+    // permissions legitimately hold none (see AttendancePolicy::checkIn).
+    foreach (['check in participants', 'check out participants', 'view attendances'] as $permission) {
+        Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
+    }
+    Role::findByName('Admin', 'web')->givePermissionTo(['check in participants', 'check out participants', 'view attendances']);
     Setting::create([
         'key' => 'seminar_event_date',
         'label' => 'Seminar Event Date',

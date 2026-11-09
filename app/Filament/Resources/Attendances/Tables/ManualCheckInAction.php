@@ -117,10 +117,10 @@ class ManualCheckInAction
             ->modalHeading(__('filament.attendance.manual_check_in'))
             ->modalDescription(__('filament.attendance.manual_check_in_description'))
             ->modalSubmitActionLabel(__('filament.attendance.check_in'))
-            // Gated on the desk role for the same reason as check-out: the Admin
-            // role is never granted `update attendances`, and the people at the
-            // desk are the ones who scan (see AttendanceVerify::canCheckIn).
-            ->visible(fn (): bool => auth()->user()?->hasRole(['Admin', 'Super Admin']) ?? false);
+            // Check-in is its own permission rather than part of `update
+            // attendances`: the desk role holds it without being granted write
+            // access to the attendance records themselves.
+            ->visible(fn (): bool => auth()->user()?->can('checkIn', Attendance::class) ?? false);
     }
 
     /**
