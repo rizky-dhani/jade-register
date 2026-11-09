@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Attendances\Tables;
 use App\Models\Attendance;
 use App\Models\AttendanceRoster;
 use App\Models\HandsOnRegistration;
+use App\Services\AttendanceCancelService;
 use App\Services\AttendanceCheckInService;
 use App\Services\AttendanceCheckOutService;
 use Filament\Actions\Action;
@@ -44,6 +45,11 @@ class AttendanceRosterTable
                     ->color(fn (string $state): string => $state === 'seminar' ? 'info' : 'warning')
                     ->sortable(),
                 ...self::seminarDayColumns(),
+                TextColumn::make('seminar_package')
+                    ->label(__('filament.attendance.seminar_package'))
+                    ->state(fn (AttendanceRoster $record): string => self::seminarPackageLabel($record))
+                    ->wrap()
+                    ->placeholder('-'),
                 TextColumn::make('hands_on_sessions')
                     ->label(__('filament.attendance.hands_on_sessions'))
                     ->state(fn (AttendanceRoster $record): string => self::handsOnSummary($record))
@@ -74,7 +80,9 @@ class AttendanceRosterTable
             // actions are spread rather than nested.
             ->recordActions([
                 ...self::seminarDayCheckInActions(),
+                ...self::seminarDayCancelActions(),
                 self::handsOnCheckInAction(),
+                self::handsOnCancelAction(),
                 self::checkOutAction(),
             ]);
     }
@@ -110,6 +118,21 @@ class AttendanceRosterTable
     }
 
     /**
+     * The seminar package the participant registered for. A standalone hands-on
+     * registration has no seminar registration, so it has no package.
+     */
+    private static function seminarPackageLabel(AttendanceRoster $record): string
+    {
+        $package = $record->seminarRegistration?->seminarPackage;
+
+        if (! $package) {
+            return '-';
+        }
+
+        return $package->name.' ('.$package->label.')';
+    }
+
+    /**
      * @return Collection<int, HandsOnRegistration>
      */
     private static function handsOnSessions(AttendanceRoster $record): Collection
@@ -130,11 +153,15 @@ class AttendanceRosterTable
 
         return $sessions
             ->map(function (HandsOnRegistration $registration): string {
-                $name = $registration->handsOn?->name ?? $registration->registration_code;
+                // The desk reads sessions by their short code (HO-03), not the
+                // full course title, which is too long for a table cell.
+                $label = $registration->handsOn?->ho_code
+                    ?? $registration->handsOn?->name
+                    ?? $registration->registration_code;
 
-                return $registration->attendance?->checked_in_at !== null
-                    ? $name.' ('.__('filament.attendance.checked_in_short').')'
-                    : $name;
+                return $registration->activeAttendance?->checked_in_at !== null
+                    ? $label.' ('.__('filament.attendance.checked_in_short').')'
+                    : $label;
             })
             ->join(', ');
     }
@@ -160,7 +187,7 @@ class AttendanceRosterTable
             ?->pluck('checked_in_at') ?? collect();
 
         $handsOn = self::handsOnSessions($record)
-            ->map(fn (HandsOnRegistration $registration) => $registration->attendance?->checked_in_at);
+            ->map(fn (HandsOnRegistration $registration) => $registration->activeAttendance?->checked_in_at);
 
         return $seminar->concat($handsOn)->filter();
     }
@@ -214,7 +241,7 @@ class AttendanceRosterTable
             ->modalHeading(__('filament.attendance.check_in_hands_on'))
             ->modalSubmitActionLabel(__('filament.attendance.check_in'))
             ->visible(fn (AttendanceRoster $record): bool => self::handsOnSessions($record)
-                ->contains(fn (HandsOnRegistration $registration): bool => $registration->attendance === null)
+                ->contains(fn (HandsOnRegistration $registration): bool => $registration->activeAttendance === null)
                 && (auth()->user()?->can('checkIn', Attendance::class) ?? false))
             ->action(function (AttendanceRoster $record): void {
                 $staff = auth()->user();
@@ -226,7 +253,7 @@ class AttendanceRosterTable
                 $service = app(AttendanceCheckInService::class);
 
                 foreach (self::handsOnSessions($record) as $registration) {
-                    if ($registration->attendance === null) {
+                    if ($registration->activeAttendance === null) {
                         $service->checkInHandsOn($registration, $staff);
                     }
                 }
@@ -234,6 +261,102 @@ class AttendanceRosterTable
                 Notification::make()->success()->title(__('filament.attendance.check_in_success', [
                     'name' => $record->participant_name,
                 ]))->send();
+            });
+    }
+
+    /**
+     * Cancels a day that was checked in by mistake, leaving that day open again.
+     * One action per day, so correcting a single wrong day does not disturb the
+     * others.
+     *
+     * @return array<int, Action>
+     */
+    private static function seminarDayCancelActions(): array
+    {
+        return array_map(
+            fn (int $day): Action => Action::make("cancelCheckInDay{$day}")
+                ->label(__('filament.attendance.cancel_check_in_day', ['day' => $day]))
+                ->icon('heroicon-o-arrow-uturn-left')
+                ->color('danger')
+                ->requiresConfirmation()
+                ->modalHeading(__('filament.attendance.cancel_check_in_day', ['day' => $day]))
+                ->modalDescription(fn (AttendanceRoster $record): string => __('filament.attendance.cancel_check_in_confirm', [
+                    'name' => $record->participant_name,
+                    'day' => $day,
+                ]))
+                ->modalSubmitActionLabel(__('filament.attendance.cancel_check_in'))
+                // Only a day that is actually checked in can be cancelled.
+                ->visible(fn (AttendanceRoster $record): bool => $record->isSeminar()
+                    && $record->seminarAttendanceForDay($day) !== null
+                    && (auth()->user()?->can('checkIn', Attendance::class) ?? false))
+                ->action(function (AttendanceRoster $record) use ($day): void {
+                    $staff = auth()->user();
+                    $registration = $record->seminarRegistration;
+
+                    if (! $staff || ! $registration) {
+                        return;
+                    }
+
+                    $cancelled = app(AttendanceCancelService::class)
+                        ->cancelSeminarDay($registration, $staff, $day);
+
+                    $notification = Notification::make();
+
+                    $cancelled
+                        ? $notification->success()->title(__('filament.attendance.cancel_check_in_success', [
+                            'name' => $record->participant_name,
+                        ]))
+                        : $notification->warning()->title(__('filament.attendance.nothing_to_cancel'));
+
+                    $notification->send();
+                }),
+            Attendance::SEMINAR_DAYS,
+        );
+    }
+
+    /**
+     * Cancels the check-in for the row's hands-on session(s).
+     */
+    private static function handsOnCancelAction(): Action
+    {
+        return Action::make('cancelCheckInHandsOn')
+            ->label(__('filament.attendance.cancel_check_in_hands_on'))
+            ->icon('heroicon-o-arrow-uturn-left')
+            ->color('danger')
+            ->requiresConfirmation()
+            ->modalHeading(__('filament.attendance.cancel_check_in_hands_on'))
+            ->modalDescription(fn (AttendanceRoster $record): string => __('filament.attendance.cancel_check_in_confirm_hands_on', [
+                'name' => $record->participant_name,
+            ]))
+            ->modalSubmitActionLabel(__('filament.attendance.cancel_check_in'))
+            ->visible(fn (AttendanceRoster $record): bool => self::handsOnSessions($record)
+                ->contains(fn (HandsOnRegistration $registration): bool => $registration->activeAttendance !== null)
+                && (auth()->user()?->can('checkIn', Attendance::class) ?? false))
+            ->action(function (AttendanceRoster $record): void {
+                $staff = auth()->user();
+
+                if (! $staff) {
+                    return;
+                }
+
+                $service = app(AttendanceCancelService::class);
+                $cancelled = false;
+
+                foreach (self::handsOnSessions($record) as $registration) {
+                    if ($service->cancelHandsOn($registration, $staff)) {
+                        $cancelled = true;
+                    }
+                }
+
+                $notification = Notification::make();
+
+                $cancelled
+                    ? $notification->success()->title(__('filament.attendance.cancel_check_in_success', [
+                        'name' => $record->participant_name,
+                    ]))
+                    : $notification->warning()->title(__('filament.attendance.nothing_to_cancel'));
+
+                $notification->send();
             });
     }
 
@@ -262,7 +385,7 @@ class AttendanceRosterTable
                 }
 
                 foreach (self::handsOnSessions($record) as $registration) {
-                    $attendance = $registration->attendance;
+                    $attendance = $registration->activeAttendance;
 
                     if ($attendance?->checked_in_at !== null && $attendance->checked_out_at === null) {
                         $service->checkOutHandsOn($registration, $staff);
@@ -279,7 +402,7 @@ class AttendanceRosterTable
             ->contains(fn (Attendance $attendance): bool => $attendance->checked_in_at !== null && $attendance->checked_out_at === null) ?? false;
 
         return $seminarOpen || self::handsOnSessions($record)
-            ->contains(fn (HandsOnRegistration $registration): bool => $registration->attendance?->checked_in_at !== null
-                && $registration->attendance?->checked_out_at === null);
+            ->contains(fn (HandsOnRegistration $registration): bool => $registration->activeAttendance?->checked_in_at !== null
+                && $registration->activeAttendance?->checked_out_at === null);
     }
 }

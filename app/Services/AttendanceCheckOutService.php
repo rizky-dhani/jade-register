@@ -43,6 +43,8 @@ class AttendanceCheckOutService
             // hands-on id is what identifies the seminar attendance itself.
             ->whereNull('hands_on_registration_id')
             ->where('activity_type', 'seminar')
+            // A cancelled check-in is not a check-in, so it has nothing to close.
+            ->whereNull('cancelled_at')
             ->when($day !== null, fn ($query) => $query->where('day', $day))
             ->when($day === null, fn ($query) => $query->whereNull('checked_out_at'))
             ->orderBy('day')
@@ -62,6 +64,7 @@ class AttendanceCheckOutService
         $attendance = Attendance::query()
             ->where('hands_on_registration_id', $registration->id)
             ->where('activity_type', 'hands_on')
+            ->whereNull('cancelled_at')
             ->first();
 
         if (! $attendance) {

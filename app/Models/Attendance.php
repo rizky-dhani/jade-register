@@ -22,6 +22,8 @@ class Attendance extends Model
         'checked_in_by',
         'checked_out_at',
         'checked_out_by',
+        'cancelled_at',
+        'cancelled_by',
         'notes',
     ];
 
@@ -29,6 +31,7 @@ class Attendance extends Model
         'day' => 'integer',
         'checked_in_at' => 'datetime',
         'checked_out_at' => 'datetime',
+        'cancelled_at' => 'datetime',
     ];
 
     public function seminarRegistration(): BelongsTo
@@ -49,6 +52,20 @@ class Attendance extends Model
     public function checkedOutBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'checked_out_by');
+    }
+
+    /**
+     * A cancelled row is kept as evidence but no longer counts as a check-in, so
+     * every reader filters on this rather than on `checked_in_at` alone.
+     */
+    public function isCancelled(): bool
+    {
+        return $this->cancelled_at !== null;
+    }
+
+    public function isCheckedIn(): bool
+    {
+        return $this->checked_in_at !== null && ! $this->isCancelled();
     }
 
     public function isSeminar(): bool

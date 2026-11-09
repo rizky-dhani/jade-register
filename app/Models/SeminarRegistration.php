@@ -116,7 +116,7 @@ class SeminarRegistration extends Model
     {
         return $this->handsOnRegistrations()
             ->where('payment_status', 'verified')
-            ->with(['handsOn', 'attendance']);
+            ->with(['handsOn', 'activeAttendance']);
     }
 
     public function handsOns(): BelongsToMany
@@ -140,12 +140,16 @@ class SeminarRegistration extends Model
      * The participant's own check-in rows, one per event day. Hands-on rows also
      * carry `seminar_registration_id`, so the null hands-on id is what picks the
      * seminar attendances out of `attendances()`.
+     *
+     * Cancelled rows are excluded: a cancelled day must read as "not checked in"
+     * everywhere, including the roster columns and the filters built on them.
      */
     public function seminarAttendances(): HasMany
     {
         return $this->hasMany(Attendance::class)
             ->where('activity_type', 'seminar')
             ->whereNull('hands_on_registration_id')
+            ->whereNull('cancelled_at')
             ->orderBy('day');
     }
 

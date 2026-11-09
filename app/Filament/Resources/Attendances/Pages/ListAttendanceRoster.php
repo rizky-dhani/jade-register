@@ -34,11 +34,12 @@ class ListAttendanceRoster extends ListRecords
     {
         return AttendanceRoster::query()
             ->with([
+                'seminarRegistration.seminarPackage',
                 'seminarRegistration.seminarAttendances.checkedInBy',
                 'seminarRegistration.seminarAttendances.checkedOutBy',
                 'seminarRegistration.verifiedHandsOnRegistrations',
                 'handsOnRegistration.handsOn',
-                'handsOnRegistration.attendance',
+                'handsOnRegistration.activeAttendance',
             ]);
     }
 

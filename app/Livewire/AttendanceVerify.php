@@ -83,6 +83,7 @@ class AttendanceVerify extends Component
         if ($this->registration instanceof HandsOnRegistration) {
             $attendance = Attendance::where('hands_on_registration_id', $this->registration->id)
                 ->where('activity_type', 'hands_on')
+                ->whereNull('cancelled_at')
                 ->first();
 
             if ($attendance) {
@@ -103,9 +104,11 @@ class AttendanceVerify extends Component
             return;
         }
 
+        // Cancelled check-ins are excluded: a cancelled day reads as open again.
         $seminarAttendances = Attendance::where('seminar_registration_id', $this->registration->id)
             ->where('activity_type', 'seminar')
             ->whereNull('hands_on_registration_id')
+            ->whereNull('cancelled_at')
             ->orderBy('day')
             ->get();
 
@@ -125,6 +128,7 @@ class AttendanceVerify extends Component
 
         $handsOnAttendances = Attendance::where('seminar_registration_id', $this->registration->id)
             ->where('activity_type', 'hands_on')
+            ->whereNull('cancelled_at')
             ->with('handsOnRegistration.handsOn')
             ->get();
 

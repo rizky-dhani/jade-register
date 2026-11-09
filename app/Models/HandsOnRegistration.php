@@ -79,6 +79,16 @@ class HandsOnRegistration extends Model
             ->where('activity_type', 'hands_on');
     }
 
+    /**
+     * The session's check-in, excluding rows the desk cancelled. A cancelled
+     * check-in leaves the session open again, so this is what the roster and the
+     * verify page must read.
+     */
+    public function activeAttendance(): HasOne
+    {
+        return $this->attendance()->whereNull('cancelled_at');
+    }
+
     public function country(): BelongsTo
     {
         return $this->belongsTo(Country::class);

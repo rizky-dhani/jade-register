@@ -39,6 +39,14 @@ class AttendanceFactory extends Factory
         ]);
     }
 
+    public function cancelled(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'cancelled_at' => now(),
+            'cancelled_by' => User::factory(),
+        ]);
+    }
+
     public function day(int $day): static
     {
         return $this->state(fn (array $attributes) => [

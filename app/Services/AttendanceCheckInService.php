@@ -23,7 +23,7 @@ class AttendanceCheckInService
         $this->ensureVerified($registration->payment_status);
         $this->ensureValidDay($day);
 
-        return Attendance::firstOrCreate(
+        return $this->firstOrReactivate(
             [
                 'seminar_registration_id' => $registration->id,
                 'hands_on_registration_id' => null,
@@ -48,7 +48,7 @@ class AttendanceCheckInService
     {
         $this->ensureVerified($registration->payment_status);
 
-        return Attendance::firstOrCreate(
+        return $this->firstOrReactivate(
             [
                 'hands_on_registration_id' => $registration->id,
                 'activity_type' => 'hands_on',
@@ -60,6 +60,29 @@ class AttendanceCheckInService
                 'checked_in_by' => $staff->id,
             ],
         );
+    }
+
+    /**
+     * Look up the row by its identity keys, creating it if absent.
+     *
+     * A cancelled row is reused rather than duplicated: the cancelled stamps are
+     * cleared and the new check-in time and staff member recorded, because a
+     * re-check-in is a fresh check-in, not a continuation of the cancelled one.
+     *
+     * @param  array<string, mixed>  $keys
+     * @param  array<string, mixed>  $values
+     */
+    private function firstOrReactivate(array $keys, array $values): Attendance
+    {
+        $attendance = Attendance::firstOrCreate($keys, $values);
+
+        if ($attendance->wasRecentlyCreated || ! $attendance->isCancelled()) {
+            return $attendance;
+        }
+
+        $attendance->update([...$values, 'cancelled_at' => null, 'cancelled_by' => null]);
+
+        return $attendance;
     }
 
     private function ensureVerified(?string $paymentStatus): void
