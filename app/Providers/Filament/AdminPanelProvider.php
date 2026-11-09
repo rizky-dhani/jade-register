@@ -92,6 +92,11 @@ class AdminPanelProvider extends PanelProvider
                     ->icon('heroicon-o-users')
                     ->group('Attendance')
                     ->isActiveWhen(fn (): bool => request()->routeIs('filament.dashboard.resources.attendances.visitor')),
+                NavigationItem::make(__('filament.lunch_attendance.title'))
+                    ->url(fn () => AttendanceResource::getUrl('lunch'))
+                    ->icon('heroicon-o-cake')
+                    ->group('Attendance')
+                    ->isActiveWhen(fn (): bool => request()->routeIs('filament.dashboard.resources.attendances.lunch')),
             ])
             ->navigationGroups([
                 'Attendance',

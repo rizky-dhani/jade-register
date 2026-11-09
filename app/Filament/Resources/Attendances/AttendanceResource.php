@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Attendances;
 use App\Filament\Resources\Attendances\Pages\CreateAttendance;
 use App\Filament\Resources\Attendances\Pages\EditAttendance;
 use App\Filament\Resources\Attendances\Pages\ListAttendanceRoster;
+use App\Filament\Resources\Attendances\Pages\ListLunchAttendances;
 use App\Filament\Resources\Attendances\Pages\ListVisitorAttendances;
 use App\Filament\Resources\Attendances\Schemas\AttendanceForm;
 use App\Models\Attendance;
@@ -63,6 +64,7 @@ class AttendanceResource extends Resource
         return [
             'index' => ListAttendanceRoster::route('/'),
             'visitor' => ListVisitorAttendances::route('/visitor'),
+            'lunch' => ListLunchAttendances::route('/lunch'),
             'create' => CreateAttendance::route('/create'),
             'edit' => EditAttendance::route('/{record}/edit'),
         ];

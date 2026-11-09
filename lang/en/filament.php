@@ -123,6 +123,14 @@ return [
     'attendance.last_check_in' => 'Last Check-in',
     'attendance.check_in_hands_on' => 'Check in Hands-On',
 
+    // Lunch coupon attendance log
+    'lunch_attendance.title' => 'Lunch',
+    'lunch_attendance.email' => 'Email',
+    'lunch_attendance.entitlement' => 'Lunch Source',
+    'lunch_attendance.entitlement_package' => 'Seminar Package',
+    'lunch_attendance.entitlement_addon' => 'Lunch Add-On',
+    'lunch_attendance.event_day_only' => 'Redeemed Today',
+
     // Countries
     'countries.code' => 'Code',
     'countries.phone_code' => 'Phone Code',

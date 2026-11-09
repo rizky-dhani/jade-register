@@ -123,6 +123,14 @@ return [
     'attendance.last_check_in' => 'Check-in Terakhir',
     'attendance.check_in_hands_on' => 'Check-in Hands On',
 
+    // Log kehadiran kupon makan siang
+    'lunch_attendance.title' => 'Makan Siang',
+    'lunch_attendance.email' => 'Email',
+    'lunch_attendance.entitlement' => 'Sumber Makan Siang',
+    'lunch_attendance.entitlement_package' => 'Paket Seminar',
+    'lunch_attendance.entitlement_addon' => 'Add-On Makan Siang',
+    'lunch_attendance.event_day_only' => 'Ditukarkan Hari Ini',
+
     // Countries
     'countries.code' => 'Kode',
     'countries.phone_code' => 'Kode Telepon',
