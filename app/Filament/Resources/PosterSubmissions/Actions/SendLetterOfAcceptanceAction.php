@@ -31,7 +31,7 @@ class SendLetterOfAcceptanceAction extends Action
             ->visible(fn (): bool => auth()->user()?->can('update poster submissions') ?? false)
             ->modalHeading(__('filament.poster_submissions.send_loa_heading'))
             ->modalDescription(__('filament.poster_submissions.send_loa_description'))
-            ->modalSubmitActionLabel(__('filament.poster_submissions.send_loa_submit'))
+            ->modalSubmitActionLabel(__('filament.poster_submissions.loa_submit'))
             ->schema([
                 Section::make(__('filament.poster_submissions.loa_record_info'))
                     ->description(__('filament.poster_submissions.loa_record_info_description'))

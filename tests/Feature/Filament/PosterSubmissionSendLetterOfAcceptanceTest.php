@@ -1,5 +1,6 @@
 <?php
 
+use App\Filament\Resources\PosterSubmissions\Actions\SendLetterOfAcceptanceAction;
 use App\Filament\Resources\PosterSubmissions\Pages\ListPosterSubmissions;
 use App\Mail\PosterLetterOfAcceptance;
 use App\Models\PosterCategory;
@@ -80,6 +81,15 @@ it('hides the action without the update permission', function () {
     livewire(ListPosterSubmissions::class)
         ->assertOk()
         ->assertTableActionHidden('sendLetterOfAcceptance', $submission);
+});
+
+it('resolves every modal label from translations', function () {
+    $action = SendLetterOfAcceptanceAction::make();
+
+    expect($action->getLabel())->toBe(__('filament.poster_submissions.send_loa'))
+        ->and($action->getModalHeading())->toBe(__('filament.poster_submissions.send_loa_heading'))
+        ->and($action->getModalSubmitActionLabel())->toBe(__('filament.poster_submissions.loa_submit'))
+        ->and($action->getModalCancelActionLabel())->not->toContain('filament.');
 });
 
 it('prefills the To field with the author emails', function () {
