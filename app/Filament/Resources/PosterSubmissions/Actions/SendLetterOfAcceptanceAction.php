@@ -28,8 +28,7 @@ class SendLetterOfAcceptanceAction extends Action
         $this->label(__('filament.poster_submissions.send_loa'))
             ->icon(Heroicon::OutlinedEnvelope)
             ->color('success')
-            ->visible(fn (PosterSubmission $record): bool => static::isEligible($record)
-                && (auth()->user()?->can('update poster submissions') ?? false))
+            ->visible(fn (): bool => auth()->user()?->can('update poster submissions') ?? false)
             ->modalHeading(__('filament.poster_submissions.send_loa_heading'))
             ->modalDescription(__('filament.poster_submissions.send_loa_description'))
             ->modalSubmitActionLabel(__('filament.poster_submissions.send_loa_submit'))
@@ -123,15 +122,6 @@ class SendLetterOfAcceptanceAction extends Action
                     ->success()
                     ->send();
             });
-    }
-
-    public static function isEligible(PosterSubmission $record): bool
-    {
-        return in_array($record->status, [
-            PosterSubmission::STATUS_ACCEPTED,
-            PosterSubmission::STATUS_FINALIST,
-            PosterSubmission::STATUS_WINNER,
-        ], true);
     }
 
     /**

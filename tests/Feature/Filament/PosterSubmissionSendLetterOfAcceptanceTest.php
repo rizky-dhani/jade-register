@@ -54,30 +54,33 @@ function callLoaAction(PosterSubmission $submission, array $data): void
         ->call(['record' => $submission, 'data' => $data]);
 }
 
-it('shows the action for accepted, finalist and winner submissions', function (string $status) {
+it('shows the action for every submission status', function (string $status) {
     $submission = loaSubmission(['status' => $status]);
 
     livewire(ListPosterSubmissions::class)
         ->assertOk()
         ->assertTableActionVisible('sendLetterOfAcceptance', $submission);
 })->with([
+    PosterSubmission::STATUS_DRAFT,
+    PosterSubmission::STATUS_SUBMITTED,
+    PosterSubmission::STATUS_UNDER_REVIEW,
     PosterSubmission::STATUS_ACCEPTED,
     PosterSubmission::STATUS_FINALIST,
     PosterSubmission::STATUS_WINNER,
+    PosterSubmission::STATUS_REJECTED,
 ]);
 
-it('hides the action for submissions that are not accepted', function (string $status) {
-    $submission = loaSubmission(['status' => $status]);
+it('hides the action without the update permission', function () {
+    $submission = loaSubmission();
+
+    $viewer = User::factory()->create();
+    $viewer->givePermissionTo('view poster submissions');
+    actingAs($viewer);
 
     livewire(ListPosterSubmissions::class)
         ->assertOk()
         ->assertTableActionHidden('sendLetterOfAcceptance', $submission);
-})->with([
-    PosterSubmission::STATUS_DRAFT,
-    PosterSubmission::STATUS_SUBMITTED,
-    PosterSubmission::STATUS_UNDER_REVIEW,
-    PosterSubmission::STATUS_REJECTED,
-]);
+});
 
 it('prefills the To field with the author emails', function () {
     $submission = loaSubmission();
