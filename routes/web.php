@@ -11,6 +11,7 @@ use App\Livewire\HandsOnRegistration;
 use App\Livewire\HandsOnRegistrationSuccess;
 use App\Livewire\PosterSubmission;
 use App\Livewire\RegistrationPortal;
+use App\Livewire\ResendConfirmationEmail;
 use App\Livewire\SeminarRegistration;
 use App\Livewire\SeminarRegistrationSuccess;
 use App\Livewire\TotalParticipant;
@@ -59,6 +60,11 @@ Route::middleware('auth')->group(function () {
         return back()->with('status', 'verification-link-sent');
     })->middleware('throttle:6,1')->name('verification.send');
 });
+
+// Resend confirmation email (public)
+Route::livewire('/resend-confirmation', ResendConfirmationEmail::class)
+    ->middleware('throttle:10,1')
+    ->name('resend.confirmation');
 
 Route::livewire('/poster/submit', PosterSubmission::class)->name('poster.submit');
 

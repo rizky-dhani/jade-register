@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Mail\DigitalWorkshopRegistrationConfirmation;
 use App\Mail\HandsOnRegistrationConfirmation;
 use App\Mail\PosterFileRequest;
+use App\Mail\PosterLetterOfAcceptance;
 use App\Mail\PosterSubmissionConfirmation;
 use App\Mail\SeminarPaymentRejected;
 use App\Mail\SeminarPaymentVerified;
@@ -123,6 +124,44 @@ class RegistrationService
         Mail::to($registration->email)
             ->locale($registration->language ?? 'en')
             ->queue(new SeminarRegistrationConfirmation($registration));
+    }
+
+    /**
+     * Resend the confirmation emails a participant already received, for the
+     * public self-service page.
+     *
+     * The address is the identity: seminar_registrations.email is unique, and a
+     * hands-on row either carries its own address or falls back to the parent
+     * seminar registration's. Every match is resent, since one participant can
+     * hold a seminar registration plus several hands-on sessions.
+     *
+     * Returns the number of emails sent; the caller shows the same response
+     * either way so the form can't be used to probe registered addresses.
+     */
+    public function resendConfirmationFor(string $email): int
+    {
+        $email = mb_strtolower(trim($email));
+
+        $seminar = SeminarRegistration::query()
+            ->whereRaw('lower(email) = ?', [$email])
+            ->get();
+
+        foreach ($seminar as $registration) {
+            $this->sendSeminarSubmissionConfirmation($registration);
+        }
+
+        $handsOn = HandsOnRegistration::query()
+            ->where(function ($query) use ($email) {
+                $query->whereRaw('lower(email) = ?', [$email])
+                    ->orWhereHas('seminarRegistration', fn ($q) => $q->whereRaw('lower(email) = ?', [$email]));
+            })
+            ->get();
+
+        foreach ($handsOn as $registration) {
+            $this->sendHandsOnSubmissionConfirmation($registration);
+        }
+
+        return $seminar->count() + $handsOn->count();
     }
 
     public function sendPaymentVerificationNotification(SeminarRegistration $registration): void
