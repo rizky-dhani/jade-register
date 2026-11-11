@@ -104,6 +104,55 @@ class RegistrationService
         return $sent;
     }
 
+    /**
+     * Send the Letter of Acceptance with the signed letter attached.
+     *
+     * @param  array<int, string>  $to
+     * @param  array<int, string>  $cc
+     * @param  array<int, string>  $bcc
+     * @return int number of primary recipients the letter was queued for
+     */
+    public function sendPosterLetterOfAcceptance(
+        PosterSubmission $submission,
+        array $to,
+        array $cc,
+        array $bcc,
+        string $letterPath,
+        string $letterName,
+    ): int {
+        $recipients = $this->validEmailAddresses($to);
+
+        if ($recipients === []) {
+            return 0;
+        }
+
+        Mail::to($recipients)
+            ->locale($submission->seminarRegistration?->language ?? 'id')
+            ->queue(new PosterLetterOfAcceptance(
+                $submission,
+                $this->validEmailAddresses($cc),
+                $this->validEmailAddresses($bcc),
+                $letterPath,
+                $letterName,
+            ));
+
+        return count($recipients);
+    }
+
+    /**
+     * @param  array<int, string>  $emails
+     * @return array<int, string>
+     */
+    private function validEmailAddresses(array $emails): array
+    {
+        $valid = array_filter(
+            array_map('trim', $emails),
+            fn (string $email): bool => filter_var($email, FILTER_VALIDATE_EMAIL) !== false,
+        );
+
+        return array_values(array_unique($valid));
+    }
+
     public function sendHandsOnAttendanceConfirmation(HandsOnRegistration $registration): void
     {
         $email = $registration->recipientEmail();

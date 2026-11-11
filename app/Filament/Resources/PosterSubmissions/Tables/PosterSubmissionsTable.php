@@ -5,6 +5,7 @@ namespace App\Filament\Resources\PosterSubmissions\Tables;
 use App\Filament\Resources\PosterSubmissions\Actions\CopySubmissionInfoAction;
 use App\Filament\Resources\PosterSubmissions\Actions\DownloadPosterAction;
 use App\Filament\Resources\PosterSubmissions\Actions\RequestPosterFileAction;
+use App\Filament\Resources\PosterSubmissions\Actions\SendLetterOfAcceptanceAction;
 use App\Models\PosterSubmission;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -61,6 +62,7 @@ class PosterSubmissionsTable
                 CopySubmissionInfoAction::make(),
                 DownloadPosterAction::make(),
                 RequestPosterFileAction::make(),
+                SendLetterOfAcceptanceAction::make(),
                 EditAction::make()
                     ->visible(fn (): bool => auth()->user()?->can('update poster submissions') ?? false),
             ])
