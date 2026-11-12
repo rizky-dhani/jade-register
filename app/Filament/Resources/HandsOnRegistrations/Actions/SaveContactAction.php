@@ -26,7 +26,7 @@ class SaveContactAction extends Action
         $this->label(__('filament.contacts.save_contact'))
             ->icon(Heroicon::OutlinedUserPlus)
             ->color('gray')
-            ->visible(fn (HandsOnRegistration $record): bool => static::contactFor($record) !== null)
+            ->visible(fn (HandsOnRegistration $record): bool => (auth()->user()?->hasRole('Super Admin') ?? false) && static::contactFor($record) !== null)
             ->action(function (HandsOnRegistration $record): ?StreamedResponse {
                 $contact = static::contactFor($record);
 

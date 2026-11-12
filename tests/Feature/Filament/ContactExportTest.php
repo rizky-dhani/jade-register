@@ -2,6 +2,7 @@
 
 use App\Filament\Resources\HandsOnRegistrations\Actions\SaveContactAction as HandsOnSaveContactAction;
 use App\Filament\Resources\HandsOnRegistrations\Pages\ListHandsOnRegistrations;
+use App\Filament\Resources\HandsOnRegistrations\Pages\ViewHandsOnRegistration;
 use App\Filament\Resources\SeminarRegistrations\Pages\ListSeminarRegistrations;
 use App\Filament\Resources\SeminarRegistrations\Pages\ViewSeminarRegistration;
 use App\Models\Country;
@@ -218,4 +219,31 @@ it('warns instead of downloading when no selected participant has a phone number
     livewire(ListSeminarRegistrations::class)
         ->callTableBulkAction('exportContacts', $registrations->pluck('id')->all())
         ->assertNotified(__('filament.contacts.none_selected'));
+});
+
+it('hides the export and save-contact actions from the Admin role', function () {
+    $admin = User::factory()->create();
+    $admin->assignRole('Admin');
+    actingAs($admin);
+
+    $seminar = SeminarRegistration::factory()->create(['phone' => '081200000020']);
+    $handsOn = HandsOnRegistration::factory()->create(['phone' => '081200000021']);
+
+    livewire(ListSeminarRegistrations::class)
+        ->assertActionHidden('export')
+        ->assertActionHidden('exportAllContacts')
+        ->assertTableBulkActionHidden('exportContacts')
+        ->assertTableActionHidden('saveContact', $seminar);
+
+    livewire(ListHandsOnRegistrations::class)
+        ->assertActionHidden('export')
+        ->assertActionHidden('exportAllContacts')
+        ->assertTableBulkActionHidden('exportContacts')
+        ->assertTableActionHidden('saveContact', $handsOn);
+
+    livewire(ViewSeminarRegistration::class, ['record' => $seminar->getRouteKey()])
+        ->assertActionHidden('saveContact');
+
+    livewire(ViewHandsOnRegistration::class, ['record' => $handsOn->getRouteKey()])
+        ->assertActionHidden('saveContact');
 });

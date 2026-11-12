@@ -411,6 +411,7 @@ class SeminarRegistrationsTable
                         }),
                     BulkAction::make('exportContacts')
                         ->label(__('filament.contacts.export_contacts'))
+                        ->visible(fn (): bool => auth()->user()?->hasRole('Super Admin') ?? false)
                         ->icon(Heroicon::OutlinedUsers)
                         ->deselectRecordsAfterCompletion()
                         ->action(function (Collection $records): ?StreamedResponse {

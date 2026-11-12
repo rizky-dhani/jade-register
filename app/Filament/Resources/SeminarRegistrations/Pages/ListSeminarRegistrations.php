@@ -37,6 +37,7 @@ class ListSeminarRegistrations extends ListRecords
                 ->action(fn () => $this->dispatch('$refresh')),
             Action::make('export')
                 ->label('Export Excel')
+                ->visible(fn (): bool => auth()->user()?->hasRole('Super Admin') ?? false)
                 ->icon('heroicon-o-arrow-down-tray')
                 ->form([
                     Select::make('payment_method')
@@ -58,6 +59,7 @@ class ListSeminarRegistrations extends ListRecords
                 }),
             Action::make('exportAllContacts')
                 ->label(__('filament.contacts.export_contacts'))
+                ->visible(fn (): bool => auth()->user()?->hasRole('Super Admin') ?? false)
                 ->icon(Heroicon::OutlinedUsers)
                 ->action(function (): ?StreamedResponse {
                     $contacts = SaveContactAction::contactsFor($this->getFilteredTableQuery()?->get() ?? collect());
