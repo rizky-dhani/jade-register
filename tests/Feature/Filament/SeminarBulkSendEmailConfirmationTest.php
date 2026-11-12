@@ -58,3 +58,36 @@ it('skips selected registrations without an email address', function () {
     Mail::assertQueued(SeminarRegistrationConfirmation::class, 1);
     Mail::assertQueued(SeminarRegistrationConfirmation::class, fn ($mail) => $mail->hasTo('reachable@example.com'));
 });
+
+it('verifies selected pending payments and queues the confirmation email', function () {
+    Mail::fake();
+
+    $first = SeminarRegistration::factory()->create(['email' => 'first@example.com', 'payment_status' => 'pending']);
+    $second = SeminarRegistration::factory()->create(['email' => 'second@example.com', 'payment_status' => 'pending']);
+
+    livewire(ListSeminarRegistrations::class)
+        ->callTableBulkAction('bulkVerifyPayment', [$first, $second])
+        ->assertHasNoTableBulkActionErrors();
+
+    expect($first->refresh()->payment_status)->toBe('verified')
+        ->and($second->refresh()->payment_status)->toBe('verified');
+
+    Mail::assertQueued(SeminarRegistrationConfirmation::class, 2);
+    Mail::assertQueued(SeminarRegistrationConfirmation::class, fn ($mail) => $mail->hasTo('first@example.com'));
+    Mail::assertQueued(SeminarRegistrationConfirmation::class, fn ($mail) => $mail->hasTo('second@example.com'));
+});
+
+it('does not email registrations whose payment was already verified', function () {
+    Mail::fake();
+
+    $alreadyVerified = SeminarRegistration::factory()->create([
+        'email' => 'verified@example.com',
+        'payment_status' => 'verified',
+    ]);
+
+    livewire(ListSeminarRegistrations::class)
+        ->callTableBulkAction('bulkVerifyPayment', [$alreadyVerified])
+        ->assertHasNoTableBulkActionErrors();
+
+    Mail::assertNotQueued(SeminarRegistrationConfirmation::class);
+});

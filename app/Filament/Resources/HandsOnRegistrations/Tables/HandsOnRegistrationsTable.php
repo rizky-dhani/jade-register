@@ -234,10 +234,57 @@ class HandsOnRegistrationsTable
                         ->requiresConfirmation()
                         ->deselectRecordsAfterCompletion()
                         ->visible(fn (): bool => auth()->user()?->hasRole('Super Admin') ?? false)
-                        ->action(fn (Collection $records) => $records->each->update([
-                            'payment_status' => 'verified',
-                            'verified_at' => now(),
-                        ])),
+                        ->action(function (Collection $records, RegistrationService $registrationService): void {
+                            $records->loadMissing('seminarRegistration');
+
+                            $verified = 0;
+                            $emailed = 0;
+                            $skipped = 0;
+
+                            foreach ($records as $record) {
+                                if (! $record instanceof HandsOnRegistration || $record->payment_status === 'verified') {
+                                    continue;
+                                }
+
+                                $record->update([
+                                    'payment_status' => 'verified',
+                                    'verified_at' => now(),
+                                ]);
+                                $verified++;
+
+                                if ($record->recipientEmail() === null) {
+                                    $skipped++;
+
+                                    continue;
+                                }
+
+                                $registrationService->sendHandsOnSubmissionConfirmation($record, queue: true);
+                                $emailed++;
+                            }
+
+                            if ($verified === 0) {
+                                Notification::make()
+                                    ->title(__('seminar.bulk_payment_verified_none'))
+                                    ->warning()
+                                    ->send();
+
+                                return;
+                            }
+
+                            $notification = Notification::make()
+                                ->title(__('seminar.bulk_payment_verified'));
+
+                            $body = array_filter([
+                                $emailed > 0 ? __('seminar.bulk_payment_verified_email_sent', ['sent' => $emailed]) : null,
+                                $skipped > 0 ? __('seminar.bulk_email_confirmation_skipped', ['count' => $skipped]) : null,
+                            ]);
+
+                            if ($body !== []) {
+                                $notification->body(implode(' ', $body));
+                            }
+
+                            $notification->success()->send();
+                        }),
                     BulkAction::make('bulkSendEmailConfirmation')
                         ->label(__('seminar.bulk_send_email_confirmation'))
                         ->icon('heroicon-o-envelope')

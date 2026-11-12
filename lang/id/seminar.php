@@ -332,6 +332,8 @@ return [
     'bulk_email_confirmation_sent' => 'Email konfirmasi terkirim ke :sent peserta',
     'bulk_email_confirmation_skipped' => ':count peserta dilewati karena tidak memiliki alamat email',
     'bulk_email_confirmation_none_sent' => 'Tidak ada email konfirmasi yang dikirim: peserta terpilih tidak memiliki alamat email',
+    'bulk_payment_verified_email_sent' => 'Email konfirmasi terkirim ke :sent peserta',
+    'bulk_payment_verified_none' => 'Tidak ada pembayaran berstatus menunggu yang dipilih',
     'bulk_payment_verified' => 'Pembayaran yang dipilih berhasil diverifikasi',
 
     // Visitor Registration

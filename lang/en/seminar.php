@@ -333,6 +333,8 @@ return [
     'bulk_email_confirmation_sent' => 'Email confirmation sent to :sent participant(s)',
     'bulk_email_confirmation_skipped' => ':count participant(s) skipped because no email address is available',
     'bulk_email_confirmation_none_sent' => 'No email confirmation was sent: the selected participants have no email address',
+    'bulk_payment_verified_email_sent' => 'Email confirmation sent to :sent participant(s)',
+    'bulk_payment_verified_none' => 'No pending payments were selected',
     'bulk_payment_verified' => 'Selected payments have been verified successfully',
 
     // Visitor Registration

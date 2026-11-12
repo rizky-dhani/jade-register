@@ -99,3 +99,40 @@ it('skips selected records with no email anywhere', function () {
 
     Mail::assertNotQueued(HandsOnRegistrationConfirmation::class);
 });
+
+it('verifies selected payments and queues the confirmation email', function () {
+    Mail::fake();
+
+    $registration = HandsOnRegistration::factory()->create([
+        'seminar_registration_id' => null,
+        'hands_on_id' => HandsOn::first()->id,
+        'email' => 'own@example.com',
+        'payment_status' => 'pending',
+    ]);
+
+    livewire(ListHandsOnRegistrations::class)
+        ->callTableBulkAction('verifyPayment', [$registration])
+        ->assertHasNoTableBulkActionErrors();
+
+    expect($registration->refresh()->payment_status)->toBe('verified');
+
+    Mail::assertQueued(HandsOnRegistrationConfirmation::class, 1);
+    Mail::assertQueued(HandsOnRegistrationConfirmation::class, fn ($mail) => $mail->hasTo('own@example.com'));
+});
+
+it('does not email records whose payment was already verified', function () {
+    Mail::fake();
+
+    $alreadyVerified = HandsOnRegistration::factory()->create([
+        'seminar_registration_id' => null,
+        'hands_on_id' => HandsOn::first()->id,
+        'email' => 'verified@example.com',
+        'payment_status' => 'verified',
+    ]);
+
+    livewire(ListHandsOnRegistrations::class)
+        ->callTableBulkAction('verifyPayment', [$alreadyVerified])
+        ->assertHasNoTableBulkActionErrors();
+
+    Mail::assertNotQueued(HandsOnRegistrationConfirmation::class);
+});
