@@ -13,11 +13,11 @@ class LunchRedemptionPolicy
 {
     public function viewAny(User $user): bool
     {
-        return $user->can('view attendances');
+        return $user->can('view lunch attendances');
     }
 
     public function view(User $user, LunchRedemption $lunchRedemption): bool
     {
-        return $user->can('view attendances');
+        return $user->can('view lunch attendances');
     }
 }

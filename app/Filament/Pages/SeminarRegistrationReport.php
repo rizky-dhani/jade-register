@@ -8,8 +8,8 @@ use App\Filament\Resources\SeminarRegistrations\Widgets\SeminarPackageStatsWidge
 use App\Filament\Resources\SeminarRegistrations\Widgets\SeminarPaymentMethodChartWidget;
 use App\Models\User;
 use Filament\Pages\Page;
-use Illuminate\Support\Facades\Auth;
 use Filament\Support\Icons\Heroicon;
+use Illuminate\Support\Facades\Auth;
 
 class SeminarRegistrationReport extends Page
 {
@@ -33,7 +33,7 @@ class SeminarRegistrationReport extends Page
         /** @var User|null $user */
         $user = Auth::user();
 
-        return $user instanceof User && $user->hasAnyRole(['Super Admin', 'Admin']);
+        return $user instanceof User && $user->hasRole('Super Admin');
     }
 
     public function getHeading(): string

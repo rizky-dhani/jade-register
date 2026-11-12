@@ -20,7 +20,7 @@ beforeEach(function () {
     $this->seed(RolePermissionSeeder::class);
 
     $this->user = User::factory()->create(['name' => 'Desk Admin']);
-    $this->user->assignRole('Admin');
+    $this->user->assignRole('Super Admin');
     actingAs($this->user);
 });
 
@@ -139,4 +139,15 @@ it('denies the lunch log to roles without attendance access', function () {
 
         get(AttendanceResource::getUrl('lunch'))->assertForbidden();
     }
+});
+
+it('denies the lunch log to the Admin desk role', function () {
+    $admin = User::factory()->create();
+    $admin->assignRole('Admin');
+    actingAs($admin);
+
+    expect($admin->can('viewAny', LunchRedemption::class))->toBeFalse();
+
+    get(AttendanceResource::getUrl('lunch'))->assertForbidden();
+    livewire(ListLunchAttendances::class)->assertForbidden();
 });

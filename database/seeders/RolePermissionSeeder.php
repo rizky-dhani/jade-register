@@ -74,6 +74,7 @@ class RolePermissionSeeder extends Seeder
             'update digital workshop intents',
             'delete digital workshop intents',
             'view attendances',
+            'view lunch attendances',
             'check in participants',
             'check out participants',
             'create attendances',
@@ -88,15 +89,14 @@ class RolePermissionSeeder extends Seeder
         $adminRole = Role::firstOrCreate(['name' => 'Super Admin', 'guard_name' => 'web']);
 
         $adminPermissions = Permission::pluck('name')->toArray();
-        $adminRole->givePermissionTo($adminPermissions);
+        $adminRole->syncPermissions($adminPermissions);
 
         $staffRole = Role::firstOrCreate(['name' => 'Admin', 'guard_name' => 'web']);
-        $staffRole->givePermissionTo([
+        $staffRole->syncPermissions([
             'view visitors',
             'create visitors',
             'update visitors',
             'delete visitors',
-            'export visitors',
             'view seminar registrations',
             'create seminar registrations',
             'update seminar registrations',
@@ -105,29 +105,12 @@ class RolePermissionSeeder extends Seeder
             'force delete seminar registrations',
             'verify payments',
             'reject payments',
-            'export seminar registrations',
             'view hands on registrations',
             'create hands on registrations',
             'update hands on registrations',
             'delete hands on registrations',
             'restore hands on registrations',
             'force delete hands on registrations',
-            'view digital workshops',
-            'create digital workshops',
-            'update digital workshops',
-            'delete digital workshops',
-            'restore digital workshops',
-            'view digital workshop registrations',
-            'create digital workshop registrations',
-            'update digital workshop registrations',
-            'delete digital workshop registrations',
-            'restore digital workshop registrations',
-            'view digital workshop intents',
-            'update digital workshop intents',
-            'view poster submissions',
-            'update poster submissions',
-            'evaluate poster submissions',
-            'export poster submissions',
             // Desk duties: the Admin role runs the attendance desk even though
             // it is not granted the general `update attendances` permission.
             'view attendances',

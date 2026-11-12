@@ -26,11 +26,11 @@ test('grants digital workshop permissions to Super Admin', function () {
     }
 });
 
-test('grants view and update digital workshop permissions to Admin', function () {
+test('denies digital workshop permissions to Admin', function () {
     $role = Role::findByName('Admin');
 
-    expect($role->hasPermissionTo('view digital workshops'))->toBeTrue();
-    expect($role->hasPermissionTo('update digital workshops'))->toBeTrue();
+    expect($role->hasPermissionTo('view digital workshops'))->toBeFalse();
+    expect($role->hasPermissionTo('update digital workshops'))->toBeFalse();
     expect($role->hasPermissionTo('force delete digital workshops'))->toBeFalse();
 });
 

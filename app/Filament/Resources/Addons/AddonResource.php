@@ -26,6 +26,15 @@ class AddonResource extends Resource
 
     protected static ?string $navigationLabel = 'Add-Ons';
 
+    /**
+     * Add-ons are event configuration, not desk data, so only Super Admin
+     * manages them.
+     */
+    public static function canAccess(): bool
+    {
+        return auth()->user()?->hasRole('Super Admin') ?? false;
+    }
+
     public static function getModelLabel(): string
     {
         return __('filament.navigation.addons');

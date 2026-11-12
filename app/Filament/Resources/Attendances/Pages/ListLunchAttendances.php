@@ -28,6 +28,23 @@ class ListLunchAttendances extends ListRecords
 
     protected static ?int $navigationSort = 2;
 
+    /**
+     * The lunch log is a separate desk duty from the attendance roster, so it
+     * has its own permission instead of riding on `view attendances`.
+     */
+    public static function canAccess(array $parameters = []): bool
+    {
+        return parent::canAccess($parameters)
+            && (auth()->user()?->can('view lunch attendances') ?? false);
+    }
+
+    public static function authorizeResourceAccess(): void
+    {
+        parent::authorizeResourceAccess();
+
+        abort_unless(auth()->user()?->can('view lunch attendances'), 403);
+    }
+
     public static function getNavigationLabel(): string
     {
         return __('filament.lunch_attendance.title');

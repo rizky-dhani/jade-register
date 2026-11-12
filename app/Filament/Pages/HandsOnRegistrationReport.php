@@ -28,7 +28,7 @@ class HandsOnRegistrationReport extends Page
 
     public static function canAccess(): bool
     {
-        return auth()->user()?->hasAnyRole(['Super Admin', 'Admin']) ?? false;
+        return auth()->user()?->hasRole('Super Admin') ?? false;
     }
 
     public function getHeading(): string

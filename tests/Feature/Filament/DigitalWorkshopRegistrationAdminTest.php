@@ -150,10 +150,11 @@ test('resends the confirmation email', function () {
     Mail::assertSent(DigitalWorkshopRegistrationConfirmation::class);
 });
 
-test('denies an Admin the force delete ability', function () {
+test('denies an Admin all digital workshop registration permissions', function () {
     $admin = User::factory()->create();
     $admin->assignRole('Admin');
 
+    expect($admin->hasPermissionTo('view digital workshop registrations'))->toBeFalse();
+    expect($admin->hasPermissionTo('update digital workshop registrations'))->toBeFalse();
     expect($admin->hasPermissionTo('force delete digital workshop registrations'))->toBeFalse();
-    expect($admin->hasPermissionTo('update digital workshop registrations'))->toBeTrue();
 });

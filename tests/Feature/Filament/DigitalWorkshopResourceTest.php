@@ -164,21 +164,15 @@ test('hides the publish action for an already published workshop', function () {
         ->assertTableActionHidden('publish', $workshop);
 });
 
-test('denies an Admin the force delete ability', function () {
+test('denies an Admin all digital workshop access', function () {
     $workshop = DigitalWorkshop::factory()->create();
     $admin = ($this->makeAdminUser)();
 
     // Gate::before grants Super Admin every check, so assert through an explicit
     // Admin user rather than the actingAs() session set in beforeEach.
+    expect(Gate::forUser($admin)->denies('viewAny', DigitalWorkshop::class))->toBeTrue();
+    expect(Gate::forUser($admin)->denies('update', $workshop))->toBeTrue();
     expect(Gate::forUser($admin)->denies('forceDelete', $workshop))->toBeTrue();
-});
-
-test('allows an Admin to view and update', function () {
-    $workshop = DigitalWorkshop::factory()->create();
-    $admin = ($this->makeAdminUser)();
-
-    expect(Gate::forUser($admin)->allows('viewAny', DigitalWorkshop::class))->toBeTrue();
-    expect(Gate::forUser($admin)->allows('update', $workshop))->toBeTrue();
 });
 
 test('denies a user without the role any access', function () {

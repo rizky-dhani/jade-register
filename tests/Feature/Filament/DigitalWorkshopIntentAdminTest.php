@@ -107,12 +107,12 @@ test('denies a user without the role any access', function () {
     expect($nobody->can('view digital workshop intents'))->toBeFalse();
 });
 
-test('grants the view and update permissions to Admin but not delete', function () {
+test('denies the digital workshop intent permissions to Admin', function () {
     $admin = User::factory()->create();
     $admin->assignRole('Admin');
 
-    expect($admin->can('view digital workshop intents'))->toBeTrue();
-    expect($admin->can('update digital workshop intents'))->toBeTrue();
+    expect($admin->can('view digital workshop intents'))->toBeFalse();
+    expect($admin->can('update digital workshop intents'))->toBeFalse();
     expect($admin->can('delete digital workshop intents'))->toBeFalse();
 });
 

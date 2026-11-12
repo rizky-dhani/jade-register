@@ -72,11 +72,13 @@ class AdminPanelProvider extends PanelProvider
                 NavigationItem::make('Seminar Registration')
                     ->url(fn () => route('register.seminar'))
                     ->icon('heroicon-o-academic-cap')
-                    ->group('Registrations'),
+                    ->group('Registrations')
+                    ->visible(fn () => auth()->user()?->hasRole('Super Admin') ?? false),
                 NavigationItem::make('Visitor Registration')
                     ->url(fn () => route('register.visitor'))
                     ->icon('heroicon-o-users')
-                    ->group('Registrations'),
+                    ->group('Registrations')
+                    ->visible(fn () => auth()->user()?->hasRole('Super Admin') ?? false),
                 NavigationItem::make('Poster Registrations')
                     ->url(fn () => route('poster.submit'))
                     ->icon('heroicon-o-photo')
@@ -86,16 +88,19 @@ class AdminPanelProvider extends PanelProvider
                     ->url(fn () => AttendanceResource::getUrl('index'))
                     ->icon('heroicon-o-clipboard-document-check')
                     ->group('Attendance')
+                    ->visible(fn () => auth()->user()?->can('view attendances') ?? false)
                     ->isActiveWhen(fn (): bool => request()->routeIs('filament.dashboard.resources.attendances.index')),
                 NavigationItem::make(__('filament.attendance.visitor'))
                     ->url(fn () => AttendanceResource::getUrl('visitor'))
                     ->icon('heroicon-o-users')
                     ->group('Attendance')
+                    ->visible(fn () => auth()->user()?->can('view attendances') ?? false)
                     ->isActiveWhen(fn (): bool => request()->routeIs('filament.dashboard.resources.attendances.visitor')),
                 NavigationItem::make(__('filament.lunch_attendance.title'))
                     ->url(fn () => AttendanceResource::getUrl('lunch'))
                     ->icon('heroicon-o-cake')
                     ->group('Attendance')
+                    ->visible(fn () => auth()->user()?->can('view lunch attendances') ?? false)
                     ->isActiveWhen(fn (): bool => request()->routeIs('filament.dashboard.resources.attendances.lunch')),
             ])
             ->navigationGroups([
