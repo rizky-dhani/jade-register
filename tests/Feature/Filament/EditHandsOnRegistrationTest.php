@@ -122,3 +122,38 @@ it('updates hands_on_id when the hands-on session is changed on edit', function 
         'hands_on_id' => $handsOnDay2->id,
     ]);
 })->group('hands-on', 'registration');
+
+it('updates participant data when the hands-on session is already full', function () {
+    $handsOn = HandsOn::where('ho_code', 'HO-001')->first();
+    $country = Country::first();
+
+    // One seat, one registration: the session is full because of this very record.
+    $handsOn->update(['max_seats' => 1]);
+
+    $registration = HandsOnRegistration::create([
+        'hands_on_id' => $handsOn->id,
+        'country_id' => $country->id,
+        'registration_type' => 'hands_on',
+        'name_license' => 'Dr. Test User',
+        'email' => 'test@example.com',
+        'phone' => '081234567890',
+        'nik' => '1234567890123456',
+        'pdgi_branch' => 'Jakarta',
+        'kompetensi' => 'Dokter Gigi Umum',
+        'payment_method' => 'bank_transfer',
+        'payment_status' => 'pending',
+    ]);
+
+    livewire(EditHandsOnRegistration::class, ['record' => $registration->getRouteKey()])
+        ->set('data.name_license', 'Dr. Updated Name')
+        ->set('data.phone', '081999999999')
+        ->call('save')
+        ->assertHasNoFormErrors();
+
+    assertDatabaseHas('hands_on_registrations', [
+        'id' => $registration->id,
+        'name_license' => 'Dr. Updated Name',
+        'phone' => '081999999999',
+        'hands_on_id' => $handsOn->id,
+    ]);
+})->group('hands-on', 'registration');

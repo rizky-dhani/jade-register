@@ -135,7 +135,7 @@ class HandsOnRegistrationForm
                     ->visible(fn (Get $get): bool => ! self::isIndonesia($get('country_id'))),
 
                 // Hands-On Session Selection (per date, max 1 per day)
-                ...self::buildHandsOnRadioGroups(),
+                ...self::buildHandsOnRadioGroups($schema->getRecord()?->hands_on_id),
 
                 // Hidden hands_on_id for model binding
                 TextInput::make('hands_on_id')
@@ -184,7 +184,12 @@ class HandsOnRegistrationForm
             ]);
     }
 
-    private static function buildHandsOnRadioGroups(): array
+    /**
+     * @param  int|null  $currentHandsOnId  Session already held by the record being edited. It stays
+     *                                      selectable when sold out, otherwise its disabled option would
+     *                                      fail the "in" validation and block every participant update.
+     */
+    private static function buildHandsOnRadioGroups(?int $currentHandsOnId = null): array
     {
         $dayMap = [
             '2026-11-13' => 1,
@@ -227,7 +232,8 @@ class HandsOnRegistrationForm
                 ])->filter()->implode(' | '),
             ]);
 
-            $disabledOptions = $events->filter(fn (HandsOn $ho): bool => $ho->isFull() || $ho->current_price === null || $ho->current_price <= 0)
+            $disabledOptions = $events->filter(fn (HandsOn $ho): bool => (int) $ho->id !== $currentHandsOnId
+                && ($ho->isFull() || $ho->current_price === null || $ho->current_price <= 0))
                 ->pluck('id')
                 ->map(fn (int $id): string => (string) $id)
                 ->values()
