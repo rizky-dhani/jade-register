@@ -5,12 +5,15 @@ namespace App\Filament\Resources\HandsOnRegistrations\Pages;
 use App\Exports\HandsOnRegistrationExport;
 use App\Filament\Resources\HandsOnRegistrations\Actions\SaveContactAction;
 use App\Filament\Resources\HandsOnRegistrations\HandsOnRegistrationResource;
+use App\Models\HandsOn;
 use App\Services\VCard;
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ListRecords;
+use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Support\Icons\Heroicon;
+use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -49,5 +52,33 @@ class ListHandsOnRegistrations extends ListRecords
                 }),
             CreateAction::make(),
         ];
+    }
+
+    /**
+     * @return array<string, Tab>
+     */
+    public function getTabs(): array
+    {
+        $handsOns = HandsOn::query()
+            ->withCount('handsOnRegistrations')
+            ->orderBy('event_date')
+            ->orderBy('ho_code')
+            ->get();
+
+        $tabs = [
+            'all' => Tab::make(__('seminar.all'))
+                ->badge(fn (): int => $handsOns->sum('hands_on_registrations_count')),
+        ];
+
+        foreach ($handsOns as $handsOn) {
+            $tabs["hands-on-{$handsOn->getKey()}"] = Tab::make($handsOn->ho_code ?? $handsOn->name)
+                ->badge(fn (): int => $handsOn->hands_on_registrations_count)
+                ->modifyQueryUsing(fn (Builder $query) => $query->whereHas(
+                    'handsOn',
+                    fn (Builder $query) => $query->whereKey($handsOn->getKey()),
+                ));
+        }
+
+        return $tabs;
     }
 }

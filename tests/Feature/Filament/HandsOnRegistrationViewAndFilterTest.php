@@ -202,3 +202,47 @@ it('filters seminar registrations by type', function () {
         ->assertCanSeeTableRecords([$plain])
         ->assertCanNotSeeTableRecords([$withHo, $withDw]);
 });
+
+it('filters hands on registrations by ho code tabs', function () {
+    $this->handsOn->update(['ho_code' => 'HO-1']);
+
+    $secondHandsOn = HandsOn::create([
+        'name' => 'HO Second', 'ho_code' => 'HO-2', 'currency' => 'IDR',
+        'original_price' => 100000, 'is_active' => true, 'event_date' => '2026-11-14',
+    ]);
+
+    $first = HandsOnRegistration::create([
+        'registration_code' => HandsOnRegistration::generateRegistrationCode(),
+        'hands_on_id' => $this->handsOn->id,
+        'registration_type' => 'standalone',
+        'payment_status' => 'pending',
+        'name_license' => 'Dr. First',
+        'email' => 'first@example.com',
+        'status' => 'registered',
+        'country_id' => 1,
+        'payment_method' => 'bank_transfer',
+        'language' => 'id',
+    ]);
+    $second = HandsOnRegistration::create([
+        'registration_code' => HandsOnRegistration::generateRegistrationCode(),
+        'hands_on_id' => $secondHandsOn->id,
+        'registration_type' => 'standalone',
+        'payment_status' => 'pending',
+        'name_license' => 'Dr. Second',
+        'email' => 'second@example.com',
+        'status' => 'registered',
+        'country_id' => 1,
+        'payment_method' => 'bank_transfer',
+        'language' => 'id',
+    ]);
+
+    livewire(ListHandsOnRegistrations::class)
+        ->set('activeTab', "hands-on-{$this->handsOn->id}")
+        ->assertCanSeeTableRecords([$first])
+        ->assertCanNotSeeTableRecords([$second])
+        ->set('activeTab', "hands-on-{$secondHandsOn->id}")
+        ->assertCanSeeTableRecords([$second])
+        ->assertCanNotSeeTableRecords([$first])
+        ->set('activeTab', 'all')
+        ->assertCanSeeTableRecords([$first, $second]);
+});
