@@ -9,6 +9,7 @@ use App\Models\HandsOnRegistration;
 use App\Models\SeminarRegistration;
 use App\Models\User;
 use Database\Seeders\RolePermissionSeeder;
+use Filament\Actions\ActionGroup;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use function Pest\Laravel\actingAs;
@@ -205,4 +206,42 @@ it('searches the roster by participant name and registration code', function () 
         ->searchTable('Ayu Kartika')
         ->assertCanSeeTableRecords([rosterRowFor($ayu)])
         ->assertCanNotSeeTableRecords([rosterRowFor($budi)]);
+});
+
+it('collapses the per-day check-in, cancel, and check-out actions into one dropdown each', function () {
+    $registration = SeminarRegistration::factory()->verified()->create();
+    $row = rosterRowFor($registration);
+
+    $groups = collect(livewire(ListAttendanceRoster::class)->instance()->getTable()->getRecordActions())
+        ->filter(fn ($action): bool => $action instanceof ActionGroup)
+        ->values();
+
+    expect($groups)->toHaveCount(3)
+        ->and($groups[0]->getFlatActions())->toHaveKeys(['checkInDay1', 'checkInDay2', 'checkInDay3'])
+        ->and($groups[1]->getFlatActions())->toHaveKeys(['cancelCheckInDay1', 'cancelCheckInDay2', 'cancelCheckInDay3'])
+        ->and($groups[2]->getFlatActions())->toHaveKeys(['checkOutDay1', 'checkOutDay2', 'checkOutDay3'])
+        ->and($groups[0]->record($row)->isHidden())->toBeFalse()
+        ->and($groups[1]->record($row)->isHidden())->toBeTrue()
+        ->and($groups[2]->record($row)->isHidden())->toBeTrue();
+});
+
+it('hides the check-in dropdown once every day is checked in', function () {
+    $registration = SeminarRegistration::factory()->verified()->create();
+
+    foreach (Attendance::SEMINAR_DAYS as $day) {
+        Attendance::factory()->day($day)->create([
+            'seminar_registration_id' => $registration->id,
+            'activity_type' => 'seminar',
+            'checked_in_by' => $this->user->id,
+        ]);
+    }
+
+    $row = rosterRowFor($registration);
+
+    $groups = collect(livewire(ListAttendanceRoster::class)->instance()->getTable()->getRecordActions())
+        ->filter(fn ($action): bool => $action instanceof ActionGroup)
+        ->values();
+
+    expect($groups[0]->record($row)->isHidden())->toBeTrue()
+        ->and($groups[1]->record($row)->isHidden())->toBeFalse();
 });

@@ -9,6 +9,7 @@ use App\Services\AttendanceCancelService;
 use App\Services\AttendanceCheckInService;
 use App\Services\AttendanceCheckOutService;
 use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
 use Filament\Notifications\Notification;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
@@ -94,12 +95,10 @@ class AttendanceRosterTable
                 ManualCheckInAction::seminar(),
                 ManualCheckInAction::handsOn(),
             ])
-            // recordActions() does not flatten nested arrays, so the day
-            // actions are spread rather than nested.
             ->recordActions([
-                ...self::seminarDayCheckInActions(),
-                ...self::seminarDayCancelActions(),
-                ...self::seminarDayCheckOutActions(),
+                self::seminarCheckInGroup(),
+                self::seminarCancelGroup(),
+                self::seminarCheckOutGroup(),
                 self::handsOnCheckInAction(),
                 self::handsOnCancelAction(),
                 self::checkOutAction(),
@@ -246,6 +245,19 @@ class AttendanceRosterTable
     }
 
     /**
+     * The per-day check-in buttons behind one dropdown, so a row keeps a single
+     * check-in control. The group hides itself when no day is open.
+     */
+    private static function seminarCheckInGroup(): ActionGroup
+    {
+        return ActionGroup::make(self::seminarDayCheckInActions())
+            ->label(__('filament.attendance.check_in'))
+            ->icon('heroicon-o-arrow-left-on-rectangle')
+            ->color('gray')
+            ->button();
+    }
+
+    /**
      * One button for the participant's hands-on sessions: the combined row is a
      * participant, so a per-session button would need a button per session. It
      * checks in every session that is still open and is idempotent per session.
@@ -334,6 +346,19 @@ class AttendanceRosterTable
     }
 
     /**
+     * The per-day cancel buttons behind one dropdown. The group hides itself when
+     * no day is checked in.
+     */
+    private static function seminarCancelGroup(): ActionGroup
+    {
+        return ActionGroup::make(self::seminarDayCancelActions())
+            ->label(__('filament.attendance.cancel_check_in'))
+            ->icon('heroicon-o-arrow-uturn-left')
+            ->color('danger')
+            ->button();
+    }
+
+    /**
      * Check the participant out of one event day.
      *
      * Check-out closes a day, so it is per-day like check-in: a participant may
@@ -374,6 +399,19 @@ class AttendanceRosterTable
                 }),
             Attendance::SEMINAR_DAYS,
         );
+    }
+
+    /**
+     * The per-day check-out buttons behind one dropdown. The group hides itself
+     * when no day is still open.
+     */
+    private static function seminarCheckOutGroup(): ActionGroup
+    {
+        return ActionGroup::make(self::seminarDayCheckOutActions())
+            ->label(__('filament.attendance.check_out'))
+            ->icon('heroicon-o-arrow-right-on-rectangle')
+            ->color('gray')
+            ->button();
     }
 
     /**
