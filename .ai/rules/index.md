@@ -4,9 +4,11 @@ Before planning or editing, find the row whose globs match the file's path and r
 
 | Applies to | Rule file |
 | --- | --- |
+| database/** | .ai/rules/database.md |
 | tests/Feature/Filament/** | .ai/rules/filament.md |
 | app/Livewire/VisitorVerify.php, app/Livewire/AttendanceVerify.php | .ai/rules/livewire.md |
 | app/Models/SeminarRegistration.php | .ai/rules/models.md |
+| database/seeders/RolePermissionSeeder.php | .ai/rules/seeders.md |
 | app/Filament/Resources/{SeminarRegistrations,HandsOnRegistrations}/** | .ai/rules/seminar-registrations-hands-on-registrations.md |
 | app/Services/** | .ai/rules/services.md |
 | resources/views/** | .ai/rules/views.md |

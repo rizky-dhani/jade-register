@@ -328,6 +328,11 @@ return [
     'resend_email_confirmation' => 'Resend Email Confirmation',
     'resend_email_confirmation_description' => 'Are you sure you want to resend the registration confirmation email to this participant?',
     'email_confirmation_resent' => 'Email confirmation has been resent successfully',
+    'bulk_send_email_confirmation' => 'Send Email Confirmation to Selected',
+    'bulk_send_email_confirmation_description' => 'Are you sure you want to send the registration confirmation email to all selected participants?',
+    'bulk_email_confirmation_sent' => 'Email confirmation sent to :sent participant(s)',
+    'bulk_email_confirmation_skipped' => ':count participant(s) skipped because no email address is available',
+    'bulk_email_confirmation_none_sent' => 'No email confirmation was sent: the selected participants have no email address',
     'bulk_payment_verified' => 'Selected payments have been verified successfully',
 
     // Visitor Registration

@@ -327,6 +327,11 @@ return [
     'resend_email_confirmation' => 'Kirim Ulang Email Konfirmasi',
     'resend_email_confirmation_description' => 'Apakah Anda yakin ingin mengirim ulang email konfirmasi pendaftaran ke peserta ini?',
     'email_confirmation_resent' => 'Email konfirmasi berhasil dikirim ulang',
+    'bulk_send_email_confirmation' => 'Kirim Email Konfirmasi ke Peserta Terpilih',
+    'bulk_send_email_confirmation_description' => 'Apakah Anda yakin ingin mengirim email konfirmasi pendaftaran ke semua peserta yang dipilih?',
+    'bulk_email_confirmation_sent' => 'Email konfirmasi terkirim ke :sent peserta',
+    'bulk_email_confirmation_skipped' => ':count peserta dilewati karena tidak memiliki alamat email',
+    'bulk_email_confirmation_none_sent' => 'Tidak ada email konfirmasi yang dikirim: peserta terpilih tidak memiliki alamat email',
     'bulk_payment_verified' => 'Pembayaran yang dipilih berhasil diverifikasi',
 
     // Visitor Registration

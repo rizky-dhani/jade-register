@@ -2,6 +2,7 @@
 
 use App\Mail\HandsOnRegistrationConfirmation;
 use App\Mail\PosterSubmissionConfirmation;
+use App\Mail\SeminarRegistrationConfirmation;
 use App\Models\Country;
 use App\Models\HandsOn;
 use App\Models\HandsOnRegistration;
@@ -302,5 +303,34 @@ describe('sendPosterSubmissionConfirmation', function () {
         $service->sendPosterSubmissionConfirmation($submission);
 
         Mail::assertQueued(PosterSubmissionConfirmation::class, 1);
+    });
+});
+
+describe('resendConfirmationFor', function () {
+    it('queues the confirmations instead of opening SMTP inside the request', function () {
+        Mail::fake();
+
+        SeminarRegistration::factory()->create(['email' => 'resend@example.com']);
+        HandsOnRegistration::factory()->create([
+            'email' => 'resend@example.com',
+            'seminar_registration_id' => null,
+        ]);
+
+        $count = app(RegistrationService::class)->resendConfirmationFor('resend@example.com');
+
+        expect($count)->toBe(2);
+        Mail::assertQueued(SeminarRegistrationConfirmation::class);
+        Mail::assertQueued(HandsOnRegistrationConfirmation::class);
+        Mail::assertNothingSent();
+    });
+
+    it('sends inline by default so the completion jobs keep stamping the timestamp synchronously', function () {
+        Mail::fake();
+
+        $registration = SeminarRegistration::factory()->create();
+
+        app(RegistrationService::class)->sendSeminarSubmissionConfirmation($registration);
+
+        Mail::assertSent(SeminarRegistrationConfirmation::class);
     });
 });

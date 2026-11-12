@@ -25,18 +25,24 @@ class RegistrationService
         Mail::to($visitor->email)->send(new VisitorRegistrationConfirmation($visitor));
     }
 
-    public function sendSeminarSubmissionConfirmation(SeminarRegistration $registration): void
+    /** Request contexts pass $queue = true so SMTP never blocks the response. */
+    public function sendSeminarSubmissionConfirmation(SeminarRegistration $registration, bool $queue = false): void
     {
         $locale = $registration->language ?? 'en';
+        $mailable = new SeminarRegistrationConfirmation($registration);
+        $mailer = Mail::to($registration->email)->locale($locale);
 
-        Mail::to($registration->email)
-            ->locale($locale)
-            ->send(new SeminarRegistrationConfirmation($registration));
+        if ($queue) {
+            $mailer->queue($mailable);
+        } else {
+            $mailer->send($mailable);
+        }
 
         $registration->update(['confirmation_email_sent_at' => now()]);
     }
 
-    public function sendHandsOnSubmissionConfirmation(HandsOnRegistration $registration): void
+    /** Request contexts pass $queue = true so SMTP never blocks the response. */
+    public function sendHandsOnSubmissionConfirmation(HandsOnRegistration $registration, bool $queue = false): void
     {
         $email = $registration->recipientEmail();
 
@@ -44,9 +50,14 @@ class RegistrationService
             return;
         }
 
-        Mail::to($email)
-            ->locale($registration->recipientLanguage())
-            ->send(new HandsOnRegistrationConfirmation($registration));
+        $mailable = new HandsOnRegistrationConfirmation($registration);
+        $mailer = Mail::to($email)->locale($registration->recipientLanguage());
+
+        if ($queue) {
+            $mailer->queue($mailable);
+        } else {
+            $mailer->send($mailable);
+        }
 
         $registration->update(['confirmation_email_sent_at' => now()]);
     }
@@ -184,7 +195,7 @@ class RegistrationService
      * seminar registration's. Every match is resent, since one participant can
      * hold a seminar registration plus several hands-on sessions.
      *
-     * Returns the number of emails sent; the caller shows the same response
+     * Returns the number of emails queued; the caller shows the same response
      * either way so the form can't be used to probe registered addresses.
      */
     public function resendConfirmationFor(string $email): int
@@ -196,7 +207,7 @@ class RegistrationService
             ->get();
 
         foreach ($seminar as $registration) {
-            $this->sendSeminarSubmissionConfirmation($registration);
+            $this->sendSeminarSubmissionConfirmation($registration, queue: true);
         }
 
         $handsOn = HandsOnRegistration::query()
@@ -207,7 +218,7 @@ class RegistrationService
             ->get();
 
         foreach ($handsOn as $registration) {
-            $this->sendHandsOnSubmissionConfirmation($registration);
+            $this->sendHandsOnSubmissionConfirmation($registration, queue: true);
         }
 
         return $seminar->count() + $handsOn->count();

@@ -238,6 +238,50 @@ class HandsOnRegistrationsTable
                             'payment_status' => 'verified',
                             'verified_at' => now(),
                         ])),
+                    BulkAction::make('bulkSendEmailConfirmation')
+                        ->label(__('seminar.bulk_send_email_confirmation'))
+                        ->icon('heroicon-o-envelope')
+                        ->color('primary')
+                        ->requiresConfirmation()
+                        ->modalHeading(__('seminar.bulk_send_email_confirmation'))
+                        ->modalDescription(__('seminar.bulk_send_email_confirmation_description'))
+                        ->modalSubmitActionLabel(__('seminar.bulk_send_email_confirmation'))
+                        ->deselectRecordsAfterCompletion()
+                        ->action(function (Collection $records, RegistrationService $registrationService): void {
+                            $records->loadMissing('seminarRegistration');
+
+                            $sent = 0;
+                            $skipped = 0;
+
+                            foreach ($records as $record) {
+                                if (! $record instanceof HandsOnRegistration || $record->recipientEmail() === null) {
+                                    $skipped++;
+
+                                    continue;
+                                }
+
+                                $registrationService->sendHandsOnSubmissionConfirmation($record, queue: true);
+                                $sent++;
+                            }
+
+                            if ($sent === 0) {
+                                Notification::make()
+                                    ->title(__('seminar.bulk_email_confirmation_none_sent'))
+                                    ->warning()
+                                    ->send();
+
+                                return;
+                            }
+
+                            $notification = Notification::make()
+                                ->title(__('seminar.bulk_email_confirmation_sent', ['sent' => $sent]));
+
+                            if ($skipped > 0) {
+                                $notification->body(__('seminar.bulk_email_confirmation_skipped', ['count' => $skipped]));
+                            }
+
+                            $notification->success()->send();
+                        }),
                     DeleteBulkAction::make()
                         ->visible(fn (): bool => auth()->user()?->hasRole('Super Admin') ?? false),
                 ]),

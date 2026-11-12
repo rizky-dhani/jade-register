@@ -34,7 +34,7 @@ it('resends the seminar confirmation and stamps the sent timestamp', function ()
         ->call('submit')
         ->assertSet('isSuccess', true);
 
-    Mail::assertSent(SeminarRegistrationConfirmation::class, function ($mail) use ($registration) {
+    Mail::assertQueued(SeminarRegistrationConfirmation::class, function ($mail) use ($registration) {
         return $mail->registration->is($registration);
     });
 
@@ -58,7 +58,7 @@ it('resends hands-on confirmations for the same email', function () {
         ->call('submit')
         ->assertSet('isSuccess', true);
 
-    Mail::assertSent(HandsOnRegistrationConfirmation::class, function ($mail) use ($handsOn) {
+    Mail::assertQueued(HandsOnRegistrationConfirmation::class, function ($mail) use ($handsOn) {
         return $mail->registration->is($handsOn);
     });
 });
@@ -69,7 +69,7 @@ it('shows the same success state for an unknown email and sends nothing', functi
         ->call('submit')
         ->assertSet('isSuccess', true);
 
-    Mail::assertNothingSent();
+    Mail::assertNothingQueued();
 });
 
 it('throttles repeated attempts', function () {
