@@ -29,9 +29,9 @@ beforeEach(function () {
  *
  * @see .ai/rules/filament.md
  */
-function callCheckOutAction($row): void
+function callCheckOutAction($row, string $action = 'checkOut'): void
 {
-    livewire(ListAttendanceRoster::class)->instance()->getTable()->getAction('checkOut')->call(['record' => $row]);
+    livewire(ListAttendanceRoster::class)->instance()->getTable()->getAction($action)->call(['record' => $row]);
 }
 
 function rosterRowForSeminar(SeminarRegistration $registration)
@@ -47,7 +47,7 @@ it('checks out a seminar participant from the roster', function () {
         'checked_in_by' => $this->user->id,
     ]);
 
-    callCheckOutAction(rosterRowForSeminar($registration));
+    callCheckOutAction(rosterRowForSeminar($registration), 'checkOutDay1');
 
     $attendance->refresh();
 
@@ -93,8 +93,11 @@ it('offers the check-out action only while the participant is still checked in',
     ]);
 
     livewire(ListAttendanceRoster::class)
-        ->assertTableActionVisible('checkOut', rosterRowForSeminar($stillIn))
-        ->assertTableActionHidden('checkOut', rosterRowForSeminar($alreadyOut));
+        ->assertTableActionVisible('checkOutDay1', rosterRowForSeminar($stillIn))
+        ->assertTableActionHidden('checkOutDay1', rosterRowForSeminar($alreadyOut))
+        // Seminar days are checked out from the per-day dropdown, so the single
+        // hands-on check-out button stays hidden on a seminar row.
+        ->assertTableActionHidden('checkOut', rosterRowForSeminar($stillIn));
 });
 
 it('keeps the original check-out when the action runs twice', function () {
@@ -107,7 +110,7 @@ it('keeps the original check-out when the action runs twice', function () {
 
     $row = rosterRowForSeminar($registration);
 
-    callCheckOutAction($row);
+    callCheckOutAction($row, 'checkOutDay1');
     $attendance->refresh();
     $firstCheckOutAt = $attendance->checked_out_at;
     $firstCheckedOutBy = $attendance->checked_out_by;
@@ -116,7 +119,7 @@ it('keeps the original check-out when the action runs twice', function () {
     $otherStaff->assignRole('Super Admin');
     actingAs($otherStaff);
 
-    callCheckOutAction($row);
+    callCheckOutAction($row, 'checkOutDay1');
     $attendance->refresh();
 
     expect($attendance->checked_out_at->equalTo($firstCheckOutAt))->toBeTrue()
@@ -142,9 +145,9 @@ it('lets a desk admin check a participant out from the roster', function () {
     $row = rosterRowForSeminar($registration);
 
     livewire(ListAttendanceRoster::class)
-        ->assertTableActionVisible('checkOut', $row);
+        ->assertTableActionVisible('checkOutDay1', $row);
 
-    callCheckOutAction($row);
+    callCheckOutAction($row, 'checkOutDay1');
 
     $attendance->refresh();
 
@@ -167,5 +170,45 @@ it('keeps the check-out action away from a role without the check-out permission
 
     livewire(ListAttendanceRoster::class)
         ->assertOk()
-        ->assertTableActionHidden('checkOut', rosterRowForSeminar($registration));
+        ->assertTableActionHidden('checkOutDay1', rosterRowForSeminar($registration));
+});
+
+it('cancels a day check-out and reopens the day', function () {
+    $registration = SeminarRegistration::factory()->verified()->create();
+    $attendance = Attendance::factory()->checkedOut()->create([
+        'seminar_registration_id' => $registration->id,
+        'activity_type' => 'seminar',
+        'checked_in_by' => $this->user->id,
+    ]);
+
+    $row = rosterRowForSeminar($registration);
+
+    livewire(ListAttendanceRoster::class)
+        ->assertTableActionVisible('cancelCheckOutDay1', $row);
+
+    callCheckOutAction($row, 'cancelCheckOutDay1');
+
+    $attendance->refresh();
+
+    expect($attendance->checked_out_at)->toBeNull()
+        ->and($attendance->checked_out_by)->toBeNull()
+        // The day stays checked in, so it can be checked out again.
+        ->and($attendance->checked_in_at)->not->toBeNull();
+
+    livewire(ListAttendanceRoster::class)
+        ->assertTableActionHidden('cancelCheckOutDay1', $row)
+        ->assertTableActionVisible('checkOutDay1', $row);
+});
+
+it('offers the cancel-check-out action only for a day that is checked out', function () {
+    $registration = SeminarRegistration::factory()->verified()->create();
+
+    Attendance::factory()->create([
+        'seminar_registration_id' => $registration->id,
+        'activity_type' => 'seminar',
+        'checked_in_by' => $this->user->id,
+    ]);
+
+    livewire(ListAttendanceRoster::class)
+        ->assertTableActionHidden('cancelCheckOutDay1', rosterRowForSeminar($registration));
 });

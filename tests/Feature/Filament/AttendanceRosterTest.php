@@ -2,10 +2,13 @@
 
 use App\Filament\Resources\Attendances\AttendanceResource;
 use App\Filament\Resources\Attendances\Pages\ListAttendanceRoster;
+use App\Models\Addon;
+use App\Models\AddonRegistration;
 use App\Models\Attendance;
 use App\Models\AttendanceRoster;
 use App\Models\HandsOn;
 use App\Models\HandsOnRegistration;
+use App\Models\Seminar;
 use App\Models\SeminarRegistration;
 use App\Models\User;
 use Database\Seeders\RolePermissionSeeder;
@@ -157,7 +160,24 @@ it('hides the day check-in actions once that day is in', function () {
         ->assertTableActionHidden('checkInDay1', $row)
         ->assertTableActionVisible('checkInDay2', $row)
         ->assertTableActionVisible('checkInDay3', $row)
-        ->assertTableActionVisible('checkOut', $row);
+        ->assertTableActionVisible('checkOutDay1', $row);
+});
+
+it('stacks the check-out stamp under the check-in stamp in the day column', function () {
+    $registration = SeminarRegistration::factory()->verified()->create();
+
+    Attendance::factory()->day(1)->checkedOut()->create([
+        'seminar_registration_id' => $registration->id,
+        'activity_type' => 'seminar',
+        'checked_in_by' => $this->user->id,
+        'checked_in_at' => '2026-11-12 09:00:00',
+        'checked_out_at' => '2026-11-12 17:00:00',
+    ]);
+
+    livewire(ListAttendanceRoster::class)
+        ->assertSeeHtml('flex flex-col items-start gap-1')
+        ->assertSee('12 Nov 09:00')
+        ->assertSee('12 Nov 17:00');
 });
 
 it('checks a participant out from the roster row', function () {
@@ -168,7 +188,7 @@ it('checks a participant out from the roster row', function () {
         'checked_in_by' => $this->user->id,
     ]);
 
-    callRosterAction('checkOut', rosterRowFor($registration));
+    callRosterAction('checkOutDay1', rosterRowFor($registration));
 
     expect($attendance->refresh()->checked_out_at)->not->toBeNull()
         ->and($attendance->checked_out_by)->toBe($this->user->id);
@@ -195,7 +215,7 @@ it('hides the roster actions from a role without the check-in permission', funct
         ->assertOk()
         ->assertTableActionHidden('checkInDay1', $row)
         ->assertTableActionHidden('checkInHandsOn', $row)
-        ->assertTableActionHidden('checkOut', $row);
+        ->assertTableActionHidden('checkOutDay1', $row);
 });
 
 it('searches the roster by participant name and registration code', function () {
@@ -208,7 +228,7 @@ it('searches the roster by participant name and registration code', function () 
         ->assertCanNotSeeTableRecords([rosterRowFor($budi)]);
 });
 
-it('collapses the per-day check-in, cancel, and check-out actions into one dropdown each', function () {
+it('collapses the per-day check-in, cancel, check-out, and cancel-check-out actions into one dropdown each', function () {
     $registration = SeminarRegistration::factory()->verified()->create();
     $row = rosterRowFor($registration);
 
@@ -216,13 +236,15 @@ it('collapses the per-day check-in, cancel, and check-out actions into one dropd
         ->filter(fn ($action): bool => $action instanceof ActionGroup)
         ->values();
 
-    expect($groups)->toHaveCount(3)
+    expect($groups)->toHaveCount(4)
         ->and($groups[0]->getFlatActions())->toHaveKeys(['checkInDay1', 'checkInDay2', 'checkInDay3'])
         ->and($groups[1]->getFlatActions())->toHaveKeys(['cancelCheckInDay1', 'cancelCheckInDay2', 'cancelCheckInDay3'])
         ->and($groups[2]->getFlatActions())->toHaveKeys(['checkOutDay1', 'checkOutDay2', 'checkOutDay3'])
+        ->and($groups[3]->getFlatActions())->toHaveKeys(['cancelCheckOutDay1', 'cancelCheckOutDay2', 'cancelCheckOutDay3'])
         ->and($groups[0]->record($row)->isHidden())->toBeFalse()
         ->and($groups[1]->record($row)->isHidden())->toBeTrue()
-        ->and($groups[2]->record($row)->isHidden())->toBeTrue();
+        ->and($groups[2]->record($row)->isHidden())->toBeTrue()
+        ->and($groups[3]->record($row)->isHidden())->toBeTrue();
 });
 
 it('hides the check-in dropdown once every day is checked in', function () {
@@ -244,4 +266,81 @@ it('hides the check-in dropdown once every day is checked in', function () {
 
     expect($groups[0]->record($row)->isHidden())->toBeTrue()
         ->and($groups[1]->record($row)->isHidden())->toBeFalse();
+});
+
+it('shows lunch as coming from the seminar package', function () {
+    $package = Seminar::create([
+        'name' => 'Full Package',
+        'code' => 'FULL',
+        'currency' => 'IDR',
+        'includes_lunch' => true,
+        'is_active' => true,
+    ]);
+
+    $registration = SeminarRegistration::factory()->verified()->create(['seminar_id' => $package->id]);
+
+    livewire(ListAttendanceRoster::class)
+        ->assertTableColumnStateSet('lunch', 'package', rosterRowFor($registration));
+});
+
+it('shows lunch as coming from the lunch add-on', function () {
+    $package = Seminar::create([
+        'name' => 'Snack Package',
+        'code' => 'SNACK',
+        'currency' => 'IDR',
+        'includes_lunch' => false,
+        'is_active' => true,
+    ]);
+
+    $registration = SeminarRegistration::factory()->verified()->create(['seminar_id' => $package->id]);
+
+    $addon = Addon::create([
+        'name' => 'Lunch Add-On',
+        'code' => 'LUNCH_ADDON',
+        'price' => 150000,
+        'currency' => 'IDR',
+        'is_active' => true,
+    ]);
+
+    AddonRegistration::create([
+        'seminar_registration_id' => $registration->id,
+        'addon_id' => $addon->id,
+        'amount' => 150000,
+        'currency' => 'IDR',
+        'payment_proof_path' => 'payment-proofs/addon.jpg',
+        'payment_status' => 'verified',
+    ]);
+
+    livewire(ListAttendanceRoster::class)
+        ->assertTableColumnStateSet('lunch', 'addon', rosterRowFor($registration));
+});
+
+it('leaves lunch empty when the participant has no entitlement', function () {
+    $package = Seminar::create([
+        'name' => 'Snack Package',
+        'code' => 'SNACK',
+        'currency' => 'IDR',
+        'includes_lunch' => false,
+        'is_active' => true,
+    ]);
+
+    $registration = SeminarRegistration::factory()->verified()->create(['seminar_id' => $package->id]);
+
+    livewire(ListAttendanceRoster::class)
+        ->assertTableColumnStateSet('lunch', null, rosterRowFor($registration));
+});
+
+it('leaves lunch empty on a standalone hands-on row', function () {
+    $handsOn = HandsOn::factory()->create();
+
+    $standalone = HandsOnRegistration::factory()->verified()->create([
+        'seminar_registration_id' => null,
+        'hands_on_id' => $handsOn->id,
+        'registration_type' => 'hands_on',
+    ]);
+
+    $row = AttendanceRoster::where('participant_key', 'hands_on-'.$standalone->id)->sole();
+
+    livewire(ListAttendanceRoster::class)
+        ->assertTableColumnStateSet('lunch', null, $row);
 });

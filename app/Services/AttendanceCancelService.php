@@ -42,6 +42,37 @@ class AttendanceCancelService
     }
 
     /**
+     * Undo a check-out for one event day, leaving the day checked in and open
+     * again.
+     *
+     * The check-out stamp is cleared rather than kept: unlike a cancelled
+     * check-in, there is no column that records a cancelled check-out, and a
+     * stale `checked_out_at` would keep the day closed.
+     */
+    public function cancelCheckOutSeminar(SeminarRegistration $registration, int $day): bool
+    {
+        $attendance = Attendance::query()
+            ->where('seminar_registration_id', $registration->id)
+            ->whereNull('hands_on_registration_id')
+            ->where('activity_type', 'seminar')
+            ->where('day', $day)
+            ->whereNull('cancelled_at')
+            ->whereNotNull('checked_out_at')
+            ->first();
+
+        if (! $attendance) {
+            return false;
+        }
+
+        $attendance->update([
+            'checked_out_at' => null,
+            'checked_out_by' => null,
+        ]);
+
+        return true;
+    }
+
+    /**
      * Cancel the check-in for a hands-on session.
      */
     public function cancelHandsOn(HandsOnRegistration $registration, User $staff): bool

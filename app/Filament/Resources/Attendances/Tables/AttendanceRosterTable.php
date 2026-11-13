@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Attendances\Tables;
 
+use App\Models\AddonRegistration;
 use App\Models\Attendance;
 use App\Models\AttendanceRoster;
 use App\Models\HandsOnRegistration;
@@ -12,6 +13,7 @@ use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Notifications\Notification;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ViewColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
@@ -52,6 +54,15 @@ class AttendanceRosterTable
                     ->label(__('filament.attendance.seminar_package'))
                     ->state(fn (AttendanceRoster $record): string => self::seminarPackageLabel($record))
                     ->wrap()
+                    ->placeholder('-'),
+                TextColumn::make('lunch')
+                    ->label(__('filament.attendance.lunch'))
+                    ->badge()
+                    ->state(fn (AttendanceRoster $record): ?string => self::lunchEntitlement($record))
+                    ->formatStateUsing(fn (?string $state): ?string => $state === null
+                        ? null
+                        : __("filament.lunch_attendance.entitlement_{$state}"))
+                    ->color(fn (string $state): string => $state === 'package' ? 'success' : 'warning')
                     ->placeholder('-'),
                 TextColumn::make('hands_on_sessions')
                     ->label(__('filament.attendance.hands_on_sessions'))
@@ -99,6 +110,7 @@ class AttendanceRosterTable
                 self::seminarCheckInGroup(),
                 self::seminarCancelGroup(),
                 self::seminarCheckOutGroup(),
+                self::seminarCancelCheckOutGroup(),
                 self::handsOnCheckInAction(),
                 self::handsOnCancelAction(),
                 self::checkOutAction(),
@@ -106,33 +118,39 @@ class AttendanceRosterTable
     }
 
     /**
-     * One day column per event day. Seminar rows show checked-in or "-";
-     * hands-on rows have no day dimension and stay "-".
+     * One day column per event day. Seminar rows stack the check-in stamp over
+     * the check-out stamp so the day fits in one narrow column; hands-on rows
+     * have no day dimension and stay "-".
      *
-     * @return array<int, TextColumn>
+     * @return array<int, ViewColumn>
      */
     private static function seminarDayColumns(): array
     {
         $columns = [];
 
         foreach (Attendance::SEMINAR_DAYS as $day) {
-            $columns[] = TextColumn::make("day_{$day}")
+            $columns[] = ViewColumn::make("day_{$day}")
                 ->label(__('filament.attendance.day_number', ['day' => $day]))
-                ->badge()
-                ->state(fn (AttendanceRoster $record): string => self::seminarDayState($record, $day) ?? '-')
-                ->color(fn (AttendanceRoster $record): string => self::seminarDayState($record, $day) === null ? 'gray' : 'success');
+                ->view(
+                    'filament.tables.attendance-day',
+                    fn (AttendanceRoster $record): array => self::seminarDayStamps($record, $day),
+                );
         }
 
         return $columns;
     }
 
-    private static function seminarDayState(AttendanceRoster $record, int $day): ?string
+    /**
+     * @return array{in: ?string, out: ?string}
+     */
+    private static function seminarDayStamps(AttendanceRoster $record, int $day): array
     {
         $attendance = $record->seminarAttendanceForDay($day);
 
-        return $attendance?->checked_in_at !== null
-            ? $attendance->checked_in_at->format('d M H:i')
-            : null;
+        return [
+            'in' => $attendance?->checked_in_at?->format('d M H:i'),
+            'out' => $attendance?->checked_out_at?->format('d M H:i'),
+        ];
     }
 
     /**
@@ -148,6 +166,31 @@ class AttendanceRosterTable
         }
 
         return $package->display_name;
+    }
+
+    /**
+     * Where the participant's lunch comes from: the seminar package, a
+     * LUNCH_ADDON purchase, or nothing. Standalone hands-on rows have no
+     * seminar registration and therefore no lunch entitlement.
+     *
+     * @return 'package'|'addon'|null
+     */
+    private static function lunchEntitlement(AttendanceRoster $record): ?string
+    {
+        $registration = $record->seminarRegistration;
+
+        if (! $registration) {
+            return null;
+        }
+
+        if ($registration->seminarPackage?->includes_lunch) {
+            return 'package';
+        }
+
+        $hasLunchAddon = $registration->addonRegistrations
+            ->contains(fn (AddonRegistration $addonRegistration): bool => $addonRegistration->addon?->code === 'LUNCH_ADDON');
+
+        return $hasLunchAddon ? 'addon' : null;
     }
 
     /**
@@ -415,6 +458,68 @@ class AttendanceRosterTable
     }
 
     /**
+     * The per-day cancel-check-out buttons behind one dropdown. The group hides
+     * itself when no day is checked out.
+     */
+    private static function seminarCancelCheckOutGroup(): ActionGroup
+    {
+        return ActionGroup::make(self::seminarDayCancelCheckOutActions())
+            ->label(__('filament.attendance.cancel_check_out'))
+            ->icon('heroicon-o-arrow-uturn-left')
+            ->color('warning')
+            ->button();
+    }
+
+    /**
+     * Undoes a check-out for one event day, leaving the day checked in and open
+     * again. One action per day, so correcting a single wrong check-out does not
+     * disturb the others.
+     *
+     * @return array<int, Action>
+     */
+    private static function seminarDayCancelCheckOutActions(): array
+    {
+        return array_map(
+            fn (int $day): Action => Action::make("cancelCheckOutDay{$day}")
+                ->label(__('filament.attendance.cancel_check_out_day', ['day' => $day]))
+                ->icon('heroicon-o-arrow-uturn-left')
+                ->color('warning')
+                ->requiresConfirmation()
+                ->modalHeading(__('filament.attendance.cancel_check_out_day', ['day' => $day]))
+                ->modalDescription(fn (AttendanceRoster $record): string => __('filament.attendance.cancel_check_out_confirm', [
+                    'name' => $record->participant_name,
+                    'day' => $day,
+                ]))
+                ->modalSubmitActionLabel(__('filament.attendance.cancel_check_out'))
+                // Only a day that is actually checked out can be reopened.
+                ->visible(fn (AttendanceRoster $record): bool => $record->isSeminar()
+                    && $record->seminarAttendanceForDay($day)?->checked_out_at !== null
+                    && (auth()->user()?->can('checkOut', Attendance::class) ?? false))
+                ->action(function (AttendanceRoster $record) use ($day): void {
+                    $registration = $record->seminarRegistration;
+
+                    if (! $registration) {
+                        return;
+                    }
+
+                    $cancelled = app(AttendanceCancelService::class)
+                        ->cancelCheckOutSeminar($registration, $day);
+
+                    $notification = Notification::make();
+
+                    $cancelled
+                        ? $notification->success()->title(__('filament.attendance.cancel_check_out_success', [
+                            'name' => $record->participant_name,
+                        ]))
+                        : $notification->warning()->title(__('filament.attendance.nothing_to_cancel'));
+
+                    $notification->send();
+                }),
+            Attendance::SEMINAR_DAYS,
+        );
+    }
+
+    /**
      * Cancels the check-in for the row's hands-on session(s).
      */
     private static function handsOnCancelAction(): Action
@@ -460,6 +565,10 @@ class AttendanceRosterTable
             });
     }
 
+    /**
+     * Checks the row's hands-on sessions out. Seminar days are checked out from
+     * the per-day dropdown, so this button only shows for hands-on rows.
+     */
     private static function checkOutAction(): Action
     {
         return Action::make('checkOut')
@@ -469,7 +578,8 @@ class AttendanceRosterTable
             ->requiresConfirmation()
             ->modalHeading(__('filament.attendance.check_out'))
             ->modalSubmitActionLabel(__('filament.attendance.check_out'))
-            ->visible(fn (AttendanceRoster $record): bool => self::hasOpenCheckOut($record)
+            ->visible(fn (AttendanceRoster $record): bool => ! $record->isSeminar()
+                && self::hasOpenCheckOut($record)
                 && (auth()->user()?->can('checkOut', Attendance::class) ?? false))
             ->action(function (AttendanceRoster $record): void {
                 $staff = auth()->user();
@@ -479,10 +589,6 @@ class AttendanceRosterTable
                 }
 
                 $service = app(AttendanceCheckOutService::class);
-
-                if ($record->isSeminar() && $record->seminarRegistration) {
-                    $service->checkOutSeminar($record->seminarRegistration, $staff);
-                }
 
                 foreach (self::handsOnSessions($record) as $registration) {
                     $attendance = $registration->activeAttendance;
@@ -498,10 +604,7 @@ class AttendanceRosterTable
 
     private static function hasOpenCheckOut(AttendanceRoster $record): bool
     {
-        $seminarOpen = $record->seminarRegistration?->seminarAttendances
-            ->contains(fn (Attendance $attendance): bool => $attendance->checked_in_at !== null && $attendance->checked_out_at === null) ?? false;
-
-        return $seminarOpen || self::handsOnSessions($record)
+        return self::handsOnSessions($record)
             ->contains(fn (HandsOnRegistration $registration): bool => $registration->activeAttendance?->checked_in_at !== null
                 && $registration->activeAttendance?->checked_out_at === null);
     }

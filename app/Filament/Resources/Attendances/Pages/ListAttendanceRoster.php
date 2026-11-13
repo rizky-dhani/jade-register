@@ -36,6 +36,7 @@ class ListAttendanceRoster extends ListRecords
         return AttendanceRoster::query()
             ->with([
                 'seminarRegistration.seminarPackage',
+                'seminarRegistration.addonRegistrations.addon',
                 'seminarRegistration.seminarAttendances.checkedInBy',
                 'seminarRegistration.seminarAttendances.checkedOutBy',
                 'seminarRegistration.verifiedHandsOnRegistrations',
