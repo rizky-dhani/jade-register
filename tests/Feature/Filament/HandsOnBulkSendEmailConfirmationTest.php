@@ -8,6 +8,7 @@ use App\Models\HandsOnRegistration;
 use App\Models\SeminarRegistration;
 use App\Models\Setting;
 use App\Models\User;
+use Database\Seeders\RolePermissionSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
 use Spatie\Permission\Models\Role;
@@ -135,4 +136,30 @@ it('does not email records whose payment was already verified', function () {
         ->assertHasNoTableBulkActionErrors();
 
     Mail::assertNotQueued(HandsOnRegistrationConfirmation::class);
+});
+
+it('lets an Admin run the bulk verify payment action', function () {
+    Mail::fake();
+
+    $this->seed(RolePermissionSeeder::class);
+
+    $admin = User::factory()->create();
+    $admin->assignRole('Admin');
+    $this->actingAs($admin);
+
+    $registration = HandsOnRegistration::factory()->create([
+        'seminar_registration_id' => null,
+        'hands_on_id' => HandsOn::first()->id,
+        'email' => 'desk@example.com',
+        'payment_status' => 'pending',
+    ]);
+
+    livewire(ListHandsOnRegistrations::class)
+        ->assertTableBulkActionVisible('verifyPayment')
+        ->callTableBulkAction('verifyPayment', [$registration])
+        ->assertHasNoTableBulkActionErrors();
+
+    expect($registration->refresh()->payment_status)->toBe('verified');
+
+    Mail::assertQueued(HandsOnRegistrationConfirmation::class, fn ($mail) => $mail->hasTo('desk@example.com'));
 });

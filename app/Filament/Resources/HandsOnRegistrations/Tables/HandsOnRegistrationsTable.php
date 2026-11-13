@@ -233,7 +233,6 @@ class HandsOnRegistrationsTable
                         ->color('success')
                         ->requiresConfirmation()
                         ->deselectRecordsAfterCompletion()
-                        ->visible(fn (): bool => auth()->user()?->hasRole('Super Admin') ?? false)
                         ->action(function (Collection $records, RegistrationService $registrationService): void {
                             $records->loadMissing('seminarRegistration');
 
