@@ -71,6 +71,22 @@
                                 {{ $this->paymentStatusLabel }}
                             </span>
                         </div>
+                        @if($registration instanceof \App\Models\SeminarRegistration && $registration->seminarPackage)
+                            <div>
+                                <p class="text-sm text-gray-500">{{ __('seminar.selected_package') }}</p>
+                                <p class="font-semibold text-gray-900">{{ $registration->seminarPackage->display_name }}</p>
+                            </div>
+                        @endif
+                        @if($registration instanceof \App\Models\SeminarRegistration)
+                            @foreach($registration->addonRegistrations as $addonRegistration)
+                                @if($addonRegistration->addon?->code === 'LUNCH_ADDON')
+                                    <div>
+                                        <p class="text-sm text-gray-500">{{ __('seminar.selected_addons') }}</p>
+                                        <p class="font-semibold text-gray-900">{{ $addonRegistration->addon->name }}</p>
+                                    </div>
+                                @endif
+                            @endforeach
+                        @endif
                     </div>
 
                     @if($registration->payment_status !== 'verified')

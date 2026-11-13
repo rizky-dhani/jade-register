@@ -68,6 +68,10 @@ class AttendanceVerify extends Component
         $qrTokenService = app(QrTokenService::class);
         $this->registration = $qrTokenService->validate($token);
 
+        if ($this->registration instanceof SeminarRegistration) {
+            $this->registration->load(['seminarPackage', 'addonRegistrations.addon']);
+        }
+
         if (! $this->registration) {
             $this->isValid = false;
 

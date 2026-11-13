@@ -1,9 +1,12 @@
 <?php
 
 use App\Livewire\AttendanceVerify;
+use App\Models\Addon;
+use App\Models\AddonRegistration;
 use App\Models\Attendance;
 use App\Models\HandsOn;
 use App\Models\HandsOnRegistration;
+use App\Models\Seminar;
 use App\Models\SeminarRegistration;
 use App\Models\User;
 use App\Services\QrTokenService;
@@ -29,6 +32,37 @@ test('staff can view verification page with valid token', function () {
         ->assertSee($this->registration->name_license)
         ->assertSee($this->registration->email)
         ->assertSee($this->registration->registration_code);
+});
+
+test('staff sees seminar package and lunch add-on on verification page', function () {
+    $package = Seminar::create([
+        'name' => 'Seminar Package for Verification',
+        'code' => 'verification_package',
+        'applies_to' => 'local',
+        'currency' => 'IDR',
+        'includes_lunch' => false,
+    ]);
+    $lunchAddon = Addon::create([
+        'name' => 'Lunch Add-On',
+        'code' => 'LUNCH_ADDON',
+        'price' => 250000,
+        'currency' => 'IDR',
+    ]);
+    $this->registration->update(['seminar_id' => $package->id]);
+    AddonRegistration::create([
+        'seminar_registration_id' => $this->registration->id,
+        'addon_id' => $lunchAddon->id,
+        'amount' => 250000,
+        'currency' => 'IDR',
+        'payment_proof_path' => 'proof.jpg',
+        'payment_status' => 'verified',
+    ]);
+
+    $this->actingAs($this->user);
+
+    livewire(AttendanceVerify::class, ['token' => $this->registration->qr_token])
+        ->assertSee($package->display_name)
+        ->assertSee('Lunch Add-On');
 });
 
 test('staff can check in seminar', function () {
