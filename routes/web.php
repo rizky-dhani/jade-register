@@ -17,6 +17,7 @@ use App\Livewire\SeminarRegistrationSuccess;
 use App\Livewire\TotalParticipant;
 use App\Livewire\VisitorQrCode;
 use App\Livewire\VisitorRegistration;
+use App\Livewire\VisitorRegistrationSuccess;
 use App\Livewire\VisitorVerify;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
@@ -26,6 +27,7 @@ use Illuminate\Support\Facades\Route;
 Route::livewire('/', RegistrationPortal::class)->name('home');
 
 Route::livewire('/visitor/register', VisitorRegistration::class)->name('register.visitor');
+Route::livewire('/visitor/success/{id}', VisitorRegistrationSuccess::class)->name('register.visitor.success');
 
 Route::livewire('/seminar/register', SeminarRegistration::class)->name('register.seminar');
 Route::livewire('/seminar/success/{id}', SeminarRegistrationSuccess::class)->name('register.seminar.success');

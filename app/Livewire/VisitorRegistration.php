@@ -19,10 +19,6 @@ class VisitorRegistration extends Component
 
     public string $affiliation = '';
 
-    public bool $isSuccess = false;
-
-    public ?Visitor $visitor = null;
-
     #[Url(as: 'lang', keep: true)]
     public string $locale = 'id';
 
@@ -65,8 +61,7 @@ class VisitorRegistration extends Component
     {
         $this->validate();
 
-        // Find or create visitor
-        $this->visitor = Visitor::firstOrCreate(
+        $visitor = Visitor::firstOrCreate(
             ['email' => $this->email],
             [
                 'name' => $this->name,
@@ -76,23 +71,14 @@ class VisitorRegistration extends Component
         );
 
         // Only generate QR and send email for new visitors
-        if ($this->visitor->wasRecentlyCreated) {
-            $qrTokenService = app(VisitorQrTokenService::class);
-            $qrTokenService->generate($this->visitor);
-
-            $registrationService = app(RegistrationService::class);
-            $registrationService->sendVisitorConfirmation($this->visitor);
+        if ($visitor->wasRecentlyCreated) {
+            app(VisitorQrTokenService::class)->generate($visitor);
+            app(RegistrationService::class)->sendVisitorConfirmation($visitor);
         }
 
-        $this->isSuccess = true;
-    }
-
-    public function getQrCodeUrlProperty(): ?string
-    {
-        if (! $this->visitor) {
-            return null;
-        }
-
-        return app(VisitorQrTokenService::class)->getVerifyUrl($this->visitor);
+        $this->redirectRoute('register.visitor.success', [
+            'id' => $visitor->id,
+            'lang' => $this->locale,
+        ], navigate: true);
     }
 }
