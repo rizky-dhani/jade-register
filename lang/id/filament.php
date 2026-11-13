@@ -381,7 +381,8 @@ return [
     'widgets.visitor_count.checked_in' => 'Sudah check-in',
     'widgets.attendance_daily.heading' => 'Check-In / Check-Out Harian',
     'widgets.attendance_daily.day' => 'Hari :day',
-    'widgets.attendance_daily.check_in_out' => 'Check-in / Check-out',
+    'widgets.attendance_daily.seminar_check_in_out' => 'Check-in / Check-out Seminar',
+    'widgets.attendance_daily.hands_on_check_in_out' => 'Check-in / Check-out Hands-on',
 
     // Settings Form Labels
     'settings.form.label' => 'Label',

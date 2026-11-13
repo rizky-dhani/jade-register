@@ -6,6 +6,7 @@ use App\Filament\Pages\Auth\AuthLogin;
 use App\Filament\Pages\Auth\EmailVerification\EmailVerificationPrompt;
 use App\Filament\Pages\Auth\Register;
 use App\Filament\Resources\Attendances\AttendanceResource;
+use App\Filament\Resources\Attendances\Widgets\AttendanceDailyStatsWidget;
 use App\Filament\Widgets\HandsOnParticipantCount;
 use App\Filament\Widgets\RegistrationActions;
 use App\Filament\Widgets\SeminarParticipantCount;
@@ -64,6 +65,7 @@ class AdminPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
                 RegistrationActions::class,
+                AttendanceDailyStatsWidget::class,
                 VisitorCount::class,
                 SeminarParticipantCount::class,
                 HandsOnParticipantCount::class,

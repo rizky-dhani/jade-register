@@ -380,7 +380,8 @@ return [
     'widgets.visitor_count.checked_in' => 'Checked in',
     'widgets.attendance_daily.heading' => 'Daily Check-In / Check-Out',
     'widgets.attendance_daily.day' => 'Day :day',
-    'widgets.attendance_daily.check_in_out' => 'Check-in / Check-out',
+    'widgets.attendance_daily.seminar_check_in_out' => 'Seminar check-in / Check-out',
+    'widgets.attendance_daily.hands_on_check_in_out' => 'Hands-on check-in / Check-out',
 
     // Settings Form Labels
     'settings.form.label' => 'Label',
