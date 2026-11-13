@@ -3,6 +3,7 @@
 use App\Livewire\AttendanceQrCode;
 use App\Models\HandsOn;
 use App\Models\HandsOnRegistration;
+use App\Models\Seminar;
 use App\Models\SeminarRegistration;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -15,10 +16,20 @@ beforeEach(function () {
 });
 
 test('user can view QR code page with valid token', function () {
+    $package = Seminar::create([
+        'name' => 'Seminar + Lunch',
+        'code' => 'public_details_package',
+        'applies_to' => 'local',
+        'is_active' => true,
+
+    ]);
+    $this->registration->update(['seminar_id' => $package->id]);
+
     livewire(AttendanceQrCode::class, ['token' => $this->registration->qr_token])
         ->assertSee($this->registration->name)
         ->assertSee($this->registration->email)
         ->assertSee($this->registration->registration_code)
+        ->assertSee($package->display_name)
         ->assertSee('Verified');
 });
 

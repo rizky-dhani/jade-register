@@ -43,6 +43,12 @@
                             <p class="text-sm text-gray-500">{{ __('seminar.registration_code') }}</p>
                             <p class="font-mono font-bold text-blue-600">{{ $registration->registration_code }}</p>
                         </div>
+                        @if($registration instanceof \App\Models\SeminarRegistration && $registration->seminarPackage)
+                            <div>
+                                <p class="text-sm text-gray-500">{{ __('seminar.selected_package') }}</p>
+                                <p class="font-semibold text-gray-900">{{ $registration->seminarPackage->display_name }}</p>
+                            </div>
+                        @endif
                         <div>
                             <p class="text-sm text-gray-500">{{ __('seminar.payment_status') }}</p>
                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-{{ $this->paymentStatusColor }}-100 text-{{ $this->paymentStatusColor }}-800">
