@@ -4,7 +4,6 @@ use App\Livewire\VisitorRegistration;
 use App\Livewire\VisitorRegistrationSuccess;
 use App\Models\Visitor;
 use App\Services\RegistrationService;
-use App\Services\VisitorQrTokenService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
 
@@ -34,11 +33,7 @@ it('redirects to the success page after a visitor registers', function () {
     ]);
 });
 
-it('generates a QR code and sends a confirmation email for new visitors', function () {
-    $qr = Mockery::mock(VisitorQrTokenService::class);
-    $qr->shouldReceive('generate')->once();
-    app()->instance(VisitorQrTokenService::class, $qr);
-
+it('sends a confirmation email for new visitors', function () {
     $registration = Mockery::mock(RegistrationService::class);
     $registration->shouldReceive('sendVisitorConfirmation')->once();
     app()->instance(RegistrationService::class, $registration);
@@ -51,16 +46,16 @@ it('generates a QR code and sends a confirmation email for new visitors', functi
         ->assertRedirect();
 });
 
-it('does not regenerate the QR code for an existing visitor', function () {
+it('does not send a confirmation email for an existing visitor', function () {
     Visitor::create([
         'name' => 'Sari',
         'email' => 'sari@example.test',
         'phone' => '081290000003',
     ]);
 
-    $qr = Mockery::mock(VisitorQrTokenService::class);
-    $qr->shouldNotReceive('generate');
-    app()->instance(VisitorQrTokenService::class, $qr);
+    $registration = Mockery::mock(RegistrationService::class);
+    $registration->shouldNotReceive('sendVisitorConfirmation');
+    app()->instance(RegistrationService::class, $registration);
 
     livewire(VisitorRegistration::class)
         ->set('name', 'Sari')

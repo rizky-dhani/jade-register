@@ -4,7 +4,6 @@ namespace App\Livewire;
 
 use App\Models\Visitor;
 use App\Services\RegistrationService;
-use App\Services\VisitorQrTokenService;
 use Illuminate\Support\Facades\App;
 use Livewire\Attributes\Url;
 use Livewire\Component;
@@ -70,9 +69,8 @@ class VisitorRegistration extends Component
             ]
         );
 
-        // Only generate QR and send email for new visitors
+        // Only send the confirmation email for new visitors
         if ($visitor->wasRecentlyCreated) {
-            app(VisitorQrTokenService::class)->generate($visitor);
             app(RegistrationService::class)->sendVisitorConfirmation($visitor);
         }
 
