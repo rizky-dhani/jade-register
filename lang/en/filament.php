@@ -269,6 +269,13 @@ return [
 
     // Seminar Registrations
     'seminar_registrations.nik' => 'NIK',
+    'seminar_registrations.created_at' => 'Created At',
+
+    // Table Filters
+    'filters.created_from' => 'Created from',
+    'filters.created_until' => 'Created until',
+    'filters.created_from_indicator' => 'Created from :date',
+    'filters.created_until_indicator' => 'Created until :date',
 
     // Seminar Registration Form
     'seminar_registration.form.name_str' => 'Name as per STR (without title)',

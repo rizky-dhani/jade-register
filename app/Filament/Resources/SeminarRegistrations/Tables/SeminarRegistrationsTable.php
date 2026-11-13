@@ -13,15 +13,19 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Notifications\Notification;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\Indicator;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Carbon;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class SeminarRegistrationsTable
@@ -200,6 +204,11 @@ class SeminarRegistrationsTable
                             return "{$addon->name} ({$price})";
                         })->toArray();
                     }),
+                TextColumn::make('created_at')
+                    ->label(__('filament.seminar_registrations.created_at'))
+                    ->dateTime('d M Y H:i')
+                    ->sortable()
+                    ->toggleable(),
             ])
             ->filters([
                 SelectFilter::make('payment_status')
@@ -262,6 +271,40 @@ class SeminarRegistrationsTable
                         false: fn (Builder $query) => $query->whereNull('payment_proof_path'),
                         blank: fn (Builder $query) => $query,
                     ),
+                Filter::make('created_at')
+                    ->label(__('filament.seminar_registrations.created_at'))
+                    ->schema([
+                        DatePicker::make('created_from')
+                            ->label(__('filament.filters.created_from')),
+                        DatePicker::make('created_until')
+                            ->label(__('filament.filters.created_until')),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['created_from'] ?? null,
+                                fn (Builder $query, string $date): Builder => $query->whereDate('seminar_registrations.created_at', '>=', $date),
+                            )
+                            ->when(
+                                $data['created_until'] ?? null,
+                                fn (Builder $query, string $date): Builder => $query->whereDate('seminar_registrations.created_at', '<=', $date),
+                            );
+                    })
+                    ->indicateUsing(function (array $state): array {
+                        $indicators = [];
+
+                        if ($state['created_from'] ?? null) {
+                            $indicators[] = Indicator::make(__('filament.filters.created_from_indicator', ['date' => Carbon::parse($state['created_from'])->toFormattedDateString()]))
+                                ->removeField('created_from');
+                        }
+
+                        if ($state['created_until'] ?? null) {
+                            $indicators[] = Indicator::make(__('filament.filters.created_until_indicator', ['date' => Carbon::parse($state['created_until'])->toFormattedDateString()]))
+                                ->removeField('created_until');
+                        }
+
+                        return $indicators;
+                    }),
             ])
             ->recordActions([
                 ViewAction::make(),

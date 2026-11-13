@@ -269,6 +269,13 @@ return [
 
     // Seminar Registrations
     'seminar_registrations.nik' => 'NIK',
+    'seminar_registrations.created_at' => 'Dibuat Pada',
+
+    // Table Filters
+    'filters.created_from' => 'Dibuat dari',
+    'filters.created_until' => 'Dibuat sampai',
+    'filters.created_from_indicator' => 'Dibuat dari :date',
+    'filters.created_until_indicator' => 'Dibuat sampai :date',
 
     // Seminar Registration Form
     'seminar_registration.form.name_str' => 'Nama sesuai STR (tanpa gelar)',
