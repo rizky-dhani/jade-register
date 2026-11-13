@@ -5,8 +5,10 @@ namespace App\Filament\Resources\Attendances\Pages;
 use App\Filament\Resources\Attendances\AttendanceResource;
 use App\Filament\Resources\Attendances\Tables\AttendanceRosterTable;
 use App\Filament\Resources\Attendances\Widgets\AttendanceDailyStatsWidget;
+use App\Models\Attendance;
 use App\Models\AttendanceRoster;
 use Filament\Resources\Pages\ListRecords;
+use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -22,6 +24,32 @@ class ListAttendanceRoster extends ListRecords
     protected static string $resource = AttendanceResource::class;
 
     protected static ?string $title = 'Attendance';
+
+    public function getTabs(): array
+    {
+        $tabs = ['all' => Tab::make(__('filament.attendance.all'))];
+
+        foreach (Attendance::SEMINAR_DAYS as $day) {
+            $attendanceDay = Attendance::query()
+                ->where('activity_type', 'seminar')
+                ->where('day', $day)
+                ->whereNull('hands_on_registration_id')
+                ->whereNull('cancelled_at');
+
+            foreach (['check_in' => 'checked_in_at', 'check_out' => 'checked_out_at'] as $tab => $column) {
+                $tabs["{$tab}_day_{$day}"] = Tab::make(__('filament.attendance.'.$tab.'_day', ['day' => $day]))
+                    ->badge((clone $attendanceDay)->whereNotNull($column)->count())
+                    ->modifyQueryUsing(fn (Builder $query): Builder => $query->whereHas(
+                        'seminarRegistration.seminarAttendances',
+                        fn (Builder $attendanceQuery): Builder => $attendanceQuery
+                            ->where('day', $day)
+                            ->whereNotNull($column)
+                    ));
+            }
+        }
+
+        return $tabs;
+    }
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-clipboard-document-check';
 

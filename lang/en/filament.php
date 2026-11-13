@@ -109,6 +109,8 @@ return [
     'attendance.cancel_check_in' => 'Cancel Check-In',
     'attendance.check_out_day' => 'Check Out Day :day',
     'attendance.check_out_day_confirm' => ':name will be checked out of Day :day. The time and your name are recorded on that day\'s attendance row.',
+    'attendance.all' => 'All',
+    'attendance.check_in_day' => 'Check In Day :day',
     'attendance.cancel_check_in_day' => 'Cancel Day :day Check-In',
     'attendance.cancel_check_in_hands_on' => 'Cancel Hands-On Check-In',
     'attendance.cancel_check_in_confirm' => ':name will be marked as not checked in for Day :day. The cancelled row is kept and the day becomes open again.',

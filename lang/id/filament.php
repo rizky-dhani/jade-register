@@ -109,6 +109,8 @@ return [
     'attendance.cancel_check_in' => 'Batalkan Check-in',
     'attendance.check_out_day' => 'Check-out Hari :day',
     'attendance.check_out_day_confirm' => ':name akan di-check-out dari Hari :day. Waktu dan nama Anda dicatat pada baris kehadiran hari tersebut.',
+    'attendance.all' => 'Semua',
+    'attendance.check_in_day' => 'Check-in Hari :day',
     'attendance.cancel_check_in_day' => 'Batalkan Check-in Hari :day',
     'attendance.cancel_check_in_hands_on' => 'Batalkan Check-in Hands On',
     'attendance.cancel_check_in_confirm' => ':name akan ditandai belum check-in untuk Hari :day. Baris yang dibatalkan tetap disimpan dan hari tersebut terbuka kembali.',
