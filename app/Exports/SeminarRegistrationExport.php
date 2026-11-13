@@ -4,6 +4,7 @@ namespace App\Exports;
 
 use App\Exports\Concerns\TextColumns;
 use App\Models\SeminarRegistration;
+use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
@@ -16,17 +17,23 @@ use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
+/**
+ * The workbook mirrors the desk list: when the list page hands over its filtered
+ * query, the sheets cover exactly those rows. Callers without a query (the Google
+ * Sheets mirror) still get every registration.
+ */
 class SeminarRegistrationExport implements WithMultipleSheets
 {
     public function __construct(
         protected ?string $paymentMethod = null,
+        protected ?Builder $query = null,
     ) {}
 
     public function sheets(): array
     {
         return [
-            new LocalParticipantsSheet($this->paymentMethod),
-            new InternationalParticipantsSheet($this->paymentMethod),
+            new LocalParticipantsSheet($this->paymentMethod, $this->query),
+            new InternationalParticipantsSheet($this->paymentMethod, $this->query),
         ];
     }
 }
@@ -46,7 +53,17 @@ abstract class BaseParticipantsSheet implements FromCollection, ShouldAutoSize, 
 
     public function __construct(
         protected ?string $paymentMethod = null,
+        protected ?Builder $query = null,
     ) {}
+
+    /**
+     * The list page's filtered query, or every registration when the export runs
+     * outside that page. Each sheet clones it, so the sheets never share state.
+     */
+    protected function baseQuery(): Builder
+    {
+        return $this->query ? clone $this->query : SeminarRegistration::query();
+    }
 
     public function styles(Worksheet $sheet): array
     {
@@ -86,7 +103,11 @@ class LocalParticipantsSheet extends BaseParticipantsSheet
 {
     public function collection()
     {
-        return SeminarRegistration::with('country', 'seminarPackage')
+        // reorder() drops the list page's sort: which rows are exported follows the
+        // filters, but the workbook keeps its own stable ordering.
+        return $this->baseQuery()
+            ->with('country', 'seminarPackage')
+            ->reorder()
             ->where(function ($query) {
                 $query->whereHas('country', function ($q) {
                     $q->where('name', 'Indonesia');
@@ -145,7 +166,9 @@ class InternationalParticipantsSheet extends BaseParticipantsSheet
 {
     public function collection()
     {
-        return SeminarRegistration::with('country', 'seminarPackage')
+        return $this->baseQuery()
+            ->with('country', 'seminarPackage')
+            ->reorder()
             ->whereHas('country', function ($query) {
                 $query->where('name', '!=', 'Indonesia');
             })

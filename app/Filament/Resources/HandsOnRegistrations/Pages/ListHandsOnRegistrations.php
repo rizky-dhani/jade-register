@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\HandsOnRegistrations\Pages;
 
 use App\Exports\HandsOnRegistrationExport;
+use App\Filament\Concerns\ExportsFilteredQuery;
 use App\Filament\Resources\HandsOnRegistrations\Actions\SaveContactAction;
 use App\Filament\Resources\HandsOnRegistrations\HandsOnRegistrationResource;
 use App\Models\HandsOn;
@@ -19,6 +20,8 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ListHandsOnRegistrations extends ListRecords
 {
+    use ExportsFilteredQuery;
+
     protected static string $resource = HandsOnRegistrationResource::class;
 
     protected function getHeaderActions(): array
@@ -30,7 +33,7 @@ class ListHandsOnRegistrations extends ListRecords
                 ->icon('heroicon-o-arrow-down-tray')
                 ->action(function () {
                     return Excel::download(
-                        new HandsOnRegistrationExport,
+                        new HandsOnRegistrationExport($this->getTableQueryForExportIgnoringTabs()),
                         'hands-on-registrations_'.now()->format('d-m-Y_H-i-s').'.xlsx',
                     );
                 }),

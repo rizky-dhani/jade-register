@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\SeminarRegistrations\Pages;
 
 use App\Exports\SeminarRegistrationExport;
+use App\Filament\Concerns\ExportsFilteredQuery;
 use App\Filament\Resources\SeminarRegistrations\Actions\SaveContactAction;
 use App\Filament\Resources\SeminarRegistrations\SeminarRegistrationResource;
 use App\Models\SeminarRegistration;
@@ -20,6 +21,8 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ListSeminarRegistrations extends ListRecords
 {
+    use ExportsFilteredQuery;
+
     protected static string $resource = SeminarRegistrationResource::class;
 
     protected function getHeaderActions(): array
@@ -53,7 +56,7 @@ class ListSeminarRegistrations extends ListRecords
                     $paymentMethod = $data['payment_method'] ?? null;
 
                     return Excel::download(
-                        new SeminarRegistrationExport($paymentMethod),
+                        new SeminarRegistrationExport($paymentMethod, $this->getTableQueryForExportIgnoringTabs()),
                         'seminar-registrations_'.now()->format('d-m-Y_H-i-s').'.xlsx',
                     );
                 }),

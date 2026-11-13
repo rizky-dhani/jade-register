@@ -1,9 +1,13 @@
 <?php
 
 use App\Exports\HandsOnRegistrationExport;
+use App\Filament\Resources\HandsOnRegistrations\Pages\ListHandsOnRegistrations;
 use App\Models\HandsOn;
 use App\Models\HandsOnRegistration;
 use App\Models\SeminarRegistration;
+use App\Models\User;
+use Database\Seeders\RolePermissionSeeder;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Maatwebsite\Excel\Excel as ExcelWriter;
 use Maatwebsite\Excel\Facades\Excel;
@@ -11,12 +15,15 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
+use function Pest\Laravel\actingAs;
+use function Pest\Livewire\livewire;
+
 uses(RefreshDatabase::class);
 
-function renderHandsOnExport(): Spreadsheet
+function renderHandsOnExport(?Builder $query = null): Spreadsheet
 {
     $path = tempnam(sys_get_temp_dir(), 'ho-export').'.xlsx';
-    file_put_contents($path, Excel::raw(new HandsOnRegistrationExport, ExcelWriter::XLSX));
+    file_put_contents($path, Excel::raw(new HandsOnRegistrationExport($query), ExcelWriter::XLSX));
 
     $workbook = IOFactory::load($path);
     unlink($path);
@@ -183,4 +190,84 @@ test('phone numbers are stored as text so excel does not show scientific notatio
     // Summary splices Joined Hands On in front of the phone column, so it lands in G; session sheets keep it in F.
     expect(columnValues($workbook->getSheet(0), 'G'))->toBe([['No Telp', 's'], ['+6281200000001', 's']]);
     expect(columnValues($workbook->getSheet(1), 'F'))->toBe([['No Telp', 's'], ['+6281200000001', 's']]);
+});
+
+test('only exports registrations matching the filtered query', function () {
+    $kept = HandsOn::factory()->create(['ho_code' => 'HO-10', 'event_date' => '2026-11-13']);
+    $dropped = HandsOn::factory()->create(['ho_code' => 'HO-11', 'event_date' => '2026-11-14']);
+
+    HandsOnRegistration::factory()->for($kept)->verified()->create([
+        'registration_code' => 'JADE-HO-2026-900001',
+        'created_at' => '2026-11-10 09:00:00',
+    ]);
+    HandsOnRegistration::factory()->for($dropped)->verified()->create([
+        'registration_code' => 'JADE-HO-2026-900002',
+        'created_at' => '2026-10-01 09:00:00',
+    ]);
+
+    // What the attendance desk hands over when a creation-date filter is applied.
+    $workbook = renderHandsOnExport(
+        HandsOnRegistration::query()->whereDate('created_at', '>=', '2026-11-05'),
+    );
+
+    // Only the session left with a matching row gets a sheet.
+    expect($workbook->getSheetNames())->toHaveCount(2);
+    expect($workbook->getSheetNames()[1])->toStartWith('HO-10 - ');
+
+    $sections = summarySections($workbook->getSheet(0));
+
+    $codes = collect($sections['participants'])->slice(1)->pluck(0);
+    expect($codes)->toContain('JADE-HO-2026-900001')
+        ->not->toContain('JADE-HO-2026-900002');
+
+    // The totals block counts the filtered rows, not the whole event.
+    $totals = collect($sections['totals'])->map(fn (array $row) => array_slice($row, 0, 4));
+    expect($totals->firstWhere(0, 'HO-10'))->toBe(['HO-10', 1, 0, 1]);
+    expect($totals->firstWhere(0, 'HO-11'))->toBeNull();
+});
+
+test('the export action on the list page returns a download', function () {
+    $this->seed(RolePermissionSeeder::class);
+
+    $admin = User::factory()->create();
+    $admin->assignRole('Super Admin');
+    actingAs($admin);
+
+    $handsOn = HandsOn::factory()->create();
+    HandsOnRegistration::factory()->for($handsOn)->create();
+
+    livewire(ListHandsOnRegistrations::class)
+        ->callAction('export')
+        ->assertFileDownloaded();
+});
+
+test('the export ignores the active tab so every session is included', function () {
+    $this->seed(RolePermissionSeeder::class);
+
+    $admin = User::factory()->create();
+    $admin->assignRole('Super Admin');
+    actingAs($admin);
+
+    $first = HandsOn::factory()->create(['ho_code' => 'HO-20', 'event_date' => '2026-11-13']);
+    $second = HandsOn::factory()->create(['ho_code' => 'HO-21', 'event_date' => '2026-11-14']);
+
+    $firstRegistration = HandsOnRegistration::factory()->for($first)->create([
+        'registration_code' => 'JADE-HO-2026-900003',
+    ]);
+    $secondRegistration = HandsOnRegistration::factory()->for($second)->create([
+        'registration_code' => 'JADE-HO-2026-900004',
+    ]);
+
+    // The desk is looking at the first session's tab; the export must not inherit it.
+    $component = livewire(ListHandsOnRegistrations::class)->set('activeTab', "hands-on-{$first->id}");
+
+    $query = $component->instance()->getTableQueryForExportIgnoringTabs();
+
+    expect($query->pluck('registration_code')->all())
+        ->toContain($firstRegistration->registration_code)
+        ->toContain($secondRegistration->registration_code);
+
+    $workbook = renderHandsOnExport($query);
+    expect($workbook->getSheetNames()[1])->toStartWith('HO-20 - ');
+    expect($workbook->getSheetNames()[2])->toStartWith('HO-21 - ');
 });

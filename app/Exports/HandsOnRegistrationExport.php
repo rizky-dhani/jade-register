@@ -5,6 +5,8 @@ namespace App\Exports;
 use App\Exports\Concerns\TextColumns;
 use App\Models\HandsOn;
 use App\Models\HandsOnRegistration;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
@@ -19,21 +21,60 @@ use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
+/**
+ * The workbook mirrors the desk list: when the list page hands over its filtered
+ * query, the sheets and the Summary totals cover exactly those rows. Callers
+ * without a query (the Google Sheets mirror) still get every registration.
+ */
 class HandsOnRegistrationExport implements WithMultipleSheets
 {
+    public function __construct(
+        protected ?Builder $query = null,
+    ) {}
+
     public function sheets(): array
     {
-        $handsOnSessions = HandsOn::whereHas('handsOnRegistrations')
+        return [
+            new HandsOnSummarySheet($this->buildJoinedHandsOnMap(), $this->query),
+            ...$this->sessions()
+                ->map(fn (HandsOn $handsOn) => new HandsOnSessionSheet($handsOn, $this->query))
+                ->all(),
+        ];
+    }
+
+    /**
+     * The list page's filtered query, or every registration when the export runs
+     * outside that page.
+     */
+    protected function baseQuery(): Builder
+    {
+        return $this->query ? clone $this->query : HandsOnRegistration::query();
+    }
+
+    /**
+     * Sessions that still have a row after filtering, so a filtered export does
+     * not ship empty sheets.
+     *
+     * @return Collection<int, HandsOn>
+     */
+    protected function sessions(): Collection
+    {
+        if (! $this->query) {
+            return HandsOn::whereHas('handsOnRegistrations')
+                ->orderBy('event_date')
+                ->orderBy('ho_code')
+                ->get();
+        }
+
+        $ids = (clone $this->query)
+            ->reorder()
+            ->distinct()
+            ->pluck('hands_on_registrations.hands_on_id');
+
+        return HandsOn::whereIn('id', $ids)
             ->orderBy('event_date')
             ->orderBy('ho_code')
             ->get();
-
-        return [
-            new HandsOnSummarySheet($this->buildJoinedHandsOnMap()),
-            ...$handsOnSessions
-                ->map(fn (HandsOn $handsOn) => new HandsOnSessionSheet($handsOn))
-                ->all(),
-        ];
     }
 
     /**
@@ -43,7 +84,9 @@ class HandsOnRegistrationExport implements WithMultipleSheets
      */
     protected function buildJoinedHandsOnMap(): array
     {
-        return HandsOnRegistration::with('handsOn')
+        return $this->baseQuery()
+            ->reorder()
+            ->with('handsOn')
             ->get()
             ->groupBy(fn (HandsOnRegistration $registration): string => BaseHandsOnSheet::participantKey($registration))
             ->map(fn ($registrations): string => $registrations
@@ -63,6 +106,17 @@ class HandsOnRegistrationExport implements WithMultipleSheets
 abstract class BaseHandsOnSheet implements FromCollection, ShouldAutoSize, WithColumnFormatting, WithCustomValueBinder, WithHeadings, WithMapping, WithStyles, WithTitle
 {
     use TextColumns;
+
+    protected ?Builder $query = null;
+
+    /**
+     * The list page's filtered query, or every registration when the export runs
+     * outside that page. Each sheet clones it, so the sheets never share state.
+     */
+    protected function baseQuery(): Builder
+    {
+        return $this->query ? clone $this->query : HandsOnRegistration::query();
+    }
 
     /**
      * @return array<int, string>
@@ -154,7 +208,10 @@ class HandsOnSummarySheet extends BaseHandsOnSheet implements WithEvents
      */
     public function __construct(
         protected array $joinedHandsOn,
-    ) {}
+        ?Builder $query = null,
+    ) {
+        $this->query = $query;
+    }
 
     public function registerEvents(): array
     {
@@ -172,9 +229,13 @@ class HandsOnSummarySheet extends BaseHandsOnSheet implements WithEvents
 
     public function collection()
     {
-        return HandsOnRegistration::with('seminarRegistration')
-            ->orderByDesc('created_at')
-            ->orderByDesc('id')
+        // reorder() drops the list page's sort. The relative ordering here decides
+        // which registration represents a participant, so it must stay fixed.
+        return $this->baseQuery()
+            ->with('seminarRegistration')
+            ->reorder()
+            ->orderByDesc('hands_on_registrations.created_at')
+            ->orderByDesc('hands_on_registrations.id')
             ->get()
             ->unique(fn (HandsOnRegistration $registration): string => self::participantKey($registration))
             ->reverse()
@@ -203,14 +264,7 @@ class HandsOnSummarySheet extends BaseHandsOnSheet implements WithEvents
      */
     protected function writeTotalsTable(Worksheet $sheet): void
     {
-        $sessions = HandsOn::whereHas('handsOnRegistrations')
-            ->withCount([
-                'handsOnRegistrations as paid_count' => fn ($query) => $query->where('payment_status', 'verified'),
-                'handsOnRegistrations as pending_count' => fn ($query) => $query->where('payment_status', 'pending'),
-            ])
-            ->orderBy('event_date')
-            ->orderBy('ho_code')
-            ->get();
+        $sessions = $this->sessionTotals();
 
         $headerRow = 1;
         $lastRow = $headerRow + $sessions->count();
@@ -233,20 +287,64 @@ class HandsOnSummarySheet extends BaseHandsOnSheet implements WithEvents
             ->getAlignment()
             ->setHorizontal(Alignment::HORIZONTAL_CENTER);
     }
+
+    /**
+     * Paid/pending counts per session, restricted to the filtered rows so the
+     * block agrees with the participant list it sits above.
+     *
+     * @return Collection<int, object{ho_code: ?string, paid_count: int, pending_count: int}>
+     */
+    protected function sessionTotals(): Collection
+    {
+        if (! $this->query) {
+            return HandsOn::whereHas('handsOnRegistrations')
+                ->withCount([
+                    'handsOnRegistrations as paid_count' => fn ($query) => $query->where('payment_status', 'verified'),
+                    'handsOnRegistrations as pending_count' => fn ($query) => $query->where('payment_status', 'pending'),
+                ])
+                ->orderBy('event_date')
+                ->orderBy('ho_code')
+                ->get();
+        }
+
+        $counts = HandsOnRegistration::query()
+            ->whereIn('id', (clone $this->query)->reorder()->pluck('hands_on_registrations.id'))
+            ->selectRaw('hands_on_registrations.hands_on_id as hands_on_id')
+            ->selectRaw("SUM(CASE WHEN hands_on_registrations.payment_status = 'verified' THEN 1 ELSE 0 END) as paid_count")
+            ->selectRaw("SUM(CASE WHEN hands_on_registrations.payment_status = 'pending' THEN 1 ELSE 0 END) as pending_count")
+            ->groupBy('hands_on_registrations.hands_on_id')
+            ->get()
+            ->keyBy('hands_on_id');
+
+        return HandsOn::whereIn('id', $counts->keys())
+            ->orderBy('event_date')
+            ->orderBy('ho_code')
+            ->get()
+            ->map(fn (HandsOn $session): object => (object) [
+                'ho_code' => $session->ho_code,
+                'paid_count' => (int) ($counts->get($session->id)?->paid_count ?? 0),
+                'pending_count' => (int) ($counts->get($session->id)?->pending_count ?? 0),
+            ]);
+    }
 }
 
 class HandsOnSessionSheet extends BaseHandsOnSheet
 {
     public function __construct(
         protected HandsOn $handsOn,
-    ) {}
+        ?Builder $query = null,
+    ) {
+        $this->query = $query;
+    }
 
     public function collection()
     {
-        return HandsOnRegistration::with('seminarRegistration')
-            ->where('hands_on_id', $this->handsOn->id)
-            ->orderBy('created_at')
-            ->orderBy('id')
+        return $this->baseQuery()
+            ->with('seminarRegistration')
+            ->reorder()
+            ->where('hands_on_registrations.hands_on_id', $this->handsOn->id)
+            ->orderBy('hands_on_registrations.created_at')
+            ->orderBy('hands_on_registrations.id')
             ->get();
     }
 
