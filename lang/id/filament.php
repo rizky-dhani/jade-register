@@ -372,6 +372,9 @@ return [
     'widgets.visitor_count.day_3' => 'Hari Ketiga',
     'widgets.visitor_count.not_checked_in' => 'Belum check-in',
     'widgets.visitor_count.checked_in' => 'Sudah check-in',
+    'widgets.attendance_daily.heading' => 'Check-In / Check-Out Harian',
+    'widgets.attendance_daily.day' => 'Hari :day',
+    'widgets.attendance_daily.check_in_out' => 'Check-in / Check-out',
 
     // Settings Form Labels
     'settings.form.label' => 'Label',

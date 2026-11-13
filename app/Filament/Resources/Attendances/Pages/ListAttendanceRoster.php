@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Attendances\Pages;
 
 use App\Filament\Resources\Attendances\AttendanceResource;
 use App\Filament\Resources\Attendances\Tables\AttendanceRosterTable;
+use App\Filament\Resources\Attendances\Widgets\AttendanceDailyStatsWidget;
 use App\Models\AttendanceRoster;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Tables\Table;
@@ -41,6 +42,13 @@ class ListAttendanceRoster extends ListRecords
                 'handsOnRegistration.handsOn',
                 'handsOnRegistration.activeAttendance',
             ]);
+    }
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            AttendanceDailyStatsWidget::class,
+        ];
     }
 
     public function table(Table $table): Table

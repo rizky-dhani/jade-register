@@ -371,6 +371,9 @@ return [
     'widgets.visitor_count.day_3' => 'Day 3',
     'widgets.visitor_count.not_checked_in' => 'Not checked in',
     'widgets.visitor_count.checked_in' => 'Checked in',
+    'widgets.attendance_daily.heading' => 'Daily Check-In / Check-Out',
+    'widgets.attendance_daily.day' => 'Day :day',
+    'widgets.attendance_daily.check_in_out' => 'Check-in / Check-out',
 
     // Settings Form Labels
     'settings.form.label' => 'Label',
