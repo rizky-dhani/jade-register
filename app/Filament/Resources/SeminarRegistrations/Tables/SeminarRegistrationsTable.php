@@ -4,6 +4,7 @@ namespace App\Filament\Resources\SeminarRegistrations\Tables;
 
 use App\Filament\Resources\SeminarRegistrations\Actions\CopyIdentityAction;
 use App\Filament\Resources\SeminarRegistrations\Actions\SaveContactAction;
+use App\Models\Seminar;
 use App\Models\SeminarRegistration;
 use App\Services\RegistrationService;
 use App\Services\VCard;
@@ -211,6 +212,16 @@ class SeminarRegistrationsTable
                     ->toggleable(),
             ])
             ->filters([
+                SelectFilter::make('seminar_id')
+                    ->label(__('seminar.selected_package'))
+                    ->searchable()
+                    ->options(fn (): array => Seminar::query()
+                        ->orderBy('sort_order')
+                        ->get()
+                        ->mapWithKeys(fn (Seminar $seminar): array => [
+                            $seminar->id => "{$seminar->name} ({$seminar->label})",
+                        ])
+                        ->toArray()),
                 SelectFilter::make('payment_status')
                     ->label(__('seminar.payment_status'))
                     ->options([
