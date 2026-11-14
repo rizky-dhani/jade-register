@@ -261,6 +261,18 @@ class SeminarRegistrationsTable
                             default => $query,
                         };
                     }),
+                TernaryFilter::make('has_lunch_addon')
+                    ->label(__('seminar.lunch_addon_name'))
+                    ->trueLabel(__('seminar.yes'))
+                    ->falseLabel(__('seminar.no'))
+                    ->nullable()
+                    ->queries(
+                        true: fn (Builder $query) => $query->whereHas('addonRegistrations', fn (Builder $addonRegistration) => $addonRegistration
+                            ->whereHas('addon', fn (Builder $addon) => $addon->where('code', 'LUNCH_ADDON'))),
+                        false: fn (Builder $query) => $query->whereDoesntHave('addonRegistrations', fn (Builder $addonRegistration) => $addonRegistration
+                            ->whereHas('addon', fn (Builder $addon) => $addon->where('code', 'LUNCH_ADDON'))),
+                        blank: fn (Builder $query) => $query,
+                    ),
                 TernaryFilter::make('has_payment_proof')
                     ->label(__('seminar.payment_proof'))
                     ->trueLabel(__('seminar.yes'))
