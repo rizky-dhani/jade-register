@@ -14,6 +14,9 @@ class EditSeminarRegistration extends EditRecord
 {
     protected static string $resource = SeminarRegistrationResource::class;
 
+    /** Hands-on proof picked in the form, applied to the hands-on rows in afterSave(). */
+    protected ?string $handsOnPaymentProofPath = null;
+
     protected function getHeaderActions(): array
     {
         return [
@@ -53,6 +56,26 @@ class EditSeminarRegistration extends EditRecord
         if ($firstAddonReg && $firstAddonReg->payment_proof_path) {
             $data['addon_payment_proof_path'] = $firstAddonReg->payment_proof_path;
         }
+
+        // Pre-fill hands-on payment proof from the first linked hands-on registration
+        $firstHandsOnReg = $this->record->handsOnRegistrations->first();
+        if ($firstHandsOnReg && $firstHandsOnReg->payment_proof_path) {
+            $data['hands_on_payment_proof_path'] = [$firstHandsOnReg->payment_proof_path];
+        }
+
+        return $data;
+    }
+
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        // Virtual field: it is written to the hands-on rows in afterSave().
+        $proof = $data['hands_on_payment_proof_path'] ?? null;
+        unset($data['hands_on_payment_proof_path']);
+
+        // A FileUpload field holds a list of paths; a single proof is enough.
+        $this->handsOnPaymentProofPath = is_array($proof)
+            ? (array_values(array_filter($proof))[0] ?? null)
+            : $proof;
 
         return $data;
     }
@@ -100,6 +123,24 @@ class EditSeminarRegistration extends EditRecord
             ->sum(fn ($hoReg) => $hoReg->handsOn?->current_price ?? 0);
 
         $registration->update(['hands_on_total_amount' => $handsOnTotal]);
+
+        // --- Handle hands-on payment proof ---
+        if ($this->handsOnPaymentProofPath) {
+            $codeNumber = substr($registration->registration_code, -6);
+            $newName = $codeNumber.'-hands-on.'.pathinfo($this->handsOnPaymentProofPath, PATHINFO_EXTENSION);
+            $newPath = 'payment-proofs/'.$newName;
+
+            if ($this->handsOnPaymentProofPath !== $newPath && Storage::disk('public')->exists($this->handsOnPaymentProofPath)) {
+                Storage::disk('public')->move($this->handsOnPaymentProofPath, $newPath);
+                $this->handsOnPaymentProofPath = $newPath;
+            }
+
+            // update() per row, not a mass update, so the model's saving hook
+            // auto-verifies the hands-on payment.
+            foreach ($registration->handsOnRegistrations()->get() as $handsOnRegistration) {
+                $handsOnRegistration->update(['payment_proof_path' => $this->handsOnPaymentProofPath]);
+            }
+        }
 
         // --- Handle add-on payment proof ---
         $addonPaymentProofPath = $this->form->getState()['addon_payment_proof_path'] ?? null;

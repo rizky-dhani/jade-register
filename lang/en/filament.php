@@ -288,6 +288,8 @@ return [
     'seminar_registration.form.competency' => 'Competency',
     'seminar_registration.form.payment_proof_helper' => 'Upload a clear photo of your payment proof. Accepted formats: JPG, PNG, PDF. Max size: 5MB.',
     'seminar_registration.form.addon_payment_proof_helper' => 'Upload payment proof for selected add-ons. Accepted formats: JPG, PNG, PDF. Max size: 5MB.',
+    'seminar_registration.form.hands_on_payment_proof' => 'Hands-On Payment Proof',
+    'seminar_registration.form.hands_on_payment_proof_helper' => 'Upload payment proof for the hands-on sessions of this registration. Accepted formats: JPG, PNG, PDF. Max size: 5MB.',
 
     // Seminars
     'seminars.original_price' => 'Original Price',

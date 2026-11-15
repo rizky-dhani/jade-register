@@ -39,7 +39,7 @@ class CreateSeminarRegistration extends CreateRecord
         $data['language'] = $country?->is_indonesia ? 'id' : 'en';
 
         // Remove virtual fields not present on the model
-        unset($data['addon_ids'], $data['addon_payment_proof_path'], $data['wants_digital_workshop'], $data['digital_workshop_id']);
+        unset($data['addon_ids'], $data['addon_payment_proof_path'], $data['wants_digital_workshop'], $data['digital_workshop_id'], $data['hands_on_payment_proof_path']);
 
         // Auto-verify digital workshop payment if proof file is uploaded
         $digitalWorkshopProof = $data['digital_workshop_payment_proof_path'] ?? null;

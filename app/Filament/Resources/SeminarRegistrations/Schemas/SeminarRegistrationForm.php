@@ -7,6 +7,7 @@ use App\Models\Country;
 use App\Models\DigitalWorkshop;
 use App\Models\HandsOn;
 use App\Models\Seminar;
+use App\Models\SeminarRegistration;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\FileUpload;
@@ -263,6 +264,21 @@ class SeminarRegistrationForm
                     ->visibility('public')
                     ->helperText(__('filament.seminar_registration.form.payment_proof_helper'))
                     ->nullable(),
+
+                // Virtual field: writes the proof onto this registration's
+                // hands-on rows, which auto-verifies them on save.
+                FileUpload::make('hands_on_payment_proof_path')
+                    ->label(__('filament.seminar_registration.form.hands_on_payment_proof'))
+                    ->disk('public')
+                    ->previewable()
+                    ->downloadable()
+                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'application/pdf'])
+                    ->maxSize(5120)
+                    ->directory('payment-proofs/hands-on')
+                    ->visibility('public')
+                    ->helperText(__('filament.seminar_registration.form.hands_on_payment_proof_helper'))
+                    ->nullable()
+                    ->visible(fn (?SeminarRegistration $record): bool => $record?->handsOnRegistrations()->exists() ?? false),
             ]);
     }
 
