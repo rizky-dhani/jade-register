@@ -58,6 +58,30 @@ class HandsOnRegistration extends Model
         'nik' => 'string',
     ];
 
+    /**
+     * An attached payment proof means the participant has paid: the desk no
+     * longer has to flip the status by hand. A proof the desk explicitly
+     * rejected stays rejected, otherwise rejection could never be saved.
+     */
+    protected static function booted(): void
+    {
+        static::saving(function (self $registration): void {
+            if (blank($registration->payment_proof_path)) {
+                return;
+            }
+
+            if ($registration->payment_status === 'rejected') {
+                return;
+            }
+
+            $registration->payment_status = 'verified';
+
+            if ($registration->verified_at === null) {
+                $registration->verified_at = now();
+            }
+        });
+    }
+
     public function seminarRegistration(): BelongsTo
     {
         return $this->belongsTo(SeminarRegistration::class);

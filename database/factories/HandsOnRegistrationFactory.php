@@ -15,7 +15,7 @@ class HandsOnRegistrationFactory extends Factory
             'hands_on_id' => HandsOn::factory(),
             'registration_type' => 'combined',
             'payment_status' => 'pending',
-            'payment_proof_path' => 'payment-proofs/test.jpg',
+            'payment_proof_path' => null,
         ];
     }
 

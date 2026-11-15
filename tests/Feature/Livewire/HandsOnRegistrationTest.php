@@ -86,7 +86,8 @@ it('creates only a hands-on registration, never a phantom seminar registration',
         'registration_type' => 'hands_on',
         'seminar_registration_id' => null,
         'email' => 'first@test.com',
-        'payment_status' => 'pending',
+        // Uploading a proof auto-verifies the payment (HandsOnRegistration::booted).
+        'payment_status' => 'verified',
     ]);
 
     $registration = HandsOnRegistrationModel::first();
