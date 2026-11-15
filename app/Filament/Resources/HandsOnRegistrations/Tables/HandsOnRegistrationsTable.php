@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\HandsOnRegistrations\Tables;
 
+use App\Filament\Resources\HandsOnRegistrations\Actions\CopyParticipantDataAction;
 use App\Filament\Resources\HandsOnRegistrations\Actions\SaveContactAction;
 use App\Models\HandsOnRegistration;
 use App\Services\RegistrationService;
@@ -243,6 +244,7 @@ class HandsOnRegistrationsTable
                     })
                     ->successNotificationTitle(__('seminar.email_confirmation_resent')),
                 SaveContactAction::make(),
+                CopyParticipantDataAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

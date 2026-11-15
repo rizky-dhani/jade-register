@@ -584,6 +584,9 @@ return [
     // Copy Identity Action
     'copy_identity' => 'Copy Identity',
     'copy_identity_copied' => 'Identity copied to clipboard',
+    'copy_participant_data' => 'Copy Participant Data',
+    'copy_participant_data_copied' => 'Participant data copied to clipboard',
+    'seminar_registration' => 'Seminar Registration',
     'chosen_package' => 'Chosen Package',
 
     // Digital Workshop

@@ -583,6 +583,9 @@ return [
     // Copy Identity Action
     'copy_identity' => 'Salin Identitas',
     'copy_identity_copied' => 'Identitas disalin ke clipboard',
+    'copy_participant_data' => 'Salin Data Peserta',
+    'copy_participant_data_copied' => 'Data peserta disalin ke clipboard',
+    'seminar_registration' => 'Pendaftaran Seminar',
     'chosen_package' => 'Paket yang Dipilih',
 
     // Digital Workshop

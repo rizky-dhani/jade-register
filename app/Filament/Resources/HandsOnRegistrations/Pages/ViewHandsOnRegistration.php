@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\HandsOnRegistrations\Pages;
 
+use App\Filament\Resources\HandsOnRegistrations\Actions\CopyParticipantDataAction;
 use App\Filament\Resources\HandsOnRegistrations\Actions\SaveContactAction;
 use App\Filament\Resources\HandsOnRegistrations\HandsOnRegistrationResource;
 use App\Filament\Resources\HandsOnRegistrations\Schemas\HandsOnRegistrationInfolist;
@@ -22,6 +23,8 @@ class ViewHandsOnRegistration extends ViewRecord
     {
         return [
             SaveContactAction::make()
+                ->record($this->record),
+            CopyParticipantDataAction::make()
                 ->record($this->record),
             EditAction::make()
                 ->label(__('filament.actions.edit'))
