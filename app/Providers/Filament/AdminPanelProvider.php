@@ -10,7 +10,6 @@ use App\Filament\Resources\Attendances\Widgets\AttendanceDailyStatsWidget;
 use App\Filament\Widgets\HandsOnParticipantCount;
 use App\Filament\Widgets\RegistrationActions;
 use App\Filament\Widgets\SeminarParticipantCount;
-use App\Filament\Widgets\VisitorCount;
 use Devonab\FilamentEasyFooter\EasyFooterPlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -66,7 +65,6 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 RegistrationActions::class,
                 AttendanceDailyStatsWidget::class,
-                VisitorCount::class,
                 SeminarParticipantCount::class,
                 HandsOnParticipantCount::class,
             ])
