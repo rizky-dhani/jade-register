@@ -20,10 +20,11 @@ beforeEach(function () {
     actingAs($this->user);
 });
 
-it('closes the filter dropdown after applying filters', function (string $page) {
+it('applies filters through the table apply action', function (string $page) {
     $applyAction = livewire($page)->instance()->getTable()->getFiltersApplyAction();
 
-    expect($applyAction->getAlpineClickHandler())->toContain('close()');
+    expect($applyAction->getCustomAlpineClickHandler())->toBeNull()
+        ->and($applyAction->getLivewireClickHandler())->toBe('applyTableFilters');
 })->with([
     'attendance' => ListAttendanceRoster::class,
     'seminar registrations' => ListSeminarRegistrations::class,
