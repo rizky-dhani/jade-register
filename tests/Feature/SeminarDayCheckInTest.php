@@ -26,9 +26,9 @@ test('the verify page offers a check-in button for each of the three event days'
         ->assertSee(__('seminar.seminar_day_label', ['day' => 1]))
         ->assertSee(__('seminar.seminar_day_label', ['day' => 2]))
         ->assertSee(__('seminar.seminar_day_label', ['day' => 3]))
-        ->assertSee(__('seminar.check_in_day_button', ['day' => 1]))
-        ->assertSee(__('seminar.check_in_day_button', ['day' => 2]))
-        ->assertSee(__('seminar.check_in_day_button', ['day' => 3]));
+        ->assertSee('checkInSeminarDay(1)', false)
+        ->assertSee('checkInSeminarDay(2)', false)
+        ->assertSee('checkInSeminarDay(3)', false);
 });
 
 test('each day check-in writes its own attendance row', function () {
@@ -104,9 +104,9 @@ test('the page shows which days are already checked in and which are still open'
     ]);
 
     livewire(AttendanceVerify::class, ['token' => $this->registration->qr_token])
-        ->assertDontSee(__('seminar.check_in_day_button', ['day' => 1]))
-        ->assertSee(__('seminar.check_in_day_button', ['day' => 2]))
-        ->assertSee(__('seminar.check_in_day_button', ['day' => 3]));
+        ->assertDontSee('checkInSeminarDay(1)', false)
+        ->assertSee('checkInSeminarDay(2)', false)
+        ->assertSee('checkInSeminarDay(3)', false);
 });
 
 test('nextOpenSeminarDay reports the first day without a check-in', function () {
@@ -141,9 +141,9 @@ test('the detail page offers a check-out button for each checked-in day', functi
     ]);
 
     livewire(AttendanceVerify::class, ['token' => $this->registration->qr_token])
-        ->assertSee(__('seminar.check_out_day_button', ['day' => 1]))
-        ->assertSee(__('seminar.check_out_day_button', ['day' => 2]))
-        ->assertDontSee(__('seminar.check_out_day_button', ['day' => 3]));
+        ->assertSee('checkOutSeminarDay(1)', false)
+        ->assertSee('checkOutSeminarDay(2)', false)
+        ->assertDontSee('checkOutSeminarDay(3)', false);
 });
 
 test('checking out one day on the detail page leaves the other days open', function () {

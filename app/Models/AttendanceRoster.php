@@ -62,6 +62,15 @@ class AttendanceRoster extends Model
         return $this->seminarRegistration?->verifiedHandsOnRegistrations ?? new Collection;
     }
 
+    /**
+     * The registration this row stands for: the seminar registration on a
+     * seminar row, the standalone hands-on registration on a hands-on row.
+     */
+    public function resolvedRegistration(): SeminarRegistration|HandsOnRegistration|null
+    {
+        return $this->isSeminar() ? $this->seminarRegistration : $this->handsOnRegistration;
+    }
+
     public function isSeminar(): bool
     {
         return $this->activity_type === 'seminar';

@@ -9,9 +9,11 @@ use App\Models\HandsOnRegistration;
 use App\Services\AttendanceCancelService;
 use App\Services\AttendanceCheckInService;
 use App\Services\AttendanceCheckOutService;
+use App\Services\QrTokenService;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Notifications\Notification;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ViewColumn;
 use Filament\Tables\Filters\SelectFilter;
@@ -114,6 +116,7 @@ class AttendanceRosterTable
                 self::handsOnCheckInAction(),
                 self::handsOnCancelAction(),
                 self::checkOutAction(),
+                self::showVerifyPageAction(),
             ]);
     }
 
@@ -607,5 +610,23 @@ class AttendanceRosterTable
         return self::handsOnSessions($record)
             ->contains(fn (HandsOnRegistration $registration): bool => $registration->activeAttendance?->checked_in_at !== null
                 && $registration->activeAttendance?->checked_out_at === null);
+    }
+
+    /**
+     * Opens the participant's attendance verify page — the same page the QR
+     * code resolves to — so the desk can read the full check-in state without
+     * scanning. Hidden when the registration has no QR token yet.
+     */
+    private static function showVerifyPageAction(): Action
+    {
+        return Action::make('showVerifyPage')
+            ->label(__('filament.attendance.show_verify_page'))
+            ->icon(Heroicon::OutlinedArrowTopRightOnSquare)
+            ->color('gray')
+            ->url(fn (AttendanceRoster $record): ?string => ($registration = $record->resolvedRegistration())
+                ? app(QrTokenService::class)->getVerifyUrl($registration)
+                : null)
+            ->openUrlInNewTab()
+            ->hidden(fn (AttendanceRoster $record): bool => blank($record->resolvedRegistration()?->qr_token));
     }
 }

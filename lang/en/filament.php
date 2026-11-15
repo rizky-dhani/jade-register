@@ -132,6 +132,7 @@ return [
     'attendance.checked_in_short' => 'in',
     'attendance.last_check_in' => 'Last Check-in',
     'attendance.check_in_hands_on' => 'Check in Hands-On',
+    'attendance.show_verify_page' => 'Show Verify Page',
 
     // Lunch coupon attendance log
     'lunch_attendance.title' => 'Lunch',

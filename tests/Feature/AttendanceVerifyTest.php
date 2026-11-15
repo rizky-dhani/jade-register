@@ -305,7 +305,7 @@ test('a guest is not offered the check-in buttons', function () {
 
     livewire(AttendanceVerify::class, ['token' => $this->registration->qr_token])
         ->assertSee(__('seminar.admin_only_action'))
-        ->assertDontSee(__('seminar.check_in_day_button', ['day' => 1]));
+        ->assertDontSee('checkInSeminarDay(1)', false);
 });
 
 test('a super admin can check in the seminar', function () {
@@ -314,7 +314,7 @@ test('a super admin can check in the seminar', function () {
     $this->actingAs($superAdmin);
 
     livewire(AttendanceVerify::class, ['token' => $this->registration->qr_token])
-        ->assertSee(__('seminar.check_in_day_button', ['day' => 1]))
+        ->assertSee('checkInSeminarDay(1)', false)
         ->call('checkInSeminarDay', 1)
         ->assertHasNoErrors();
 
@@ -354,6 +354,37 @@ test('staff can check out a seminar participant', function () {
 
     expect($attendance->checked_out_at)->not->toBeNull()
         ->and($attendance->checked_out_by)->toBe($this->user->id);
+});
+
+// The deploy host has no node, so public/build is the shipped artifact and a
+// utility missing from it renders as white-on-white. bg-gray-700 was absent
+// from the deployed stylesheet, which made the per-day check-out button
+// invisible. Check-in and check-out must also stay visually distinct, so they
+// use two different shipped palettes.
+test('the per-day check-out button uses a shipped utility and differs from check-in', function () {
+    $this->actingAs($this->user);
+
+    Attendance::factory()->create([
+        'seminar_registration_id' => $this->registration->id,
+        'activity_type' => 'seminar',
+        'day' => 1,
+        'checked_in_by' => $this->user->id,
+    ]);
+
+    livewire(AttendanceVerify::class, ['token' => $this->registration->qr_token])
+        ->assertSee('checkOutSeminarDay(1)', false)
+        ->assertSeeHtml('bg-green-600')
+        ->assertSeeHtml('hover:bg-green-700')
+        ->assertDontSeeHtml('bg-gray-700');
+});
+
+test('the per-day check-in button uses the blue palette', function () {
+    $this->actingAs($this->user);
+
+    livewire(AttendanceVerify::class, ['token' => $this->registration->qr_token])
+        ->assertSee('checkInSeminarDay(1)', false)
+        ->assertSeeHtml('bg-blue-600')
+        ->assertDontSeeHtml('bg-gray-700');
 });
 
 test('a seminar participant cannot be checked out before checking in', function () {
@@ -453,7 +484,7 @@ test('a participant cannot check out the seminar', function () {
     livewire(AttendanceVerify::class, ['token' => $this->registration->qr_token])
         ->call('checkOutSeminarDay', 1)
         ->assertHasErrors(['auth'])
-        ->assertDontSee(__('seminar.check_out_day_button', ['day' => 1]));
+        ->assertDontSee('checkOutSeminarDay(1)', false);
 
     expect($attendance->refresh()->checked_out_at)->toBeNull();
 });

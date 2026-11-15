@@ -132,6 +132,7 @@ return [
     'attendance.checked_in_short' => 'sudah',
     'attendance.last_check_in' => 'Check-in Terakhir',
     'attendance.check_in_hands_on' => 'Check-in Hands On',
+    'attendance.show_verify_page' => 'Tampilkan Halaman Verifikasi',
 
     // Log kehadiran kupon makan siang
     'lunch_attendance.title' => 'Makan Siang',

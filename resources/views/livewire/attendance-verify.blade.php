@@ -138,9 +138,9 @@
                                             @elseif($this->canCheckOut())
                                                 <button
                                                     wire:click="checkOutSeminarDay({{ $day }})"
-                                                    class="mt-2 w-full bg-gray-700 text-white py-2 px-4 rounded font-medium hover:bg-gray-800 transition-colors text-sm"
+                                                    class="mt-2 w-full bg-green-600 text-white py-2 px-4 rounded font-medium hover:bg-green-700 transition-colors text-sm"
                                                 >
-                                                    {{ __('seminar.check_out_day_button', ['day' => $day]) }}
+                                                    {{ __('seminar.check_out_day_button') }}
                                                 </button>
                                             @endif
                                         @elseif($this->canCheckIn())
@@ -149,7 +149,7 @@
                                                 class="w-full bg-blue-600 text-white py-2 px-4 rounded font-medium hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm"
                                                 @if($registration->payment_status !== 'verified') disabled @endif
                                             >
-                                                {{ __('seminar.check_in_day_button', ['day' => $day]) }}
+                                                {{ __('seminar.check_in_day_button') }}
                                             </button>
                                         @endif
                                     </div>
